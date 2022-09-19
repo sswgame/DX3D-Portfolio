@@ -90,98 +90,22 @@ void CRenderMgr::render()
 
 void CRenderMgr::CameraRender(CCamera* _cam)
 {
-}
-
-void CRenderMgr::render_play()
-{
-	if (m_vecCam.empty())
-		return;
-
-	// 메인 카메라 시점으로 렌더링
-	CCamera* pMainCam = m_vecCam[0];
-
 	// Camera 가 찍는 Layer 의 오브젝트들을 Shader Domain 에 따라 분류해둠
-	pMainCam->SortGameObject();
-
-	g_transform.matView = pMainCam->GetViewMat();
-	g_transform.matProj = pMainCam->GetProjMat();
-
-
-	// Deferred 물체 렌더링	
-	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
-	m_pEditorCam->render_deferred();
-
-
-	// Merge
-	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
-
-	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-	int a = 0;
-	m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
-	m_pMergeMtrl->UpdateData();
-	pRectMesh->render();
-
-
-	// Foward 물체 렌더링	
-		
-	pMainCam->render_forward();
-
-	// Masked 물체 렌더링
-	pMainCam->render_masked();
-
-	// Alpha 물체 렌더링
-	pMainCam->render_translucent();
-
-	// PostProcess 물체 렌더링
-	pMainCam->render_postprocess();
-
-
-	// Sub 카메라 시점으로 렌더링
-	for (int i = 1; i < m_vecCam.size(); ++i)
-	{
-		if (nullptr == m_vecCam[i])
-			continue;
-
-		m_vecCam[i]->SortGameObject();
-
-		g_transform.matView = m_vecCam[i]->GetViewMat();
-		g_transform.matProj = m_vecCam[i]->GetProjMat();
-
-		// Foward 물체 렌더링
-		m_vecCam[i]->render_forward();
-
-		// Masked 물체 렌더링
-		m_vecCam[i]->render_masked();
-
-		// Alpha 물체 렌더링
-		m_vecCam[i]->render_translucent();
-	}
-}
-
-void CRenderMgr::render_editor()
-{
-	if (nullptr == m_pEditorCam)
-		return;
-
-	// 에디터 카메라 시점으로 렌더링
-	// Camera 가 찍는 Layer 의 오브젝트들을 Shader Domain 에 따라 분류해둠
-	m_pEditorCam->SortGameObject();
-
+	_cam->SortGameObject();
 
 	// Directional Light ShadowMap 만들기
 	render_shadowmap();
 
+	g_transform.matView = _cam->GetViewMat();
+	g_transform.matViewInv = _cam->GetViewInvMat();
+	g_transform.matProj = _cam->GetProjMat();
 
-	g_transform.matView = m_pEditorCam->GetViewMat();
-	g_transform.matViewInv = m_pEditorCam->GetViewInvMat();
-	g_transform.matProj = m_pEditorCam->GetProjMat();
-
-	// Deferred 물체 렌더링			
+	// Deferred 물체 렌더링	
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
-	m_pEditorCam->render_deferred();
+	_cam->render_deferred();
 
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
-	m_pEditorCam->render_deferred_decal();
+	_cam->render_deferred_decal();
 
 	// 광원 렌더링
 	render_lights();
@@ -196,19 +120,49 @@ void CRenderMgr::render_editor()
 	pRectMesh->render();
 
 	// Foward 물체 렌더링	
-	m_pEditorCam->render_forward();
-
-	// Masked 물체 렌더링
-	m_pEditorCam->render_masked();
+	_cam->render_forward();
 
 	// Foward Decal 렌더링
-	m_pEditorCam->render_forward_decal();
+	_cam->render_forward_decal();
+
+	// Masked 물체 렌더링
+	_cam->render_masked();
 
 	// Alpha 물체 렌더링
-	m_pEditorCam->render_translucent();
+	_cam->render_translucent();
 
 	// PostProcess 물체 렌더링
-	m_pEditorCam->render_postprocess();	
+	_cam->render_postprocess();
+}
+
+void CRenderMgr::render_play()
+{
+	if (m_vecCam.empty())
+		return;
+
+	// 메인 카메라 시점으로 렌더링
+	CCamera* pMainCam = m_vecCam[0];
+
+	// 추가
+	CameraRender(pMainCam);
+
+	// Sub 카메라 시점으로 렌더링
+	for (int i = 1; i < m_vecCam.size(); ++i)
+	{
+		if (nullptr == m_vecCam[i])
+			continue;
+
+		// 추가
+		CameraRender(m_vecCam[i]);
+	}
+}
+
+void CRenderMgr::render_editor()
+{
+	if (nullptr == m_pEditorCam)
+		return;
+
+	CameraRender(m_pEditorCam);
 }
 
 void CRenderMgr::render_shadowmap()
