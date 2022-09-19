@@ -189,7 +189,26 @@ void CRenderMgr::CreateMaterial()
 
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\PointLightMtrl.mtrl", pMtrl.Get(), true);
 
+	// Spot Light Shader	
+	pShader = new CGraphicsShader;
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
+	pShader->CreateVertexShader(L"Shader\\light.fx", "VS_Spot");
+	pShader->CreatePixelShader(L"Shader\\light.fx", "PS_Spot");
 
+	pShader->SetRSType(RS_TYPE::CULL_FRONT);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetBSType(BS_TYPE::ONEONE_BLEND);
+
+	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"SpotLightShader", pShader.Get(), true);
+
+	// Spot Light Material		
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(pShader);
+
+	pMtrl->SetTexParam(TEX_PARAM::TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex"));
+	pMtrl->SetTexParam(TEX_PARAM::TEX_1, CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex"));
+
+	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\SpotLightMtrl.mtrl", pMtrl.Get(), true);
 
 	// ShadowMap Material
 	pShader = new CGraphicsShader;

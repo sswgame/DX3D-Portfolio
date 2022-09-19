@@ -105,6 +105,7 @@ void CTestScene::CreateTestScene()
 	pCurScene->AddObject(pLight3D, L"Default");*/
 
 
+
 	// SkyBox Ãß°¡
 	CGameObject* pSkyBox = new CGameObject;
 

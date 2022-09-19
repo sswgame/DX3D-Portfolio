@@ -157,8 +157,69 @@ PS_DIR_OUT PS_Point(VS_DIR_OUT _in)
 
 // =================
 // Spot Light Shader
+// 
+// MRT      : Light
+// Mesh     : Cone
+// RS_TYPE  : CULL_FRONT, 광원영역(Volume Mesh) 안으로 들어왔을 때를 대비
+// BS_TYPE  : ONE_ONE, 기존에 그려진 빛(타겟) 을 누적
+// DS_TYPE  : NO_TEST_NO_WRITE
 // =================
 
+VS_DIR_OUT VS_Spot(VS_DIR_IN _in)
+{
+    VS_DIR_OUT output = (VS_DIR_OUT)0.f;
+
+    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+
+    return output;
+}
+
+
+PS_DIR_OUT PS_Spot(VS_DIR_OUT _in)
+{
+    PS_DIR_OUT output = (PS_DIR_OUT)0.f;
+
+    float2 vUV = _in.vPosition.xy / vResolution.xy;
+    float3 vViewNormal = NormalTarget.Sample(g_sam_0, vUV).xyz;
+
+    float3 vViewPos = PositionTarget.Sample(g_sam_0, vUV).xyz;
+    float3 vWorldPos = mul(float4(vViewPos, 1.f), g_matViewInv).xyz;
+    float3 vLocalPos = mul(float4(vWorldPos, 1.f), g_matWorldInv).xyz;
+
+    if (-0.5f < vLocalPos.z && vLocalPos.z < 0.5f)
+    {
+        tLightColor color = (tLightColor)0.f;
+        CalculateLight3D(vViewPos, vViewNormal, LightIdx, color);
+
+        float height = 0.f;
+
+        if (vLocalPos.z < 0)
+            height = (0.5f + vLocalPos.z);
+        else
+            height += vLocalPos.z + 0.5f;
+
+        float2 xyLength = vLocalPos.xy;
+        if (height / 2.f > length(xyLength))
+        {
+            output.vDiffuse = color.vDiff + color.vAmb;
+            output.vSpecular = color.vSpec;
+            output.vShadowPow = (float4) 0.f;
+
+            output.vDiffuse.a = 1.f;
+            output.vSpecular.a = 1.f;
+            output.vShadowPow.a = 1.f;
+        }
+        else
+            clip(-1);
+    }
+    else
+    {
+        clip(-1);
+    }
+
+
+    return output;
+}
 
 
 

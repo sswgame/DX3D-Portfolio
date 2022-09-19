@@ -403,6 +403,102 @@ void CResMgr::CreateEngineMesh()
 	vecVtx.clear();
 	vecIdx.clear();
 
+	// ===========
+	// Cone Mesh
+	// ===========
+	fRadius = 0.5f;
+
+	// Top
+	v.vPos = Vec3(0.f, 0.f, -0.5f);
+	v.vUV = Vec2(0.5f, 0.f);
+	v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
+	v.vNormal = v.vPos;
+	v.vNormal.Normalize();
+	v.vTangent = Vec3(1.f, 0.f, 0.f);
+	v.vBinormal = Vec3(0.f, 0.f, 1.f);
+	vecVtx.push_back(v);
+
+
+	// Bottom Circle
+
+	iSliceCount = 40;
+	float fconRadius = 0.5f;
+	float fConeAngleStep = XM_2PI / float(iSliceCount);
+
+	for (UINT i = 0; i < iSliceCount + 1; ++i)
+	{
+		v.vPos = Vec3(fconRadius * cosf(fConeAngleStep * (float)i), fconRadius * sinf(fConeAngleStep * (float)i), 0.5f);
+		v.vUV = Vec2(v.vPos.x + 0.5f, -v.vPos.y + 0.5f);
+		v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
+		v.vNormal = Vec3(0.f, -1.f, 0.f);
+		v.vTangent = Vec3(-1.f, 0.f, 0.f);
+		v.vBinormal = Vec3(0.f, 0.f, -1.f);
+
+		vecVtx.push_back(v);
+	}
+	for (UINT i = 1; i < iSliceCount + 2; ++i)
+	{
+		vecIdx.push_back(1);
+		vecIdx.push_back(i + 1);
+		vecIdx.push_back(i + 2);
+	}
+
+	UINT bodyIndex = vecVtx.size() - 1;
+
+	// Body
+	for (UINT i = 0; i < iSliceCount + 1; ++i)
+	{
+		v.vPos = Vec3(fconRadius * cosf(fConeAngleStep * (float)i), fconRadius * sinf(fConeAngleStep * (float)i), 0.5f);
+		v.vUV = Vec2(v.vPos.x + 0.5f, -v.vPos.y + 0.5f);
+		v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
+
+		v.vNormal = v.vPos;
+		v.vNormal.Normalize();
+
+		v.vTangent.x = -v.vPos.x;
+		v.vTangent.y = v.vPos.y;
+		v.vTangent.z = v.vPos.z;
+		v.vTangent.Normalize();
+
+		v.vTangent.Cross(v.vNormal, v.vBinormal);
+		v.vBinormal.Normalize();
+
+		//v.vBinormal = Vec3(0.f, 1.f, 0.f);
+
+		vecVtx.push_back(v);
+	}
+
+	for (UINT i = 0; i < iSliceCount + 1; ++i)
+	{
+		vecIdx.push_back(0);
+		vecIdx.push_back(i + 2);
+		vecIdx.push_back(i + 1);
+	}
+
+
+	pMesh = new CMesh;
+	pMesh->Create(vecVtx.data(), (UINT)vecVtx.size(), vecIdx.data(), (UINT)vecIdx.size());
+	AddRes(L"ConeMesh", pMesh, true);
+	vecIdx.clear();
+
+	// ConeMesh_LineStrip
+	/*for (UINT i = 1; i <= iSliceCount + 1; ++i)
+	{
+		vecIdx.push_back(i);
+	}*/
+	for (UINT i = 0; i < iSliceCount + 1; ++i)
+	{
+		vecIdx.push_back(0);
+		vecIdx.push_back(i + 2);
+		vecIdx.push_back(i + 1);
+	}
+
+	pMesh = new CMesh;
+	pMesh->Create(vecVtx.data(), (UINT)vecVtx.size(), vecIdx.data(), (UINT)vecIdx.size());
+	AddRes<CMesh>(L"ConeMesh_LineStrip", pMesh, true);
+	vecVtx.clear();
+	vecIdx.clear();
+
 	// Cylinder
 
 	// Frustum
@@ -484,6 +580,19 @@ void CResMgr::CreateEngineShader()
 	pShader->AddTexParamInfo(L"NormapMap", TEX_PARAM::TEX_1);
 
 	AddRes<CGraphicsShader>(L"Std3DShader", pShader, true);
+
+
+	// Std3D Wire Shader
+	pShader = new CGraphicsShader;
+	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3DWire");
+	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Std3DWire");
+
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_FORWARD);
+	pShader->SetRSType(RS_TYPE::WIRE_FRAME);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+
+	AddRes<CGraphicsShader>(L"Std3DWireShader", pShader, true);
 
 
 	// Std3D Deferred Shader
@@ -621,6 +730,11 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"Std3DShader"));
 	AddRes<CMaterial>(L"material\\Std3DMtrl.mtrl", pMtrl);
+
+	// Std3D Wire
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"Std3DWireShader"));
+	AddRes<CMaterial>(L"material\\Std3DWireShader.mtrl", pMtrl);
 
 	// Std3D Deferred Material
 	pMtrl = new CMaterial;

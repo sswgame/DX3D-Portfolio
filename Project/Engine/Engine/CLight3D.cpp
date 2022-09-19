@@ -3,13 +3,20 @@
 
 #include "CRenderMgr.h"
 #include "CTransform.h"
+#include "CMeshRender.h"
+#include "CKeyMgr.h"
+#include "CSceneMgr.h"
+#include "CScene.h"
 #include "CCamera.h"
+#include "CEventMgr.h"
+#include "CLayer.h"
 
 CLight3D::CLight3D()
 	: CComponent(COMPONENT_TYPE::LIGHT3D)
 	, m_LightInfo{}
 	, m_iLightIdx(-1)
 	, m_pLightCam(nullptr)
+	, m_pLightMeshObj(nullptr)
 {
 	m_pLightCam = new CGameObject;
 	m_pLightCam->AddComponent(new CTransform);
@@ -21,12 +28,15 @@ CLight3D::CLight3D(const CLight3D& _origin)
 	, m_LightInfo(_origin.m_LightInfo)
 	, m_iLightIdx(-1)
 	, m_pLightCam(nullptr)
+	, m_pLightMeshObj(nullptr)
 {
 	m_pLightCam = _origin.m_pLightCam->Clone();	
 }
 
 CLight3D::~CLight3D()
 {
+	if (nullptr != m_pLightMeshObj)
+		m_pLightMeshObj->Destroy();
 	SAFE_DELETE(m_pLightCam);
 }
 
@@ -50,9 +60,39 @@ void CLight3D::SetLightType(LIGHT_TYPE _eType)
 		break;
 	case LIGHT_TYPE::SPOT:
 		m_pVolumeMesh = CResMgr::GetInst()->FindRes<CMesh>(L"ConeMesh");
-
+		m_pLightMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\SpotLightMtrl.mtrl");
 		break;	
 	}
+}
+
+void CLight3D::SetObject()
+{
+	if (nullptr != m_pLightMeshObj)
+		return;
+	if (m_LightInfo.iLightType == 0)
+		return;
+
+	m_pLightMeshObj = new CGameObject;
+	m_pLightMeshObj->SetName(L"Volume Mesh Line");
+	m_pLightMeshObj->AddComponent(new CTransform);
+	m_pLightMeshObj->AddComponent(new CMeshRender);
+	m_pLightMeshObj->Transform()->SetRelativePos(GetOwner()->Transform()->GetRelativePos());
+	m_pLightMeshObj->Transform()->SetRelativeScale(GetOwner()->Transform()->GetRelativeScale());
+	m_pLightMeshObj->Transform()->SetRelativeRotation(GetOwner()->Transform()->GetRelativeRotation());
+
+	switch (m_LightInfo.iLightType)
+	{
+	case 1:
+		m_pLightMeshObj->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+		break;
+	case 2:
+		m_pLightMeshObj->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"ConeMesh_LineStrip"));
+		break;
+	}
+
+	m_pLightMeshObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"));
+	CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"Default");
+	CSceneMgr::GetInst()->SpawnObject(m_pLightMeshObj, pLayer->GetLayerIdx());
 }
 
 void CLight3D::SetLightDir(Vec3 _vDir)
@@ -90,6 +130,26 @@ void CLight3D::update()
 
 void CLight3D::finalupdate()
 {
+	if (nullptr != m_pLightMeshObj)
+	{
+		m_pLightMeshObj->Transform()->SetRelativePos(Transform()->GetRelativePos());
+		m_pLightMeshObj->Transform()->SetRelativeScale(Transform()->GetRelativeScale());
+		m_pLightMeshObj->Transform()->SetRelativeRotation(Transform()->GetRelativeRotation());
+
+	}
+
+	if (KEY_TAP(KEY::_1))
+	{
+		SetObject();
+	}
+	if (KEY_TAP(KEY::_2))
+	{
+		if (nullptr != m_pLightMeshObj)
+			m_pLightMeshObj->Destroy();
+		m_pLightMeshObj = nullptr;
+	}
+
+
 	m_LightInfo.vWorldPos = Transform()->GetWorldPos();
 	m_LightInfo.vLightDir = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 	m_LightInfo.fRange = Transform()->GetWorldScale().x / 2.f;

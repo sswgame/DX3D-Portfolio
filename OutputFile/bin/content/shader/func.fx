@@ -158,7 +158,30 @@ void CalculateLight3D(float3 _vViewPos, float3 _vViewNormal, int _iLight3DIdx, i
     // Spot Light
     else
     {
-        
+        // View Light Position
+        float3 vViewLightPos = mul(float4(info.vWorldPos, 1.f), g_matView).xyz;
+
+        // ObjectPos - LightPos ==> LightDir
+        float3 vViewLight = _vViewPos - vViewLightPos;
+        float fDistance = length(vViewLight);
+        vViewLight = -normalize(vViewLight);
+
+        // Diffuse Power
+        fDiffusePower = saturate(dot(vViewLight, _vViewNormal));
+
+        // 반사벡터
+        float3 vViewReflect = -vViewLight + dot(vViewLight, _vViewNormal) * 2.f * _vViewNormal;
+        vViewReflect = normalize(vViewReflect);
+
+        // 시선 벡터와 반사벡터를 내적해서 해당 표면의 반사광의 세기를 구한다.
+        float3 vEye = -normalize(_vViewPos);
+        fReflectPower = saturate(dot(vViewReflect, vEye));
+        fReflectPower = pow(fReflectPower, 20);
+
+        // 거리에 따른 빛의 감쇄 효과
+        //fRatio = saturate(1.f - fDistance / info.fRange);
+        fRatio = saturate(cos(saturate(fDistance / info.fRange) * (3.14159289f / 2.f)));
+
     }
        
     

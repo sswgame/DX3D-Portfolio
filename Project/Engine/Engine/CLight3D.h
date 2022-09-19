@@ -14,6 +14,8 @@ private:
 
     CGameObject*    m_pLightCam;
 
+    CGameObject* m_pLightMeshObj;
+
 public:
     const tLightInfo& GetLightInfo() { return m_LightInfo; }
 
@@ -26,6 +28,8 @@ public:
     void SetLightType(LIGHT_TYPE _eType);
 
     LIGHT_TYPE GetLightType() { return (LIGHT_TYPE) m_LightInfo.iLightType; }
+
+    void SetObject();
 
 
 public:
