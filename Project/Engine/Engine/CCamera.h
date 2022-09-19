@@ -45,6 +45,8 @@ protected:
     int                     m_iCamIdx;  // RenderMgr »ó¿¡¼­   
 
 
+
+
 public:
     void SetCameraAsMain();
     void SetCameraIndex(int _iIdx);
@@ -53,11 +55,14 @@ public:
     void SetFOV(float _FOV) { m_fFOV = _FOV; }
     void SetProjType(PROJ_TYPE _eType) { m_eProjType = _eType; }
     void SetFar(float _Far) { m_fFar = _Far; }
-
+    void SetShowFrustum(bool _bShow) { m_Frustum.SetShowFrustum(_bShow); }
+    
+    
     float GetWidth() { return m_fWidth; }
     float GetAspectRatio() { return m_fAspectRatio; }
     float GetFOV() { return m_fFOV; }
     float GetFar() { return m_fFar; }
+    bool GetShowFrustum() { return m_Frustum.GetShowFrustum(); }
 
     PROJ_TYPE GetProjType() { return m_eProjType; }
 
@@ -88,7 +93,7 @@ public:
     void render_postprocess();
 
     void render_shadowmap();
-
+    void render_frustum();
 public:
     virtual void SaveToScene(FILE* _pFile) override;
     virtual void LoadFromScene(FILE* _pFile) override;

@@ -63,6 +63,7 @@ void CTestScene::CreateTestScene()
 	pCamObj->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
 	pCamObj->Camera()->SetCameraAsMain();
 	pCamObj->Camera()->CheckLayerMaskAll();
+	pCamObj->Camera()->SetShowFrustum(true);
 
 	pCurScene->AddObject(pCamObj, L"Default");
 

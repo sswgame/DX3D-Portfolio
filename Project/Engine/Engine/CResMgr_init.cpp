@@ -504,6 +504,133 @@ void CResMgr::CreateEngineMesh()
 	// Frustum
 
 
+	// ================
+	// PentaHedron Mesh - For view Frustum 
+	// ================
+	// Normal 값 재정의 해야함 
+	// ================
+	/*
+			  1 -- 0
+			  |	   |
+		4(0,0)|	   |
+			  |    |
+			  2	-- 3
+
+	 */
+	Vtx arrPenta2[16] = {};
+
+	// 앞 면	
+	arrPenta2[0].vPos = Vec3(0.5f, 0.5f, 1.f);
+	arrPenta2[0].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[0].vUV = Vec2(0.f, 0.f);
+	arrPenta2[0].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	arrPenta2[1].vPos = Vec3(-0.5f, 0.5f, 1.f);
+	arrPenta2[1].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[1].vUV = Vec2(0.f, 0.f);
+	arrPenta2[1].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	arrPenta2[2].vPos = Vec3(-0.5f, -0.5f, 1.f);
+	arrPenta2[2].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[2].vUV = Vec2(0.f, 0.f);
+	arrPenta2[2].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	arrPenta2[3].vPos = Vec3(0.5f, -0.5f, 1.f);
+	arrPenta2[3].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[3].vUV = Vec2(0.f, 0.f);
+	arrPenta2[3].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	// 윗 면
+	arrPenta2[4].vPos = Vec3(0.f, 0.f, 0.f);
+	arrPenta2[4].vColor = Vec4(0.f, 1.f, 0.f, 1.f);
+	arrPenta2[4].vUV = Vec2(0.f, 0.f);
+	arrPenta2[4].vNormal = Vec3(-1.f, 0.f, 0.f);
+
+	arrPenta2[5].vPos = Vec3(-0.5f, 0.5f, 1.f);
+	arrPenta2[5].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[5].vUV = Vec2(0.f, 0.f);
+	arrPenta2[5].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	arrPenta2[6].vPos = Vec3(0.5f, 0.5f, 1.f);
+	arrPenta2[6].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[6].vUV = Vec2(0.f, 0.f);
+	arrPenta2[6].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	// 아랫 면
+	arrPenta2[7].vPos = Vec3(0.f, 0.f, 0.f);
+	arrPenta2[7].vColor = Vec4(0.f, 1.f, 0.f, 1.f);
+	arrPenta2[7].vUV = Vec2(0.f, 0.f);
+	arrPenta2[7].vNormal = Vec3(-1.f, 0.f, 0.f);
+
+	arrPenta2[8].vPos = Vec3(0.5f, 0.5f, 1.f);
+	arrPenta2[8].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[8].vUV = Vec2(0.f, 0.f);
+	arrPenta2[8].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	arrPenta2[9].vPos = Vec3(0.5f, -0.5f, 1.f);
+	arrPenta2[9].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[9].vUV = Vec2(0.f, 0.f);
+	arrPenta2[9].vNormal = Vec3(0.f, 0.f, 1.f);
+
+
+
+	// 왼쪽 면
+	arrPenta2[10].vPos = Vec3(0.f, 0.f, 0.f);
+	arrPenta2[10].vColor = Vec4(0.f, 1.f, 0.f, 1.f);
+	arrPenta2[10].vUV = Vec2(0.f, 0.f);
+	arrPenta2[10].vNormal = Vec3(-1.f, 0.f, 0.f);
+
+	arrPenta2[11].vPos = Vec3(-0.5f, -0.5f, 1.f);
+	arrPenta2[11].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[11].vUV = Vec2(0.f, 0.f);
+	arrPenta2[11].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	arrPenta2[12].vPos = Vec3(-0.5f, 0.5f, 1.f);
+	arrPenta2[12].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[12].vUV = Vec2(0.f, 0.f);
+	arrPenta2[12].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	// 오른쪽 면
+	arrPenta2[13].vPos = Vec3(0.f, 0.f, 0.f);
+	arrPenta2[13].vColor = Vec4(0.f, 1.f, 0.f, 1.f);
+	arrPenta2[13].vUV = Vec2(0.f, 0.f);
+	arrPenta2[13].vNormal = Vec3(-1.f, 0.f, 0.f);
+
+	arrPenta2[14].vPos = Vec3(0.5f, 0.5f, 1.f);
+	arrPenta2[14].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[14].vUV = Vec2(0.f, 0.f);
+	arrPenta2[14].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	arrPenta2[15].vPos = Vec3(0.5f, -0.5f, 1.f);
+	arrPenta2[15].vColor = Vec4(1.f, 0.f, 0.f, 1.f);
+	arrPenta2[15].vUV = Vec2(0.f, 0.f);
+	arrPenta2[15].vNormal = Vec3(0.f, 0.f, 1.f);
+
+	// 인덱스
+	for (int i = 0; i < 3; i += 1)
+	{
+		vecIdx.push_back(4);
+		vecIdx.push_back(i + 1);
+		vecIdx.push_back(i);
+	}
+	vecIdx.push_back(4);
+	vecIdx.push_back(0);
+	vecIdx.push_back(3);
+
+	vecIdx.push_back(0);
+	vecIdx.push_back(1);
+	vecIdx.push_back(3);
+
+	vecIdx.push_back(1);
+	vecIdx.push_back(2);
+	vecIdx.push_back(3);
+
+	pMesh = new CMesh;
+	pMesh->Create(arrPenta2, 16, vecIdx.data(), (UINT)vecIdx.size());
+	AddRes(L"PentahedronMesh", pMesh, true);
+	vecIdx.clear();
+
+
 }
 
 void CResMgr::CreateEngineTexture()
@@ -708,6 +835,7 @@ void CResMgr::CreateEngineShader()
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 	AddRes<CGraphicsShader>(L"TessShader", pShader, true);
+
 }
 
 void CResMgr::CreateEngineMaterial()

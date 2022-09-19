@@ -275,6 +275,12 @@ void CCamera::render_shadowmap()
 	}
 }
 
+void CCamera::render_frustum()
+{
+	if (m_Frustum.GetShowFrustum() == true)
+		m_Frustum.render();
+}
+
 void CCamera::SetCameraAsMain()
 {
 	tEventInfo tEvent = {};

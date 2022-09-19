@@ -25,6 +25,25 @@ private:
 
     CCamera*    m_pCam;
 
+    bool                m_bShowFrustum;
+
+    Ptr<CMesh>          m_pMesh;
+    Ptr<CMaterial>      m_pMtrl;
+
+
+    Matrix              m_matFrustumWorld;
+
+private:
+    void CalculateFrustumMat();
+
+public:
+    void UpdateData();
+    void render();
+
+    void SetShowFrustum(bool _bShow) { m_bShowFrustum = _bShow; }
+    bool GetShowFrustum() { return m_bShowFrustum; }
+
+
 public:
     void finalupdate();
 

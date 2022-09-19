@@ -77,6 +77,15 @@ void CRenderMgr::render()
 
 	m_vecLight2D.clear();
 	m_vecLight3D.clear();
+
+	// todo - Render Frustum 부분 추가 
+	if (m_pEditorCam != nullptr)
+		m_pEditorCam->render_frustum();
+
+	CCamera* pMainCam = m_vecCam[0];
+	if (pMainCam != nullptr && pCurScene->GetSceneState() == SCENE_STATE::STOP)
+		pMainCam->render_frustum();
+
 }
 
 void CRenderMgr::CameraRender(CCamera* _cam)
