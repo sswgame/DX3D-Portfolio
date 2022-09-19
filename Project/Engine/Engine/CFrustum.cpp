@@ -45,6 +45,8 @@ CFrustum::~CFrustum()
 
 void CFrustum::finalupdate()
 {
+	CalculateFrustumMat(); // Frustum Mesh 행렬 정보 계산 ( 시각화 목적 ) 
+
 	// Frustum 을 소유하고 있는 카메라의 Proj 역행렬, View 역행렬 을 가져온다.
 	const Matrix& matViewInv = m_pCam->GetViewInvMat();
 	const Matrix& matProjInv = m_pCam->GetProjInvMat();
