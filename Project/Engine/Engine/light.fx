@@ -51,27 +51,27 @@ struct PS_DIR_OUT
 
 float CalcShadowFactor(float2 _vShadowMapUV, float2 _vShadowMapSize)
 {
-    float width = _vShadowMapSize.x;
-    float height = _vShadowMapSize.y;
+    float fWidth = _vShadowMapSize.x;
+    float fHeight = _vShadowMapSize.y;
     
-    float xOffset = 1.f / width;
-    float yOffset = 1.f / height;
+    float fOffsetX = 1.f / fWidth;
+    float fOffsetY = 1.f / fHeight;
     
-    float factor = 0.f;
+    float fFactor = 0.f;
     
-    int start = -2;
-    int end = 2;
-    for (int row = start; row <= end; ++row)
+    int iStart = -2;
+    int iEnd = 2;
+    for (int iRow = iStart; iRow <= iEnd; ++iRow)
     {
-        for (int col = start; col <= end; ++col)
+        for (int iCol = iStart; iCol <= iEnd; ++iCol)
         {
-            float2 offset = float2(col * xOffset, row * yOffset);
-            factor += ShadowMap.Sample(g_sam_0, _vShadowMapUV + offset);
+            float2 fOffset = float2(iCol * fOffsetX, iRow * fOffsetY);
+            fFactor += ShadowMap.Sample(g_sam_0, _vShadowMapUV + fOffset);
         }
     }
-    factor /= pow((end - start + 1), 2);
+    fFactor /= pow((iEnd - iStart + 1), 2);
     
-    return factor;
+    return fFactor;
     
 }
 
