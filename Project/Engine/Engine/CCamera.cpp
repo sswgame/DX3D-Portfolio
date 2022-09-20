@@ -89,12 +89,21 @@ void CCamera::finalupdate_module()
 	if (PROJ_TYPE::ORTHOGRAPHIC == m_eProjType)
 	{
 		float fHeight = m_fWidth / m_fAspectRatio;
+		float fEpsilon = m_fFar - 1.f;	// Far - Near
+		if (fEpsilon <= 0.00001f)		// XMMatrixOrthographicLH / assert(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
+			m_fFar += 0.00002f;
+
 		m_matProj = XMMatrixOrthographicLH(m_fWidth, fHeight, 1.f, m_fFar);
 	}
 	else
 	{
+		float fEpsilon = m_fFar - 1.f;	// Far - Near
+		if (fEpsilon <= 0.00001f)		// XMMatrixOrthographicLH / assert(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
+			m_fFar += 0.00002f;
+
 		m_matProj = XMMatrixPerspectiveFovLH(m_fFOV, m_fAspectRatio, 1.f, m_fFar);
 	}
+
 
 	m_matProjInv = XMMatrixInverse(nullptr, m_matProj);
 }

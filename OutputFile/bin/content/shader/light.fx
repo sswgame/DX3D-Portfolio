@@ -13,6 +13,8 @@
 // BS       : ONE_ONE
 
 #define LightIdx        g_int_0
+#define ShadowMapSize   g_vec2_0
+#define EpSilon         g_float_0
 #define PositionTarget  g_tex_0
 #define NormalTarget    g_tex_1
 #define ShadowMap       g_tex_2
@@ -46,6 +48,33 @@ struct PS_DIR_OUT
     float4 vShadowPow : SV_Target2;
 };
 
+
+float CalcShadowFactor(float2 _vShadowMapUV, float2 _vShadowMapSize)
+{
+    float fWidth = _vShadowMapSize.x;
+    float fHeight = _vShadowMapSize.y;
+    
+    float fOffsetX = 1.f / fWidth;
+    float fOffsetY = 1.f / fHeight;
+    
+    float fFactor = 0.f;
+    
+    int iStart = -2;
+    int iEnd = 2;
+    for (int iRow = iStart; iRow <= iEnd; ++iRow)
+    {
+        for (int iCol = iStart; iCol <= iEnd; ++iCol)
+        {
+            float2 fOffset = float2(iCol * fOffsetX, iRow * fOffsetY);
+            fFactor += ShadowMap.Sample(g_sam_0, _vShadowMapUV + fOffset);
+        }
+    }
+    fFactor /= pow((iEnd - iStart + 1), 2);
+    
+    return fFactor;
+    
+}
+
 PS_DIR_OUT PS_Directional(VS_DIR_OUT _in)
 {
     PS_DIR_OUT output = (PS_DIR_OUT) 0.f;
@@ -61,7 +90,7 @@ PS_DIR_OUT PS_Directional(VS_DIR_OUT _in)
         clip(-1);
         
     tLightColor color = (tLightColor) 0.f;
-    CalculateLight3D(vViewPos, vViewNormal, LightIdx, color);    
+    CalculateLight3D(vViewPos, vViewNormal, LightIdx, color);
         
     // 그림자 판정
     // ViewPos -> WorldPos
@@ -71,30 +100,30 @@ PS_DIR_OUT PS_Directional(VS_DIR_OUT _in)
     float4 vLightProj = mul(float4(vWorldPos, 1.f), LightVP);
     
     // w 로 나눠서 실제 xy 투영좌표를 구함
-    vLightProj.xyz /= vLightProj.w;    
+    vLightProj.xyz /= vLightProj.w;
     
     // 샘플링을 하기 위해서 투영좌표계를 UV 좌표계로 변환
-    float2 vShadowMapUV = float2((vLightProj.x / 2.f) + 0.5f, -(vLightProj.y / 2.f) + 0.5f);  
-    float fShadowMapDepth = ShadowMap.Sample(g_sam_0, vShadowMapUV).r;   
+    float2 vShadowMapUV = float2((vLightProj.x / 2.f) + 0.5f, -(vLightProj.y / 2.f) + 0.5f);
+    //기존 : float fShadowMapDepth = ShadowMap.Sample(g_sam_0, vShadowMapUV).r;
+    //변경
+    float fShadowMapDepth = CalcShadowFactor(vShadowMapUV, ShadowMapSize);
     
     // 광원에 기록된 깊이보다, 물체의 깊이가 더 멀 때, 그림자 판정
-    if (vLightProj.z >= fShadowMapDepth + 0.00001f)
-    {        
+    if (vLightProj.z >= fShadowMapDepth + EpSilon)
+    {
         fShadowPow = 0.9f;
     }
     
-    output.vDiffuse     = (color.vDiff + color.vAmb);
-    output.vSpecular    = color.vSpec;
-    output.vShadowPow   = fShadowPow;
+    output.vDiffuse = (color.vDiff + color.vAmb);
+    output.vSpecular = color.vSpec;
+    output.vShadowPow = fShadowPow;
     
-    output.vDiffuse.a   = 1.f;
-    output.vSpecular.a  = 1.f;
+    output.vDiffuse.a = 1.f;
+    output.vSpecular.a = 1.f;
     output.vShadowPow.a = 1.f;
         
     return output;
 }
-
-
 
 // ==================
 // Point Light Shader
