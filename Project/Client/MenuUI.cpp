@@ -43,7 +43,7 @@ void MenuUI::render()
 
 void MenuUI::render_update()
 {
-    if (ImGui::BeginMenu("File"))
+    if (ImGui::BeginMenu(u8"ÆÄÀÏ"))
     {
         ImGui::MenuItem("Packaging", NULL, &m_bPackaging);
        

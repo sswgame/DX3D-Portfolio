@@ -54,6 +54,12 @@ void CImGuiMgr::init(HWND _hwnd)
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
+    // 한글 폰트 추가
+    wstring wstrFilePath = CPathMgr::GetInst()->GetContentPath();
+    string strFontPath = string(wstrFilePath.begin(), wstrFilePath.end()) + "font\\Pretendard-Medium.ttf";
+    io.Fonts->AddFontFromFileTTF(strFontPath.c_str(), 15.f, NULL, io.Fonts->GetGlyphRangesKorean());
+    //io.Fonts->AddFontDefault();
+    
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(_hwnd);
     ImGui_ImplDX11_Init(DEVICE, CONTEXT);

@@ -143,7 +143,7 @@ void CTestScene::CreateTestScene()
 	pCurScene->AddObject(pObject, L"Default");
 
 
-	// Sphere Object
+	// Tessellation Object
 	pObject = new CGameObject;
 	pObject->SetName(L"Tessellation Object");
 

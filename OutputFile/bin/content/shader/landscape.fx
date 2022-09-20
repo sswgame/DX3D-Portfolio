@@ -58,7 +58,7 @@ PatchTessFactor HS_PatchConstant(InputPatch<VS_OUT, 3> _Patch, uint _PatchIdx : 
     param.EdgeParam[0] = GetTessFactor(vViewUpDownPos, 1.f, 16.f, 1000.f, 5000.f);
     param.EdgeParam[1] = GetTessFactor(vViewSidePos, 1.f, 16.f, 1000.f, 5000.f);
     param.EdgeParam[2] = GetTessFactor(vViewSlidePos, 1.f, 16.f, 1000.f, 5000.f);
-    param.InsideParam = param.EdgeParam[2];
+    param.InsideParam = param.EdgeParam[2];     // 빗변의 레벨을 따른다.
     
     return param;
 }
@@ -107,6 +107,7 @@ DS_OUT DS_LandScape(float3 _vLocation : SV_DomainLocation, const OutputPatch<VS_
 {
     DS_OUT output = (DS_OUT) 0.f;
 
+    // 기존 정점들의 위치와 비율을 이용해 생성된 정점들의 LocalPos, UV를 계산한다.
     float3 vLocalPos = _Patch[0].vPos * _vLocation[0] + _Patch[1].vPos * _vLocation[1] + _Patch[2].vPos * _vLocation[2];
     output.vUV = _Patch[0].vUV * _vLocation[0] + _Patch[1].vUV * _vLocation[1] + _Patch[2].vUV * _vLocation[2];      
     output.vFullUV = _Patch[0].vFullUV * _vLocation[0] + _Patch[1].vFullUV * _vLocation[1] + _Patch[2].vFullUV * _vLocation[2];
