@@ -46,11 +46,10 @@ CGameObject::CGameObject(const CGameObject& _origin)
 		}		
 	}
 
-	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	for (auto& pScript : _origin.m_vecScript)
 	{
-		AddComponent(m_vecScript[i]->Clone());
+		AddComponent(pScript->Clone());
 	}
-
 	for (size_t i = 0; i < _origin.m_vecChild.size(); ++i)
 	{
 		AddChild(_origin.m_vecChild[i]->Clone());
@@ -172,7 +171,16 @@ void CGameObject::render()
 
 CScript* CGameObject::GetScript(UINT _iIdx)
 {
-	return m_vecScript[_iIdx];
+	auto iter = std::find_if(m_vecScript.begin()
+						   , m_vecScript.end(), [_iIdx](CScript* pScript) {
+		return pScript->GetScriptType() == _iIdx;
+	});
+	if (iter != m_vecScript.end())
+	{
+		return *iter;
+	}
+	return nullptr;
+	//return m_vecScript[_iIdx];
 }
 
 CScript* CGameObject::GetScriptByName(const wstring& _strName)
@@ -293,14 +301,16 @@ bool CGameObject::IsAncestor(CGameObject* _pObj)
 
 void CGameObject::AddChild(CGameObject* _pChild)
 {
-	int iLayerIdx = _pChild->m_iLayerIdx;
+	int iChildLayerOriginalIdx = _pChild->m_iLayerIdx;
 
 	// 자식으로 들어오는 오브젝트가 루트 오브젝트이고, 특정 레이어 소속이라면
-	if (nullptr == _pChild->GetParent() && -1 != iLayerIdx)
+	if (nullptr == _pChild->GetParent() && -1 != iChildLayerOriginalIdx)
 	{
 		// 레이어에서 루트 오브젝트로서 등록 해제
+		//여기서 본인의 레이어를 -1로 변경시킴
 		_pChild->Deregister();
-		_pChild->m_iLayerIdx = iLayerIdx;
+		//따라서 원래 레이어로 복귀하는 코드
+		_pChild->m_iLayerIdx = iChildLayerOriginalIdx;
 	}
 
 	// 다른 부모오브젝트가 이미 있다면
@@ -308,8 +318,13 @@ void CGameObject::AddChild(CGameObject* _pChild)
 	{
 		_pChild->DisconnectBetweenParent();
 	}
-		
-
+	
+	//루트오브젝트가 아니고, 여전히 아무런 레이어에 속해있지 않다면, 
+	//부모의 레이어를 따라간다
+	if (-1 == _pChild->m_iLayerIdx)
+	{
+		_pChild->m_iLayerIdx = m_iLayerIdx;
+	}
 	m_vecChild.push_back(_pChild);
 	_pChild->m_pParent = this;
 }
@@ -373,7 +388,9 @@ void CGameObject::Destroy()
 void CGameObject::SaveToScene(FILE* _pFile)
 {
 	CEntity::SaveToScene(_pFile);		
-	fwrite(&m_bActive, sizeof(BYTE), 3, _pFile);	
+	fwrite(&m_bActive, sizeof(BYTE), 1, _pFile);	
+	fwrite(&m_bDynamicShadow, sizeof(BYTE), 1, _pFile);	
+	fwrite(&m_bFrustumCulling, sizeof(BYTE), 1, _pFile);	
 
 	// Component 저장
 	for (int i = 0; i < (int)COMPONENT_TYPE::END; ++i)
@@ -391,8 +408,9 @@ void CGameObject::SaveToScene(FILE* _pFile)
 void CGameObject::LoadFromScene(FILE* _pFile)
 {
 	CEntity::LoadFromScene(_pFile);	
-	fread(&m_bActive, sizeof(BYTE), 3, _pFile);
-
+	fread(&m_bActive, sizeof(BYTE), 1, _pFile);
+	fread(&m_bDynamicShadow, sizeof(BYTE), 1, _pFile);
+	fread(&m_bFrustumCulling, sizeof(BYTE), 1, _pFile);
 	// Component 불러오기
 	wstring strComponentName;
 

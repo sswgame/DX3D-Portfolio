@@ -93,7 +93,7 @@ void CScene::AddObject(CGameObject* _pRootObj, int _iLayerIdx)
 	assert(0 <= _iLayerIdx && _iLayerIdx < MAX_LAYER);
 	assert(!_pRootObj->m_pParent);
 
-	m_arrLayer[_iLayerIdx]->AddObject(_pRootObj);
+	m_arrLayer[_iLayerIdx]->RegisterObjectAsRoot(_pRootObj);
 
 	// 자식오브젝트들도 해당 레이어의 인덱스를 알려준다.
 	list<CGameObject*> queue;

@@ -58,11 +58,6 @@ void CLayer::finalupdate()
 	}
 }
 
-void CLayer::AddObject(CGameObject* _pObj)
-{
-	m_vecRoot.push_back(_pObj);
-}
-
 void CLayer::DeregisterObject(CGameObject* _pObj)
 {
 	if (_pObj->GetParent())
