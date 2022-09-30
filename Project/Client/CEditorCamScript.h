@@ -1,19 +1,17 @@
 #pragma once
-#include <Engine\CScript.h>
+#include <Engine/CScript.h>
 
-class CEditorCamScript :
-    public CScript
+class CEditorCamScript : public CScript
 {
 private:
-    float   m_fSpeed;
+	float m_fSpeed;
 
 public:
-    virtual void update() override;
+	virtual void update() override;
 
 
-    CLONE(CEditorCamScript);
+	CLONE(CEditorCamScript);
 public:
-    CEditorCamScript();
-    ~CEditorCamScript();
+	CEditorCamScript();
+	virtual ~CEditorCamScript();
 };
-

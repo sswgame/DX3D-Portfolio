@@ -4,24 +4,23 @@
 #include "CDevice.h"
 
 CMRT::CMRT()
-	: m_arrRT{}
-	, m_iRTCount(0)
-	, m_pDSTex(nullptr)
-	, m_arrClearColor{Vec4(0.f, 0.f, 0.f, 1.f)
-	, Vec4(0.f, 0.f, 0.f, 1.f)
-	, Vec4(0.f, 0.f, 0.f, 1.f)
-	, Vec4(0.f, 0.f, 0.f, 1.f)
-	, Vec4(0.f, 0.f, 0.f, 1.f)
-	, Vec4(0.f, 0.f, 0.f, 1.f)
-	, Vec4(0.f, 0.f, 0.f, 1.f)
-	, Vec4(0.f, 0.f, 0.f, 1.f)}
-	, m_tViewPort{}
-{
-}
+	:
+	m_arrRT{}
+  , m_iRTCount(0)
+  , m_pDSTex(nullptr)
+  , m_arrClearColor{
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f)
+	}
+  , m_tViewPort{} {}
 
-CMRT::~CMRT()
-{
-}
+CMRT::~CMRT() {}
 
 void CMRT::Create(int _iRTCount, Ptr<CTexture>* _ppTex, Ptr<CTexture> _pDSTex)
 {
@@ -38,7 +37,7 @@ void CMRT::Create(int _iRTCount, Ptr<CTexture>* _ppTex, Ptr<CTexture> _pDSTex)
 	m_tViewPort.TopLeftX = 0;
 	m_tViewPort.TopLeftY = 0;
 
-	m_tViewPort.Width = m_arrRT[0]->Width();
+	m_tViewPort.Width  = m_arrRT[0]->Width();
 	m_tViewPort.Height = m_arrRT[0]->Height();
 
 	m_tViewPort.MinDepth = 0;
@@ -66,11 +65,11 @@ void CMRT::OMSet()
 		//ID3D11DepthStencilView* pDSView = nullptr;
 		//CONTEXT->OMGetRenderTargets(0, nullptr, &pDSView);
 		//pDSView->Release();
-		
+
 		ComPtr<ID3D11DepthStencilView> pDSView = nullptr;
 		CONTEXT->OMGetRenderTargets(0, nullptr, pDSView.GetAddressOf());
 		CONTEXT->OMSetRenderTargets(m_iRTCount, arrView, pDSView.Get());
-	}	
+	}
 
 	// ViewPort ¼³Á¤
 	CONTEXT->RSSetViewports(1, &m_tViewPort);
@@ -82,7 +81,7 @@ void CMRT::Clear()
 	{
 		CONTEXT->ClearRenderTargetView(m_arrRT[i]->GetRTV().Get(), m_arrClearColor[i]);
 	}
-	
-	if(nullptr != m_pDSTex)
+
+	if (nullptr != m_pDSTex)
 		CONTEXT->ClearDepthStencilView(m_pDSTex->GetDSV().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 }

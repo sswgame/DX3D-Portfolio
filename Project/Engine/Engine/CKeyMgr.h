@@ -76,17 +76,17 @@ enum class KEY
 
 enum class KEY_STATE
 {
-	TAP,		// 막 눌림
-	PRESSED,	// TAP 이후에도 계속 눌려있음
-	AWAY,		// 막 뗀 상황
-	NONE,		// 안눌린 상태
+	TAP,     // 막 눌림
+	PRESSED, // TAP 이후에도 계속 눌려있음
+	AWAY,    // 막 뗀 상황
+	NONE,    // 안눌린 상태
 };
 
 
 struct tKeyInfo
-{	
-	KEY_STATE	eState;		// 현재 키 상태
-	bool		bPrevCheck;	// 이전 프레임에서 키가 눌렸는지 체크
+{
+	KEY_STATE eState;     // 현재 키 상태
+	bool      bPrevCheck; // 이전 프레임에서 키가 눌렸는지 체크
 };
 
 class CKeyMgr
@@ -94,10 +94,10 @@ class CKeyMgr
 {
 	SINGLE(CKeyMgr);
 private:
-	vector<tKeyInfo>	m_vecKey;
-	Vec2				m_vMousePos;
-	Vec2				m_vMousePrevPos;
-	Vec2				m_vMouseDir;
+	vector<tKeyInfo> m_vecKey;
+	Vec2             m_vMousePos;
+	Vec2             m_vMousePrevPos;
+	Vec2             m_vMouseDir;
 
 public:
 	void init();
@@ -119,4 +119,3 @@ public:
 		return m_vMouseDir;
 	}
 };
-

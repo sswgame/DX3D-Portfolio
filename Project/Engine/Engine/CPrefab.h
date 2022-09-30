@@ -29,6 +29,6 @@ public:
 public:
     CPrefab();
     CPrefab(CGameObject* _pProtoObj);
-    ~CPrefab();
+    virtual ~CPrefab();
 };
 

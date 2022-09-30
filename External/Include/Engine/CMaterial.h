@@ -44,6 +44,6 @@ public:
 
 public:
     CMaterial();
-    ~CMaterial();
+    virtual ~CMaterial();
 };
 

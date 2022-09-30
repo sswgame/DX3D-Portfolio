@@ -1,25 +1,22 @@
 #include "pch.h"
 #include "CEditorCamScript.h"
 
-#include <Engine\CKeyMgr.h>
-#include <Engine\CTimeMgr.h>
+#include <Engine/CKeyMgr.h>
+#include <Engine/CTimeMgr.h>
 
-#include <Engine\CTransform.h>
-#include <Engine\CCamera.h>
+#include <Engine/CTransform.h>
+#include <Engine/CCamera.h>
 
 CEditorCamScript::CEditorCamScript()
-	: CScript(-1)
-	, m_fSpeed(200.f)
-{
-}
+	:
+	CScript(-1)
+  , m_fSpeed(200.f) {}
 
-CEditorCamScript::~CEditorCamScript()
-{
-}
+CEditorCamScript::~CEditorCamScript() {}
 
 void CEditorCamScript::update()
 {
-	Vec3 vPos = Transform()->GetRelativePos();
+	Vec3  vPos   = Transform()->GetRelativePos();
 	float fSpeed = m_fSpeed;
 
 	if (KEY_PRESSED(KEY::LSHFT))

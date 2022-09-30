@@ -83,6 +83,6 @@ public:
 
 public:
     CGraphicsShader();
-    ~CGraphicsShader();
+    virtual ~CGraphicsShader();
 };
 

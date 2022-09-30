@@ -8,28 +8,22 @@
 #include "CResMgr.h"
 #include "CSceneMgr.h"
 #include "CRenderMgr.h"
-#include "CCollisionMgr.h"
 #include "CEventMgr.h"
 
 CCore::CCore()
-	: m_hWnd(nullptr)
-	, m_ptResolution{}
-{
+	:
+	m_hWnd(nullptr)
+  , m_ptResolution{} {}
 
-}
-
-CCore::~CCore()
-{
-	
-}
+CCore::~CCore() { }
 
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
-	RECT rt = { 0, 0, _ptResolution.x, _ptResolution.y };
+	RECT rt = {0, 0, _ptResolution.x, _ptResolution.y};
 	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, false);
 	SetWindowPos(_hWnd, nullptr, 10, 10, rt.right - rt.left, rt.bottom - rt.top, 0);
 
-	m_hWnd = _hWnd;
+	m_hWnd         = _hWnd;
 	m_ptResolution = _ptResolution;
 
 	// Manager 초기화
@@ -43,9 +37,9 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CTimeMgr::GetInst()->init();
 
 	CResMgr::GetInst()->init();
-	CRenderMgr::GetInst()->init();	
+	CRenderMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
-	
+
 
 	return S_OK;
 }
@@ -60,22 +54,19 @@ void CCore::Frame_Init()
 	CRenderMgr::GetInst()->ClearCamera();
 }
 
-void CCore::Frame_Clear()
-{
-	
-}
+void CCore::Frame_Clear() { }
 
 void CCore::progress()
 {
 	// 프레임 시작
-	Frame_Init();	
+	Frame_Init();
 
 	// Scene Update
 	CSceneMgr::GetInst()->progress();
 
 	// ResMgr update
 	CResMgr::GetInst()->update();
-	
+
 	// Render	
 	CRenderMgr::GetInst()->render();
 
@@ -85,4 +76,3 @@ void CCore::progress()
 	// 프레임 종료
 	Frame_Clear();
 }
-

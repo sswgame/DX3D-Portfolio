@@ -5,20 +5,16 @@
 
 
 CSkyBox::CSkyBox()
-	: CRenderComponent(COMPONENT_TYPE::SKYBOX)
-	, m_eType(SKYBOX_TYPE::SPHERE)
+	:
+	CRenderComponent(COMPONENT_TYPE::SKYBOX)
+  , m_eType(SKYBOX_TYPE::SPHERE)
 {
 	SetSkyboxType(m_eType);
 }
 
-CSkyBox::~CSkyBox()
-{
-}
+CSkyBox::~CSkyBox() {}
 
-void CSkyBox::finalupdate()
-{
-
-}
+void CSkyBox::finalupdate() {}
 
 void CSkyBox::UpdateData()
 {
@@ -29,7 +25,7 @@ void CSkyBox::render()
 {
 	if (nullptr == GetMesh() || nullptr == GetMaterial())
 		return;
-	
+
 	UpdateData();
 
 

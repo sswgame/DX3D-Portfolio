@@ -4,17 +4,16 @@
 
 class CGameObject;
 
-class CGridScript :
-	public CScript
+class CGridScript : public CScript
 {
 private:
 	CGameObject* m_pToolCam;
-	Vec3			m_vToolCamPos;
-	float			m_fThickness;
-	float			m_fDistance;
-	UINT			m_iMaxStep;		// 그리드 간격 최대 단계
-	float			m_fAlpha;		// 그리드 투명도
-	Vec4			m_vColor;		// 그리드 색상
+	Vec3         m_vToolCamPos;
+	float        m_fThickness;
+	float        m_fDistance;
+	UINT         m_iMaxStep; // 그리드 간격 최대 단계
+	float        m_fAlpha;   // 그리드 투명도
+	Vec4         m_vColor;   // 그리드 색상
 
 public:
 	virtual void update();
@@ -33,4 +32,3 @@ public:
 	CGridScript();
 	virtual ~CGridScript();
 };
-

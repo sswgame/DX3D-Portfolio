@@ -45,6 +45,6 @@ public:
 public:
     CComputeShader();
     CComputeShader(UINT _iGroupPerThreadX, UINT _iGroupPerThreadY, UINT _iGroupPerThreadZ);
-    ~CComputeShader();
+    virtual ~CComputeShader();
 };
 

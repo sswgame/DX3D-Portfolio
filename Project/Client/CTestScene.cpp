@@ -17,8 +17,8 @@
 #include <Engine/CLight2D.h>
 #include <Engine/CLight3D.h>
 #include <Engine/CSkyBox.h>
-#include <Engine\CDecal.h>
-#include <Engine\CLandScape.h>
+#include <Engine/CDecal.h>
+#include <Engine/CLandScape.h>
 
 #include <Engine/CSceneFile.h>
 #include <Engine/CSound.h>
@@ -27,13 +27,13 @@
 #include <Script/CCameraMoveScript.h>
 #include <Script/CMissileScript.h>
 
-#include <Script\CSceneSaveLoad.h>
+#include <Script/CSceneSaveLoad.h>
 
 
 void CTestScene::CreateTestScene()
 {
 	CScene* pCurScene = new CScene;
-	CSceneMgr::GetInst()->ChangeScene(pCurScene);		
+	CSceneMgr::GetInst()->ChangeScene(pCurScene);
 
 	pCurScene->SetLayerName(0, L"Tile");
 	pCurScene->SetLayerName(1, L"Default");
@@ -44,13 +44,19 @@ void CTestScene::CreateTestScene()
 	CResMgr::GetInst()->Load<CTexture>(L"texture\\Player.bmp", L"texture\\Player.bmp");
 	CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png", L"texture\\MagicCircle.png");
 
-	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga", L"texture\\tile\\TILE_01.tga");
-	Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga", L"texture\\tile\\TILE_01_N.tga");
+	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
+	                                                            L"texture\\tile\\TILE_01.tga");
+	Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga",
+	                                                             L"texture\\tile\\TILE_01_N.tga");
 
-	Ptr<CTexture> pSkyTex_01 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky01.png", L"texture\\skybox\\Sky01.png");
-	Ptr<CTexture> pSkyTex_02 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky02.jpg", L"texture\\skybox\\Sky02.jpg");
-	Ptr<CTexture> pSkyTex_03 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyDawn.dds", L"texture\\skybox\\SkyDawn.dds");
-	Ptr<CTexture> pSkyTex_04 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyWater.dds", L"texture\\skybox\\SkyWater.dds");
+	Ptr<CTexture> pSkyTex_01 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky01.png",
+	                                                              L"texture\\skybox\\Sky01.png");
+	Ptr<CTexture> pSkyTex_02 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky02.jpg",
+	                                                              L"texture\\skybox\\Sky02.jpg");
+	Ptr<CTexture> pSkyTex_03 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyDawn.dds",
+	                                                              L"texture\\skybox\\SkyDawn.dds");
+	Ptr<CTexture> pSkyTex_04 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyWater.dds",
+	                                                              L"texture\\skybox\\SkyWater.dds");
 
 
 	// Camera Object 추가
@@ -106,7 +112,6 @@ void CTestScene::CreateTestScene()
 	pCurScene->AddObject(pLight3D, L"Default");*/
 
 
-
 	// SkyBox 추가
 	CGameObject* pSkyBox = new CGameObject;
 
@@ -136,7 +141,7 @@ void CTestScene::CreateTestScene()
 	pObject->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 
 	pObject->LandScape()->SetDynamicShadow(false);
-	pObject->LandScape()->SetFrustumCulling(false);	
+	pObject->LandScape()->SetFrustumCulling(false);
 	pObject->LandScape()->SetFaceCount(8, 8);
 	pObject->LandScape()->Create();
 
@@ -151,7 +156,7 @@ void CTestScene::CreateTestScene()
 	pObject->AddComponent(new CMeshRender);
 
 	pObject->Transform()->SetRelativePos(0.f, 500.f, 500.f);
-	pObject->Transform()->SetRelativeScale(100.f, 100.f, 100.f);	
+	pObject->Transform()->SetRelativeScale(100.f, 100.f, 100.f);
 
 	pObject->MeshRender()->SetDynamicShadow(true);
 	pObject->MeshRender()->SetFrustumCulling(true);
@@ -163,13 +168,11 @@ void CTestScene::CreateTestScene()
 	pCurScene->AddObject(pObject, L"Default");
 
 
-
-
 	// 충돌 레이어 설정
 	pCurScene->SetResKey(L"scene\\TestScene.scene");
-	wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();	
+	wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
 	CSceneSaveLoad::SaveScene(pCurScene, strSceneFilePath + L"scene\\TestScene.scene");
-	
+
 	//pCurScene->start();	
 	pCurScene->SetSceneState(SCENE_STATE::STOP);
 }

@@ -14,8 +14,7 @@ public:
 
 
 	// Load
-	static CScene* LoadScene(const wstring& _strSceneFilePath);
+	static CScene*      LoadScene(const wstring& _strSceneFilePath);
 	static CGameObject* LoadGameObject(FILE* _pFile);
-	static int LoadPrefab(CPrefab* _Prefab, const wstring& _strFilePath);
+	static int          LoadPrefab(CPrefab* _Prefab, const wstring& _strFilePath);
 };
-

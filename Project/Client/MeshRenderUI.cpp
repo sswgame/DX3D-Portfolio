@@ -10,20 +10,17 @@
 #include <Engine/CMaterial.h>
 
 MeshRenderUI::MeshRenderUI()
-	: ComponentUI("MeshRender", COMPONENT_TYPE::MESHRENDER)
+	:
+	ComponentUI("MeshRender", COMPONENT_TYPE::MESHRENDER)
 {
 	SetSize(Vec2(0.f, 200.f));
 }
 
-MeshRenderUI::~MeshRenderUI()
-{
-
-}
+MeshRenderUI::~MeshRenderUI() {}
 
 void MeshRenderUI::update()
 {
 	ComponentUI::update();
-
 }
 
 void MeshRenderUI::render_update()
@@ -32,18 +29,18 @@ void MeshRenderUI::render_update()
 
 	ImGui::PushItemWidth(200);
 
-	CMeshRender* pMeshRender = GetTargetObject()->MeshRender();
-	Ptr<CMesh> pMesh = pMeshRender->GetMesh();
-	Ptr<CMaterial> pMtrl = pMeshRender->GetMaterial();
+	CMeshRender*   pMeshRender = GetTargetObject()->MeshRender();
+	Ptr<CMesh>     pMesh       = pMeshRender->GetMesh();
+	Ptr<CMaterial> pMtrl       = pMeshRender->GetMaterial();
 
 	string strMeshName, strMtrlName;
-	if(nullptr != pMesh)
-		strMeshName = string(pMesh->GetKey().begin(), pMesh->GetKey().end());
-	if(nullptr != pMtrl)
-		strMtrlName = string(pMtrl->GetKey().begin(), pMtrl->GetKey().end());
-	
-	ImGui::Text("Mesh");	
-	ImGui::SameLine(86.f); 
+	if (nullptr != pMesh)
+		strMeshName = ToString(pMesh->GetKey());
+	if (nullptr != pMtrl)
+		strMtrlName = ToString(pMtrl->GetKey());
+
+	ImGui::Text("Mesh");
+	ImGui::SameLine(86.f);
 
 	ImGui::InputText("##MeshName", (char*)strMeshName.c_str(), strMeshName.capacity(), ImGuiInputTextFlags_ReadOnly);
 	if (ImGui::BeginDragDropTarget())
@@ -61,36 +58,39 @@ void MeshRenderUI::render_update()
 	if (ImGui::Button("##MeshListBtn", Vec2(15, 15)))
 	{
 		// ListUI 활성화한다.
-		const map<wstring, CRes*>& mapRes = CResMgr::GetInst()->GetResList(RES_TYPE::MESH);
-		ListUI* pListUI = (ListUI*)CImGuiMgr::GetInst()->FindUI("##ListUI");
+		const map<wstring, CRes*>& mapRes  = CResMgr::GetInst()->GetResList(RES_TYPE::MESH);
+		ListUI*                    pListUI = (ListUI*)CImGuiMgr::GetInst()->FindUI("##ListUI");
 		pListUI->Clear();
 		pListUI->SetTitle("Mesh List");
 
 		for (const auto& pair : mapRes)
-		{			
-			pListUI->AddList(string(pair.first.begin(), pair.first.end()));
+		{
+			pListUI->AddList(ToString(pair.first));
 		}
-		
+
 		pListUI->Activate();
 		pListUI->SetDBCEvent(this, (DBCLKED)&MeshRenderUI::MeshSelect);
 	}
 
 
-	ImGui::Text("Material"); 
-	ImGui::SameLine(86.f); 
-	ImGui::InputText("##MaterialName", (char*)strMtrlName.c_str(), strMtrlName.capacity(), ImGuiInputTextFlags_ReadOnly);
-	ImGui::SameLine(); 
+	ImGui::Text("Material");
+	ImGui::SameLine(86.f);
+	ImGui::InputText("##MaterialName",
+	                 (char*)strMtrlName.c_str(),
+	                 strMtrlName.capacity(),
+	                 ImGuiInputTextFlags_ReadOnly);
+	ImGui::SameLine();
 	if (ImGui::Button("##MaterialListBtn", Vec2(15, 15)))
 	{
 		// ListUI 활성화한다.
-		const map<wstring, CRes*>& mapRes = CResMgr::GetInst()->GetResList(RES_TYPE::MATERIAL);
-		ListUI* pListUI = (ListUI*)CImGuiMgr::GetInst()->FindUI("##ListUI");
+		const map<wstring, CRes*>& mapRes  = CResMgr::GetInst()->GetResList(RES_TYPE::MATERIAL);
+		ListUI*                    pListUI = (ListUI*)CImGuiMgr::GetInst()->FindUI("##ListUI");
 		pListUI->Clear();
 		pListUI->SetTitle("Material List");
 
 		for (const auto& pair : mapRes)
 		{
-			pListUI->AddList(string(pair.first.begin(), pair.first.end()));
+			pListUI->AddList(ToString(pair.first));
 		}
 
 		pListUI->Activate();
@@ -100,8 +100,8 @@ void MeshRenderUI::render_update()
 
 void MeshRenderUI::MeshSelect(DWORD_PTR _param)
 {
-	string strSelectedName = (char*)_param;
-	wstring strMeshKey = wstring(strSelectedName.begin(), strSelectedName.end());
+	string  strSelectedName = (char*)_param;
+	wstring strMeshKey      = wstring(strSelectedName.begin(), strSelectedName.end());
 
 	Ptr<CMesh> pMesh = CResMgr::GetInst()->FindRes<CMesh>(strMeshKey);
 	assert(pMesh.Get());
@@ -112,8 +112,8 @@ void MeshRenderUI::MeshSelect(DWORD_PTR _param)
 
 void MeshRenderUI::MtrlSelect(DWORD_PTR _param)
 {
-	string strSelectedName = (char*)_param;
-	wstring strMtrlKey = wstring(strSelectedName.begin(), strSelectedName.end());
+	string  strSelectedName = (char*)_param;
+	wstring strMtrlKey      = ToWString(strSelectedName);
 
 	Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(strMtrlKey);
 	assert(pMtrl.Get());
@@ -121,5 +121,3 @@ void MeshRenderUI::MtrlSelect(DWORD_PTR _param)
 	CMeshRender* pMeshRender = GetTargetObject()->MeshRender();
 	pMeshRender->SetSharedMaterial(pMtrl);
 }
-
-

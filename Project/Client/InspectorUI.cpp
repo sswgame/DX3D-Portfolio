@@ -14,11 +14,12 @@
 #include "TextureUI.h"
 
 InspectorUI::InspectorUI()
-	: UI("Inspector")
-	, m_pTargetObject(nullptr)
-	, m_pTargetRes(nullptr)
-	, m_arrComUI{}
-	, m_arrResUI{}
+	:
+	UI("Inspector")
+  , m_pTargetObject(nullptr)
+  , m_pTargetRes(nullptr)
+  , m_arrComUI{}
+  , m_arrResUI{}
 {
 	// ComponentUI 생성   
 	ComponentUI* pComUI = nullptr;
@@ -27,7 +28,7 @@ InspectorUI::InspectorUI()
 	AddChild(pComUI);
 	m_arrComUI[(UINT)COMPONENT_TYPE::TRANSFORM] = pComUI;
 
-	pComUI = new MeshRenderUI;	
+	pComUI = new MeshRenderUI;
 	AddChild(pComUI);
 	m_arrComUI[(UINT)COMPONENT_TYPE::MESHRENDER] = pComUI;
 
@@ -51,9 +52,7 @@ InspectorUI::InspectorUI()
 	m_arrResUI[(UINT)RES_TYPE::TEXTURE] = pResInfoUI;
 }
 
-InspectorUI::~InspectorUI()
-{
-}
+InspectorUI::~InspectorUI() {}
 
 
 void InspectorUI::update()
@@ -67,11 +66,7 @@ void InspectorUI::update()
 	}
 }
 
-void InspectorUI::render_update()
-{
-
-}
-
+void InspectorUI::render_update() {}
 
 
 void InspectorUI::SetTargetObject(CGameObject* _pTarget)
@@ -83,18 +78,18 @@ void InspectorUI::SetTargetObject(CGameObject* _pTarget)
 		if (nullptr != m_arrComUI[i])
 		{
 			// Object 가 nullptr 인 경우
-			if(nullptr == m_pTargetObject)
+			if (nullptr == m_pTargetObject)
 				m_arrComUI[i]->Deactivate();
 			else if (m_pTargetObject->GetComponent((COMPONENT_TYPE)i))
 			{
 				m_arrComUI[i]->Activate();
 				m_arrComUI[i]->SetTargetObject(m_pTargetObject);
-			}			
+			}
 			else
 			{
 				m_arrComUI[i]->Deactivate();
 			}
-		}		
+		}
 	}
 
 	// 오브젝트가 null 이면
@@ -109,7 +104,7 @@ void InspectorUI::SetTargetObject(CGameObject* _pTarget)
 	else
 	{
 		const vector<CScript*>& vecScripts = m_pTargetObject->GetScripts();
-		ScriptUI* pScriptUI = nullptr;
+		ScriptUI*               pScriptUI  = nullptr;
 
 		for (size_t i = 0; i < vecScripts.size(); ++i)
 		{
@@ -133,9 +128,6 @@ void InspectorUI::SetTargetObject(CGameObject* _pTarget)
 			}
 		}
 	}
-
-	
-
 
 
 	// ResInfoUI 비활성화
@@ -173,12 +165,11 @@ void InspectorUI::SetTargetResource(CRes* _pTargetRes)
 			{
 				m_arrResUI[i]->Activate();
 				m_arrResUI[i]->SetTargetRes(_pTargetRes);
-			}			
+			}
 			else
 				m_arrResUI[i]->Deactivate();
 		}
 	}
-	
 }
 
 ScriptUI* InspectorUI::AddScriptUI()

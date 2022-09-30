@@ -50,6 +50,6 @@ private:
 	int CreateDepthStencilState();
 	int CreateBlendState();
 	int CreateConstBuffer();
-	void CreateSamplerState();
+	void CreateSamplerState(); 
 };
 

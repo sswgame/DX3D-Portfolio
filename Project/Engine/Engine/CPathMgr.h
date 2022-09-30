@@ -11,7 +11,6 @@ private:
 public:
 	void init();
 
-
 public:
 	const wchar_t* GetContentPath() { return m_strContentPath; }
 	const wchar_t* GetRelativePath(const wstring& _strFilePath);

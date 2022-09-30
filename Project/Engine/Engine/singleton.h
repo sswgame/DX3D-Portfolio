@@ -1,9 +1,9 @@
 #pragma once
 
-template<typename T>
+template <typename T>
 class CSingleton
 {
-	typedef void(*DESTORY)(void);
+	typedef void (*DESTORY)(void);
 
 private:
 	static T* m_Inst;
@@ -34,11 +34,8 @@ public:
 		atexit((DESTORY)CSingleton<T>::Destroy);
 	}
 
-	virtual ~CSingleton()
-	{
-
-	}
+	virtual ~CSingleton() { }
 };
 
-template<typename T>
+template <typename T>
 T* CSingleton<T>::m_Inst = nullptr;

@@ -6,14 +6,11 @@
 #include <Engine/CResMgr.h>
 
 MaterialUI::MaterialUI()
-	: ResInfoUI("Material", RES_TYPE::MATERIAL)
-	, m_eSelectedTexParam(TEX_PARAM::END)
-{
-}
+	:
+	ResInfoUI("Material", RES_TYPE::MATERIAL)
+  , m_eSelectedTexParam(TEX_PARAM::END) {}
 
-MaterialUI::~MaterialUI()
-{
-}
+MaterialUI::~MaterialUI() {}
 
 void MaterialUI::update()
 {
@@ -32,23 +29,26 @@ void MaterialUI::render_update()
 	assert(pMtrl);
 
 	// Material Key
-	string strName = string(pMtrl->GetKey().begin(), pMtrl->GetKey().end());
-	 
+	string strName = ToString(pMtrl->GetKey());
+
 	// Material Name
-	ImGui::Text("Material"); 
-	ImGui::SameLine(100); 
+	ImGui::Text("Material");
+	ImGui::SameLine(100);
 	ImGui::InputText("##MaterialName", (char*)strName.c_str(), strName.capacity(), ImGuiInputTextFlags_ReadOnly);
 
 	// Shader Name
 	CGraphicsShader* pShader = pMtrl->GetShader().Get();
 
 	string strShaderName;
-	if(nullptr != pShader)
-		strShaderName = string(pShader->GetKey().begin(), pShader->GetKey().end());
+	if (nullptr != pShader)
+		strShaderName = ToString(pShader->GetKey());
 
 	ImGui::Text("Shader");
 	ImGui::SameLine(100);
-	ImGui::InputText("##ShaderName", (char*)strShaderName.c_str(), strShaderName.capacity(), ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputText("##ShaderName",
+	                 (char*)strShaderName.c_str(),
+	                 strShaderName.capacity(),
+	                 ImGuiInputTextFlags_ReadOnly);
 
 	// Shader Parameter 확인
 	if (nullptr == pShader)
@@ -57,7 +57,7 @@ void MaterialUI::render_update()
 	const vector<tScalarParamInfo>& vecScalarInfo = pShader->GetScalarParamInfo();
 	for (size_t i = 0; i < vecScalarInfo.size(); ++i)
 	{
-		string strDesc = string(vecScalarInfo[i].strDesc.begin(), vecScalarInfo[i].strDesc.end());
+		string strDesc = ToString(vecScalarInfo[i].strDesc);
 
 		const void* pData = pMtrl->GetScalarParam(vecScalarInfo[i].eScalarParam);
 
@@ -67,60 +67,60 @@ void MaterialUI::render_update()
 		case SCALAR_PARAM::INT_1:
 		case SCALAR_PARAM::INT_2:
 		case SCALAR_PARAM::INT_3:
-		{
-			int data = ParamUI::Param_Int(strDesc, (const int*)pData);
-			if (*(const int*)pData != data)
 			{
-				pMtrl->SetScalarParam(vecScalarInfo[i].eScalarParam, &data);
-			}			
-		}		
+				int data = ParamUI::Param_Int(strDesc, (const int*)pData);
+				if (*(const int*)pData != data)
+				{
+					pMtrl->SetScalarParam(vecScalarInfo[i].eScalarParam, &data);
+				}
+			}
 			break;
 		case SCALAR_PARAM::FLOAT_0:
 		case SCALAR_PARAM::FLOAT_1:
 		case SCALAR_PARAM::FLOAT_2:
 		case SCALAR_PARAM::FLOAT_3:
-		{
-			float data = ParamUI::Param_Float(strDesc, (const float*)pData);
-			if (*(const float*)pData != data)
 			{
-				pMtrl->SetScalarParam(vecScalarInfo[i].eScalarParam, &data);
+				float data = ParamUI::Param_Float(strDesc, (const float*)pData);
+				if (*(const float*)pData != data)
+				{
+					pMtrl->SetScalarParam(vecScalarInfo[i].eScalarParam, &data);
+				}
 			}
-		}
 			break;
 		case SCALAR_PARAM::VEC2_0:
 		case SCALAR_PARAM::VEC2_1:
 		case SCALAR_PARAM::VEC2_2:
 		case SCALAR_PARAM::VEC2_3:
-		{
-			Vec2 data = ParamUI::Param_Vec2(strDesc, (const Vec2*)pData);
-			if (*(const Vec2*)pData != data)
 			{
-				pMtrl->SetScalarParam(vecScalarInfo[i].eScalarParam, &data);
+				Vec2 data = ParamUI::Param_Vec2(strDesc, (const Vec2*)pData);
+				if (*(const Vec2*)pData != data)
+				{
+					pMtrl->SetScalarParam(vecScalarInfo[i].eScalarParam, &data);
+				}
 			}
-		}
-		
+
 			break;
 		case SCALAR_PARAM::VEC4_0:
 		case SCALAR_PARAM::VEC4_1:
 		case SCALAR_PARAM::VEC4_2:
 		case SCALAR_PARAM::VEC4_3:
-		{
-			Vec4 data = ParamUI::Param_Vec4(strDesc, (const Vec4*)pData);
-			if (*(const Vec4*)pData != data)
 			{
-				pMtrl->SetScalarParam(vecScalarInfo[i].eScalarParam, &data);
+				Vec4 data = ParamUI::Param_Vec4(strDesc, (const Vec4*)pData);
+				if (*(const Vec4*)pData != data)
+				{
+					pMtrl->SetScalarParam(vecScalarInfo[i].eScalarParam, &data);
+				}
 			}
+
+			break;
 		}
-		
-			break;		
-		}		
 	}
 
 	const vector<tTexParamInfo>& vecTexParamInfo = pShader->GetTexParamInfo();
 
 	for (size_t i = 0; i < vecTexParamInfo.size(); ++i)
 	{
-		string strDesc = string(vecTexParamInfo[i].strDesc.begin(), vecTexParamInfo[i].strDesc.end());
+		string strDesc = ToString(vecTexParamInfo[i].strDesc);
 
 		switch (vecTexParamInfo[i].eTexParam)
 		{
@@ -134,11 +134,13 @@ void MaterialUI::render_update()
 		case TEX_PARAM::TEX_CUBE_1:
 		case TEX_PARAM::TEX_ARR_0:
 		case TEX_PARAM::TEX_ARR_1:
-			if (ParamUI::Param_Tex(strDesc, pMtrl->GetTexParam(vecTexParamInfo[i].eTexParam).Get()
-				, this, (DBCLKED)&MaterialUI::TextureSelected))
+			if (ParamUI::Param_Tex(strDesc,
+			                       pMtrl->GetTexParam(vecTexParamInfo[i].eTexParam).Get(),
+			                       this,
+			                       (DBCLKED)&MaterialUI::TextureSelected))
 			{
 				m_eSelectedTexParam = vecTexParamInfo[i].eTexParam;
-			}			
+			}
 			break;
 		}
 	}
@@ -147,7 +149,7 @@ void MaterialUI::render_update()
 // Delegate 용
 void MaterialUI::TextureSelected(DWORD_PTR _ptr)
 {
-	string str = (char*)_ptr;
+	string  str    = (char*)_ptr;
 	wstring strKey = wstring(str.begin(), str.end());
 
 	CTexture* pSelectedTex = CResMgr::GetInst()->FindRes<CTexture>(strKey).Get();
@@ -156,6 +158,6 @@ void MaterialUI::TextureSelected(DWORD_PTR _ptr)
 	assert(pMtrl);
 
 	// 변경점이 있을 때만 세팅
-	if(pMtrl->GetTexParam(m_eSelectedTexParam) != pSelectedTex)
+	if (pMtrl->GetTexParam(m_eSelectedTexParam) != pSelectedTex)
 		pMtrl->SetTexParam(m_eSelectedTexParam, pSelectedTex);
 }

@@ -2,17 +2,13 @@
 #include "ResInfoUI.h"
 
 
-
 ResInfoUI::ResInfoUI(const string& _strName, RES_TYPE _eType)
-	: UI(_strName)
-	, m_eResType(_eType)
-{
-}
+	:
+	UI(_strName)
+  , m_pRes{nullptr}
+  , m_eResType(_eType) {}
 
-ResInfoUI::~ResInfoUI()
-{
-	
-}
+ResInfoUI::~ResInfoUI() { }
 
 void ResInfoUI::render_update()
 {
@@ -21,7 +17,7 @@ void ResInfoUI::render_update()
 	ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::ImColor(0.1f, 0.1f, 0.8f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::ImColor(0.1f, 0.1f, 0.8f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::ImColor(0.1f, 0.1f, 0.8f));
-	ImGui::Button(ToString(m_eResType));
+	ImGui::Button(ToString(m_eResType).c_str());
 	ImGui::PopStyleColor(3);
 	ImGui::PopID();
 }

@@ -19,10 +19,8 @@
 
 
 CSceneMgr::CSceneMgr()
-	: m_pCurScene(nullptr)
-{
-
-}
+	:
+	m_pCurScene(nullptr) {}
 
 CSceneMgr::~CSceneMgr()
 {
@@ -30,10 +28,7 @@ CSceneMgr::~CSceneMgr()
 }
 
 
-void CSceneMgr::init()
-{	
-
-}
+void CSceneMgr::init() { }
 
 void CSceneMgr::progress()
 {
@@ -44,7 +39,7 @@ void CSceneMgr::progress()
 		m_pCurScene->update();
 		m_pCurScene->lateupdate();
 	}
-	
+
 	m_pCurScene->finalupdate();
 
 	// Collision Check
@@ -66,9 +61,9 @@ void CSceneMgr::ChangeScene(CScene* _pNextScene)
 void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, Vec3 _vWorldPos, wstring _strName, UINT _iLayerIdx)
 {
 	tEventInfo info = {};
-	info.eType = EVENT_TYPE::CREATE_OBJ;
-	info.lParam = (DWORD_PTR)_pSpawnObject;
-	info.wParam = (DWORD_PTR)_iLayerIdx;
+	info.eType      = EVENT_TYPE::CREATE_OBJ;
+	info.lParam     = (DWORD_PTR)_pSpawnObject;
+	info.wParam     = (DWORD_PTR)_iLayerIdx;
 
 	_pSpawnObject->Transform()->SetRelativePos(_vWorldPos);
 	_pSpawnObject->SetName(_strName);
@@ -79,9 +74,9 @@ void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, Vec3 _vWorldPos, wstring
 void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, UINT _iLayerIdx)
 {
 	tEventInfo info = {};
-	info.eType = EVENT_TYPE::CREATE_OBJ;
-	info.lParam = (DWORD_PTR)_pSpawnObject;
-	info.wParam = (DWORD_PTR)_iLayerIdx;
+	info.eType      = EVENT_TYPE::CREATE_OBJ;
+	info.lParam     = (DWORD_PTR)_pSpawnObject;
+	info.wParam     = (DWORD_PTR)_iLayerIdx;
 
 	CEventMgr::GetInst()->AddEvent(info);
 }
@@ -89,9 +84,9 @@ void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, UINT _iLayerIdx)
 void CSceneMgr::AddChild(CGameObject* _pParentObject, CGameObject* _pChildObject)
 {
 	tEventInfo info = {};
-	info.eType = EVENT_TYPE::ADD_CHILD;
-	info.lParam = (DWORD_PTR)_pParentObject;
-	info.wParam = (DWORD_PTR)_pChildObject;
+	info.eType      = EVENT_TYPE::ADD_CHILD;
+	info.lParam     = (DWORD_PTR)_pParentObject;
+	info.wParam     = (DWORD_PTR)_pChildObject;
 
 	CEventMgr::GetInst()->AddEvent(info);
 }
@@ -99,8 +94,8 @@ void CSceneMgr::AddChild(CGameObject* _pParentObject, CGameObject* _pChildObject
 void CSceneMgr::DisconnectParent(CGameObject* _pObject)
 {
 	tEventInfo info = {};
-	info.eType = EVENT_TYPE::DISCONNECT_PARENT;
-	info.lParam = (DWORD_PTR)_pObject;	
+	info.eType      = EVENT_TYPE::DISCONNECT_PARENT;
+	info.lParam     = (DWORD_PTR)_pObject;
 
 	CEventMgr::GetInst()->AddEvent(info);
 }
@@ -117,7 +112,7 @@ CGameObject* CSceneMgr::FindObjectByName(const wstring& _strName)
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
-		CLayer* pLayer = m_pCurScene->GetLayer(i);
+		CLayer*                     pLayer = m_pCurScene->GetLayer(i);
 		const vector<CGameObject*>& vecObj = pLayer->GetObjects();
 
 		for (size_t j = 0; j < vecObj.size(); ++j)
@@ -136,7 +131,7 @@ void CSceneMgr::FindObjectsByName(wstring& _strName, vector<CGameObject*>& _vecO
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
-		CLayer* pLayer = m_pCurScene->GetLayer(i);
+		CLayer*                     pLayer = m_pCurScene->GetLayer(i);
 		const vector<CGameObject*>& vecObj = pLayer->GetObjects();
 
 		for (size_t j = 0; j < vecObj.size(); ++j)

@@ -13,209 +13,202 @@
 #include "SceneOutliner.h"
 
 MenuUI::MenuUI()
-	: UI("Menu")
-    , m_bPackaging(false)
-    , m_bSceneSave(false)
-    , m_bSceneLoad(false)
-    , m_bScenePlayPause(false)
-    , m_bSceneStop(false)
-{
-}
+	:
+	UI("Menu")
+  , m_bPackaging(false)
+  , m_bSceneSave(false)
+  , m_bSceneLoad(false)
+  , m_bScenePlayPause(false)
+  , m_bSceneStop(false) {}
 
-MenuUI::~MenuUI()
-{
-}
+MenuUI::~MenuUI() {}
 
 void MenuUI::update()
 {
-    Task();
+	Task();
 }
 
 void MenuUI::render()
-{    
-    if (ImGui::BeginMainMenuBar())
-    {
-        render_update();       
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+		render_update();
 
-        ImGui::EndMainMenuBar();
-    }
+		ImGui::EndMainMenuBar();
+	}
 }
 
 void MenuUI::render_update()
 {
-    if (ImGui::BeginMenu(u8"파일"))
-    {
-        ImGui::MenuItem("Packaging", NULL, &m_bPackaging);
-       
-        
-        ImGui::EndMenu();
-    }
+	if (ImGui::BeginMenu(u8"파일"))
+	{
+		ImGui::MenuItem("Packaging", nullptr, &m_bPackaging);
 
-    if (ImGui::BeginMenu("Scene"))
-    {
-        ImGui::MenuItem("Scene Save", NULL, &m_bSceneSave);
-        ImGui::MenuItem("Scene Load", NULL, &m_bSceneLoad);
 
-        CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-        SCENE_STATE eState = pCurScene->GetSceneState();
+		ImGui::EndMenu();
+	}
 
-        if(SCENE_STATE::PLAY == eState)
-            m_strPlayPause = "Pause";
-        else
-            m_strPlayPause = "Play";
+	if (ImGui::BeginMenu("Scene"))
+	{
+		ImGui::MenuItem("Scene Save", nullptr, &m_bSceneSave);
+		ImGui::MenuItem("Scene Load", nullptr, &m_bSceneLoad);
 
-        ImGui::MenuItem(m_strPlayPause.c_str(), NULL, &m_bScenePlayPause);
+		CScene*     pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		SCENE_STATE eState    = pCurScene->GetSceneState();
 
-        if (SCENE_STATE::STOP == eState)
-            ImGui::MenuItem("Stop", NULL, &m_bSceneStop, false);
-        else
-            ImGui::MenuItem("Stop", NULL, &m_bSceneStop, true);
+		if (SCENE_STATE::PLAY == eState)
+			m_strPlayPause = "Pause";
+		else
+			m_strPlayPause = "Play";
 
-        ImGui::EndMenu();
-    }
+		ImGui::MenuItem(m_strPlayPause.c_str(), nullptr, &m_bScenePlayPause);
 
-    if (ImGui::BeginMenu("Component"))
-    {
-        if (ImGui::BeginMenu("Add Component"))
-        {
-			ImGui::MenuItem("MeshRender", NULL);
-			ImGui::MenuItem("Camera", NULL);
-			ImGui::MenuItem("Collider2D", NULL);
-			ImGui::MenuItem("Collider3D", NULL);
-			ImGui::MenuItem("Animator2D", NULL);
-			ImGui::MenuItem("Animator3D", NULL);
+		if (SCENE_STATE::STOP == eState)
+			ImGui::MenuItem("Stop", nullptr, &m_bSceneStop, false);
+		else
+			ImGui::MenuItem("Stop", nullptr, &m_bSceneStop, true);
 
-            if (ImGui::BeginMenu("Add Script"))
-            {
-                vector<wstring> vecScriptName;
-                CScriptMgr::GetScriptInfo(vecScriptName);
-                for (size_t i = 0; i < vecScriptName.size(); ++i)
-                {
-                    string strScriptName = string(vecScriptName[i].begin(), vecScriptName[i].end());
-                    ImGui::MenuItem(strScriptName.c_str(), NULL);
-                }
-                ImGui::EndMenu();
-            }
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Component"))
+	{
+		if (ImGui::BeginMenu("Add Component"))
+		{
+			ImGui::MenuItem("MeshRender", nullptr);
+			ImGui::MenuItem("Camera", nullptr);
+			ImGui::MenuItem("Collider2D", nullptr);
+			ImGui::MenuItem("Collider3D", nullptr);
+			ImGui::MenuItem("Animator2D", nullptr);
+			ImGui::MenuItem("Animator3D", nullptr);
+
+			if (ImGui::BeginMenu("Add Script"))
+			{
+				vector<wstring> vecScriptName;
+				CScriptMgr::GetScriptInfo(vecScriptName);
+				for (size_t i = 0; i < vecScriptName.size(); ++i)
+				{
+					string strScriptName = ToString(vecScriptName[i]);
+					ImGui::MenuItem(strScriptName.c_str(), nullptr);
+				}
+				ImGui::EndMenu();
+			}
 
 			ImGui::EndMenu();
 		}
 
-        ImGui::EndMenu();
-    }
+		ImGui::EndMenu();
+	}
 
-    if (ImGui::BeginMenu("Tools"))
-    {
-        ImGui::EndMenu();
-    }
-
-
-        
+	if (ImGui::BeginMenu("Tools"))
+	{
+		ImGui::EndMenu();
+	}
 }
-
 
 
 void MenuUI::Task()
 {
-    if (m_bSceneSave)
-    {
-        wchar_t szName[256] = {};
+	if (m_bSceneSave)
+	{
+		wchar_t szName[256] = {};
 
-        OPENFILENAME ofn = {};
+		OPENFILENAME ofn = {};
 
-        ofn.lStructSize = sizeof(OPENFILENAME);
-        ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
-        ofn.lpstrFile = szName;
-        ofn.nMaxFile = sizeof(szName);
-        ofn.lpstrFilter = L"ALL\0*.*\0Scene\0*.scene\0";
-        ofn.nFilterIndex = 0;
-        ofn.lpstrFileTitle = nullptr;
-        ofn.nMaxFileTitle = 0;
+		ofn.lStructSize    = sizeof(OPENFILENAME);
+		ofn.hwndOwner      = CCore::GetInst()->GetMainHwnd();
+		ofn.lpstrFile      = szName;
+		ofn.nMaxFile       = sizeof(szName);
+		ofn.lpstrFilter    = L"ALL\0*.*\0Scene\0*.scene\0";
+		ofn.nFilterIndex   = 0;
+		ofn.lpstrFileTitle = nullptr;
+		ofn.nMaxFileTitle  = 0;
 
-        wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
-        strTileFolder += L"scene";
+		wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+		strTileFolder += L"scene";
 
-        ofn.lpstrInitialDir = strTileFolder.c_str();
-        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+		ofn.lpstrInitialDir = strTileFolder.c_str();
+		ofn.Flags           = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-        // Modal
-        if (GetSaveFileName(&ofn))
-        {            
-            CSceneSaveLoad::SaveScene(CSceneMgr::GetInst()->GetCurScene(), szName);            
-        }
+		// Modal
+		if (GetSaveFileName(&ofn))
+		{
+			CSceneSaveLoad::SaveScene(CSceneMgr::GetInst()->GetCurScene(), szName);
+		}
 
-        m_bSceneSave = false;
-    }
+		m_bSceneSave = false;
+	}
 
-    else if (m_bSceneLoad)
-    {
-        wchar_t szName[256] = {};
+	else if (m_bSceneLoad)
+	{
+		wchar_t szName[256] = {};
 
-        OPENFILENAME ofn = {};
+		OPENFILENAME ofn = {};
 
-        ofn.lStructSize = sizeof(OPENFILENAME);
-        ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
-        ofn.lpstrFile = szName;
-        ofn.nMaxFile = sizeof(szName);
-        ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
-        ofn.nFilterIndex = 0;
-        ofn.lpstrFileTitle = nullptr;
-        ofn.nMaxFileTitle = 0;
+		ofn.lStructSize    = sizeof(OPENFILENAME);
+		ofn.hwndOwner      = CCore::GetInst()->GetMainHwnd();
+		ofn.lpstrFile      = szName;
+		ofn.nMaxFile       = sizeof(szName);
+		ofn.lpstrFilter    = L"ALL\0*.*\0Tile\0*.tile\0";
+		ofn.nFilterIndex   = 0;
+		ofn.lpstrFileTitle = nullptr;
+		ofn.nMaxFileTitle  = 0;
 
-        wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
-        strTileFolder += L"tile";
+		wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+		strTileFolder += L"tile";
 
-        ofn.lpstrInitialDir = strTileFolder.c_str();
-        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+		ofn.lpstrInitialDir = strTileFolder.c_str();
+		ofn.Flags           = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-        // Modal
-        if (GetOpenFileName(&ofn))
-        {
-            CScene* pLoadScene = CSceneSaveLoad::LoadScene(szName);
-            CSceneMgr::GetInst()->ChangeScene(pLoadScene);
-        }
+		// Modal
+		if (GetOpenFileName(&ofn))
+		{
+			CScene* pLoadScene = CSceneSaveLoad::LoadScene(szName);
+			CSceneMgr::GetInst()->ChangeScene(pLoadScene);
+		}
 
-        // SceneOutliner 갱신
-        SceneOutliner* pUI = (SceneOutliner*)CImGuiMgr::GetInst()->FindUI("SceneOutliner");
-        pUI->Reset();
+		// SceneOutliner 갱신
+		SceneOutliner* pUI = (SceneOutliner*)CImGuiMgr::GetInst()->FindUI("SceneOutliner");
+		pUI->Reset();
 
-        m_bSceneLoad = false;
-    }
+		m_bSceneLoad = false;
+	}
 
-    if (m_bScenePlayPause)
-    {
-        CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-        SCENE_STATE eState = pCurScene->GetSceneState();
+	if (m_bScenePlayPause)
+	{
+		CScene*     pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		SCENE_STATE eState    = pCurScene->GetSceneState();
 
-        if (SCENE_STATE::STOP == eState)
-        {
-            pCurScene->SetSceneState(SCENE_STATE::PLAY);            
-        }
-        else if (SCENE_STATE::PLAY == eState)
-        {
-            pCurScene->SetSceneState(SCENE_STATE::PAUSE);
-        }
+		if (SCENE_STATE::STOP == eState)
+		{
+			pCurScene->SetSceneState(SCENE_STATE::PLAY);
+		}
+		else if (SCENE_STATE::PLAY == eState)
+		{
+			pCurScene->SetSceneState(SCENE_STATE::PAUSE);
+		}
 
-        m_bScenePlayPause = false;
-    }
+		m_bScenePlayPause = false;
+	}
 
-    if (m_bSceneStop)
-    {
-        CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-        SCENE_STATE eState = pCurScene->GetSceneState();
+	if (m_bSceneStop)
+	{
+		CScene*     pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		SCENE_STATE eState    = pCurScene->GetSceneState();
 
-        if (SCENE_STATE::STOP != eState)
-        {
-            pCurScene->SetSceneState(SCENE_STATE::STOP);
-            CSceneFile* pSceneFile = pCurScene->GetSceneFile().Get();
+		if (SCENE_STATE::STOP != eState)
+		{
+			pCurScene->SetSceneState(SCENE_STATE::STOP);
+			CSceneFile* pSceneFile = pCurScene->GetSceneFile().Get();
 
-            wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + pSceneFile->GetRelativePath();
-            CScene* pNewScene = CSceneSaveLoad::LoadScene(strFilePath);
-            CSceneMgr::GetInst()->ChangeScene(pNewScene);
-        }
+			wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + pSceneFile->GetRelativePath();
+			CScene* pNewScene   = CSceneSaveLoad::LoadScene(strFilePath);
+			CSceneMgr::GetInst()->ChangeScene(pNewScene);
+		}
 
-        // SceneOutliner 갱신
-        ((SceneOutliner*)CImGuiMgr::GetInst()->FindUI("SceneOutliner"))->Reset();
+		// SceneOutliner 갱신
+		((SceneOutliner*)CImGuiMgr::GetInst()->FindUI("SceneOutliner"))->Reset();
 
-        m_bSceneStop = false;
-    }
+		m_bSceneStop = false;
+	}
 }

@@ -16,55 +16,56 @@
 
 enum class SCRIPTPARAM_TYPE
 {
-    INT,
-    FLOAT,
-    VEC2,
-    VEC4,
+	INT,
+	FLOAT,
+	VEC2,
+	VEC4,
 
-    TEX,
-    PREFAB,
+	TEX,
+	PREFAB,
 };
 
 
 struct tScriptParamInfo
 {
-    string              strParamName;
-    SCRIPTPARAM_TYPE    eType;
-    void*               pParam;
+	string           strParamName;
+	SCRIPTPARAM_TYPE eType;
+	void*            pParam;
 };
 
 
-class CScript :
-    public CComponent
+class CScript : public CComponent
 {
 private:
-    const int                   m_iScriptID;    // 스크립트 구별용도(스크립트 타입)
-    vector<tScriptParamInfo>    m_vecParamInfo; // 에디터 노출 변수
+	const int                m_iScriptID;    // 스크립트 구별용도(스크립트 타입)
+	vector<tScriptParamInfo> m_vecParamInfo; // 에디터 노출 변수
 
 
 public:
-    int GetScriptType() { return m_iScriptID; }
-    const vector<tScriptParamInfo>& GetScriptParam() { return m_vecParamInfo; }
+	int                             GetScriptType() { return m_iScriptID; }
+	const vector<tScriptParamInfo>& GetScriptParam() { return m_vecParamInfo; }
 
 protected:
-    void AddScriptParam(string _strParamName, SCRIPTPARAM_TYPE _eType, void* _pData) { m_vecParamInfo.push_back(tScriptParamInfo{ _strParamName , _eType, _pData });}
-    
+	void AddScriptParam(string _strParamName, SCRIPTPARAM_TYPE _eType, void* _pData)
+	{
+		m_vecParamInfo.push_back(tScriptParamInfo{_strParamName, _eType, _pData});
+	}
+
 
 public:
-    virtual void start() {}
-    virtual void update() {}
-    virtual void lateupdate() {}
-    virtual void finalupdate() final {}
+	virtual void start() {}
+	virtual void update() {}
+	virtual void lateupdate() {}
+	virtual void finalupdate() final {}
 
-    virtual void OnCollisionEnter(CGameObject* _OtherObject) {};
-    virtual void OnCollision(CGameObject* _OtherObject) {};
-    virtual void OnCollisionExit(CGameObject* _OtherObject) {};
+	virtual void OnCollisionEnter(CGameObject* _OtherObject) {};
+	virtual void OnCollision(CGameObject* _OtherObject) {};
+	virtual void OnCollisionExit(CGameObject* _OtherObject) {};
 
-    virtual CScript* Clone() = 0;
-    
+	virtual CScript* Clone() = 0;
+
 
 public:
-    CScript(int _iScriptType);
-    ~CScript();
+	CScript(int _iScriptType);
+	virtual ~CScript();
 };
-

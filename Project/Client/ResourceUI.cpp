@@ -2,7 +2,7 @@
 #include "ResourceUI.h"
 
 #include <Engine/CResMgr.h>
-#include <Engine\CPrefab.h>
+#include <Engine/CPrefab.h>
 #include <Engine/CEventMgr.h>
 
 #include "CImGuiMgr.h"
@@ -16,9 +16,9 @@
 #include <experimental/filesystem>
 
 
-
 ResourceUI::ResourceUI()
-	: UI("Resource")
+	:
+	UI("Resource")
 {
 	m_TreeUI = new TreeUI(true);
 	m_TreeUI->SetTitle("Resource");
@@ -34,13 +34,9 @@ ResourceUI::ResourceUI()
 	m_TreeUI->SetDoubleClickedDelegate(this, (CLICKED)&ResourceUI::ItemDBClicked);
 
 	Reset();
-
-
 }
 
-ResourceUI::~ResourceUI()
-{
-}
+ResourceUI::~ResourceUI() {}
 
 void ResourceUI::update()
 {
@@ -66,15 +62,15 @@ void ResourceUI::Reset()
 	// Content 폴더 밑의 리소스 로딩
 	Reload();
 
-	Renew();	
+	Renew();
 }
 
 void ResourceUI::ItemClicked(DWORD_PTR _dwNode)
 {
 	TreeNode* pNode = (TreeNode*)_dwNode;
 
-	string strKey = pNode->GetName();
-	CRes* pResource = (CRes*)pNode->GetData();
+	string strKey    = pNode->GetName();
+	CRes*  pResource = (CRes*)pNode->GetData();
 
 	// 프레임 노드가 눌렸다면 아무일도 없다.
 	if (nullptr == pResource)
@@ -89,8 +85,8 @@ void ResourceUI::ItemDBClicked(DWORD_PTR _dwNode)
 {
 	TreeNode* pNode = (TreeNode*)_dwNode;
 
-	string strKey = pNode->GetName();
-	CRes* pResource = (CRes*)pNode->GetData();
+	string strKey    = pNode->GetName();
+	CRes*  pResource = (CRes*)pNode->GetData();
 
 	// 프레임 노드가 눌렸다면 아무일도 없다.
 	if (nullptr == pResource || pNode->GetParent()->GetName() != "SCENEFILE")
@@ -108,7 +104,6 @@ void ResourceUI::ItemDBClicked(DWORD_PTR _dwNode)
 	CScene* pNewScene = CSceneSaveLoad::LoadScene(strFilePath);
 	CSceneMgr::GetInst()->ChangeScene(pNewScene);
 }
-
 
 
 void ResourceUI::Reload()
@@ -134,7 +129,7 @@ void ResourceUI::Reload()
 			break;
 		case RES_TYPE::MATERIAL:
 			CResMgr::GetInst()->Load<CMaterial>(m_vecResPath[i], m_vecResPath[i]);
-			break;		
+			break;
 		case RES_TYPE::MESH:
 
 			break;
@@ -171,7 +166,7 @@ void ResourceUI::Reload()
 				{
 					// 삭제
 					tEventInfo info;
-					info.eType = EVENT_TYPE::DELETE_RES;
+					info.eType  = EVENT_TYPE::DELETE_RES;
 					info.lParam = (DWORD_PTR)pair.second;
 					CEventMgr::GetInst()->AddEvent(info);
 
@@ -202,7 +197,7 @@ void ResourceUI::Renew()
 		for (const auto& pair : mapRes)
 		{
 			// 각 리소스 노드들은 해당 리소스 항목 자식으로 들어감
-			m_TreeUI->AddTreeNode(pResNode, string(pair.first.begin(), pair.first.end()), (DWORD_PTR)pair.second);
+			m_TreeUI->AddTreeNode(pResNode, ToString(pair.first), (DWORD_PTR)pair.second);
 		}
 	}
 }
@@ -232,7 +227,7 @@ void ResourceUI::FindFileName(const wstring& _strFolderPath)
 		}
 
 		wstring strRelativePath = _strFolderPath + FindFileData.cFileName;
-		strRelativePath = CPathMgr::GetInst()->GetRelativePath(strRelativePath);
+		strRelativePath         = CPathMgr::GetInst()->GetRelativePath(strRelativePath);
 
 		m_vecResPath.push_back(strRelativePath);
 	}
@@ -251,7 +246,7 @@ RES_TYPE ResourceUI::GetResTypeFromExt(const wstring& _strExt)
 	if (L".mtrl" == strExt)
 		return RES_TYPE::MATERIAL;
 	else if (L".png" == strExt || L".jpeg" == strExt || L".bmp" == strExt
-		|| L".jpg" == strExt || L".tga" == strExt || L".dds" == strExt)
+	         || L".jpg" == strExt || L".tga" == strExt || L".dds" == strExt)
 		return RES_TYPE::TEXTURE;
 	else if (L".mp3" == strExt || L".wav" == strExt || L".ogg" == strExt)
 		return RES_TYPE::SOUND;

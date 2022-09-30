@@ -4,9 +4,8 @@
 #include "CGameObject.h"
 
 CLayer::CLayer()
-	: m_iLayerIdx(-1)
-{
-}
+	:
+	m_iLayerIdx(-1) {}
 
 CLayer::~CLayer()
 {
@@ -25,7 +24,7 @@ void CLayer::update()
 {
 	for (size_t i = 0; i < m_vecRoot.size(); ++i)
 	{
-		if(m_vecRoot[i]->IsActive())
+		if (m_vecRoot[i]->IsActive())
 			m_vecRoot[i]->update();
 	}
 }
@@ -43,7 +42,7 @@ void CLayer::finalupdate()
 {
 	vector<CGameObject*>::iterator iter = m_vecRoot.begin();
 
-	for (; iter != m_vecRoot.end(); )
+	for (; iter != m_vecRoot.end();)
 	{
 		(*iter)->finalupdate();
 
@@ -74,4 +73,3 @@ void CLayer::DeregisterObject(CGameObject* _pObj)
 		}
 	}
 }
-

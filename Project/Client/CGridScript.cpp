@@ -2,19 +2,16 @@
 #include "CGridScript.h"
 
 CGridScript::CGridScript()
-	: CScript((UINT)COMPONENT_TYPE::SCRIPT)
-	, m_pToolCam(nullptr)
-	, m_fThickness(0.1f)
-	, m_fDistance(0.f)
-	, m_iMaxStep(5)
-	, m_fAlpha(0.f)
-	, m_vColor(Vec4(1.f, 1.f, 1.f, 1.f))
-{
-}
+	:
+	CScript((UINT)COMPONENT_TYPE::SCRIPT)
+  , m_pToolCam(nullptr)
+  , m_fThickness(0.1f)
+  , m_fDistance(0.f)
+  , m_iMaxStep(5)
+  , m_fAlpha(0.f)
+  , m_vColor(Vec4(1.f, 1.f, 1.f, 1.f)) {}
 
-CGridScript::~CGridScript()
-{
-}
+CGridScript::~CGridScript() {}
 
 void CGridScript::update()
 {
@@ -34,8 +31,8 @@ void CGridScript::CalculateGrid()
 	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial();
 
 	UINT iHeight = (UINT)abs(m_vToolCamPos.y);
-	UINT iStep = 1;
-	UINT i = 100;
+	UINT iStep   = 1;
+	UINT i       = 100;
 	for (; iStep <= 4; i *= 10, ++iStep)
 	{
 		if (iHeight <= i)
@@ -43,7 +40,7 @@ void CGridScript::CalculateGrid()
 	}
 
 	m_fThickness = ((float)iHeight * 0.01f);
-	m_fAlpha = abs(1.f - (float)((double)iHeight / pow(10., (double)iStep + 1.)));
+	m_fAlpha     = abs(1.f - (float)((double)iHeight / pow(10., (double)iStep + 1.)));
 
 	// Material 에 값을 전달	
 	pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &iStep);

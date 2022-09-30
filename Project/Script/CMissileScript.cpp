@@ -6,15 +6,12 @@
 
 
 CMissileScript::CMissileScript()
-	: CScript((int)SCRIPT_TYPE::MISSILESCRIPT)
-	, m_fSpeed(0.f)
-	, m_fAccTime(0.f)
-{
-}
+	:
+	CScript((int)SCRIPT_TYPE::MISSILESCRIPT)
+  , m_fSpeed(0.f)
+  , m_fAccTime(0.f) {}
 
-CMissileScript::~CMissileScript()
-{
-}
+CMissileScript::~CMissileScript() {}
 
 void CMissileScript::update()
 {
@@ -40,4 +37,3 @@ void CMissileScript::OnCollisionEnter(CGameObject* _pOtherObj)
 		_pOtherObj->Destroy();
 	}*/
 }
-

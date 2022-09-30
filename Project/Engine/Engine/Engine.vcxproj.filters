@@ -518,55 +518,53 @@
       <Filter>Engine\Module</Filter>
     </None>
     <None Include="cpp.hint" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="value.fx">
+    <None Include="func.fx">
       <Filter>Engine\ShaderCode</Filter>
-    </FxCompile>
-    <FxCompile Include="struct.fx">
+    </None>
+    <None Include="struct.fx">
       <Filter>Engine\ShaderCode</Filter>
-    </FxCompile>
-    <FxCompile Include="std2d.fx">
+    </None>
+    <None Include="value.fx">
+      <Filter>Engine\ShaderCode</Filter>
+    </None>
+    <None Include="landscape.fx">
       <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="tilemap.fx">
+    </None>
+    <None Include="light.fx">
       <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="testcs.fx">
+    </None>
+    <None Include="paperburn.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </None>
+    <None Include="particlerender.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </None>
+    <None Include="postprocess.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </None>
+    <None Include="std2d.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </None>
+    <None Include="std3d.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </None>
+    <None Include="std3d_deferred.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </None>
+    <None Include="tessellation.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </None>
+    <None Include="tilemap.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </None>
+    <None Include="tool.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </None>
+    <None Include="testcs.fx">
       <Filter>Engine\ShaderCode\ComputeShader\TestShader</Filter>
-    </FxCompile>
-    <FxCompile Include="particle.fx">
+    </None>
+    <None Include="particle.fx">
       <Filter>Engine\ShaderCode\ComputeShader\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="particlerender.fx">
-      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="func.fx">
-      <Filter>Engine\ShaderCode</Filter>
-    </FxCompile>
-    <FxCompile Include="postprocess.fx">
-      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="paperburn.fx">
-      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="std3d.fx">
-      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="tool.fx">
-      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="std3d_deferred.fx">
-      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="light.fx">
-      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="tessellation.fx">
-      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="landscape.fx">
-      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
-    </FxCompile>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,18 +1,15 @@
 #pragma once
 #include "ResInfoUI.h"
 
-class TextureUI :
-    public ResInfoUI
+class TextureUI : public ResInfoUI
 {
 private:
+public:
+	virtual void update() override;
+	virtual void render_update() override;
+
 
 public:
-    virtual void update() override;
-    virtual void render_update() override;
-
-
-public:
-    TextureUI();
-    ~TextureUI();
+	TextureUI();
+	virtual ~TextureUI();
 };
-

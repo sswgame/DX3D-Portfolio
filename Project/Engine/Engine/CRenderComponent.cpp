@@ -5,22 +5,22 @@
 #include "CScene.h"
 
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
-	: CComponent(_type)
-	, m_pMesh(nullptr)
-	, m_pMtrl(nullptr)
-	, m_bDynamicShadow(false)
-	, m_bFrustumCulling(false)
-{
-}
+	:
+	CComponent(_type)
+  , m_pMesh(nullptr)
+  , m_pMtrl(nullptr)
+  , m_bDynamicShadow(false)
+  , m_bFrustumCulling(false) {}
 
 CRenderComponent::CRenderComponent(const CRenderComponent& _origin)
-	: CComponent(_origin)
-	, m_pMesh(_origin.m_pMesh)
-	, m_pMtrl(nullptr)
-	, m_pSharedMtrl(_origin.m_pMtrl)
-	, m_pDynamicMtrl(nullptr)
-	, m_bDynamicShadow(_origin.m_bDynamicShadow)
-	, m_bFrustumCulling(_origin.m_bFrustumCulling)
+	:
+	CComponent(_origin)
+  , m_pMesh(_origin.m_pMesh)
+  , m_pMtrl(nullptr)
+  , m_pSharedMtrl(_origin.m_pMtrl)
+  , m_pDynamicMtrl(nullptr)
+  , m_bDynamicShadow(_origin.m_bDynamicShadow)
+  , m_bFrustumCulling(_origin.m_bFrustumCulling)
 {
 	if (nullptr != _origin.m_pSharedMtrl)
 	{
@@ -37,7 +37,7 @@ CRenderComponent::~CRenderComponent()
 void CRenderComponent::SetSharedMaterial(Ptr<CMaterial> _pMtrl)
 {
 	m_pSharedMtrl = _pMtrl;
-	m_pMtrl = m_pSharedMtrl;
+	m_pMtrl       = m_pSharedMtrl;
 }
 
 Ptr<CMaterial> CRenderComponent::GetSharedMaterial()
@@ -56,7 +56,7 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial()
 	if (nullptr != m_pDynamicMtrl && m_pDynamicMtrl->GetMasterMtrl() != m_pSharedMtrl)
 	{
 		CMaterial* pMtrl = m_pDynamicMtrl.Get();
-		m_pDynamicMtrl = nullptr;
+		m_pDynamicMtrl   = nullptr;
 		delete pMtrl;
 	}
 
@@ -71,12 +71,13 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial()
 
 
 #include "CTransform.h"
+
 void CRenderComponent::render_shadowmap()
 {
 	Transform()->UpdateData();
 	Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ShadowMap.mtrl");
 	pMtrl->UpdateData();
-	
+
 	m_pMesh->render();
 }
 
@@ -98,7 +99,7 @@ void CRenderComponent::LoadFromScene(FILE* _pFile)
 
 	Ptr<CMaterial> pMtrl;
 	LoadResPtr(pMtrl, _pFile);
-	SetSharedMaterial(pMtrl);	
+	SetSharedMaterial(pMtrl);
 
 	fread(&m_bDynamicShadow, 1, 1, _pFile);
 	fread(&m_bFrustumCulling, 1, 1, _pFile);

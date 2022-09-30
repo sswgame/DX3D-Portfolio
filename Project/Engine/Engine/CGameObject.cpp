@@ -18,32 +18,32 @@
 
 
 CGameObject::CGameObject()
-	: m_arrCom{}
-	, m_pParent(nullptr)
-	, m_pRenderComponent(nullptr)
-	, m_iLayerIdx(-1)	
-	, m_bDead(false)
-	, m_bActive(true)
-	, m_bDynamicShadow(false)
-	, m_bFrustumCulling(false)
-{
-}
+	:
+	m_arrCom{}
+  , m_pRenderComponent(nullptr)
+  , m_pParent(nullptr)
+  , m_iLayerIdx(-1)
+  , m_bDead(false)
+  , m_bActive(true)
+  , m_bDynamicShadow(false)
+  , m_bFrustumCulling(false) {}
 
 CGameObject::CGameObject(const CGameObject& _origin)
-	: CEntity(_origin)
-	, m_arrCom{}
-	, m_pParent(nullptr)
-	, m_pRenderComponent(nullptr)
-	, m_iLayerIdx(-1)
-	, m_bActive(true)
-	, m_bDead(false)
+	:
+	CEntity(_origin)
+  , m_arrCom{}
+  , m_pRenderComponent(nullptr)
+  , m_pParent(nullptr)
+  , m_iLayerIdx(-1)
+  , m_bDead(false)
+  , m_bActive(true)
 {
 	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
 	{
 		if (nullptr != _origin.m_arrCom[i])
 		{
 			AddComponent(_origin.m_arrCom[i]->Clone());
-		}		
+		}
 	}
 
 	for (auto& pScript : _origin.m_vecScript)
@@ -87,7 +87,7 @@ void CGameObject::update()
 {
 	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
 	{
-		if(nullptr != m_arrCom[i] && m_arrCom[i]->IsActive())
+		if (nullptr != m_arrCom[i] && m_arrCom[i]->IsActive())
 			m_arrCom[i]->update();
 	}
 
@@ -98,10 +98,9 @@ void CGameObject::update()
 	}
 
 
-
 	for (size_t i = 0; i < m_vecChild.size(); ++i)
 	{
-		if(m_vecChild[i]->IsActive())
+		if (m_vecChild[i]->IsActive())
 			m_vecChild[i]->update();
 	}
 }
@@ -137,13 +136,13 @@ void CGameObject::finalupdate()
 
 	// Layer 에 등록
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	CLayer* pLayer = pCurScene->GetLayer(m_iLayerIdx);
+	CLayer* pLayer    = pCurScene->GetLayer(m_iLayerIdx);
 	pLayer->RegisterObject(this);
 
 	for (size_t i = 0; i < m_vecChild.size(); ++i)
 	{
 		m_vecChild[i]->finalupdate();
-	}	
+	}
 }
 
 void CGameObject::finalupdate_module()
@@ -171,10 +170,12 @@ void CGameObject::render()
 
 CScript* CGameObject::GetScript(UINT _iIdx)
 {
-	auto iter = std::find_if(m_vecScript.begin()
-						   , m_vecScript.end(), [_iIdx](CScript* pScript) {
-		return pScript->GetScriptType() == _iIdx;
-	});
+	auto iter = std::find_if(m_vecScript.begin(),
+	                         m_vecScript.end(),
+	                         [_iIdx](CScript* pScript)
+	                         {
+		                         return pScript->GetScriptType() == _iIdx;
+	                         });
 	if (iter != m_vecScript.end())
 	{
 		return *iter;
@@ -235,7 +236,6 @@ void CGameObject::deactive()
 }
 
 
-
 void CGameObject::Deregister()
 {
 	if (-1 == m_iLayerIdx)
@@ -245,7 +245,7 @@ void CGameObject::Deregister()
 
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	CLayer* pCurLayer = pCurScene->GetLayer(m_iLayerIdx);
-	pCurLayer->DeregisterObject(this);	
+	pCurLayer->DeregisterObject(this);
 }
 
 void CGameObject::DisconnectBetweenParent()
@@ -260,7 +260,7 @@ void CGameObject::DisconnectBetweenParent()
 			m_pParent->m_vecChild.erase(iter);
 			m_pParent = nullptr;
 			return;
-		}		
+		}
 	}
 }
 
@@ -268,7 +268,7 @@ void CGameObject::Activate()
 {
 	tEventInfo info = {};
 
-	info.eType = EVENT_TYPE::ACTIVATE_OBJECT;
+	info.eType  = EVENT_TYPE::ACTIVATE_OBJECT;
 	info.lParam = (DWORD_PTR)this;
 
 	CEventMgr::GetInst()->AddEvent(info);
@@ -278,7 +278,7 @@ void CGameObject::Deactivate()
 {
 	tEventInfo info = {};
 
-	info.eType = EVENT_TYPE::DEACTIVATE_OBJECT;
+	info.eType  = EVENT_TYPE::DEACTIVATE_OBJECT;
 	info.lParam = (DWORD_PTR)this;
 
 	CEventMgr::GetInst()->AddEvent(info);
@@ -318,7 +318,7 @@ void CGameObject::AddChild(CGameObject* _pChild)
 	{
 		_pChild->DisconnectBetweenParent();
 	}
-	
+
 	//루트오브젝트가 아니고, 여전히 아무런 레이어에 속해있지 않다면, 
 	//부모의 레이어를 따라간다
 	if (-1 == _pChild->m_iLayerIdx)
@@ -338,7 +338,7 @@ void CGameObject::AddComponent(CComponent* _component)
 		assert(nullptr == m_arrCom[(UINT)eType]);
 
 		m_arrCom[(UINT)eType] = _component;
-		_component->m_pOwner = this;
+		_component->m_pOwner  = this;
 
 		switch (_component->GetType())
 		{
@@ -348,12 +348,12 @@ void CGameObject::AddComponent(CComponent* _component)
 		case COMPONENT_TYPE::LANDSCAPE:
 		case COMPONENT_TYPE::DECAL:
 		case COMPONENT_TYPE::SKYBOX:
-		{
-			// 하나의 오브젝트에 Render 기능을 가진 컴포넌트는 2개이상 들어올 수 없다.
-			assert(!m_pRenderComponent);
-			m_pRenderComponent = (CRenderComponent*)_component;
-		}
-		break;
+			{
+				// 하나의 오브젝트에 Render 기능을 가진 컴포넌트는 2개이상 들어올 수 없다.
+				assert(!m_pRenderComponent);
+				m_pRenderComponent = (CRenderComponent*)_component;
+			}
+			break;
 		}
 	}
 	else
@@ -364,13 +364,13 @@ void CGameObject::AddComponent(CComponent* _component)
 }
 
 void CGameObject::Destroy()
-{	
+{
 	if (m_bDead)
 		return;
 
 	tEventInfo info = {};
 
-	info.eType = EVENT_TYPE::DELETE_OBJ;
+	info.eType  = EVENT_TYPE::DELETE_OBJ;
 	info.lParam = (DWORD_PTR)this;
 
 	CEventMgr::GetInst()->AddEvent(info);
@@ -387,10 +387,10 @@ void CGameObject::Destroy()
 
 void CGameObject::SaveToScene(FILE* _pFile)
 {
-	CEntity::SaveToScene(_pFile);		
-	fwrite(&m_bActive, sizeof(BYTE), 1, _pFile);	
-	fwrite(&m_bDynamicShadow, sizeof(BYTE), 1, _pFile);	
-	fwrite(&m_bFrustumCulling, sizeof(BYTE), 1, _pFile);	
+	CEntity::SaveToScene(_pFile);
+	fwrite(&m_bActive, sizeof(BYTE), 1, _pFile);
+	fwrite(&m_bDynamicShadow, sizeof(BYTE), 1, _pFile);
+	fwrite(&m_bFrustumCulling, sizeof(BYTE), 1, _pFile);
 
 	// Component 저장
 	for (int i = 0; i < (int)COMPONENT_TYPE::END; ++i)
@@ -399,15 +399,14 @@ void CGameObject::SaveToScene(FILE* _pFile)
 		{
 			SaveWStringToFile(ToWString((COMPONENT_TYPE)i), _pFile);
 			m_arrCom[i]->SaveToScene(_pFile);
-			
-		}		
+		}
 	}
 	SaveWStringToFile(L"END", _pFile);
 }
 
 void CGameObject::LoadFromScene(FILE* _pFile)
 {
-	CEntity::LoadFromScene(_pFile);	
+	CEntity::LoadFromScene(_pFile);
 	fread(&m_bActive, sizeof(BYTE), 1, _pFile);
 	fread(&m_bDynamicShadow, sizeof(BYTE), 1, _pFile);
 	fread(&m_bFrustumCulling, sizeof(BYTE), 1, _pFile);
@@ -416,15 +415,15 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 
 	while (true)
 	{
-		LoadWStringFromFile(strComponentName, _pFile);		
+		LoadWStringFromFile(strComponentName, _pFile);
 		if (strComponentName == L"END")
 			break;
-		
+
 		if (strComponentName == ToWString(COMPONENT_TYPE::TRANSFORM))
 		{
 			AddComponent(new CTransform);
 			Transform()->LoadFromScene(_pFile);
-		}		
+		}
 		else if (strComponentName == ToWString(COMPONENT_TYPE::CAMERA))
 		{
 			AddComponent(new CCamera);
@@ -435,34 +434,22 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CCollider2D);
 			Collider2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D))
-		{
-			
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR2D))
 		{
 			AddComponent(new CAnimator2D);
 			Animator2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D))
-		{
-
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT2D))
 		{
 			AddComponent(new CLight2D);
 			Light2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D))
-		{
-
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D)) { }
 
 
-		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX))
-		{
-
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::MESHRENDER))
 		{
 			AddComponent(new CMeshRender);
@@ -478,13 +465,7 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CTileMap);
 			TileMap()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE))
-		{
-
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL))
-		{
-
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL)) { }
 	}
 }

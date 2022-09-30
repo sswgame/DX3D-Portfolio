@@ -9,32 +9,34 @@
 #include "CConstBuffer.h"
 
 CTileMap::CTileMap()
-	: CRenderComponent(COMPONENT_TYPE::TILEMAP)	
-	, m_iRowCount(0)
-	, m_iColCount(0)
-	, m_iTileCountX(0)
-	, m_iTileCountY(0)
-	, m_bBufferUpdated(false)
+	:
+	CRenderComponent(COMPONENT_TYPE::TILEMAP)
+  , m_iRowCount(0)
+  , m_iColCount(0)
+  , m_iTileCountX(0)
+  , m_iTileCountY(0)
+  , m_bBufferUpdated(false)
 {
 	// 메쉬, 재질
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"TileMapMtrl"));
 
-	m_vecTileData.resize((size_t) (m_iTileCountX * m_iTileCountY));
-	m_pBuffer = new CStructuredBuffer;		
+	m_vecTileData.resize((size_t)(m_iTileCountX * m_iTileCountY));
+	m_pBuffer = new CStructuredBuffer;
 }
 
 CTileMap::CTileMap(const CTileMap& _origin)
-	: CRenderComponent(_origin)
-	, m_vSlicePixel(_origin.m_vSlicePixel)
-	, m_vSliceUV(_origin.m_vSliceUV)
-	, m_iRowCount(_origin.m_iRowCount)
-	, m_iColCount(_origin.m_iColCount)
-	, m_iTileCountX(_origin.m_iTileCountX)
-	, m_iTileCountY(_origin.m_iTileCountY)
-	, m_vecTileData(_origin.m_vecTileData)
-	, m_pBuffer(nullptr)
-	, m_bBufferUpdated(false)
+	:
+	CRenderComponent(_origin)
+  , m_vSlicePixel(_origin.m_vSlicePixel)
+  , m_vSliceUV(_origin.m_vSliceUV)
+  , m_iRowCount(_origin.m_iRowCount)
+  , m_iColCount(_origin.m_iColCount)
+  , m_iTileCountX(_origin.m_iTileCountX)
+  , m_iTileCountY(_origin.m_iTileCountY)
+  , m_vecTileData(_origin.m_vecTileData)
+  , m_pBuffer(nullptr)
+  , m_bBufferUpdated(false)
 {
 	m_pBuffer = new CStructuredBuffer;
 }
@@ -44,17 +46,14 @@ CTileMap::~CTileMap()
 	SAFE_DELETE(m_pBuffer);
 }
 
-void CTileMap::finalupdate()
-{
-	
-}
+void CTileMap::finalupdate() { }
 
 void CTileMap::UpdateData()
 {
 	if (nullptr == m_pAtlasTex)
 		return;
 
-	GetMaterial()->SetTexParam(TEX_PARAM::TEX_0, m_pAtlasTex);		
+	GetMaterial()->SetTexParam(TEX_PARAM::TEX_0, m_pAtlasTex);
 
 	GetMaterial()->SetScalarParam(SCALAR_PARAM::INT_0, &m_iTileCountX);
 	GetMaterial()->SetScalarParam(SCALAR_PARAM::INT_1, &m_iTileCountY);
@@ -67,7 +66,7 @@ void CTileMap::UpdateData()
 		m_pBuffer->SetData(m_vecTileData.data(), m_iTileCountX * m_iTileCountY);
 		m_bBufferUpdated = true;
 	}
-	
+
 	m_pBuffer->UpdateData(PIPELINE_STAGE::PS, 16);
 }
 
@@ -75,7 +74,7 @@ void CTileMap::UpdateData()
 void CTileMap::render()
 {
 	if (nullptr == GetMesh() || nullptr == GetMaterial() || nullptr == m_pAtlasTex)
-		return;	
+		return;
 
 	UpdateData();
 
@@ -105,11 +104,11 @@ void CTileMap::SetTileData(int _iTileIdx, int _iImgIdx)
 	// 아틀라스에서 타일의 행, 렬 개수 구하기
 	m_iColCount = (UINT)m_pAtlasTex->Width() / (UINT)m_vSlicePixel.x;
 	m_iRowCount = (UINT)m_pAtlasTex->Height() / (UINT)m_vSlicePixel.y;
-	
+
 	int iRow = m_vecTileData[_iTileIdx].iImgIdx / m_iColCount;
 	int iCol = m_vecTileData[_iTileIdx].iImgIdx % m_iColCount;
 
-	m_vecTileData[_iTileIdx].vLTUV = Vec2(m_vSliceUV.x * iCol, m_vSliceUV.y * iRow);	
+	m_vecTileData[_iTileIdx].vLTUV = Vec2(m_vSliceUV.x * iCol, m_vSliceUV.y * iRow);
 
 	m_bBufferUpdated = false;
 }
@@ -119,7 +118,7 @@ void CTileMap::ClearTileData()
 	vector<tTileData> vecTileData;
 	m_vecTileData.swap(vecTileData);
 
-	m_vecTileData.resize((size_t)(m_iTileCountX * m_iTileCountY));	
+	m_vecTileData.resize((size_t)(m_iTileCountX * m_iTileCountY));
 
 	// 구조화 버퍼도 크기에 대응한다.
 	size_t iBufferSize = (m_iTileCountX * m_iTileCountY) * sizeof(tTileData);
@@ -131,8 +130,6 @@ void CTileMap::ClearTileData()
 
 	m_bBufferUpdated = false;
 }
-
-
 
 
 void CTileMap::SaveToScene(FILE* _pFile)
@@ -162,7 +159,7 @@ void CTileMap::LoadFromScene(FILE* _pFile)
 	fread(&m_iColCount, sizeof(UINT), 1, _pFile);
 	fread(&m_iTileCountX, sizeof(UINT), 1, _pFile);
 	fread(&m_iTileCountY, sizeof(UINT), 1, _pFile);
-		
+
 	ClearTileData();
 	fread(m_vecTileData.data(), sizeof(tTileData), (size_t)(m_iTileCountX * m_iTileCountY), _pFile);
 }

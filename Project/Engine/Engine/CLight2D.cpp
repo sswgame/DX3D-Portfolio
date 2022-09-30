@@ -5,18 +5,14 @@
 #include "CTransform.h"
 
 CLight2D::CLight2D()
-	: CComponent(COMPONENT_TYPE::LIGHT2D)
-	, m_iLightIdx(-1)
-{
-}
+	:
+	CComponent(COMPONENT_TYPE::LIGHT2D)
+  , m_LightInfo{}
+  , m_iLightIdx(-1) {}
 
-CLight2D::~CLight2D()
-{
-}
+CLight2D::~CLight2D() {}
 
-void CLight2D::update()
-{
-}
+void CLight2D::update() {}
 
 void CLight2D::finalupdate()
 {
@@ -39,4 +35,3 @@ void CLight2D::LoadFromScene(FILE* _pFile)
 
 	fread(&m_LightInfo, sizeof(tLightInfo), 1, _pFile);
 }
-

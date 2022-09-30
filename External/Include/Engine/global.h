@@ -33,9 +33,9 @@ using std::list;
 using std::map;
 using std::make_pair;
 
+#include <locale>
 
 #include <assert.h>
-
 
 
 #include "define.h"
@@ -43,4 +43,3 @@ using std::make_pair;
 #include "extern.h"
 #include "singleton.h"
 #include "func.h"
-

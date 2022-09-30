@@ -52,6 +52,6 @@ public:
 
 public:
     CStructuredBuffer();
-    ~CStructuredBuffer();
+    virtual ~CStructuredBuffer();
 };
 

@@ -3,35 +3,32 @@
 
 enum class SKYBOX_TYPE
 {
-    SPHERE,
-    CUBE,
+	SPHERE,
+	CUBE,
 };
 
 
-class CSkyBox :
-    public CRenderComponent
+class CSkyBox : public CRenderComponent
 {
 private:
-    SKYBOX_TYPE     m_eType;
+	SKYBOX_TYPE m_eType;
 
 public:
-    void SetSkyboxType(SKYBOX_TYPE _eType);
-
+	void SetSkyboxType(SKYBOX_TYPE _eType);
 
 
 public:
-    virtual void finalupdate() override;
-    virtual void UpdateData() override;
-    virtual void render() override;
-    
+	virtual void finalupdate() override;
+	virtual void UpdateData() override;
+	virtual void render() override;
+
 
 public:
-    virtual void SaveToScene(FILE* _pFile) override;
-    virtual void LoadFromScene(FILE* _pFile) override;
+	virtual void SaveToScene(FILE* _pFile) override;
+	virtual void LoadFromScene(FILE* _pFile) override;
 
-    CLONE(CSkyBox)
+	CLONE(CSkyBox)
 public:
-    CSkyBox();
-    ~CSkyBox();
+	CSkyBox();
+	virtual ~CSkyBox();
 };
-

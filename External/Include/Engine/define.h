@@ -22,9 +22,6 @@
 #define CLONE_DISABLE(type) virtual type* Clone() { return nullptr; }
 
 
-
-
-
 typedef Vector2 Vec2;
 typedef Vector3 Vec3;
 typedef Vector4 Vec4;
@@ -46,29 +43,27 @@ enum class RES_TYPE
 	COMPUTE_SHADER,
 	MESH,
 	TEXTURE,
-	SOUND,	
+	SOUND,
 	SCENEFILE,
 	END,
 };
 
 enum class CB_TYPE
 {
-	TRANSFORM,		// b0
-	SCALAR_PARAM,	// b1
-	ANIM2D,			// b2
-	GLOBAL,			// b3
-
-	//GLOBAL,			// b3
+	TRANSFORM,    // b0
+	SCALAR_PARAM, // b1
+	ANIM2D,       // b2
+	GLOBAL,       // b3
 	END,
 };
 
 // Rasterizer option
 enum class RS_TYPE
 {
-	CULL_BACK,	// Default
+	CULL_BACK, // Default
 	CULL_FRONT,
-	CULL_NONE, 
-	WIRE_FRAME, 
+	CULL_NONE,
+	WIRE_FRAME,
 	END,
 };
 
@@ -81,8 +76,8 @@ enum class DS_TYPE
 	GREATER,
 	GREATER_EQUAL,
 
-	NO_TEST,	// 깊이테스트 하지 않음, 깊이는 기록
-	NO_WRITE,	// 깊이테스트 진행, 깊이를 기록하지 않음
+	NO_TEST,  // 깊이테스트 하지 않음, 깊이는 기록
+	NO_WRITE, // 깊이테스트 진행, 깊이를 기록하지 않음
 
 	NO_TEST_NO_WRITE, // 깊이테스트 하지 않음, 깊이 기록하지 않음
 	END,
@@ -91,27 +86,27 @@ enum class DS_TYPE
 // BlendState Option
 enum class BS_TYPE
 {
-	DEFAULT,		// SrcRGB * (1) + DestRGB * (0)
-	ALPHA_BLEND,	// SrcRGB * (SrcAlpha) + DestRGB * (1 - SrcAlpha)
-	ONEONE_BLEND,		// SrcRGB * (1) + DestRGB * (1)
+	DEFAULT,      // SrcRGB * (1) + DestRGB * (0)
+	ALPHA_BLEND,  // SrcRGB * (SrcAlpha) + DestRGB * (1 - SrcAlpha)
+	ONEONE_BLEND, // SrcRGB * (1) + DestRGB * (1)
 	END,
 };
 
 // 쉐이더의 렌더링 시점에 따른 분류
 enum class SHADER_DOMAIN
 {
-	DOMAIN_DEFERRED,			// 지연 렌더링 물체
-	DOMAIN_DEFERRED_DECAL,		// 데칼
+	DOMAIN_DEFERRED,       // 지연 렌더링 물체
+	DOMAIN_DEFERRED_DECAL, // 데칼
 
-	DOMAIN_LIGHT,				// 광원
-	DOMAIN_EMISSIVE_PARTICLE,	// 발광 파티클
-	
-	DOMAIN_FORWARD,				// 불투명
-	DOMAIN_MASKED,				// 불투명, 투명
+	DOMAIN_LIGHT,             // 광원
+	DOMAIN_EMISSIVE_PARTICLE, // 발광 파티클
 
-	DOMAIN_FORWARD_DECAL,		// 데칼(광원 미적용)
+	DOMAIN_FORWARD, // 불투명
+	DOMAIN_MASKED,  // 불투명, 투명
 
-	DOMAIN_TRANSLUCENT,			// 반투명
+	DOMAIN_FORWARD_DECAL, // 데칼(광원 미적용)
+
+	DOMAIN_TRANSLUCENT, // 반투명
 
 	DOMAIN_POSTPROCESS, // 후 처리
 
@@ -122,9 +117,9 @@ enum class SHADER_DOMAIN
 
 enum class COMPONENT_TYPE
 {
-	TRANSFORM,	// 위치, 크기, 회전 (Location)
+	TRANSFORM, // 위치, 크기, 회전 (Location)
 
-	CAMERA,		// 화면을 찍는 카메라 역할
+	CAMERA, // 화면을 찍는 카메라 역할
 
 	COLLIDER2D, // 2D 충돌체
 	COLLIDER3D, // 3D 충돌체
@@ -138,17 +133,17 @@ enum class COMPONENT_TYPE
 	BOUNDINGBOX, // Picking, FrustumCulling
 
 	// renderer
-	MESHRENDER,		// Mesh Renderer
-	TILEMAP,		// 2D Tile Map Renderer
+	MESHRENDER,     // Mesh Renderer
+	TILEMAP,        // 2D Tile Map Renderer
 	PARTICLESYSTEM, // 입자 렌더링
-	LANDSCAPE,		// 지형 렌더링
-	DECAL,			// 데칼 오브젝트
+	LANDSCAPE,      // 지형 렌더링
+	DECAL,          // 데칼 오브젝트
 	SKYBOX,
 
 	END,
 
 	// Update
-	SCRIPT,			// 로직
+	SCRIPT, // 로직
 };
 
 enum class DIR_TYPE
@@ -158,7 +153,6 @@ enum class DIR_TYPE
 	FRONT,
 	END,
 };
-
 
 
 enum class SCALAR_PARAM
@@ -174,7 +168,7 @@ enum class SCALAR_PARAM
 	FLOAT_3,
 
 	VEC2_0,
-	VEC2_1, 
+	VEC2_1,
 	VEC2_2,
 	VEC2_3,
 
@@ -202,7 +196,7 @@ enum class TEX_PARAM
 
 	TEX_CUBE_0,
 	TEX_CUBE_1,
-		
+
 	TEX_ARR_0,
 	TEX_ARR_1,
 
@@ -216,7 +210,7 @@ enum PIPELINE_STAGE
 	HS = 0x02,
 	DS = 0x04,
 	GS = 0x08,
-	PS = 0x10,	
+	PS = 0x10,
 
 	NO_PS = VS | HS | DS | GS,
 	ALL = VS | HS | DS | GS | PS,
@@ -225,31 +219,31 @@ enum PIPELINE_STAGE
 
 enum class EVENT_TYPE
 {
-	CREATE_OBJ,				// lParam : Object Adress, wParam : Layer Index
-	DELETE_OBJ,				// lParam : Object Adress
-	ADD_CHILD,				// lParam : Parent Object, wParam : Child Object
-	DISCONNECT_PARENT,		// lParam : Object Adress
-	SET_CAMEAR_INDEX,		// lParam : Camera Component Adress, wParam : Camera Change Index
+	CREATE_OBJ,        // lParam : Object Adress, wParam : Layer Index
+	DELETE_OBJ,        // lParam : Object Adress
+	ADD_CHILD,         // lParam : Parent Object, wParam : Child Object
+	DISCONNECT_PARENT, // lParam : Object Adress
+	SET_CAMEAR_INDEX,  // lParam : Camera Component Adress, wParam : Camera Change Index
 
-	ACTIVATE_OBJECT,		// lParam : Object Adress
-	DEACTIVATE_OBJECT,		// lParam : Object Adress
+	ACTIVATE_OBJECT,   // lParam : Object Adress
+	DEACTIVATE_OBJECT, // lParam : Object Adress
 
-	ACTIVATE_COMPONENT,		// lParam : Component Adress
-	DEACTIVATE_COMOPNENT,   // lParam : Component Adress
+	ACTIVATE_COMPONENT,   // lParam : Component Adress
+	DEACTIVATE_COMOPNENT, // lParam : Component Adress
 
-	SCENE_CHANGE,			// lParam : Next Stage Enum
-	CHANGE_AI_STATE,		// lParam : FSM Adress, wParam : Next State Type
+	SCENE_CHANGE,    // lParam : Next Stage Enum
+	CHANGE_AI_STATE, // lParam : FSM Adress, wParam : Next State Type
 
-	DELETE_RES,				// lParam : ResAdress
+	DELETE_RES, // lParam : ResAdress
 
 	END,
 };
 
 enum class LIGHT_TYPE
 {
-	DIRECTIONAL,	// 태양
-	POINT,			// 전구, 횃불
-	SPOT,			// 손전등
+	DIRECTIONAL, // 태양
+	POINT,       // 전구, 횃불
+	SPOT,        // 손전등
 };
 
 enum class MRT_TYPE

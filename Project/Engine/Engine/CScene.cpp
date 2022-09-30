@@ -7,14 +7,14 @@
 #include "CSceneFile.h"
 
 
-
 CScene::CScene()
-	: m_arrLayer{}
-	, m_eSceneState(SCENE_STATE::STOP)
+	:
+	m_arrLayer{}
+  , m_eSceneState(SCENE_STATE::STOP)
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
-		m_arrLayer[i] = new CLayer;
+		m_arrLayer[i]              = new CLayer;
 		m_arrLayer[i]->m_iLayerIdx = i;
 	}
 }
@@ -36,7 +36,7 @@ void CScene::start()
 void CScene::update()
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
-	{		
+	{
 		m_arrLayer[i]->update();
 	}
 }
@@ -105,7 +105,7 @@ void CScene::AddObject(CGameObject* _pRootObj, int _iLayerIdx)
 		CGameObject* pTargetObj = queue.front();
 		queue.pop_front();
 
-		if(-1 == pTargetObj->m_iLayerIdx)
+		if (-1 == pTargetObj->m_iLayerIdx)
 			pTargetObj->m_iLayerIdx = _iLayerIdx;
 
 		const vector<CGameObject*>& vecChild = pTargetObj->GetChild();
@@ -152,7 +152,7 @@ void CScene::SetSceneState(SCENE_STATE _eState)
 	{
 		if (SCENE_STATE::PAUSE == _eState)
 		{
-			m_eSceneState = _eState;			
+			m_eSceneState = _eState;
 		}
 		else if (SCENE_STATE::STOP == _eState)
 		{

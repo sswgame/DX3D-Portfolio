@@ -2,10 +2,7 @@
 #include "CResMgr.h"
 #include "CPathMgr.h"
 
-CResMgr::CResMgr()
-{
-
-}
+CResMgr::CResMgr() {}
 
 CResMgr::~CResMgr()
 {
@@ -33,10 +30,15 @@ void CResMgr::SaveChangedRes()
 }
 
 
-Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight, DXGI_FORMAT _format, UINT _flag, bool _bEngineRes)
+Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey,
+                                     UINT           _iWidth,
+                                     UINT           _iHeight,
+                                     DXGI_FORMAT    _format,
+                                     UINT           _flag,
+                                     bool           _bEngineRes)
 {
 	assert(nullptr == FindRes<CTexture>(_strKey));
-	
+
 	CTexture* pTexture = new CTexture;
 
 	pTexture->Create(_iWidth, _iHeight, _format, _flag);
@@ -75,7 +77,7 @@ void CResMgr::DeleteRes(const wstring& _strKey)
 			SAFE_DELETE(iter->second);
 			m_Res[i].erase(iter);
 			return;
-		}		
+		}
 	}
 
 	assert(nullptr);

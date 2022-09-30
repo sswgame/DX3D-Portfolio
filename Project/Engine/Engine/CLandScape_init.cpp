@@ -20,7 +20,7 @@ void CLandScape::Create()
 		pMesh = nullptr;
 	}
 
-	vector<Vtx> vecVtx;
+	vector<Vtx>  vecVtx;
 	vector<UINT> vecIdx;
 
 	Vtx v;
@@ -31,10 +31,10 @@ void CLandScape::Create()
 		for (UINT col = 0; col < m_iXFaceCount + 1; ++col)
 		{
 			v.vPos = Vec3((float)col, 0.f, (float)row);
-			v.vUV = Vec2(col, m_iZFaceCount - row);
+			v.vUV  = Vec2(col, m_iZFaceCount - row);
 
-			v.vNormal = Vec3(0.f, 1.f, 0.f);
-			v.vTangent = Vec3(1.f, 0.f, 0.f);
+			v.vNormal   = Vec3(0.f, 1.f, 0.f);
+			v.vTangent  = Vec3(1.f, 0.f, 0.f);
 			v.vBinormal = Vec3(0.f, 0.f, -1.f);
 
 			v.vColor = Vec4(1.f, 0.f, 1.f, 1.f);
@@ -100,7 +100,7 @@ void CLandScape::Create()
 		pMtrl = new CMaterial;
 		pMtrl->SetShader(pShader);
 		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\LandScapeMtrl.mtrl", pMtrl.Get(), true);
-	}	
+	}
 
 	SetSharedMaterial(pMtrl);
 }

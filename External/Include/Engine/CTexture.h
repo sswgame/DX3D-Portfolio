@@ -55,7 +55,7 @@ public:
 
 public:
     CTexture();
-    ~CTexture();
+    virtual ~CTexture();
 
     friend class CResMgr;
 };

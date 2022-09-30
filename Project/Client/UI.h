@@ -6,25 +6,25 @@
 class UI
 {
 private:
-	const string	m_strName;
-	string			m_strTitle;
-	vector<UI*>		m_vecChildUI;
-	UI*				m_pParentUI;
+	const string m_strName;
+	string       m_strTitle;
+	vector<UI*>  m_vecChildUI;
+	UI*          m_pParentUI;
 
-	Vec2			m_vPos;
-	Vec2			m_vSize;
-	bool			m_bOpen;
-	bool			m_bModal;
+	Vec2 m_vPos;
+	Vec2 m_vSize;
+	bool m_bOpen;
+	bool m_bModal;
 
-public:	
+public:
 	const string& GetName() { return m_strName; }
-	void SetSize(Vec2 _vSize) { m_vSize = _vSize; }
-	Vec2 GetSize() { return m_vSize; }
+	void          SetSize(Vec2 _vSize) { m_vSize = _vSize; }
+	Vec2          GetSize() { return m_vSize; }
 
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
 	Vec2 GetPos() { return m_vPos; }
 
-	void SetTitle(const string& _strTitle) { m_strTitle = _strTitle; }
+	void          SetTitle(const string& _strTitle) { m_strTitle = _strTitle; }
 	const string& GetTitle() { return m_strTitle; }
 
 	void SetModalUI(bool _bTrue) { m_bModal = _bTrue; }
@@ -44,7 +44,7 @@ public:
 	bool IsActive() { return m_bOpen; }
 
 	virtual void DropCheck() {};
-		
+
 
 public:
 	virtual void update();
@@ -55,4 +55,3 @@ public:
 	UI(const string& _strName);
 	virtual ~UI();
 };
-

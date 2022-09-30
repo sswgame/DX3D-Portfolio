@@ -7,23 +7,21 @@
 // TreeNode
 // ========
 TreeNode::TreeNode()
-	: m_pTreeUI(nullptr)
-	, m_pParent(nullptr)
-	, m_bLeaf(true)
-	, m_bSelected(false)
-	, m_dwData(0)
-{
-}
+	:
+	m_pTreeUI(nullptr)
+  , m_pParent(nullptr)
+  , m_bLeaf(true)
+  , m_bSelected(false)
+  , m_dwData(0) {}
 
 TreeNode::TreeNode(const string& _strName, DWORD_PTR _dwData)
-	: m_pTreeUI(nullptr)
-	, m_pParent(nullptr)
-	, m_bLeaf(true)
-	, m_bSelected(false)
-	, m_strName(_strName)
-	, m_dwData(_dwData)
-{
-}
+	:
+	m_pTreeUI(nullptr)
+  , m_pParent(nullptr)
+  , m_bLeaf(true)
+  , m_bSelected(false)
+  , m_strName(_strName)
+  , m_dwData(_dwData) {}
 
 TreeNode::~TreeNode()
 {
@@ -52,16 +50,16 @@ void TreeNode::render_update()
 
 	if (m_bLeaf)
 		eFlag |= ImGuiTreeNodeFlags_Leaf;
-	if (m_pTreeUI->m_bUseFrame &&  (nullptr == m_pParent || m_pParent->m_strName == "DummyRoot"))
+	if (m_pTreeUI->m_bUseFrame && (nullptr == m_pParent || m_pParent->m_strName == "DummyRoot"))
 		eFlag |= ImGuiTreeNodeFlags_Framed;
 	if (m_bSelected)
 		eFlag |= ImGuiTreeNodeFlags_Selected;
-	
+
 	if (ImGui::TreeNodeEx(m_strName.c_str(), eFlag))
-	{			
+	{
 		// 노드의 클릭체크
 		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
-		{			
+		{
 			m_pTreeUI->SetSelectedNode(this);
 		}
 
@@ -75,9 +73,8 @@ void TreeNode::render_update()
 		if (m_pTreeUI->m_bUseDragDropSelf || m_pTreeUI->m_bUseDragDropOuter)
 		{
 			if (ImGui::BeginDragDropSource())
-			{				
-				ImGui::SetDragDropPayload(m_pTreeUI->GetParentUI()->GetName().c_str()
-					, &m_dwData, sizeof(DWORD_PTR));
+			{
+				ImGui::SetDragDropPayload(m_pTreeUI->GetParentUI()->GetName().c_str(), &m_dwData, sizeof(DWORD_PTR));
 				ImGui::Text(m_strName.c_str());
 				ImGui::EndDragDropSource();
 
@@ -89,8 +86,9 @@ void TreeNode::render_update()
 			{
 				if (ImGui::BeginDragDropTarget())
 				{
-					DWORD_PTR dwData = 0;
-					const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(m_pTreeUI->GetParentUI()->GetName().c_str());
+					DWORD_PTR           dwData  = 0;
+					const ImGuiPayload* payload =
+						ImGui::AcceptDragDropPayload(m_pTreeUI->GetParentUI()->GetName().c_str());
 					if (nullptr != payload)
 					{
 						memcpy(&dwData, payload->Data, sizeof(DWORD_PTR));
@@ -103,7 +101,7 @@ void TreeNode::render_update()
 				}
 			}
 		}
-		
+
 		for (size_t i = 0; i < m_vecChild.size(); ++i)
 		{
 			m_vecChild[i]->render_update();
@@ -114,28 +112,27 @@ void TreeNode::render_update()
 }
 
 
-
-
 // ======
 // TreeUI
 // ======
 TreeUI::TreeUI(bool _bDummyRoot)
-	: UI("##TreeUI")
-	, m_pRootNode(nullptr)
-	, m_pSelectedNode(nullptr)
-	, m_pDragNode(nullptr)
-	, m_pDropNode(nullptr)
-	, m_bUseDummyRoot(_bDummyRoot)
-	, m_bShowDummy(false)	
-	, m_bUseFrame(false)
-	, m_bUseDragDropSelf(false)
-	, m_bUseDragDropOuter(false)
-	, m_pCInst(nullptr)
-	, m_CFunc(nullptr)
-	, m_pDBCInst(nullptr)
-	, m_DBCFunc(nullptr)
-	, m_pDADInst(nullptr)
-	, m_DADFunc(nullptr)
+	:
+	UI("##TreeUI")
+  , m_pRootNode(nullptr)
+  , m_pSelectedNode(nullptr)
+  , m_pDragNode(nullptr)
+  , m_pDropNode(nullptr)
+  , m_bUseDummyRoot(_bDummyRoot)
+  , m_bShowDummy(false)
+  , m_bUseFrame(false)
+  , m_bUseDragDropSelf(false)
+  , m_bUseDragDropOuter(false)
+  , m_pCInst(nullptr)
+  , m_CFunc(nullptr)
+  , m_pDBCInst(nullptr)
+  , m_DBCFunc(nullptr)
+  , m_pDADInst(nullptr)
+  , m_DADFunc(nullptr)
 {
 	if (m_bUseDummyRoot)
 	{
@@ -155,14 +152,14 @@ void TreeUI::update()
 		m_pSelectedNode = nullptr;
 		return;
 	}
-	
+
 	// 트리UI 가 부착된 부모 UI 의 사이즈를 받아온다.
 	Vec2 vSize = GetParentUI()->GetSize();
 	vSize.y -= 39.f;
 	SetSize(vSize);
 
 	m_pRootNode->update();
-		
+
 
 	// 자식 UI 업데이트
 	UI::update();
@@ -175,7 +172,7 @@ void TreeUI::render_update()
 
 	if (m_bUseDummyRoot)
 	{
-		if(m_bShowDummy)
+		if (m_bShowDummy)
 			m_pRootNode->render_update();
 		else
 		{
@@ -192,8 +189,8 @@ void TreeUI::render_update()
 	}
 
 	// Drag Drop Check
-	if ( (m_pDragNode && m_pDropNode)
-		|| m_pDragNode && KEY_AWAY(KEY::LBTN))
+	if ((m_pDragNode && m_pDropNode)
+	    || m_pDragNode && KEY_AWAY(KEY::LBTN))
 	{
 		if (m_pDADInst && m_DADFunc)
 		{
@@ -205,12 +202,10 @@ void TreeUI::render_update()
 			{
 				(m_pDADInst->*m_DADFunc)(m_pDragNode->GetData(), m_pDropNode->GetData());
 			}
-			
 		}
 		m_pDragNode = nullptr;
 		m_pDropNode = nullptr;
 	}
-
 
 
 	// KeyBinding 호출
@@ -228,7 +223,7 @@ void TreeUI::render_update()
 
 TreeNode* TreeUI::AddTreeNode(TreeNode* _pParentNode, const string& _strName, DWORD_PTR _dwData)
 {
-	TreeNode* pNewNode = new TreeNode(_strName, _dwData);
+	TreeNode* pNewNode  = new TreeNode(_strName, _dwData);
 	pNewNode->m_pTreeUI = this;
 
 	// 부모를 지정함
@@ -243,10 +238,10 @@ TreeNode* TreeUI::AddTreeNode(TreeNode* _pParentNode, const string& _strName, DW
 		if (nullptr != m_pRootNode)
 			m_pRootNode->AddChild(pNewNode);
 
-		// 루트노드가 존재하지 않음
+			// 루트노드가 존재하지 않음
 		else
 			m_pRootNode = pNewNode;
-	}	
+	}
 
 	return pNewNode;
 }
@@ -260,7 +255,7 @@ void TreeUI::SetKeyBinding(KEY _eKey, UI* _pInst, KEY_FUNC _Func)
 void TreeUI::Clear()
 {
 	SAFE_DELETE(m_pRootNode);
-	m_pRootNode = nullptr;
+	m_pRootNode     = nullptr;
 	m_pSelectedNode = nullptr;
 
 	if (m_bUseDummyRoot)
@@ -276,7 +271,7 @@ void TreeUI::SetSelectedNode(TreeNode* _pNode)
 		m_pSelectedNode->m_bSelected = false;
 	}
 
-	m_pSelectedNode = _pNode;
+	m_pSelectedNode              = _pNode;
 	m_pSelectedNode->m_bSelected = true;
 
 
@@ -284,7 +279,7 @@ void TreeUI::SetSelectedNode(TreeNode* _pNode)
 	if (nullptr != m_pCInst && nullptr != m_CFunc)
 	{
 		(m_pCInst->*m_CFunc)((DWORD_PTR)m_pSelectedNode);
-	}	
+	}
 }
 
 void TreeUI::SetDBClickedNode(TreeNode* _pNode)

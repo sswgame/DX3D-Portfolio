@@ -17,46 +17,44 @@
 #include "CKeyMgr.h"
 
 
-
 CCamera::CCamera()
-	: CComponent(COMPONENT_TYPE::CAMERA)
-	, m_eProjType(PROJ_TYPE::ORTHOGRAPHIC)
-	, m_fWidth(0.f)
-	, m_fAspectRatio(1.f)
-	, m_fFOV(XM_PI / 4.f)
-	, m_fFar(10000.f)
-	, m_iLayerMask(0)
-	, m_iCamIdx(-1)
+	:
+	CComponent(COMPONENT_TYPE::CAMERA)
+  , m_eProjType(PROJ_TYPE::ORTHOGRAPHIC)
+  , m_fWidth(0.f)
+  , m_fAspectRatio(1.f)
+  , m_fFOV(XM_PI / 4.f)
+  , m_fFar(10000.f)
+  , m_iLayerMask(0)
+  , m_iCamIdx(-1)
 {
-	m_fWidth = CDevice::GetInst()->GetRenderResolution().x;
+	m_fWidth       = CDevice::GetInst()->GetRenderResolution().x;
 	m_fAspectRatio = CDevice::GetInst()->GetRenderResolution().x / CDevice::GetInst()->GetRenderResolution().y;
 
 	m_Frustum.m_pCam = this;
 }
 
 CCamera::CCamera(const CCamera& _origin)
-	: CComponent(_origin)
-	, m_eProjType(_origin.m_eProjType)
-	, m_fWidth(_origin.m_fWidth)
-	, m_fAspectRatio(_origin.m_fAspectRatio)
-	, m_fFOV(_origin.m_fFOV)
-	, m_fFar(_origin.m_fFar)
-	, m_iLayerMask(_origin.m_iLayerMask)
-	, m_iCamIdx(-1)
-	, m_Frustum(_origin.m_Frustum)
+	:
+	CComponent(_origin)
+  , m_Frustum(_origin.m_Frustum)
+  , m_eProjType(_origin.m_eProjType)
+  , m_fWidth(_origin.m_fWidth)
+  , m_fAspectRatio(_origin.m_fAspectRatio)
+  , m_fFOV(_origin.m_fFOV)
+  , m_fFar(_origin.m_fFar)
+  , m_iLayerMask(_origin.m_iLayerMask)
+  , m_iCamIdx(-1)
 {
 	m_Frustum.m_pCam = this;
 }
 
-CCamera::~CCamera()
-{
-
-}
+CCamera::~CCamera() {}
 
 void CCamera::finalupdate()
-{	
+{
 	finalupdate_module();
-	
+
 	m_Frustum.finalupdate();
 
 	CRenderMgr::GetInst()->RegisterCamera(this);
@@ -75,30 +73,36 @@ void CCamera::finalupdate_module()
 	Matrix matViewRot = XMMatrixIdentity();
 
 	Vec3 vRight = Transform()->GetWorldRightDir();
-	Vec3 vUp = Transform()->GetWorldUpDir();
+	Vec3 vUp    = Transform()->GetWorldUpDir();
 	Vec3 vFront = Transform()->GetWorldFrontDir();
 
-	matViewRot._11 = vRight.x;	matViewRot._12 = vUp.x; matViewRot._13 = vFront.x;
-	matViewRot._21 = vRight.y;	matViewRot._22 = vUp.y;	matViewRot._23 = vFront.y;
-	matViewRot._31 = vRight.z;	matViewRot._32 = vUp.z;	matViewRot._33 = vFront.z;
+	matViewRot._11 = vRight.x;
+	matViewRot._12 = vUp.x;
+	matViewRot._13 = vFront.x;
+	matViewRot._21 = vRight.y;
+	matViewRot._22 = vUp.y;
+	matViewRot._23 = vFront.y;
+	matViewRot._31 = vRight.z;
+	matViewRot._32 = vUp.z;
+	matViewRot._33 = vFront.z;
 
-	m_matView = matViewTrans * matViewRot;
+	m_matView    = matViewTrans * matViewRot;
 	m_matViewInv = XMMatrixInverse(nullptr, m_matView);
 
 	// 투영행렬 계산
 	if (PROJ_TYPE::ORTHOGRAPHIC == m_eProjType)
 	{
-		float fHeight = m_fWidth / m_fAspectRatio;
-		float fEpsilon = m_fFar - 1.f;	// Far - Near
-		if (fEpsilon <= 0.00001f)		// XMMatrixOrthographicLH / assert(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
+		float fHeight  = m_fWidth / m_fAspectRatio;
+		float fEpsilon = m_fFar - 1.f; // Far - Near
+		if (fEpsilon <= 0.00001f)      // XMMatrixOrthographicLH / assert(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
 			m_fFar += 0.00002f;
 
 		m_matProj = XMMatrixOrthographicLH(m_fWidth, fHeight, 1.f, m_fFar);
 	}
 	else
 	{
-		float fEpsilon = m_fFar - 1.f;	// Far - Near
-		if (fEpsilon <= 0.00001f)		// XMMatrixOrthographicLH / assert(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
+		float fEpsilon = m_fFar - 1.f; // Far - Near
+		if (fEpsilon <= 0.00001f)      // XMMatrixOrthographicLH / assert(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
 			m_fFar += 0.00002f;
 
 		m_matProj = XMMatrixPerspectiveFovLH(m_fFOV, m_fAspectRatio, 1.f, m_fFar);
@@ -113,7 +117,7 @@ void CCamera::SortGameObject()
 {
 	m_vecDeferred.clear();
 	m_vecDeferredDecal.clear();
-	m_vecForward.clear();	
+	m_vecForward.clear();
 	m_vecMasked.clear();
 	m_vecForwardDecal.clear();
 	m_vecTranslucent.clear();
@@ -127,24 +131,25 @@ void CCamera::SortGameObject()
 		if (!(m_iLayerMask & (1 << i)))
 			continue;
 
-		CLayer* pLayer = pCurScene->GetLayer(i);
+		CLayer*               pLayer = pCurScene->GetLayer(i);
 		vector<CGameObject*>& vecObj = pLayer->GetObjects();
 
 		for (size_t j = 0; j < vecObj.size(); ++j)
 		{
 			CRenderComponent* pRenderCom = vecObj[j]->GetRenderComponent();
-		
+
 			if (nullptr == pRenderCom
-				|| nullptr == pRenderCom->GetMesh()
-				|| nullptr == pRenderCom->GetMaterial()
-				|| nullptr == pRenderCom->GetMaterial()->GetShader())
+			    || nullptr == pRenderCom->GetMesh()
+			    || nullptr == pRenderCom->GetMaterial()
+			    || nullptr == pRenderCom->GetMaterial()->GetShader())
 			{
 				continue;
 			}
 
 			// 오브젝트가 카메라 시야 밖에 있으면 제외
-			if (pRenderCom->IsFrustumCulling() 
-				&& !m_Frustum.SphereCheck(vecObj[j]->Transform()->GetWorldPos(), vecObj[j]->Transform()->GetWorldScale().x / 2.f ))
+			if (pRenderCom->IsFrustumCulling()
+			    && !m_Frustum.SphereCheck(vecObj[j]->Transform()->GetWorldPos(),
+			                              vecObj[j]->Transform()->GetWorldScale().x / 2.f))
 			{
 				continue;
 			}
@@ -170,7 +175,7 @@ void CCamera::SortGameObject()
 				break;
 			case SHADER_DOMAIN::DOMAIN_TRANSLUCENT:
 				m_vecTranslucent.push_back(vecObj[j]);
-				break;			
+				break;
 			case SHADER_DOMAIN::DOMAIN_POSTPROCESS:
 				m_vecPostProcess.push_back(vecObj[j]);
 				break;
@@ -187,7 +192,7 @@ void CCamera::SortShadowObject()
 
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
-		CLayer* pLayer = pCurScene->GetLayer(i);
+		CLayer*               pLayer = pCurScene->GetLayer(i);
 		vector<CGameObject*>& vecObj = pLayer->GetObjects();
 
 		for (size_t j = 0; j < vecObj.size(); ++j)
@@ -224,7 +229,7 @@ void CCamera::render_forward()
 {
 	for (size_t i = 0; i < m_vecForward.size(); ++i)
 	{
-		if(m_vecForward[i]->IsActive())
+		if (m_vecForward[i]->IsActive())
 			m_vecForward[i]->render();
 	}
 }
@@ -271,14 +276,14 @@ void CCamera::render_postprocess()
 void CCamera::render_shadowmap()
 {
 	// 광원 카메라의 View, Proj 세팅
-	g_transform.matView = m_matView;
+	g_transform.matView    = m_matView;
 	g_transform.matViewInv = m_matViewInv;
-	g_transform.matProj = m_matProj;
+	g_transform.matProj    = m_matProj;
 
 	for (size_t i = 0; i < m_vecDynamicShadow.size(); ++i)
 	{
 		if (m_vecDynamicShadow[i]->IsActive())
-		{			
+		{
 			m_vecDynamicShadow[i]->GetRenderComponent()->render_shadowmap();
 		}
 	}
@@ -293,9 +298,9 @@ void CCamera::render_frustum()
 void CCamera::SetCameraAsMain()
 {
 	tEventInfo tEvent = {};
-	tEvent.eType = EVENT_TYPE::SET_CAMEAR_INDEX;
-	tEvent.lParam = (DWORD_PTR)this;
-	tEvent.wParam = 0;
+	tEvent.eType      = EVENT_TYPE::SET_CAMEAR_INDEX;
+	tEvent.lParam     = (DWORD_PTR)this;
+	tEvent.wParam     = 0;
 
 	CEventMgr::GetInst()->AddEvent(tEvent);
 }
@@ -307,7 +312,7 @@ void CCamera::SetCameraIndex(int _iIdx)
 
 	tEventInfo tEvent = {};
 
-	tEvent.eType = EVENT_TYPE::SET_CAMEAR_INDEX;
+	tEvent.eType  = EVENT_TYPE::SET_CAMEAR_INDEX;
 	tEvent.lParam = (DWORD_PTR)this;
 	tEvent.wParam = _iIdx;
 
@@ -331,7 +336,7 @@ void CCamera::CheckLayerMask(const wstring& _strLayerName)
 	CScene* pScene = CSceneMgr::GetInst()->GetCurScene();
 	CLayer* pLayer = pScene->GetLayer(_strLayerName);
 
-	CheckLayerMask(pLayer->GetLayerIdx());	
+	CheckLayerMask(pLayer->GetLayerIdx());
 }
 
 

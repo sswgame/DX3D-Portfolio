@@ -3,34 +3,32 @@
 
 class TreeUI;
 
-class ResourceUI :
-    public UI
+class ResourceUI : public UI
 {
 private:
-    TreeUI* m_TreeUI;
+	TreeUI* m_TreeUI;
 
-    vector<wstring> m_vecResPath;
-
-public:
-    virtual void update() override;
-    virtual void render_update() override;
+	vector<wstring> m_vecResPath;
 
 public:
-    void Reset();
+	virtual void update() override;
+	virtual void render_update() override;
+
+public:
+	void Reset();
 
 private:
-    void Reload();
-    void Renew();
-    void FindFileName(const wstring& _strFolderPath);
+	void Reload();
+	void Renew();
+	void FindFileName(const wstring& _strFolderPath);
 
-    void ItemClicked(DWORD_PTR _dwNode);
-    void ItemDBClicked(DWORD_PTR _dwNode);
+	void ItemClicked(DWORD_PTR _dwNode);
+	void ItemDBClicked(DWORD_PTR _dwNode);
 
-    RES_TYPE GetResTypeFromExt(const wstring& _strExt);
+	RES_TYPE GetResTypeFromExt(const wstring& _strExt);
 
 
 public:
-    ResourceUI();
-    ~ResourceUI();
+	ResourceUI();
+	virtual ~ResourceUI();
 };
-

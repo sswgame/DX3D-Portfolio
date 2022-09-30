@@ -3,17 +3,18 @@
 
 #include "CResMgr.h"
 
-FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL* channelcontrol, FMOD_CHANNELCONTROL_TYPE controltype
-	, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype
-	, void* commanddata1, void* commanddata2);
+FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL*              channelcontrol,
+                             FMOD_CHANNELCONTROL_TYPE          controltype,
+                             FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
+                             void*                             commanddata1,
+                             void*                             commanddata2);
 
 FMOD::System* CSound::g_pFMOD = nullptr;
 
 CSound::CSound()
-	: CRes(RES_TYPE::SOUND)
-	, m_pSound(nullptr)
-{
-}
+	:
+	CRes(RES_TYPE::SOUND)
+  , m_pSound(nullptr) {}
 
 CSound::~CSound()
 {
@@ -100,7 +101,7 @@ void CSound::RemoveChannel(FMOD::Channel* _pTargetChannel)
 
 int CSound::Load(const wstring& _strFilePath)
 {
-	string path(_strFilePath.begin(), _strFilePath.end());
+	string path = ToString(_strFilePath);
 
 	if (FMOD_OK != g_pFMOD->createSound(path.c_str(), FMOD_DEFAULT, nullptr, &m_pSound))
 	{
@@ -111,25 +112,26 @@ int CSound::Load(const wstring& _strFilePath)
 }
 
 
-
 // =========
 // Call Back
 // =========
-FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL* channelcontrol, FMOD_CHANNELCONTROL_TYPE controltype
-	, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype
-	, void* commanddata1, void* commanddata2)
+FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL*              channelcontrol,
+                             FMOD_CHANNELCONTROL_TYPE          controltype,
+                             FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
+                             void*                             commanddata1,
+                             void*                             commanddata2)
 {
 	FMOD::Channel* cppchannel = (FMOD::Channel*)channelcontrol;
-	CSound* pSound = nullptr;
+	CSound*        pSound     = nullptr;
 
 	switch (controltype)
 	{
 	case FMOD_CHANNELCONTROL_CALLBACK_END:
-	{
-		cppchannel->getUserData((void**)&pSound);
-		pSound->RemoveChannel(cppchannel);
-	}
-	break;
+		{
+			cppchannel->getUserData((void**)&pSound);
+			pSound->RemoveChannel(cppchannel);
+		}
+		break;
 	}
 
 	return FMOD_OK;

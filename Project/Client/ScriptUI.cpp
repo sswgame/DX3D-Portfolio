@@ -7,22 +7,16 @@
 #include "ParamUI.h"
 
 ScriptUI::ScriptUI()
-	: UI("Script")
-	, m_pTargetObject(nullptr)
-	, m_pTargetScript(nullptr)
-	, m_eComType(COMPONENT_TYPE::SCRIPT)
-	, m_bActive(false)
-{	
-}
+	:
+	UI("Script")
+  , m_pTargetObject(nullptr)
+  , m_pTargetScript(nullptr)
+  , m_eComType(COMPONENT_TYPE::SCRIPT)
+  , m_bActive(false) { }
 
-ScriptUI::~ScriptUI()
-{
-}
+ScriptUI::~ScriptUI() {}
 
-void ScriptUI::update()
-{
-
-}
+void ScriptUI::update() {}
 
 void ScriptUI::render_update()
 {
@@ -33,7 +27,7 @@ void ScriptUI::render_update()
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 0.8f, 0.8f));
 
 	wstring wstrScriptName = CScriptMgr::GetScriptName(m_pTargetScript);
-	string strScriptName(wstrScriptName.begin(), wstrScriptName.end());
+	string  strScriptName  = ToString(wstrScriptName);
 	ImGui::Button(strScriptName.c_str());
 
 	ImGui::PopStyleColor(3);
@@ -46,30 +40,30 @@ void ScriptUI::render_update()
 		switch (vecParam[i].eType)
 		{
 		case SCRIPTPARAM_TYPE::INT:
-		{
-			int data = ParamUI::Param_Int(vecParam[i].strParamName, (const int*)vecParam[i].pParam);
-			*(int*)vecParam[i].pParam = data;
-		}
-		
+			{
+				int data = ParamUI::Param_Int(vecParam[i].strParamName, (const int*)vecParam[i].pParam);
+				*(int*)vecParam[i].pParam = data;
+			}
+
 			break;
 		case SCRIPTPARAM_TYPE::FLOAT:
-		{
-			float data = ParamUI::Param_Float(vecParam[i].strParamName, (const float*)vecParam[i].pParam);
-			*(float*)vecParam[i].pParam = data;
-		}
-		
+			{
+				float data = ParamUI::Param_Float(vecParam[i].strParamName, (const float*)vecParam[i].pParam);
+				*(float*)vecParam[i].pParam = data;
+			}
+
 			break;
 		case SCRIPTPARAM_TYPE::VEC2:
-		{
-			Vec2 data = ParamUI::Param_Vec2(vecParam[i].strParamName, (const Vec2*)vecParam[i].pParam);
-			*(Vec2*)vecParam[i].pParam = data;
-		}
+			{
+				Vec2 data = ParamUI::Param_Vec2(vecParam[i].strParamName, (const Vec2*)vecParam[i].pParam);
+				*(Vec2*)vecParam[i].pParam = data;
+			}
 			break;
 		case SCRIPTPARAM_TYPE::VEC4:
-		{
-			Vec4 data = ParamUI::Param_Vec4(vecParam[i].strParamName, (const Vec4*)vecParam[i].pParam);
-			*(Vec4*)vecParam[i].pParam = data;
-		}		
+			{
+				Vec4 data = ParamUI::Param_Vec4(vecParam[i].strParamName, (const Vec4*)vecParam[i].pParam);
+				*(Vec4*)vecParam[i].pParam = data;
+			}
 			break;
 
 		case SCRIPTPARAM_TYPE::TEX:

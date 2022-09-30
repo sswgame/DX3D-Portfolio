@@ -75,23 +75,22 @@ inline RES_TYPE CResMgr::GetResType()
 {
 	const type_info& info = typeid(type);
 
-	if (info.hash_code() == typeid(CPrefab).hash_code())
+	if (std::is_same_v<type,CPrefab>)
 		return RES_TYPE::PREFAB;
-	else if (info.hash_code() == typeid(CMesh).hash_code())
+	else if (std::is_same_v<type, CMesh>)
 		return RES_TYPE::MESH;
-	else if (info.hash_code() == typeid(CSound).hash_code())
+	else if (std::is_same_v<type, CSound>)
 		return RES_TYPE::SOUND;
-	else if (info.hash_code() == typeid(CGraphicsShader).hash_code())
+	else if (std::is_same_v<type, CGraphicsShader>)
 		return RES_TYPE::GRAPHICS_SHADER;
-	else if (info.hash_code() == typeid(CComputeShader).hash_code())
+	else if (std::is_same_v<type, CComputeShader>)
 		return RES_TYPE::COMPUTE_SHADER;
-	else if (info.hash_code() == typeid(CMaterial).hash_code())
+	else if (std::is_same_v<type, CMaterial>)
 		return RES_TYPE::MATERIAL;
-	else if (info.hash_code() == typeid(CTexture).hash_code())
+	else if (std::is_same_v<type, CTexture>)
 		return RES_TYPE::TEXTURE;
-	else if (info.hash_code() == typeid(CSceneFile).hash_code())
+	else if (std::is_same_v<type, CSceneFile>)
 		return RES_TYPE::SCENEFILE;
-	
 
 	return RES_TYPE::END;
 }

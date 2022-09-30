@@ -5,15 +5,13 @@
 #include <Engine/CComponent.h>
 
 ComponentUI::ComponentUI(const string& _strName, COMPONENT_TYPE _eComType)
-	: UI(_strName)
-	, m_eComType(_eComType)
-	, m_bActive(false)
-{
-}
+	:
+	UI(_strName)
+  , m_pTargetObject{nullptr}
+  , m_eComType(_eComType)
+  , m_bActive(false) {}
 
-ComponentUI::~ComponentUI()
-{
-}
+ComponentUI::~ComponentUI() {}
 
 void ComponentUI::update()
 {
@@ -21,22 +19,22 @@ void ComponentUI::update()
 		return;
 
 	CComponent* pComponent = m_pTargetObject->GetComponent(m_eComType);
-	m_bActive = pComponent->IsActive();
+	m_bActive              = pComponent->IsActive();
 }
 
 void ComponentUI::render_update()
-{	
+{
 	// 담당 Component 이름
 	ImGui::PushID(0);
 	ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.8f, 0.8f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.8f, 0.8f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 0.8f, 0.8f));
-	ImGui::Button(ToString(m_eComType));
+	ImGui::Button(ToString(m_eComType).c_str());
 	ImGui::PopStyleColor(3);
 	ImGui::PopID();
 
 	// Component 활성화 체크
-	CComponent* pComponent = m_pTargetObject->GetComponent(m_eComType);	
+	CComponent* pComponent = m_pTargetObject->GetComponent(m_eComType);
 
 	if (pComponent->GetType() != COMPONENT_TYPE::TRANSFORM)
 	{
@@ -47,9 +45,9 @@ void ComponentUI::render_update()
 		if (pComponent->IsActive() != IsActive)
 		{
 			if (IsActive)
-				pComponent->Activate();			
+				pComponent->Activate();
 			else
-				pComponent->Deactivate();			
+				pComponent->Deactivate();
 		}
 	}
 }

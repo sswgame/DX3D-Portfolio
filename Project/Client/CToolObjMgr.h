@@ -7,10 +7,9 @@ class CToolObjMgr
 {
 	SINGLE(CToolObjMgr);
 private:
-	vector<CGameObjectEx*>	m_vecObj;
+	vector<CGameObjectEx*> m_vecObj;
 
 public:
 	void init();
 	void progress();
 };
-

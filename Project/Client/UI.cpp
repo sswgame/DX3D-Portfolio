@@ -2,14 +2,12 @@
 #include "UI.h"
 
 
-
 UI::UI(const string& _strName)
-	: m_strName(_strName)
-	, m_pParentUI(nullptr)
-	, m_bOpen(true)
-	, m_bModal(false)
-{
-}
+	:
+	m_strName(_strName)
+  , m_pParentUI(nullptr)
+  , m_bOpen(true)
+  , m_bModal(false) {}
 
 UI::~UI()
 {
@@ -25,12 +23,12 @@ void UI::update()
 }
 
 void UI::render()
-{	
-	if ( !(m_vPos.x == 0.f && m_vPos.y == 0.f) && m_bOpen)
+{
+	if (!(m_vPos.x == 0.f && m_vPos.y == 0.f) && m_bOpen)
 	{
 		ImGui::SetNextWindowPos(m_vPos, ImGuiCond_Always);
-		ImGui::SetNextWindowSize(m_vSize);		
-	}	
+		ImGui::SetNextWindowSize(m_vSize);
+	}
 
 	if (nullptr == m_pParentUI)
 	{
@@ -49,8 +47,8 @@ void UI::render()
 				{
 					// 사이즈 재확인
 					ImVec2 vSize = ImGui::GetWindowSize();
-					m_vSize.x = vSize.x;
-					m_vSize.y = vSize.y;
+					m_vSize.x    = vSize.x;
+					m_vSize.y    = vSize.y;
 
 					render_update();
 
@@ -69,8 +67,8 @@ void UI::render()
 
 				// 사이즈 재확인
 				ImVec2 vSize = ImGui::GetWindowSize();
-				m_vSize.x = vSize.x;
-				m_vSize.y = vSize.y;
+				m_vSize.x    = vSize.x;
+				m_vSize.y    = vSize.y;
 
 				render_update();
 
@@ -78,23 +76,21 @@ void UI::render()
 				{
 					m_vecChildUI[i]->render();
 
-					if(m_vecChildUI[i]->IsActive())
+					if (m_vecChildUI[i]->IsActive())
 						ImGui::Separator();
 				}
 
 				ImGui::End();
-
-			
-			}		
+			}
 		}
 	}
-	
+
 	else
 	{
 		if (m_bOpen)
 		{
 			ImGui::BeginChild(m_strName.c_str(), m_vSize);
-						
+
 			render_update();
 
 			for (size_t i = 0; i < m_vecChildUI.size(); ++i)
@@ -109,12 +105,9 @@ void UI::render()
 
 			// Drop Check
 			DropCheck();
-			
-		}		
+		}
 	}
 }
-
-
 
 
 Vec2::operator ImVec2() const

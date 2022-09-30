@@ -9,18 +9,15 @@
 #include "CScene.h"
 
 
-
 CMaterial::CMaterial()
-	: CRes(RES_TYPE::MATERIAL)
-	, m_pShader(nullptr)
-	, m_arrTex{}
-	, m_pMasterMtrl(nullptr)
-{
-}
+	:
+	CRes(RES_TYPE::MATERIAL)
+  , m_Param{}
+  , m_arrTex{}
+  , m_pShader(nullptr)
+  , m_pMasterMtrl(nullptr) {}
 
-CMaterial::~CMaterial()
-{
-}
+CMaterial::~CMaterial() {}
 
 
 void CMaterial::UpdateData()
@@ -33,7 +30,7 @@ void CMaterial::UpdateData()
 			m_Param.bTex[i] = 1;
 		}
 		else
-		{		
+		{
 			CTexture::Clear(i);
 			m_Param.bTex[i] = 0;
 		}
@@ -53,7 +50,7 @@ void CMaterial::UpdateData()
 
 CMaterial* CMaterial::GetMtrlInst()
 {
-	CMaterial* pCloneMtrl = Clone();
+	CMaterial* pCloneMtrl     = Clone();
 	pCloneMtrl->m_pMasterMtrl = this;
 	return pCloneMtrl;
 }
@@ -65,7 +62,7 @@ void CMaterial::SetShader(Ptr<CGraphicsShader> _pShader)
 	if (nullptr != m_pShader)
 	{
 		m_vecScalarParamInfo = m_pShader->GetScalarParamInfo();
-		m_vecTexParamInfo = m_pShader->GetTexParamInfo();
+		m_vecTexParamInfo    = m_pShader->GetTexParamInfo();
 	}
 }
 
@@ -73,10 +70,10 @@ void CMaterial::SetScalarParam(SCALAR_PARAM _eType, void* _pData)
 {
 	switch (_eType)
 	{
-	case SCALAR_PARAM::INT_0:		
+	case SCALAR_PARAM::INT_0:
 	case SCALAR_PARAM::INT_1:
 	case SCALAR_PARAM::INT_2:
-	case SCALAR_PARAM::INT_3:		
+	case SCALAR_PARAM::INT_3:
 		m_Param.iArr[(UINT)_eType - (UINT)SCALAR_PARAM::INT_0] = *((int*)_pData);
 		break;
 	case SCALAR_PARAM::FLOAT_0:
@@ -104,7 +101,7 @@ void CMaterial::SetScalarParam(SCALAR_PARAM _eType, void* _pData)
 		m_Param.matArr[(UINT)_eType - (UINT)SCALAR_PARAM::MAT_0] = *((Matrix*)_pData);
 		break;
 	}
-	
+
 	Changed();
 }
 
@@ -227,7 +224,7 @@ int CMaterial::Save(const wstring& _strFilePath)
 	if (m_pMasterMtrl && pCurScene->GetSceneState() != SCENE_STATE::STOP)
 	{
 		return E_FAIL;
-	}	
+	}
 
 	// 변경체크 해제
 	CRes::Save(_strFilePath);
@@ -287,4 +284,3 @@ int CMaterial::Load(const wstring& _strFilePath)
 
 	return S_OK;
 }
-

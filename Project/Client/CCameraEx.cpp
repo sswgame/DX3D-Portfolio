@@ -1,15 +1,11 @@
 #include "pch.h"
 #include "CCameraEx.h"
 
-#include <Engine\CTransform.h>
+#include <Engine/CTransform.h>
 
-CCameraEx::CCameraEx()
-{
-}
+CCameraEx::CCameraEx() {}
 
-CCameraEx::~CCameraEx()
-{
-}
+CCameraEx::~CCameraEx() {}
 
 void CCameraEx::finalupdate()
 {

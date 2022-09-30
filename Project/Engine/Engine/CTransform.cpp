@@ -5,52 +5,48 @@
 #include "CConstBuffer.h"
 
 
-
 CTransform::CTransform()
-	: CComponent(COMPONENT_TYPE::TRANSFORM)
-	, m_vRelativeScale(Vec3(1.f, 1.f, 1.f))
-	, m_arrRelativeDir{}
-	, m_arrWorldDir{}
-	, m_bIgnoreParentScale(false)
-{
-}
+	:
+	CComponent(COMPONENT_TYPE::TRANSFORM)
+  , m_vRelativeScale(Vec3(1.f, 1.f, 1.f))
+  , m_arrRelativeDir{}
+  , m_arrWorldDir{}
+  , m_bIgnoreParentScale(false) {}
 
-CTransform::~CTransform()
-{
-}
+CTransform::~CTransform() {}
 
 void CTransform::finalupdate()
 {
 	// 크기 x 회전(자전) x 이동
-	Matrix matScale = XMMatrixScaling(m_vRelativeScale.x, m_vRelativeScale.y, m_vRelativeScale.z);
+	Matrix matScale       = XMMatrixScaling(m_vRelativeScale.x, m_vRelativeScale.y, m_vRelativeScale.z);
 	Matrix matTranslation = XMMatrixTranslation(m_vRelativePos.x, m_vRelativePos.y, m_vRelativePos.z);
 
-	Matrix matRotX = XMMatrixRotationX(m_vRelativeRot.x);
-	Matrix matRotY = XMMatrixRotationY(m_vRelativeRot.y);
-	Matrix matRotZ = XMMatrixRotationZ(m_vRelativeRot.z);
+	Matrix matRotX   = XMMatrixRotationX(m_vRelativeRot.x);
+	Matrix matRotY   = XMMatrixRotationY(m_vRelativeRot.y);
+	Matrix matRotZ   = XMMatrixRotationZ(m_vRelativeRot.z);
 	m_matRelativeRot = matRotX * matRotY * matRotZ;
 
 	// World 행렬 만들기
 	m_matWorld = matScale * m_matRelativeRot * matTranslation;
 
 	// RelativeDir 구하기
-	static Vec3 vAxis[(UINT)DIR_TYPE::END] = { Vec3::Right, Vec3::Up, Vec3::Front };
+	static Vec3 vAxis[(UINT)DIR_TYPE::END] = {Vec3::Right, Vec3::Up, Vec3::Front};
 
 	for (int i = 0; i < (int)DIR_TYPE::END; ++i)
-	{	
+	{
 		//vAxis[i](회전하지 않았을 때의 기저축) x 회전행렬
 		m_arrWorldDir[i] = m_arrRelativeDir[i] = XMVector3TransformNormal(vAxis[i], m_matRelativeRot);
 	}
 
 
 	if (GetOwner()->GetParent())
-	{		
+	{
 		Matrix matParentWorld = GetOwner()->GetParent()->Transform()->GetWorldMat();
 
 		if (m_bIgnoreParentScale)
 		{
-			Vec3 vParentWorldScale = GetOwner()->GetParent()->Transform()->GetWorldScale();
-			Matrix matParentScale = XMMatrixScaling(vParentWorldScale.x, vParentWorldScale.y, vParentWorldScale.z);
+			Vec3   vParentWorldScale = GetOwner()->GetParent()->Transform()->GetWorldScale();
+			Matrix matParentScale    = XMMatrixScaling(vParentWorldScale.x, vParentWorldScale.y, vParentWorldScale.z);
 			Matrix matParentScaleInv = XMMatrixInverse(nullptr, matParentScale);
 
 			m_matWorld = m_matWorld * matParentScaleInv * matParentWorld;
@@ -103,7 +99,7 @@ Vec3 CTransform::GetWorldScale()
 		vWorldScale *= pParent->Transform()->GetRelativeScale();
 
 		bool bIgnoreParentScale = pParent->Transform()->m_bIgnoreParentScale;
-		pParent = pParent->GetParent();
+		pParent                 = pParent->GetParent();
 
 		if (bIgnoreParentScale)
 			pParent = nullptr;
@@ -129,12 +125,12 @@ Matrix CTransform::GetWorldRotation()
 
 void CTransform::UpdateData()
 {
-	g_transform.matWorld = m_matWorld;
+	g_transform.matWorld    = m_matWorld;
 	g_transform.matWorldInv = m_matWorldInv;
 
-	g_transform.matWV = g_transform.matWorld * g_transform.matView;
+	g_transform.matWV  = g_transform.matWorld * g_transform.matView;
 	g_transform.matWVP = g_transform.matWV * g_transform.matProj;
-	
+
 
 	CConstBuffer* pBuffer = CDevice::GetInst()->GetCB(CB_TYPE::TRANSFORM);
 	pBuffer->SetData(&g_transform, sizeof(tTransform));
@@ -148,7 +144,7 @@ void CTransform::SaveToScene(FILE* _pFile)
 	fwrite(&m_vRelativePos, sizeof(Vec3), 1, _pFile);
 	fwrite(&m_vRelativeScale, sizeof(Vec3), 1, _pFile);
 	fwrite(&m_vRelativeRot, sizeof(Vec3), 1, _pFile);
-	fwrite(&m_bIgnoreParentScale, sizeof(bool), 1, _pFile);	
+	fwrite(&m_bIgnoreParentScale, sizeof(bool), 1, _pFile);
 }
 
 void CTransform::LoadFromScene(FILE* _pFile)

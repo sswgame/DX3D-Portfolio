@@ -14,7 +14,8 @@
 
 
 SceneOutliner::SceneOutliner()
-	: UI("SceneOutliner")
+	:
+	UI("SceneOutliner")
 {
 	m_TreeUI = new TreeUI(true);
 	m_TreeUI->SetTitle("SceneOutliner");
@@ -34,15 +35,12 @@ SceneOutliner::SceneOutliner()
 
 	// Key Delegate 등록
 	m_TreeUI->SetKeyBinding(KEY::DEL, this, (CLICKED)&SceneOutliner::PressDelete);
-	
+
 
 	Reset();
 }
 
-SceneOutliner::~SceneOutliner()
-{
-
-}
+SceneOutliner::~SceneOutliner() {}
 
 void SceneOutliner::update()
 {
@@ -54,10 +52,7 @@ void SceneOutliner::update()
 	UI::update();
 }
 
-void SceneOutliner::render_update()
-{
-
-}
+void SceneOutliner::render_update() {}
 
 void SceneOutliner::Reset()
 {
@@ -87,10 +82,10 @@ void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 {
 	TreeNode* pNode = (TreeNode*)_dw;
 
-	string strKey = pNode->GetName();
+	string       strKey  = pNode->GetName();
 	CGameObject* pObject = (CGameObject*)pNode->GetData();
-		
-	assert(pObject);		
+
+	assert(pObject);
 
 	// InspectorUI 를 얻어옴
 	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
@@ -99,9 +94,7 @@ void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 
 void SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestNode)
 {
-	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode
-											, string(_pObject->GetName().begin(), _pObject->GetName().end())
-											, (DWORD_PTR)_pObject);
+	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode, ToString(_pObject->GetName()), (DWORD_PTR)_pObject);
 
 	const vector<CGameObject*>& vecChild = _pObject->GetChild();
 
@@ -122,14 +115,14 @@ void SceneOutliner::PressDelete(DWORD_PTR _dw)
 	pTargetObj->Destroy();
 
 	// InspectorUI 를 찾아서 Object 를 nullptr 로 세팅한다.
-		
+
 	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
 	pInspectorUI->SetTargetObject(nullptr);
 }
 
 void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 {
-	CGameObject* pChildObject = (CGameObject*)_dwDrag;
+	CGameObject* pChildObject      = (CGameObject*)_dwDrag;
 	CGameObject* pDropTargetObject = (CGameObject*)_dwDrop;
 
 
@@ -137,7 +130,7 @@ void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 	if (nullptr != pDropTargetObject)
 	{
 		if (pChildObject == pDropTargetObject
-			|| pDropTargetObject->IsAncestor(pChildObject))
+		    || pDropTargetObject->IsAncestor(pChildObject))
 		{
 			return;
 		}
@@ -154,7 +147,7 @@ void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 			return;
 		}
 
-		CSceneMgr::GetInst()->DisconnectParent(pChildObject);		
+		CSceneMgr::GetInst()->DisconnectParent(pChildObject);
 	}
 }
 

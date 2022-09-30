@@ -2,14 +2,12 @@
 
 #include <Engine\CGameObject.h>
 
-class CGameObjectEx :
-    public CGameObject
+class CGameObjectEx : public CGameObject
 {
 public:
-    void finalupdate();
+	void finalupdate();
 
 public:
-    CGameObjectEx();
-    ~CGameObjectEx();
+	CGameObjectEx();
+	virtual ~CGameObjectEx();
 };
-

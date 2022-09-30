@@ -13,10 +13,12 @@
 
 
 CFrustum::CFrustum()
-	: m_ProjPos{}
-	, m_WorldPos{}
-	, m_arrPlane{}
-	, m_pCam(nullptr)
+	:
+	m_ProjPos{}
+  , m_WorldPos{}
+  , m_arrPlane{}
+  , m_pCam(nullptr)
+  , m_bShowFrustum{false}
 {
 	//   4 ---- 5
 	//  /|    / |
@@ -29,19 +31,16 @@ CFrustum::CFrustum()
 	m_ProjPos[3] = Vec3(1.f, -1.f, 0.f);
 
 	m_ProjPos[4] = Vec3(-1.f, 1.f, 1.f);
-	m_ProjPos[5] = Vec3(1.f, 1.f,	1.f);
-	m_ProjPos[6] = Vec3(-1.f, -1.f,1.f);
+	m_ProjPos[5] = Vec3(1.f, 1.f, 1.f);
+	m_ProjPos[6] = Vec3(-1.f, -1.f, 1.f);
 	m_ProjPos[7] = Vec3(1.f, -1.f, 1.f);
 
 
 	m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"PentahedronMesh");
 	m_pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl");
-
 }
 
-CFrustum::~CFrustum()
-{
-}
+CFrustum::~CFrustum() {}
 
 void CFrustum::finalupdate()
 {
@@ -65,14 +64,14 @@ void CFrustum::finalupdate()
 	// 0 -- 1   |
 	// | 6 -|-- 7
 	// 2 -- 3/
-	m_arrPlane[(UINT)PLANE::PL_LEFT] = XMPlaneFromPoints(m_WorldPos[4], m_WorldPos[0], m_WorldPos[2]);
+	m_arrPlane[(UINT)PLANE::PL_LEFT]  = XMPlaneFromPoints(m_WorldPos[4], m_WorldPos[0], m_WorldPos[2]);
 	m_arrPlane[(UINT)PLANE::PL_RIGHT] = XMPlaneFromPoints(m_WorldPos[1], m_WorldPos[5], m_WorldPos[7]);
 
-	m_arrPlane[(UINT)PLANE::PL_UP] = XMPlaneFromPoints(m_WorldPos[0], m_WorldPos[4], m_WorldPos[5]);
+	m_arrPlane[(UINT)PLANE::PL_UP]   = XMPlaneFromPoints(m_WorldPos[0], m_WorldPos[4], m_WorldPos[5]);
 	m_arrPlane[(UINT)PLANE::PL_DOWN] = XMPlaneFromPoints(m_WorldPos[2], m_WorldPos[3], m_WorldPos[7]);
 
 	m_arrPlane[(UINT)PLANE::PL_NEAR] = XMPlaneFromPoints(m_WorldPos[2], m_WorldPos[0], m_WorldPos[1]);
-	m_arrPlane[(UINT)PLANE::PL_FAR] = XMPlaneFromPoints(m_WorldPos[7], m_WorldPos[5], m_WorldPos[4]);
+	m_arrPlane[(UINT)PLANE::PL_FAR]  = XMPlaneFromPoints(m_WorldPos[7], m_WorldPos[5], m_WorldPos[4]);
 }
 
 bool CFrustum::PointCheck(Vec3 _vPos)
@@ -106,15 +105,14 @@ bool CFrustum::SphereCheck(Vec3 _vPos, float _fRadius)
 }
 
 
-
 void CFrustum::UpdateData()
 {
 	if (m_bShowFrustum == false)
 		return;
 
 	g_transform.matWorld = m_matFrustumWorld;
-	g_transform.matWV = g_transform.matWorld * g_transform.matView;
-	g_transform.matWVP = g_transform.matWV * g_transform.matProj;
+	g_transform.matWV    = g_transform.matWorld * g_transform.matView;
+	g_transform.matWVP   = g_transform.matWV * g_transform.matProj;
 
 	Vec4 FrustumColor = Vec4(0.1f, 0.6f, 1.f, 1.f);
 	m_pMtrl->SetScalarParam(SCALAR_PARAM::VEC4_0, &FrustumColor);
@@ -123,7 +121,6 @@ void CFrustum::UpdateData()
 	CConstBuffer* pCB = CDevice::GetInst()->GetCB(CB_TYPE::TRANSFORM);
 	pCB->SetData(&g_transform, sizeof(tTransform));
 	pCB->UpdateData();
-
 }
 
 void CFrustum::render()
@@ -136,7 +133,6 @@ void CFrustum::render()
 
 	m_pMtrl->UpdateData();
 	m_pMesh->render();
-
 }
 
 void CFrustum::CalculateFrustumMat()
@@ -152,26 +148,22 @@ void CFrustum::CalculateFrustumMat()
 		  2	-- 3
 	*/
 
-	float fWidth = m_pCam->GetWidth();
+	float fWidth       = m_pCam->GetWidth();
 	float fAspectRatio = m_pCam->GetAspectRatio();
-	float fHeight = fWidth / fAspectRatio;
-	float fFOV = m_pCam->GetFOV();
-	float fFar = m_pCam->GetFar();
+	float fHeight      = fWidth / fAspectRatio;
+	float fFOV         = m_pCam->GetFOV();
+	float fFar         = m_pCam->GetFar();
 
 	float FrustumHeight = 2.f * fFar * tanf(fFOV * 0.5f);
-	float FrustumWidth = FrustumHeight * fAspectRatio;
+	float FrustumWidth  = FrustumHeight * fAspectRatio;
 
-	Matrix matScale = XMMatrixScaling(FrustumWidth, FrustumHeight, fFar);
+	Matrix matScale   = XMMatrixScaling(FrustumWidth, FrustumHeight, fFar);
 	m_matFrustumWorld = matScale;
 
-	Vec3	vObjScale = m_pCam->Transform()->GetWorldScale();
-	Matrix	matObjScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjScale.x, vObjScale.y, vObjScale.z));
+	Vec3   vObjScale      = m_pCam->Transform()->GetWorldScale();
+	Matrix matObjScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjScale.x, vObjScale.y, vObjScale.z));
 
 	// -> FrustumWorld : Camera 의 회전/이동 행렬에 영향 받음 크기는 자체적으로 구함 
 	// 충돌체 상대행렬 * 오브젝트 월드 크기 역행렬(크기^-1) * 오브젝트 월드 행렬(크기 * 회전 * 이동)
 	m_matFrustumWorld = m_matFrustumWorld * matObjScaleInv * m_pCam->Transform()->GetWorldMat();
-
 }
-
-
-

@@ -9,19 +9,16 @@
 
 
 CCameraMoveScript::CCameraMoveScript()
-	: CScript((int)SCRIPT_TYPE::CAMERAMOVESCRIPT)
-	, m_Filter(nullptr)
-	, m_fCamSpeed(500.f)	
-{
-}
+	:
+	CScript((int)SCRIPT_TYPE::CAMERAMOVESCRIPT)
+  , m_Filter(nullptr)
+  , m_fCamSpeed(500.f) {}
 
-CCameraMoveScript::~CCameraMoveScript()
-{
-}
+CCameraMoveScript::~CCameraMoveScript() {}
 
 void CCameraMoveScript::update()
 {
-	Vec3 vPos = Transform()->GetRelativePos();
+	Vec3  vPos   = Transform()->GetRelativePos();
 	float fSpeed = m_fCamSpeed;
 
 	if (KEY_PRESSED(KEY::LSHFT))
@@ -59,7 +56,7 @@ void CCameraMoveScript::update()
 	else
 	{
 		if (KEY_PRESSED(KEY::W))
-		{			
+		{
 			vPos.y += DT * fSpeed;
 		}
 
@@ -86,14 +83,12 @@ void CCameraMoveScript::update()
 		else
 			m_Filter->Activate();
 	}
-	
 
-	
 
 	if (KEY_PRESSED(KEY::RBTN))
 	{
 		Vec3 vRot = Transform()->GetRelativeRotation();
-		
+
 		Vec2 vMouseDir = CKeyMgr::GetInst()->GetMouseDir();
 		vRot.y += DT * vMouseDir.x * XM_PI;
 		vRot.x -= DT * vMouseDir.y * XM_PI;

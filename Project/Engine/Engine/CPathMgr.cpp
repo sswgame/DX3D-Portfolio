@@ -2,15 +2,11 @@
 #include "CPathMgr.h"
 
 CPathMgr::CPathMgr()
-	: m_strContentPath{}
-{
+	:
+	m_strContentPath{}
+  , m_strRelativePath{} {}
 
-}
-
-CPathMgr::~CPathMgr()
-{
-
-}
+CPathMgr::~CPathMgr() {}
 
 void CPathMgr::init()
 {

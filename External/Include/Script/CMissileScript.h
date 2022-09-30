@@ -1,21 +1,19 @@
 #pragma once
 #include <Engine/CScript.h>
 
-class CMissileScript :
-    public CScript
+class CMissileScript : public CScript
 {
 private:
-    float       m_fSpeed;
-    float       m_fAccTime;
+	float m_fSpeed;
+	float m_fAccTime;
 
 public:
-    virtual void update();
+	virtual void update();
 
-    virtual void OnCollisionEnter(CGameObject* _pOtherObj) override;
+	virtual void OnCollisionEnter(CGameObject* _pOtherObj) override;
 
-    CLONE(CMissileScript);
+	CLONE(CMissileScript);
 public:
-    CMissileScript();
-    ~CMissileScript();
+	CMissileScript();
+	virtual ~CMissileScript();
 };
-

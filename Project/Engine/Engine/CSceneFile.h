@@ -11,6 +11,6 @@ public:
         
 public:
     CSceneFile();
-    ~CSceneFile();
+    virtual ~CSceneFile();
 };
 

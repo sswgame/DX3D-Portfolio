@@ -8,20 +8,13 @@
 #include "CAnimator2D.h"
 
 CMeshRender::CMeshRender()
-	: CRenderComponent(COMPONENT_TYPE::MESHRENDER)
-	
-{
-}
+	:
+	CRenderComponent(COMPONENT_TYPE::MESHRENDER) {}
 
-CMeshRender::~CMeshRender()
-{
-
-}
+CMeshRender::~CMeshRender() {}
 
 
-void CMeshRender::finalupdate()
-{
-}
+void CMeshRender::finalupdate() {}
 
 void CMeshRender::render()
 {
@@ -46,13 +39,9 @@ void CMeshRender::render()
 void CMeshRender::SaveToScene(FILE* _pFile)
 {
 	CRenderComponent::SaveToScene(_pFile);
-
 }
 
 void CMeshRender::LoadFromScene(FILE* _pFile)
 {
 	CRenderComponent::LoadFromScene(_pFile);
-
 }
-
-

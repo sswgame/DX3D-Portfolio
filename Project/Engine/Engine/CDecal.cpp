@@ -4,15 +4,14 @@
 #include "CTransform.h"
 
 CDecal::CDecal()
-	: CRenderComponent(COMPONENT_TYPE::DECAL)
-	, m_eType(DECAL_TYPE::CUBE)
+	:
+	CRenderComponent(COMPONENT_TYPE::DECAL)
+  , m_eType(DECAL_TYPE::CUBE)
 {
-	SetDecalType(m_eType);	
+	SetDecalType(m_eType);
 }
 
-CDecal::~CDecal()
-{
-}
+CDecal::~CDecal() {}
 
 void CDecal::SetDecalType(DECAL_TYPE _eType)
 {
@@ -46,9 +45,7 @@ void CDecal::SetDeferredLighting(bool _bLighting)
 	SetSharedMaterial(pMtrl);
 }
 
-void CDecal::finalupdate()
-{
-}
+void CDecal::finalupdate() {}
 
 void CDecal::UpdateData()
 {

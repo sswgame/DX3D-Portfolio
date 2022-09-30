@@ -12,11 +12,12 @@
 #include "CLayer.h"
 
 CLight3D::CLight3D()
-	: CComponent(COMPONENT_TYPE::LIGHT3D)
-	, m_LightInfo{}
-	, m_iLightIdx(-1)
-	, m_pLightCam(nullptr)
-	, m_pLightMeshObj(nullptr)
+	:
+	CComponent(COMPONENT_TYPE::LIGHT3D)
+  , m_LightInfo{}
+  , m_iLightIdx(-1)
+  , m_pLightCam(nullptr)
+  , m_pLightMeshObj(nullptr)
 {
 	m_pLightCam = new CGameObject;
 	m_pLightCam->AddComponent(new CTransform);
@@ -24,13 +25,14 @@ CLight3D::CLight3D()
 }
 
 CLight3D::CLight3D(const CLight3D& _origin)
-	: CComponent(_origin)
-	, m_LightInfo(_origin.m_LightInfo)
-	, m_iLightIdx(-1)
-	, m_pLightCam(nullptr)
-	, m_pLightMeshObj(nullptr)
+	:
+	CComponent(_origin)
+  , m_LightInfo(_origin.m_LightInfo)
+  , m_iLightIdx(-1)
+  , m_pLightCam(nullptr)
+  , m_pLightMeshObj(nullptr)
 {
-	m_pLightCam = _origin.m_pLightCam->Clone();	
+	m_pLightCam = _origin.m_pLightCam->Clone();
 }
 
 CLight3D::~CLight3D()
@@ -61,7 +63,7 @@ void CLight3D::SetLightType(LIGHT_TYPE _eType)
 	case LIGHT_TYPE::SPOT:
 		m_pVolumeMesh = CResMgr::GetInst()->FindRes<CMesh>(L"ConeMesh");
 		m_pLightMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\SpotLightMtrl.mtrl");
-		break;	
+		break;
 	}
 }
 
@@ -90,7 +92,8 @@ void CLight3D::SetObject()
 		break;
 	}
 
-	m_pLightMeshObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"));
+	m_pLightMeshObj->MeshRender()->
+	                 SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"));
 	CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"Default");
 	CSceneMgr::GetInst()->SpawnObject(m_pLightMeshObj, pLayer->GetLayerIdx());
 }
@@ -101,17 +104,23 @@ void CLight3D::SetLightDir(Vec3 _vDir)
 	m_LightInfo.vLightDir.Normalize();
 
 	Vec3 vFront = m_LightInfo.vLightDir;
-	Vec3 vUp = Vec3(0.f, 1.f, 0.f);
+	Vec3 vUp    = Vec3(0.f, 1.f, 0.f);
 	Vec3 vRight = XMVector3Cross(vUp, vFront);
 	vRight.Normalize();
 	vUp = XMVector3Cross(vFront, vRight);
 	vUp.Normalize();
 
 	Matrix matRot = XMMatrixIdentity();
-	matRot._11 = vRight.x;	matRot._12 = vRight.y;	matRot._13 = vRight.z;
-	matRot._21 = vUp.x;		matRot._22 = vUp.y;		matRot._23 = vUp.z;
-	matRot._31 = vFront.x;	matRot._32 = vFront.y;	matRot._33 = vFront.z;
-	
+	matRot._11    = vRight.x;
+	matRot._12    = vRight.y;
+	matRot._13    = vRight.z;
+	matRot._21    = vUp.x;
+	matRot._22    = vUp.y;
+	matRot._23    = vUp.z;
+	matRot._31    = vFront.x;
+	matRot._32    = vFront.y;
+	matRot._33    = vFront.z;
+
 	Vec3 vRot = DecomposeRotMat(matRot);
 
 	// 광원이 가리키는 방향이 Transform 의 Front 가 되도록 회전시켜준다.
@@ -124,9 +133,7 @@ void CLight3D::SetRange(float _fRange)
 	Transform()->SetRelativeScale(_fRange * 2.f, _fRange * 2.f, _fRange * 2.f);
 }
 
-void CLight3D::update()
-{
-}
+void CLight3D::update() {}
 
 void CLight3D::finalupdate()
 {
@@ -135,7 +142,6 @@ void CLight3D::finalupdate()
 		m_pLightMeshObj->Transform()->SetRelativePos(Transform()->GetRelativePos());
 		m_pLightMeshObj->Transform()->SetRelativeScale(Transform()->GetRelativeScale());
 		m_pLightMeshObj->Transform()->SetRelativeRotation(Transform()->GetRelativeRotation());
-
 	}
 
 	if (KEY_TAP(KEY::_1))
@@ -152,7 +158,7 @@ void CLight3D::finalupdate()
 
 	m_LightInfo.vWorldPos = Transform()->GetWorldPos();
 	m_LightInfo.vLightDir = Transform()->GetWorldDir(DIR_TYPE::FRONT);
-	m_LightInfo.fRange = Transform()->GetWorldScale().x / 2.f;
+	m_LightInfo.fRange    = Transform()->GetWorldScale().x / 2.f;
 
 	m_iLightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
 
@@ -165,7 +171,7 @@ void CLight3D::finalupdate()
 
 void CLight3D::render()
 {
-	m_pLightMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &m_iLightIdx);	
+	m_pLightMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &m_iLightIdx);
 
 	// 방향성 광원인 경우 그림자 처리를 위해서 광원카메라로 투영시킬 수 있게 View * Proj 행렬을 전달
 	if (LIGHT_TYPE::DIRECTIONAL == (LIGHT_TYPE)m_LightInfo.iLightType)
@@ -174,7 +180,7 @@ void CLight3D::render()
 		m_pLightMtrl->SetScalarParam(SCALAR_PARAM::MAT_0, &matLightVP);
 	}
 
-	Transform()->UpdateData();	
+	Transform()->UpdateData();
 	m_pLightMtrl->UpdateData();
 
 	m_pVolumeMesh->render();

@@ -1,15 +1,11 @@
 #include "pch.h"
 #include "CGameObjectEx.h"
 
-#include <Engine\CComponent.h>
+#include <Engine/CComponent.h>
 
-CGameObjectEx::CGameObjectEx()
-{
-}
+CGameObjectEx::CGameObjectEx() {}
 
-CGameObjectEx::~CGameObjectEx()
-{
-}
+CGameObjectEx::~CGameObjectEx() {}
 
 void CGameObjectEx::finalupdate()
 {
@@ -19,7 +15,7 @@ void CGameObjectEx::finalupdate()
 		if (nullptr != pCom)
 			pCom->finalupdate();
 	}
-	
+
 	const vector<CGameObject*>& vecChild = GetChild();
 	for (size_t i = 0; i < vecChild.size(); ++i)
 	{
