@@ -191,6 +191,7 @@ void ResourceUI::Renew()
 	{
 		// TreeUI 가 DummyRoot 를 사용하기 때문에, 리소스 항목 노드들은 더미 자식으로 들어감
 		TreeNode* pResNode = m_TreeUI->AddTreeNode(nullptr, ToString((RES_TYPE)i));
+		pResNode->SetNodeType(NODE_TYPE::ENGINE_RESOURCE);
 
 		const map<wstring, CRes*>& mapRes = CResMgr::GetInst()->GetResList((RES_TYPE)i);
 

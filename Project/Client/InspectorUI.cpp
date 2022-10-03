@@ -12,6 +12,8 @@
 
 #include "MaterialUI.h"
 #include "TextureUI.h"
+#include "IconsFontAwesome5.h"
+
 
 InspectorUI::InspectorUI()
 	:
@@ -66,7 +68,10 @@ void InspectorUI::update()
 	}
 }
 
-void InspectorUI::render_update() {}
+void InspectorUI::render_update() 
+{
+
+}
 
 
 void InspectorUI::SetTargetObject(CGameObject* _pTarget)

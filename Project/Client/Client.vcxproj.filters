@@ -205,6 +205,9 @@
     <ClInclude Include="CGridScript.h">
       <Filter>EditorObject\EditorScript</Filter>
     </ClInclude>
+    <ClInclude Include="IconsFontAwesome5.h">
+      <Filter>ImGui\Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">

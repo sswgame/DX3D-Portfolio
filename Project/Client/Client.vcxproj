@@ -169,6 +169,7 @@
     <ClInclude Include="ComponentUI.h" />
     <ClInclude Include="CTestScene.h" />
     <ClInclude Include="CToolObjMgr.h" />
+    <ClInclude Include="IconsFontAwesome5.h" />
     <ClInclude Include="MaterialUI.h" />
     <ClInclude Include="MenuUI.h" />
     <ClInclude Include="ParamUI.h" />

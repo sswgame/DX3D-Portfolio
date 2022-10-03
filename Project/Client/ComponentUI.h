@@ -10,7 +10,8 @@ private:
 	COMPONENT_TYPE m_eComType;
 
 
-	bool m_bActive;
+	bool			m_bActive;
+	bool            m_bDelete;
 
 public:
 	void         SetTargetObject(CGameObject* _pTarget) { m_pTargetObject = _pTarget; }

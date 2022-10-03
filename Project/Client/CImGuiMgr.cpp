@@ -11,6 +11,8 @@
 
 #include "UI.h"
 #include "ParamUI.h"
+#include "IconsFontAwesome5.h"
+
 
 
 CImGuiMgr::CImGuiMgr()
@@ -43,6 +45,21 @@ void CImGuiMgr::init(HWND _hwnd)
 	//io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;     // FIXME-DPI: Experimental. THIS CURRENTLY DOESN'T WORK AS EXPECTED. DON'T USE IN USER APP!
 	//io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleViewports; // FIXME-DPI: Experimental.
 
+	// 한글 폰트 추가
+	wstring wstrFilePath = CPathMgr::GetInst()->GetContentPath();
+	string  strFontPath = ToString(wstrFilePath) + "font\\Pretendard-Medium.ttf";
+	io.Fonts->AddFontFromFileTTF(strFontPath.c_str(), 15.f, NULL, io.Fonts->GetGlyphRangesKorean());
+
+	// Font Awesome Icon 추가
+	string strFontAwesomeIcon = ToString(wstrFilePath) + "font/fa-solid-900.ttf";
+	ImFontConfig config;
+	config.MergeMode = true;
+	config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
+	static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	io.Fonts->AddFontFromFileTTF(strFontAwesomeIcon.c_str(), 13.0f, &config, icon_ranges);    // outputs a paint brush icon and 'Paint' as a string.
+	io.Fonts->Build();
+
+
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 	//ImGui::StyleColorsClassic();
@@ -51,14 +68,17 @@ void CImGuiMgr::init(HWND _hwnd)
 	ImGuiStyle& style = ImGui::GetStyle();
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
-		style.WindowRounding              = 0.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		style.WindowRounding				= 10.f;
+		style.Colors[ImGuiCol_WindowBg]		= ImVec4(0.1f, 0.1f, 0.1f, 0.5f);
+		style.FramePadding					= ImVec2(1.5f, 1.5f);
+		style.FrameRounding					= 1.f;
+		
+
+	
 	}
 
-	// 한글 폰트 추가
-	wstring wstrFilePath = CPathMgr::GetInst()->GetContentPath();
-	string  strFontPath  = ToString(wstrFilePath) + "font\\Pretendard-Medium.ttf";
-	io.Fonts->AddFontFromFileTTF(strFontPath.c_str(), 15.f, NULL, io.Fonts->GetGlyphRangesKorean());
+
+	
 	//io.Fonts->AddFontDefault();
 
 	// Setup Platform/Renderer backends

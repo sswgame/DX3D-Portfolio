@@ -14,8 +14,7 @@
 
 
 SceneOutliner::SceneOutliner()
-	:
-	UI("SceneOutliner")
+	: UI("SceneOutliner")
 {
 	m_TreeUI = new TreeUI(true);
 	m_TreeUI->SetTitle("SceneOutliner");
@@ -40,7 +39,10 @@ SceneOutliner::SceneOutliner()
 	Reset();
 }
 
-SceneOutliner::~SceneOutliner() {}
+SceneOutliner::~SceneOutliner()
+{
+
+}
 
 void SceneOutliner::update()
 {
@@ -52,7 +54,10 @@ void SceneOutliner::update()
 	UI::update();
 }
 
-void SceneOutliner::render_update() {}
+void SceneOutliner::render_update()
+{
+
+}
 
 void SceneOutliner::Reset()
 {
@@ -61,40 +66,94 @@ void SceneOutliner::Reset()
 	// 현재 Scene 을 가져온다.
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 
+	// 1. SCENE NODE 
+	TreeNode* pSceneNode = AddSceneToTree(pCurScene, m_TreeUI->GetDummyNode());
+
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
 		CLayer* pLayer = pCurScene->GetLayer(i);
+		if (pLayer->GetName() == L"") continue;
+
+		// 2. LAYER NODE
+		TreeNode* pLayerNode = AddLayerToTree(pLayer, pSceneNode);
 
 		vector<CGameObject*>& vecRoots = pLayer->GetRootObjects();
-
 		for (size_t i = 0; i < vecRoots.size(); ++i)
 		{
-			AddGameObjectToTree(vecRoots[i], m_TreeUI->GetDummyNode());
+			AddGameObjectToTree(vecRoots[i], pLayerNode);
 		}
 	}
 
 	// InspectorUI 를 얻어옴
 	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
 	pInspectorUI->SetTargetObject(nullptr);
+	pInspectorUI->SetTargetLayer(nullptr);
+	pInspectorUI->SetTargetScene(nullptr);
+
+
+	// SceneOutlinerUI 갱신
+	m_pSelectedScene = nullptr;
+	m_pSelectedLayer = nullptr;
+	m_pSelectedGameObject = nullptr;
+
 }
 
 void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 {
 	TreeNode* pNode = (TreeNode*)_dw;
 
-	string       strKey  = pNode->GetName();
-	CGameObject* pObject = (CGameObject*)pNode->GetData();
-
-	assert(pObject);
-
-	// InspectorUI 를 얻어옴
+	string			strKey = pNode->GetName();
+	NODE_TYPE		NodeType = pNode->GetNodeType();
+	DWORD_PTR		pData = pNode->GetData();
 	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
-	pInspectorUI->SetTargetObject(pObject);
+
+	switch (NodeType)
+	{
+
+	case NODE_TYPE::ENGINE_SCENE:
+	{
+		CScene* pScene = (CScene*)pData;
+		assert(pScene);
+		pInspectorUI->SetTargetScene(pScene);
+		pInspectorUI->SetTargetLayer(nullptr);
+		pInspectorUI->SetTargetObject(nullptr);
+
+		m_pSelectedScene = pScene;
+		m_pSelectedLayer = nullptr;
+		m_pSelectedGameObject = nullptr;
+
+	}
+	break;
+	case NODE_TYPE::ENGINE_LAYER:
+	{
+		CLayer* pLayer = (CLayer*)pData;
+		assert(pLayer);
+		pInspectorUI->SetTargetLayer(pLayer);
+		pInspectorUI->SetTargetObject(nullptr);
+
+		m_pSelectedLayer = pLayer;
+		m_pSelectedGameObject = nullptr;	}
+	break;
+	case NODE_TYPE::ENGINE_GAMEOBJECT:
+	{
+		CGameObject* pObj = (CGameObject*)pData;
+		assert(pObj);
+		pInspectorUI->SetTargetObject(pObj);
+
+		m_pSelectedGameObject = pObj;
+	}
+	break;
+
+	}
 }
 
-void SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestNode)
+TreeNode* SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestNode)
 {
-	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode, ToString(_pObject->GetName()), (DWORD_PTR)_pObject);
+	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode
+		, string(_pObject->GetName().begin(), _pObject->GetName().end())
+		, (DWORD_PTR)_pObject);
+	pNode->SetNodeType(NODE_TYPE::ENGINE_GAMEOBJECT);
+
 
 	const vector<CGameObject*>& vecChild = _pObject->GetChild();
 
@@ -102,6 +161,30 @@ void SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestN
 	{
 		AddGameObjectToTree(vecChild[i], pNode);
 	}
+
+	return pNode;
+}
+
+TreeNode* SceneOutliner::AddSceneToTree(CScene* _pScene, TreeNode* _pDestNode)
+{
+	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode
+		, "Scene " + string(_pScene->GetName().begin(), _pScene->GetName().end())
+		, (DWORD_PTR)_pScene);
+	pNode->SetNodeType(NODE_TYPE::ENGINE_SCENE);
+
+	return pNode;
+
+}
+
+TreeNode* SceneOutliner::AddLayerToTree(CLayer* _pLayer, TreeNode* _pDestNode)
+{
+	int layerIdx = _pLayer->GetLayerIdx();
+	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode
+		, "Layer " + string(_pLayer->GetName().begin(), _pLayer->GetName().end())
+		, (DWORD_PTR)_pLayer);
+
+	pNode->SetNodeType(NODE_TYPE::ENGINE_LAYER);
+	return pNode;
 }
 
 void SceneOutliner::PressDelete(DWORD_PTR _dw)
@@ -122,7 +205,7 @@ void SceneOutliner::PressDelete(DWORD_PTR _dw)
 
 void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 {
-	CGameObject* pChildObject      = (CGameObject*)_dwDrag;
+	CGameObject* pChildObject = (CGameObject*)_dwDrag;
 	CGameObject* pDropTargetObject = (CGameObject*)_dwDrop;
 
 
@@ -130,7 +213,7 @@ void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 	if (nullptr != pDropTargetObject)
 	{
 		if (pChildObject == pDropTargetObject
-		    || pDropTargetObject->IsAncestor(pChildObject))
+			|| pDropTargetObject->IsAncestor(pChildObject))
 		{
 			return;
 		}
