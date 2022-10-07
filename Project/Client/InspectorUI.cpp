@@ -3,6 +3,7 @@
 
 #include <Engine/CKeyMgr.h>
 #include <Engine/CScript.h>
+#include <Engine/CGameObject.h>
 
 #include "ScriptUI.h"
 #include "TransformUI.h"
@@ -16,8 +17,7 @@
 
 
 InspectorUI::InspectorUI()
-	:
-	UI("Inspector")
+	:UI("Inspector")
   , m_pTargetObject(nullptr)
   , m_pTargetRes(nullptr)
   , m_arrComUI{}
@@ -187,3 +187,18 @@ ScriptUI* InspectorUI::AddScriptUI()
 
 	return pScriptUI;
 }
+
+
+// _param : COMPONENT_TYPE
+void InspectorUI::DeleteComponent(DWORD_PTR _param)
+{
+	COMPONENT_TYPE eComType = (COMPONENT_TYPE)_param;
+	// Target Object 에서 해당 Component 를 삭제 
+	m_pTargetObject->DeleteComponent(eComType);
+
+	// UI 갱신 
+	m_arrComUI[(UINT)eComType]->Deactivate();
+	m_arrComUI[(UINT)eComType]->SetTargetObject(nullptr);
+}
+
+

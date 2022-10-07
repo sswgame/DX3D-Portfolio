@@ -37,7 +37,7 @@ void CImGuiMgr::init(HWND _hwnd)
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
 
 	//호스트 윈도우(여기선 게임 세계)와 합쳐지지 않고, 반드시 본인의 개별 윈도우를 가지도록 지정.
-	io.ConfigViewportsNoAutoMerge = true;
+	//io.ConfigViewportsNoAutoMerge = true;
 	//io.ConfigViewportsNoTaskBarIcon = true;
 	//io.ConfigViewportsNoDefaultParent = true;
 	//io.ConfigDockingAlwaysTabBar = true;
@@ -68,8 +68,8 @@ void CImGuiMgr::init(HWND _hwnd)
 	ImGuiStyle& style = ImGui::GetStyle();
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
-		style.WindowRounding				= 10.f;
-		style.Colors[ImGuiCol_WindowBg]		= ImVec4(0.1f, 0.1f, 0.1f, 0.5f);
+		style.WindowRounding				= 5.f;
+		style.Colors[ImGuiCol_WindowBg]		= ImVec4(0.2f, 0.2f, 0.2f, 0.9f);
 		style.FramePadding					= ImVec2(1.5f, 1.5f);
 		style.FrameRounding					= 1.f;
 		
@@ -118,8 +118,8 @@ void CImGuiMgr::progress()
 		pair.second->render();
 	}
 
-	bool bOpen = true;
-	ImGui::ShowDemoWindow(&bOpen);
+	//bool bOpen = true;
+	//ImGui::ShowDemoWindow(&bOpen);
 
 	// Delegate 호출
 	for (size_t i = 0; i < m_vecDelegate.size(); ++i)

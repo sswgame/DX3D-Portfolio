@@ -67,6 +67,7 @@ public:
 public:
 	void              AddChild(CGameObject* _pChild);
 	void              AddComponent(CComponent* _component);
+	void			  DeleteComponent(COMPONENT_TYPE _eType);
 	CComponent*       GetComponent(COMPONENT_TYPE _eType) { return m_arrCom[(UINT)_eType]; }
 	CRenderComponent* GetRenderComponent() { return m_pRenderComponent; }
 

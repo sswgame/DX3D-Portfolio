@@ -363,6 +363,29 @@ void CGameObject::AddComponent(CComponent* _component)
 	}
 }
 
+void CGameObject::DeleteComponent(COMPONENT_TYPE _eType)
+{
+	SAFE_DELETE(m_arrCom[(UINT)_eType]);
+
+	switch (_eType)
+	{
+		case COMPONENT_TYPE::MESHRENDER:
+		case COMPONENT_TYPE::TILEMAP:
+		case COMPONENT_TYPE::PARTICLESYSTEM:
+		case COMPONENT_TYPE::LANDSCAPE:
+		case COMPONENT_TYPE::DECAL:
+		case COMPONENT_TYPE::SKYBOX:
+			{
+				// m_pRenderComponent 가 무조건 존재한다. 
+				if (nullptr != m_pRenderComponent)
+					m_pRenderComponent = nullptr; // SAFE_DELETE 를 했기때문에 쓰레기값이 들어있다. 
+			}
+		break;
+	}
+
+
+}
+
 void CGameObject::Destroy()
 {
 	if (m_bDead)

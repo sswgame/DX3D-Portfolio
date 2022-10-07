@@ -35,7 +35,7 @@ public:
 	CLayer* GetTargetLayer() { return m_pTargetLayer; }
 
 
-	void DeleteComponent(DWORD_PTR _param);;
+	void DeleteComponent(DWORD_PTR _param);
 private:
 	ScriptUI* AddScriptUI();
 

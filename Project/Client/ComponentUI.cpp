@@ -1,10 +1,15 @@
 #include "pch.h"
 #include "ComponentUI.h"
 
+// ENGINE
 #include <Engine/CGameObject.h>
 #include <Engine/CComponent.h>
+
+
+// CLIENT
 #include "IconsFontAwesome5.h"
 #include "CImGuiMgr.h"
+#include "InspectorUI.h"
 
 
 ComponentUI::ComponentUI(const string& _strName, COMPONENT_TYPE _eComType)
@@ -60,44 +65,40 @@ void ComponentUI::render_update()
 		}
 	}
 
+	// [ COMPONENT DELETE BUTTON ]
 	if (pComponent->GetType() != COMPONENT_TYPE::TRANSFORM)
 	{
 		ImGui::SameLine();
-		// Component Delete Buttton
 		if (ImGui::Button(ICON_FA_TRASH))
-		{
-			m_bDelete = true;
-		}
-		if (m_bDelete)
-		{
-			ImGui::OpenPopup("ReallyDelete?");
-			bool unused_open = true;
-			if (ImGui::BeginPopupModal("ReallyDelete?", &unused_open))
-			{
-				ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f)
-					, "%s WARNING \n\nAre You sure you want to delete this Component? \n\n", ICON_FA_EXCLAMATION);
-				if (ImGui::Button(ICON_FA_CIRCLE))
-				{
-					m_bDelete = false;
-					/*
-					* // CImGuiMgr 에 Delegate 등록
-					tUIDelegate tDeleteCom;
-					tDeleteCom.dwParam = (DWORD_PTR)m_eComType;
-					tDeleteCom.pFunc = (PARAM_1)&InspectorUI::DeleteComponent;
-					tDeleteCom.pInst = CImGuiMgr::GetInst()->FindUI("Inspector");
+			ImGui::OpenPopup(u8"COMPONENT 삭제 경고창");
+		
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-					CImGuiMgr::GetInst()->AddDelegate(tDeleteCom);
-					*/
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::SameLine();
-				if (ImGui::Button(ICON_FA_XMARK))
-				{
-					m_bDelete = false;
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::EndPopup();
+		if (ImGui::BeginPopupModal(u8"COMPONENT 삭제 경고창", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			string TargetObjName = ToString(m_pTargetObject->GetName());
+			string ComponentName = ToString(m_eComType);
+			string text = TargetObjName + " / " + ComponentName + " COMPONENT";
+			ImGui::Text(text.c_str());
+			ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f)
+				, u8"해당 COMPONENT를 정말로 삭제하시겠습니까?\n\n");
+			ImGui::Separator();
+
+			if (ImGui::Button("OK", ImVec2(120, 0))) 
+			{ 
+				tUIDelegate tDeleteCom;
+				tDeleteCom.dwParam = (DWORD_PTR)m_eComType;
+				tDeleteCom.pFunc = (PARAM_1)&InspectorUI::DeleteComponent;
+				tDeleteCom.pInst = CImGuiMgr::GetInst()->FindUI("Inspector");
+
+				CImGuiMgr::GetInst()->AddDelegate(tDeleteCom);
+				ImGui::CloseCurrentPopup(); 
 			}
+			ImGui::SetItemDefaultFocus();
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+			ImGui::EndPopup();
 		}
 	}
 	
