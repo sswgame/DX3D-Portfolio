@@ -52,4 +52,4 @@ public:
 	~CFSM();
 };
 
-#define BIND_FN (func) std::bind(func,this,std::placeholders::_1)
+#define BIND_FN(func) std::bind(func,this,std::placeholders::_1)
