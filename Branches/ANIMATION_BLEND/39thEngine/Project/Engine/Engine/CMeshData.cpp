@@ -98,6 +98,9 @@ vector<CMeshData*> CMeshData::LoadFromFBX(const wstring& _strPath)
 
 		vecMeshData.push_back(pMeshData);
 	}
+	//폴더 삭제 위치를 여기로 옮긴 것
+	path fmbFolderPath = path{strFullPath}.replace_extension(L".fbm");
+	remove_all(fmbFolderPath);
 	return vecMeshData;
 }
 

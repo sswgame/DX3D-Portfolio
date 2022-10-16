@@ -135,7 +135,7 @@ void CTestScene::CreateTestScene()
 	{
 		vector<Ptr<CMeshData>> vecMeshData;
 
-		vecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\player.fbx");
+		vecMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\player+swords.fbx");
 		for (int i = 0; i < vecMeshData.size(); ++i)
 		{
 			Ptr<CMeshData> pMeshData = vecMeshData[i];
