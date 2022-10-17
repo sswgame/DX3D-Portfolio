@@ -403,7 +403,11 @@ void CFBXLoader::LoadTexture()
 
 			for (size_t k = 0; k < vecPath.size(); ++k)
 			{
-				path_origin   = vecPath[k];
+				path_origin = vecPath[k];
+				if (vecPath[k].empty())
+				{
+					continue;
+				}
 				path_filename = vecPath[k].filename();
 				path_dest     = path_fbx_texture.wstring() + path_filename.wstring();
 

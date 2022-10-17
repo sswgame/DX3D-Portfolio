@@ -152,8 +152,11 @@ void CResMgr::AddRes(const wstring& _strKey, type* _pRes, bool _bEngineRes)
 
 	Ptr<type> pRes = FindRes<type>(_strKey);
 
-	assert(nullptr == pRes);
-
+	/*assert(nullptr == pRes);*/
+	if (nullptr != pRes)
+	{
+		return;
+	}
 	_pRes->SetKey(_strKey);
 	_pRes->SetRelativePath(_strKey);
 	_pRes->m_bEngineRes = _bEngineRes;
