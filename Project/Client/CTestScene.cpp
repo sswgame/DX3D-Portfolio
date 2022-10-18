@@ -17,17 +17,18 @@
 #include <Engine/CLight2D.h>
 #include <Engine/CLight3D.h>
 #include <Engine/CSkyBox.h>
-#include <Engine/CDecal.h>
-#include <Engine/CLandScape.h>
-
+#include <Engine\CDecal.h>
+#include <Engine\CLandScape.h>
 #include <Engine/CSceneFile.h>
 #include <Engine/CSound.h>
+
+#include <Engine\CMeshData.h>
 
 #include <Script/CPlayerScript.h>
 #include <Script/CCameraMoveScript.h>
 #include <Script/CMissileScript.h>
 
-#include <Script/CSceneSaveLoad.h>
+#include <Script\CSceneSaveLoad.h>
 
 
 void CTestScene::CreateTestScene()
@@ -41,22 +42,22 @@ void CTestScene::CreateTestScene()
 	pCurScene->SetLayerName(3, L"Monster");
 
 	// Texture 한장 로딩해보기
-	CResMgr::GetInst()->Load<CTexture>(L"texture\\Player.bmp", L"texture\\Player.bmp");
-	CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png", L"texture\\MagicCircle.png");
+	//CResMgr::GetInst()->Load<CTexture>(L"texture\\Player.bmp", L"texture\\Player.bmp");
+	//CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png", L"texture\\MagicCircle.png");
 
-	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
-	                                                            L"texture\\tile\\TILE_01.tga");
-	Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga",
-	                                                             L"texture\\tile\\TILE_01_N.tga");
+	//Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
+	//                                                            L"texture\\tile\\TILE_01.tga");
+	//Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga",
+	//                                                             L"texture\\tile\\TILE_01_N.tga");
 
-	Ptr<CTexture> pSkyTex_01 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky01.png",
-	                                                              L"texture\\skybox\\Sky01.png");
-	Ptr<CTexture> pSkyTex_02 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky02.jpg",
-	                                                              L"texture\\skybox\\Sky02.jpg");
+	//Ptr<CTexture> pSkyTex_01 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky01.png",
+	//                                                              L"texture\\skybox\\Sky01.png");
+	//Ptr<CTexture> pSkyTex_02 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky02.jpg",
+	//                                                              L"texture\\skybox\\Sky02.jpg");
 	Ptr<CTexture> pSkyTex_03 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyDawn.dds",
 	                                                              L"texture\\skybox\\SkyDawn.dds");
-	Ptr<CTexture> pSkyTex_04 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyWater.dds",
-	                                                              L"texture\\skybox\\SkyWater.dds");
+	//Ptr<CTexture> pSkyTex_04 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyWater.dds",
+	//                                                              L"texture\\skybox\\SkyWater.dds");
 
 
 	// Camera Object 추가
@@ -123,49 +124,67 @@ void CTestScene::CreateTestScene()
 	pSkyBox->Transform()->SetRelativeScale(Vec3(100.f, 100.f, 100.f));
 
 	pSkyBox->SkyBox()->SetSkyboxType(SKYBOX_TYPE::CUBE);
-	pSkyBox->SkyBox()->GetMaterial()->SetTexParam(TEX_PARAM::TEX_CUBE_0, pSkyTex_03);
+	pSkyBox->SkyBox()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_CUBE_0, pSkyTex_03);
 	pSkyBox->SkyBox()->SetFrustumCulling(false);
 
 	pCurScene->AddObject(pSkyBox, L"Default");
 
 
 	// LandScape
-	CGameObject* pObject = new CGameObject;
-	pObject->SetName(L"LandScape");
+	//CGameObject* pObject = new CGameObject;
+	//pObject->SetName(L"LandScape");
 
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CLandScape);
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CLandScape);
 
-	pObject->Transform()->SetRelativePos(0.f, 0.f, 0.f);
-	pObject->Transform()->SetRelativeScale(2000.f, 2000.f, 2000.f);
-	pObject->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+	//pObject->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+	//pObject->Transform()->SetRelativeScale(2000.f, 2000.f, 2000.f);
+	//pObject->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 
-	pObject->LandScape()->SetDynamicShadow(false);
-	pObject->LandScape()->SetFrustumCulling(false);
-	pObject->LandScape()->SetFaceCount(8, 8);
-	pObject->LandScape()->Create();
-
-	pCurScene->AddObject(pObject, L"Default");
+	//pObject->LandScape()->SetDynamicShadow(false);
+	//pObject->LandScape()->SetFrustumCulling(false);
+	//pObject->LandScape()->SetFaceCount(8, 8);
+	//pObject->LandScape()->Create();
+ 
+	//pCurScene->AddObject(pObject, L"Default");
 
 
 	// Tessellation Object
-	pObject = new CGameObject;
-	pObject->SetName(L"Tessellation Object");
+	//pObject = new CGameObject;
+	//pObject->SetName(L"Tessellation Object");
 
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CMeshRender);
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CMeshRender);
 
-	pObject->Transform()->SetRelativePos(0.f, 500.f, 500.f);
-	pObject->Transform()->SetRelativeScale(100.f, 100.f, 100.f);
+	//pObject->Transform()->SetRelativePos(0.f, 500.f, 500.f);
+	//pObject->Transform()->SetRelativeScale(100.f, 100.f, 100.f);
 
-	pObject->MeshRender()->SetDynamicShadow(true);
-	pObject->MeshRender()->SetFrustumCulling(true);
-	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	pObject->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\TessMtrl.mtrl"));
-	pObject->MeshRender()->GetMaterial()->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->MeshRender()->SetFrustumCulling(true);
+	//pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	//pObject->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\TessMtrl.mtrl"),0);
+	//pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
 	//pObject->MeshRender()->GetMaterial()->SetTexParam(TEX_PARAM::TEX_1, pTileNTex);
 
-	pCurScene->AddObject(pObject, L"Default");
+	//pCurScene->AddObject(pObject, L"Default");
+
+	// ============
+	// FBX Loading
+	// ============	
+	{
+		Ptr<CMeshData> pMeshData = nullptr;
+		CGameObject* pObj = nullptr;
+
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\Monster.fbx");
+		//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());		
+
+		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\Monster.mdat", L"meshdata\\Monster.mdat");
+
+		pObj = pMeshData->Instantiate();
+		pObj->SetName(L"Monster");
+		pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+		pCurScene->AddObject(pObj, 0);
+	}
 
 
 	// 충돌 레이어 설정

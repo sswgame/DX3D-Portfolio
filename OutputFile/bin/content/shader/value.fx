@@ -19,6 +19,11 @@ cbuffer TRANSFORM : register(b0)
 
 cbuffer SCALAR_PARAM : register(b1)
 {
+    float4 vDiff;
+    float4 vSpec;
+    float4 vAmb;
+    float4 vEmv;
+    
     int g_int_0;
     int g_int_1;
     int g_int_2;
@@ -55,8 +60,9 @@ cbuffer SCALAR_PARAM : register(b1)
     int g_btexarr_0;
     int g_btexarr_1;
     
-    int iPadding1;
-    int iPadding2;
+    // 3D Animation Á¤º¸
+    int g_iAnim;
+    int g_iBoneCount;
 }
 
 
@@ -98,7 +104,8 @@ Texture2DArray g_texarr_1 : register(t9);
 
 Texture2D g_Atlas : register(t10);
 
-
+// Animation3D Bone Matrix Buffer
+StructuredBuffer<Matrix> g_arrBoneMat : register(t30);
 
 // Light2DBuffer, // Light3DBuffer
 StructuredBuffer<tLightInfo> g_Light2DBuffer : register(t60);
@@ -108,10 +115,6 @@ StructuredBuffer<tLightInfo> g_Light3DBuffer : register(t61);
 Texture2D g_noise_01 : register(t70);
 Texture2D g_noise_02 : register(t71);
 Texture2D g_noise_cloud : register(t72);
-
-
-
-
 
 SamplerState g_sam_0 : register(s0); // Anisotropic Filter
 SamplerState g_sam_1 : register(s1); // Point Filter

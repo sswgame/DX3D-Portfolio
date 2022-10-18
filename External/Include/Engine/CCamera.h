@@ -33,6 +33,8 @@ protected:
 	Matrix m_matProj;
 	Matrix m_matProjInv;
 
+	tRay	m_ray;      // 마우스 방향을 향하는 직선
+
 	PROJ_TYPE m_eProjType;
 
 	float m_fWidth;       // 투영 가로길이
@@ -60,7 +62,7 @@ public:
 	float GetFOV() { return m_fFOV; }
 	float GetFar() { return m_fFar; }
 	bool  GetShowFrustum() { return m_Frustum.GetShowFrustum(); }
-
+	const tRay& GetRay() { return m_ray; }
 	PROJ_TYPE GetProjType() { return m_eProjType; }
 
 	void CheckLayerMask(int _iLayerIdx);
@@ -74,6 +76,7 @@ public:
 
 private:
 	void SortGameObject(); // Shader Domain 에 따른 물체 분류
+	void CalRay();  // 마우스 방향으로 광선 연산
 
 public:
 	void SortShadowObject();

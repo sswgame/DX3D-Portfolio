@@ -28,7 +28,7 @@ CParticleSystem::CParticleSystem()
 
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
-	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"));
+	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
 
 	m_CS = (CParticleUpdateShader*)CResMgr::GetInst()->FindRes<CComputeShader>(L"ParticleUpdateShader").Get();
 
@@ -60,7 +60,7 @@ CParticleSystem::CParticleSystem(const CParticleSystem& _origin)
   , m_iLighting(_origin.m_iLighting)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
-	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"));
+	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
 
 	m_CS = (CParticleUpdateShader*)CResMgr::GetInst()->FindRes<CComputeShader>(L"ParticleUpdateShader").Get();
 
@@ -130,9 +130,9 @@ void CParticleSystem::render()
 	m_ParticleBuffer->UpdateData(PIPELINE_STAGE::GS | PIPELINE_STAGE::PS, 16);
 
 	//GetMaterial()->SetScalarParam(SCALAR_PARAM::INT_0, &i);
-	GetMaterial()->SetScalarParam(SCALAR_PARAM::INT_1, &m_bPosInherit);
-	GetMaterial()->SetScalarParam(SCALAR_PARAM::INT_2, &m_iLighting);
-	GetMaterial()->UpdateData();
+	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_1, &m_bPosInherit);
+	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_2, &m_iLighting);
+	GetMaterial(0)->UpdateData();
 	GetMesh()->render_particle(m_iMaxCount);
 
 	m_ParticleBuffer->Clear();

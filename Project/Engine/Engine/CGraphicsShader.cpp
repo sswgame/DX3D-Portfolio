@@ -4,12 +4,6 @@
 #include "CPathMgr.h"
 #include "CDevice.h"
 
-#ifdef _DEBUG
-static UINT g_iFlag = D3DCOMPILE_DEBUG;
-#else
-static UINT g_iFlag = 0;
-#endif
-
 vector<D3D11_INPUT_ELEMENT_DESC> CGraphicsShader::g_vecLayout;
 
 

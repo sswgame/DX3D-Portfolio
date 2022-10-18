@@ -2,7 +2,6 @@
 #include "CShader.h"
 
 #include "CDevice.h"
-
 #include "CTexture.h"
 #include "CStructuredBuffer.h"
 

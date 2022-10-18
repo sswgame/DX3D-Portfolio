@@ -23,20 +23,21 @@ private:
     ComPtr<ID3D11RenderTargetView>      m_pRTV;     // Texture2D 를 RenderTarget 용도로 전달
     ComPtr<ID3D11DepthStencilView>      m_pDSV;     // Texture2D 를 DepthStencil 용도로 전달
 
-
-
     D3D11_TEXTURE2D_DESC                m_tDesc;
 
 protected:
-    virtual int Load(const wstring& _strFilePath);
-    virtual int Save(const wstring& _strFilePath);
+    virtual int Load(const wstring& _strFilePath) override;
+    virtual int Load(const wstring& _strFilePath, int _iMipLevel);
+    virtual int Save(const wstring& _strFilePath) override;
 
     void Create(UINT _iWidth, UINT _iHeight, DXGI_FORMAT _format, UINT _flag);
     void Create(ComPtr<ID3D11Texture2D> _pTex2D);
+    void CreateArrayTexture(const vector<Ptr<CTexture>>& _vecTex, int _iMapLevel = 1);
 
 public:
     float Width() { return (float)m_tDesc.Width; }
     float Height() { return (float)m_tDesc.Height; }
+    UINT GetArraySize() { return m_tDesc.ArraySize; }
 
     ComPtr<ID3D11Texture2D> GetTex2D() {return m_pTex2D;}
     ComPtr<ID3D11ShaderResourceView>  GetSRV() { return m_pSRV; }

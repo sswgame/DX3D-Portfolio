@@ -132,7 +132,7 @@ void CFrustum::render()
 	UpdateData();
 
 	m_pMtrl->UpdateData();
-	m_pMesh->render();
+	m_pMesh->render(0);
 }
 
 void CFrustum::CalculateFrustumMat()

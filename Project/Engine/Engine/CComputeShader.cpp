@@ -5,6 +5,13 @@
 #include "CConstBuffer.h"
 #include "CPathMgr.h"
 
+#ifdef _DEBUG
+static UINT g_iFlag = D3DCOMPILE_DEBUG;
+#else
+static UINT g_iFlag = 0;
+#endif
+
+
 
 CComputeShader::CComputeShader()
 	:

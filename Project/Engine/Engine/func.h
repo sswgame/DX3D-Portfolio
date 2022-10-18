@@ -51,6 +51,9 @@ void SaveWStringToFile(const wstring& _str, FILE* _pFile);
 void LoadWStringFromFile(wstring& _str, FILE* _pFile);
 
 
+Matrix GetMatrixFromFbxMatrix(FbxAMatrix& _mat);
+
+
 std::wstring ToWString(COMPONENT_TYPE _type);
 std::string  ToString(COMPONENT_TYPE _type);
 std::wstring ToWString(RES_TYPE _type);

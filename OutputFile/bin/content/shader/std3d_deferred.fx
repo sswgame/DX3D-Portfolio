@@ -11,6 +11,9 @@ struct VTX_IN
     float3 vTangent : TANGENT;
     float3 vNormal : NORMAL;
     float3 vBinormal : BINORMAL;
+
+    float4 vWeights : BLENDWEIGHT;
+    float4 vIndices : BLENDINDICES;
 };
 
 struct VTX_OUT
@@ -19,7 +22,6 @@ struct VTX_OUT
     float2 vUV : TEXCOORD;
     
     float3 vViewPos : POSITION;
-    
     float3 vViewTangent : TANGENT;
     float3 vViewNormal : NORMAL;
     float3 vViewBinormal : BINORMAL;
@@ -29,6 +31,8 @@ struct VTX_OUT
 // Std3D_Deferred
 // g_tex_0 : Output Texture
 // g_tex_1 : Normal Map
+// g_tex_2 : Specular Map
+// g_tex_3 : Embient Map
 // DOMAIN : Deferred
 // Rasterizer : CULL_BACK
 // DepthStencilState : LESS
@@ -38,11 +42,16 @@ VTX_OUT VS_Std3D_Deferred(VTX_IN _in)
 {
     VTX_OUT output = (VTX_OUT) 0.f;
         
+  /*  if (g_iAnim)
+    {
+        Skinning(_in.vPos, _in.vTangent, _in.vBinormal, _in.vNormal, _in.vWeights, _in.vIndices, 0);
+    }*/
+
     output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
     
     output.vViewPos = mul(float4(_in.vPos, 1.f), g_matWV).xyz;
     output.vViewTangent = normalize(mul(float4(_in.vTangent, 0.f), g_matWV)).xyz;
-    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV)).xyz;    
+    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV)).xyz;
     output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV)).xyz;
     output.vUV = _in.vUV;
     
@@ -51,10 +60,10 @@ VTX_OUT VS_Std3D_Deferred(VTX_IN _in)
 
 struct PS_OUT
 {
-    float4 vColor       : SV_Target0;
-    float4 vNormal      : SV_Target1;
-    float4 vPosition    : SV_Target2;
-    float4 vData        : SV_Target3;
+    float4 vColor : SV_Target0;
+    float4 vNormal : SV_Target1;
+    float4 vPosition : SV_Target2;
+    float4 vData : SV_Target3;
 };
 
 PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
@@ -63,10 +72,10 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
     
     output.vColor = float4(1.f, 0.f, 1.f, 1.f);
     
-    if(g_btex_0)
+    if (g_btex_0)
     {
         output.vColor = g_tex_0.Sample(g_sam_0, _in.vUV);
-    }    
+    }
     
     
     // ³ë¸»¸ÊÇÎ
@@ -85,10 +94,18 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
         
         vViewNormal = normalize(mul(vNormal, matRot));
     }
+
+    // ¹Ý»ç¸Ê
+    if (g_btex_2)
+    {
+        float4 vSpec = g_tex_2.Sample(g_sam_0, _in.vUV);
+        float fSpecData = encode(vSpec);
+        output.vData.r = fSpecData;
+    }
     
     output.vNormal = float4(vViewNormal, 1.f);
     output.vPosition = float4(_in.vViewPos, 1.f);
-    output.vData = float4(0.f, 0.f, 0.f, 1.f);
+    
     
     return output;
 }
@@ -118,14 +135,14 @@ float4 PS_Deferred_Decal(VTX_OUT _in) : SV_Target0
 {
     float4 vOutColor = (float4) 0.f;
         
-    float2 vUV = _in.vPosition.xy / vResolution;    
+    float2 vUV = _in.vPosition.xy / vResolution;
     float3 vViewPos = PositionTarget.Sample(g_sam_0, vUV).xyz;
     
     if (vViewPos.z == 0.f)
         clip(-1);
     
-    float3 vWorldPos = mul(float4(vViewPos, 1.f), g_matViewInv);
-    float3 vLocalPos = mul(float4(vWorldPos, 1.f), g_matWorldInv);    
+    float3 vWorldPos = mul(float4(vViewPos, 1.f), g_matViewInv).xyz;
+    float3 vLocalPos = mul(float4(vWorldPos, 1.f), g_matWorldInv).xyz;
     
     int IsInner = 0;
     
@@ -138,34 +155,27 @@ float4 PS_Deferred_Decal(VTX_OUT _in) : SV_Target0
             IsInner = 1;
         }
     }
-    
     else
     {
         if (length(vLocalPos) < 0.5f)
         {
             IsInner = 1;
-        }            
+        }
     }
     
     
     if (IsInner)
     {
         float2 vDecalUV = vLocalPos.xz + 0.5f;
-        vOutColor = DecalTex.Sample(g_sam_0, vDecalUV);        
+        vOutColor = DecalTex.Sample(g_sam_0, vDecalUV);
     }
     else
     {
         clip(-1);
-    }    
+    }
     
     return vOutColor;
 }
-
-
-
-
-
-
 
 
 

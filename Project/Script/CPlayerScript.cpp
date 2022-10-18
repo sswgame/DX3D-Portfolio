@@ -70,7 +70,7 @@ void CPlayerScript::update()
 	if (KEY_TAP(KEY::B))
 	{
 		m_bBurn              = true;
-		Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial();
+		Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 		Vec4           vColor(1.f, 0.75f, 0.5f, 0.f);
 		pMtrl->SetScalarParam(SCALAR_PARAM::VEC4_0, &vColor);
 	}
@@ -88,7 +88,7 @@ void CPlayerScript::Burnning()
 
 	m_fBurnStrength += DT * (1.f / 3.f);
 
-	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial();
+	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fBurnStrength);
 }
 

@@ -2,7 +2,10 @@
 #include "CResMgr.h"
 #include "CPathMgr.h"
 
-CResMgr::CResMgr() {}
+CResMgr::CResMgr()
+{
+
+}
 
 CResMgr::~CResMgr()
 {
@@ -30,12 +33,7 @@ void CResMgr::SaveChangedRes()
 }
 
 
-Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey,
-                                     UINT           _iWidth,
-                                     UINT           _iHeight,
-                                     DXGI_FORMAT    _format,
-                                     UINT           _flag,
-                                     bool           _bEngineRes)
+Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight, DXGI_FORMAT _format, UINT _flag, bool _bEngineRes)
 {
 	assert(nullptr == FindRes<CTexture>(_strKey));
 
@@ -64,6 +62,55 @@ Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey, ComPtr<ID3D11Textur
 	AddRes<CTexture>(_strKey, pTexture, _bEngineRes);
 
 	return pTexture;
+}
+
+Ptr<CTexture> CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRelativePath, int _iMapLevel)
+{
+	CTexture* pRes = FindRes<CTexture>(_strKey).Get();
+	if (nullptr != pRes)
+	{
+		return pRes;
+	}
+
+	pRes = new CTexture;
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += _strRelativePath;
+
+	if (FAILED(pRes->Load(strFilePath, _iMapLevel)))
+	{
+		return nullptr;
+	}
+
+	pRes->SetKey(_strKey);
+	pRes->SetRelativePath(_strRelativePath);
+
+	m_Res[(UINT)RES_TYPE::TEXTURE].insert(make_pair(_strKey, pRes));
+
+	return pRes;
+}
+
+
+
+Ptr<CMeshData> CResMgr::LoadFBX(const wstring& _strPath)
+{
+	wstring strFileName = path(_strPath).stem();
+
+	wstring strName = L"meshdata\\";
+	strName += strFileName + L".mdat";
+
+	Ptr<CMeshData> pMeshData = FindRes<CMeshData>(strName);
+
+	if (nullptr != pMeshData)
+		return pMeshData;
+
+	pMeshData = CMeshData::LoadFromFBX(_strPath);
+	pMeshData->SetKey(strName);
+	pMeshData->SetRelativePath(strName);
+	//pMeshData->m_bEngineRes = true;
+	m_Res[(UINT)RES_TYPE::MESHDATA].insert(make_pair(strName, pMeshData.Get()));
+
+	return pMeshData;
 }
 
 void CResMgr::DeleteRes(const wstring& _strKey)

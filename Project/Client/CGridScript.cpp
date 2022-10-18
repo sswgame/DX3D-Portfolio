@@ -28,7 +28,7 @@ void CGridScript::CalculateGrid()
 	// 2 단계 : 간격 100, 카메라 높이 100 ~ 1000
 	// 3 단계 : 간격 1000, 카메라 높이 1000 ~ 10000
 	// 4 단계 : 간격 10000, 카메라 높이 10000 ~ 
-	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial();
+	Ptr<CMaterial> pMtrl = MeshRender()->GetMaterial(0);
 
 	UINT iHeight = (UINT)abs(m_vToolCamPos.y);
 	UINT iStep   = 1;

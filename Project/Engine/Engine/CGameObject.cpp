@@ -404,7 +404,7 @@ void CGameObject::Destroy()
 #include "CCollider2D.h"
 //#include "CCollider3D.h"
 #include "CAnimator2D.h"
-//#include "CAnimator3D.h"
+#include "CAnimator3D.h"
 #include "CParticleSystem.h"
 #include "CTileMap.h"
 

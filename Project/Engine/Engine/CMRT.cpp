@@ -4,21 +4,21 @@
 #include "CDevice.h"
 
 CMRT::CMRT()
-	:
-	m_arrRT{}
-  , m_iRTCount(0)
-  , m_pDSTex(nullptr)
-  , m_arrClearColor{
-		Vec4(0.f, 0.f, 0.f, 1.f),
-		Vec4(0.f, 0.f, 0.f, 1.f),
-		Vec4(0.f, 0.f, 0.f, 1.f),
-		Vec4(0.f, 0.f, 0.f, 1.f),
-		Vec4(0.f, 0.f, 0.f, 1.f),
-		Vec4(0.f, 0.f, 0.f, 1.f),
-		Vec4(0.f, 0.f, 0.f, 1.f),
-		Vec4(0.f, 0.f, 0.f, 1.f)
-	}
-  , m_tViewPort{} {}
+	: m_arrRT{}
+	  , m_iRTCount(0)
+	  , m_pDSTex(nullptr)
+	  , m_arrClearColor{
+			Vec4(0.f, 0.f, 0.f, 1.f),
+			Vec4(0.f, 0.f, 0.f, 1.f),
+			Vec4(0.f, 0.f, 0.f, 1.f),
+			Vec4(0.f, 0.f, 0.f, 1.f),
+			Vec4(0.f, 0.f, 0.f, 1.f),
+			Vec4(0.f, 0.f, 0.f, 1.f),
+			Vec4(0.f, 0.f, 0.f, 1.f),
+			Vec4(0.f, 0.f, 0.f, 1.f)
+		}
+	  , m_tViewPort{} 
+{}
 
 CMRT::~CMRT() {}
 

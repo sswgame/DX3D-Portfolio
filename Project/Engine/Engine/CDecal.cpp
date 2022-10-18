@@ -42,27 +42,27 @@ void CDecal::SetDeferredLighting(bool _bLighting)
 		pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ForwardDecalMtrl.mtrl");
 	}
 
-	SetSharedMaterial(pMtrl);
+	SetSharedMaterial(pMtrl, 0);
 }
 
 void CDecal::finalupdate() {}
 
 void CDecal::UpdateData()
 {
-	GetMaterial()->SetScalarParam(SCALAR_PARAM::INT_0, (int*)&m_eType);
-	GetMaterial()->SetTexParam(TEX_PARAM::TEX_1, m_pDecalTex);
+	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, (int*)&m_eType);
+	GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1, m_pDecalTex);
 }
 
 void CDecal::render()
 {
-	if (nullptr == GetMesh() || nullptr == GetMaterial())
+	if (nullptr == GetMesh() || nullptr == GetMaterial(0))
 		return;
 
 	UpdateData();
 
 	Transform()->UpdateData();
-	GetMaterial()->UpdateData();
-	GetMesh()->render();
+	GetMaterial(0)->UpdateData();
+	GetMesh()->render(0);
 }
 
 void CDecal::SaveToScene(FILE* _pFile)

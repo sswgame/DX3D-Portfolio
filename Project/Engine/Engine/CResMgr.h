@@ -12,7 +12,7 @@
 #include "CComputeShader.h"
 #include "CSceneFile.h"
 #include "CSound.h"
-//#include "CMeshData.h"
+#include "CMeshData.h"
 
 
 
@@ -46,23 +46,26 @@ public:
 
 	template<typename type>
 	Ptr<type> FindRes(const wstring& _strKey);
-		
+
+	Ptr<CMeshData> LoadFBX(const wstring& _strPath);
 
 	const map<wstring, CRes*>& GetResList(RES_TYPE _eType) { return m_Res[(UINT)_eType]; }
 
 	template<typename type>
 	void AddRes(const wstring& _strKey, type* _pRes, bool _bEngineRes = false);
-		
+
 	// _flag : D3D11_BIND_FLAG
 	Ptr<CTexture> CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight
 		, DXGI_FORMAT _format, UINT _flag, bool _bEngineRes = false);
 
 	Ptr<CTexture> CreateTexture(const wstring& _strKey, ComPtr<ID3D11Texture2D> _pTex2D, bool _bEngineRes = false);
 
+	Ptr<CTexture> LoadTexture(const wstring& _strKey, const wstring& _strRelativePath, int _iMapLevel);
+
 
 	template<typename T>
 	inline void ForceDeleteRes(const wstring& _key);
-	
+
 
 private:
 	void DeleteRes(const wstring& _strKey);
@@ -75,22 +78,25 @@ inline RES_TYPE CResMgr::GetResType()
 {
 	const type_info& info = typeid(type);
 
-	if (std::is_same_v<type,CPrefab>)
+	if (info.hash_code() == typeid(CPrefab).hash_code())
 		return RES_TYPE::PREFAB;
-	else if (std::is_same_v<type, CMesh>)
+	else if (info.hash_code() == typeid(CMeshData).hash_code())
+		return RES_TYPE::MESHDATA;
+	else if (info.hash_code() == typeid(CMesh).hash_code())
 		return RES_TYPE::MESH;
-	else if (std::is_same_v<type, CSound>)
+	else if (info.hash_code() == typeid(CSound).hash_code())
 		return RES_TYPE::SOUND;
-	else if (std::is_same_v<type, CGraphicsShader>)
+	else if (info.hash_code() == typeid(CGraphicsShader).hash_code())
 		return RES_TYPE::GRAPHICS_SHADER;
-	else if (std::is_same_v<type, CComputeShader>)
+	else if (info.hash_code() == typeid(CComputeShader).hash_code())
 		return RES_TYPE::COMPUTE_SHADER;
-	else if (std::is_same_v<type, CMaterial>)
+	else if (info.hash_code() == typeid(CMaterial).hash_code())
 		return RES_TYPE::MATERIAL;
-	else if (std::is_same_v<type, CTexture>)
+	else if (info.hash_code() == typeid(CTexture).hash_code())
 		return RES_TYPE::TEXTURE;
-	else if (std::is_same_v<type, CSceneFile>)
+	else if (info.hash_code() == typeid(CSceneFile).hash_code())
 		return RES_TYPE::SCENEFILE;
+
 
 	return RES_TYPE::END;
 }
@@ -155,7 +161,8 @@ void CResMgr::AddRes(const wstring& _strKey, type* _pRes, bool _bEngineRes)
 		return;
 
 	wstring strContent = CPathMgr::GetInst()->GetContentPath();
-	if (FAILED(_pRes->Load(strContent + _pRes->GetRelativePath())))
+
+	if (!filesystem::exists(strContent + _pRes->GetRelativePath()))
 	{
 		_pRes->Save(strContent + _pRes->GetKey());
 	}

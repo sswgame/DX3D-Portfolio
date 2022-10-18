@@ -46,5 +46,21 @@ struct tLightInfo
     float3 vPadding;
 };
 
+struct tRaycastOut
+{
+    float2 vUV;
+    int iDist;
+    int success;
+};
+
+
+struct tSkinningInfo
+{
+    float3 vPos;
+    float3 vTangent;
+    float3 vBinormal;
+    float3 vNormal;
+};
+
 
 #endif

@@ -16,13 +16,10 @@
 #include "CMRT.h"
 
 CRenderMgr::CRenderMgr()
-	:
-	m_pEditorCam(nullptr)
-  , m_pLight2DBuffer(nullptr)
-  , m_pLight3DBuffer(nullptr)
-  , m_arrMRT{}
-  , m_pMergeShader{nullptr}
-  , m_pMergeMtrl{nullptr}
+	: m_pEditorCam(nullptr)
+	, m_pLight2DBuffer(nullptr)
+	, m_pLight3DBuffer(nullptr)
+	, m_arrMRT{}
 {
 	m_pLight2DBuffer = new CStructuredBuffer;
 	m_pLight2DBuffer->Create(sizeof(tLightInfo), 2, SB_TYPE::READ_ONLY, true, nullptr);
@@ -42,7 +39,10 @@ CRenderMgr::~CRenderMgr()
 	SAFE_DELETE(m_pMergeMtrl);
 }
 
-void CRenderMgr::update() {}
+void CRenderMgr::update()
+{
+
+}
 
 void CRenderMgr::render()
 {
@@ -77,71 +77,6 @@ void CRenderMgr::render()
 
 	m_vecLight2D.clear();
 	m_vecLight3D.clear();
-
-	// Render Frustum - Eitor Camera
-	if (m_pEditorCam != nullptr)
-		m_pEditorCam->render_frustum();
-
-
-	// Render Frustum - Camera 
-	if (!m_vecCam.empty())
-	{
-		for (int i = 0; i < m_vecCam.size(); ++i)
-		{
-			CCamera* pCam = m_vecCam[i];
-			if (pCam != nullptr && pCurScene->GetSceneState() == SCENE_STATE::STOP)
-				pCam->render_frustum();
-		}
-		
-	}
-	
-}
-
-void CRenderMgr::CameraRender(CCamera* _cam)
-{
-	// Camera 가 찍는 Layer 의 오브젝트들을 Shader Domain 에 따라 분류해둠
-	_cam->SortGameObject();
-
-	// Directional Light ShadowMap 만들기
-	render_shadowmap();
-
-	g_transform.matView    = _cam->GetViewMat();
-	g_transform.matViewInv = _cam->GetViewInvMat();
-	g_transform.matProj    = _cam->GetProjMat();
-
-	// Deferred 물체 렌더링	
-	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
-	_cam->render_deferred();
-
-	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
-	_cam->render_deferred_decal();
-
-	// 광원 렌더링
-	render_lights();
-
-	// Merge
-	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
-
-	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-	int        a         = 0;
-	m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
-	m_pMergeMtrl->UpdateData();
-	pRectMesh->render();
-
-	// Foward 물체 렌더링	
-	_cam->render_forward();
-
-	// Foward Decal 렌더링
-	_cam->render_forward_decal();
-
-	// Masked 물체 렌더링
-	_cam->render_masked();
-
-	// Alpha 물체 렌더링
-	_cam->render_translucent();
-
-	// PostProcess 물체 렌더링
-	_cam->render_postprocess();
 }
 
 void CRenderMgr::render_play()
@@ -152,8 +87,41 @@ void CRenderMgr::render_play()
 	// 메인 카메라 시점으로 렌더링
 	CCamera* pMainCam = m_vecCam[0];
 
-	// 추가
-	CameraRender(pMainCam);
+	// Camera 가 찍는 Layer 의 오브젝트들을 Shader Domain 에 따라 분류해둠
+	pMainCam->SortGameObject();
+
+	g_transform.matView = pMainCam->GetViewMat();
+	g_transform.matProj = pMainCam->GetProjMat();
+
+
+	// Deferred 물체 렌더링	
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
+	m_pEditorCam->render_deferred();
+
+
+	// Merge
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
+
+	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+	int a = 0;
+	m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
+	m_pMergeMtrl->UpdateData();
+	pRectMesh->render(0);
+
+
+	// Foward 물체 렌더링	
+
+	pMainCam->render_forward();
+
+	// Masked 물체 렌더링
+	pMainCam->render_masked();
+
+	// Alpha 물체 렌더링
+	pMainCam->render_translucent();
+
+	// PostProcess 물체 렌더링
+	pMainCam->render_postprocess();
+
 
 	// Sub 카메라 시점으로 렌더링
 	for (int i = 1; i < m_vecCam.size(); ++i)
@@ -161,8 +129,19 @@ void CRenderMgr::render_play()
 		if (nullptr == m_vecCam[i])
 			continue;
 
-		// 추가
-		CameraRender(m_vecCam[i]);
+		m_vecCam[i]->SortGameObject();
+
+		g_transform.matView = m_vecCam[i]->GetViewMat();
+		g_transform.matProj = m_vecCam[i]->GetProjMat();
+
+		// Foward 물체 렌더링
+		m_vecCam[i]->render_forward();
+
+		// Masked 물체 렌더링
+		m_vecCam[i]->render_masked();
+
+		// Alpha 물체 렌더링
+		m_vecCam[i]->render_translucent();
 	}
 }
 
@@ -171,7 +150,52 @@ void CRenderMgr::render_editor()
 	if (nullptr == m_pEditorCam)
 		return;
 
-	CameraRender(m_pEditorCam);
+	// 에디터 카메라 시점으로 렌더링
+	// Camera 가 찍는 Layer 의 오브젝트들을 Shader Domain 에 따라 분류해둠
+	m_pEditorCam->SortGameObject();
+
+
+	// Directional Light ShadowMap 만들기
+	render_shadowmap();
+
+
+	g_transform.matView = m_pEditorCam->GetViewMat();
+	g_transform.matViewInv = m_pEditorCam->GetViewInvMat();
+	g_transform.matProj = m_pEditorCam->GetProjMat();
+
+	// Deferred 물체 렌더링			
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
+	m_pEditorCam->render_deferred();
+
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
+	m_pEditorCam->render_deferred_decal();
+
+	// 광원 렌더링
+	render_lights();
+
+	// Merge
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
+
+	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+	int a = 0;
+	m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
+	m_pMergeMtrl->UpdateData();
+	pRectMesh->render(0);
+
+	// Foward 물체 렌더링	
+	m_pEditorCam->render_forward();
+
+	// Masked 물체 렌더링
+	m_pEditorCam->render_masked();
+
+	// Foward Decal 렌더링
+	m_pEditorCam->render_forward_decal();
+
+	// Alpha 물체 렌더링
+	m_pEditorCam->render_translucent();
+
+	// PostProcess 물체 렌더링
+	m_pEditorCam->render_postprocess();
 }
 
 void CRenderMgr::render_shadowmap()
@@ -201,7 +225,7 @@ void CRenderMgr::RegisterCamera(CCamera* _pCam)
 	if (-1 == _pCam->m_iCamIdx)
 	{
 		m_vecCam.push_back(_pCam);
-		int iIdx         = (int)m_vecCam.size() - 1;
+		int iIdx = (int)m_vecCam.size() - 1;
 		_pCam->m_iCamIdx = iIdx;
 	}
 	else
@@ -224,7 +248,7 @@ void CRenderMgr::SwapCameraIndex(CCamera* _pCam, int _iChangeIdx)
 			if (nullptr != m_vecCam[_iChangeIdx])
 			{
 				m_vecCam[_iChangeIdx]->m_iCamIdx = (int)i;
-				_pCam->m_iCamIdx                 = _iChangeIdx;
+				_pCam->m_iCamIdx = _iChangeIdx;
 
 				return;
 			}
@@ -237,7 +261,7 @@ void CRenderMgr::SwapCameraIndex(CCamera* _pCam, int _iChangeIdx)
 void CRenderMgr::CopyTargetToPostProcess()
 {
 	Ptr<CTexture> pRenderTarget = CResMgr::GetInst()->FindRes<CTexture>(L"RenderTargetTex");
-	Ptr<CTexture> pPostProcess  = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
+	Ptr<CTexture> pPostProcess = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
 
 	CONTEXT->CopyResource(pPostProcess->GetTex2D().Get(), pRenderTarget->GetTex2D().Get());
 }
@@ -246,11 +270,7 @@ void CRenderMgr::UpdateLight2D()
 {
 	if (m_pLight2DBuffer->GetElementCount() < m_vecLight2D.size())
 	{
-		m_pLight2DBuffer->Create((UINT)sizeof(tLightInfo),
-		                         (UINT)m_vecLight2D.size(),
-		                         SB_TYPE::READ_ONLY,
-		                         true,
-		                         nullptr);
+		m_pLight2DBuffer->Create((UINT)sizeof(tLightInfo), (UINT)m_vecLight2D.size(), SB_TYPE::READ_ONLY, true, nullptr);
 	}
 
 	static vector<tLightInfo> vecLight2DInfo;
@@ -264,17 +284,15 @@ void CRenderMgr::UpdateLight2D()
 	m_pLight2DBuffer->UpdateData(PIPELINE_STAGE::PS, 60);
 
 	g_global.Light2DCount = (int)m_vecLight2D.size();
+
+
 }
 
 void CRenderMgr::UpdateLight3D()
 {
 	if (m_pLight3DBuffer->GetElementCount() < m_vecLight3D.size())
 	{
-		m_pLight3DBuffer->Create((UINT)sizeof(tLightInfo),
-		                         (UINT)m_vecLight3D.size(),
-		                         SB_TYPE::READ_ONLY,
-		                         true,
-		                         nullptr);
+		m_pLight3DBuffer->Create((UINT)sizeof(tLightInfo), (UINT)m_vecLight3D.size(), SB_TYPE::READ_ONLY, true, nullptr);
 	}
 
 	static vector<tLightInfo> vecLight3DInfo;
@@ -288,4 +306,22 @@ void CRenderMgr::UpdateLight3D()
 	m_pLight3DBuffer->UpdateData(PIPELINE_STAGE::PS, 61);
 
 	g_global.Light3DCount = (int)m_vecLight3D.size();
+
+
+}
+
+// 현재 시점 카메라 가져오기
+CCamera* CRenderMgr::GetMainCam()
+{
+	if (SCENE_STATE::PLAY == CSceneMgr::GetInst()->GetCurScene()->GetSceneState())
+	{
+		if (m_vecCam.empty())
+			return nullptr;
+
+		return m_vecCam[0];
+	}
+	else
+	{
+		return m_pEditorCam;
+	}
 }

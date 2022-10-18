@@ -10,8 +10,7 @@
 
 
 CMaterial::CMaterial()
-	:
-	CRes(RES_TYPE::MATERIAL)
+	: CRes(RES_TYPE::MATERIAL)
   , m_Param{}
   , m_arrTex{}
   , m_pShader(nullptr)

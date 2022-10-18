@@ -4,29 +4,32 @@
 #include "CDevice.h"
 #include "CRenderMgr.h"
 #include "CEventMgr.h"
+#include "CResMgr.h"
+#include "CTimeMgr.h"
+#include "CKeyMgr.h"
 
 #include "CSceneMgr.h"
 #include "CScene.h"
 #include "CLayer.h"
 #include "CGameObject.h"
+
 #include "CTransform.h"
 #include "CMeshRender.h"
 
-#include "CResMgr.h"
-#include "CTimeMgr.h"
-#include "CKeyMgr.h"
+#include "CMRT.h"
+
 
 
 CCamera::CCamera()
-	:
-	CComponent(COMPONENT_TYPE::CAMERA)
-  , m_eProjType(PROJ_TYPE::ORTHOGRAPHIC)
-  , m_fWidth(0.f)
-  , m_fAspectRatio(1.f)
-  , m_fFOV(XM_PI / 4.f)
-  , m_fFar(10000.f)
-  , m_iLayerMask(0)
-  , m_iCamIdx(-1)
+	: CComponent(COMPONENT_TYPE::CAMERA)
+	, m_ray{}
+	, m_eProjType(PROJ_TYPE::ORTHOGRAPHIC)
+	, m_fWidth(0.f)
+	, m_fAspectRatio(1.f)
+	, m_fFOV(XM_PI / 4.f)
+	, m_fFar(10000.f)
+	, m_iLayerMask(0)
+	, m_iCamIdx(-1)
 {
 	m_fWidth       = CDevice::GetInst()->GetRenderResolution().x;
 	m_fAspectRatio = CDevice::GetInst()->GetRenderResolution().x / CDevice::GetInst()->GetRenderResolution().y;
@@ -35,16 +38,15 @@ CCamera::CCamera()
 }
 
 CCamera::CCamera(const CCamera& _origin)
-	:
-	CComponent(_origin)
-  , m_Frustum(_origin.m_Frustum)
-  , m_eProjType(_origin.m_eProjType)
-  , m_fWidth(_origin.m_fWidth)
-  , m_fAspectRatio(_origin.m_fAspectRatio)
-  , m_fFOV(_origin.m_fFOV)
-  , m_fFar(_origin.m_fFar)
-  , m_iLayerMask(_origin.m_iLayerMask)
-  , m_iCamIdx(-1)
+	: CComponent(_origin)
+	, m_Frustum(_origin.m_Frustum)
+	, m_eProjType(_origin.m_eProjType)
+	, m_fWidth(_origin.m_fWidth)
+	, m_fAspectRatio(_origin.m_fAspectRatio)
+	, m_fFOV(_origin.m_fFOV)
+	, m_fFar(_origin.m_fFar)
+	, m_iLayerMask(_origin.m_iLayerMask)
+	, m_iCamIdx(-1)
 {
 	m_Frustum.m_pCam = this;
 }
@@ -108,8 +110,9 @@ void CCamera::finalupdate_module()
 		m_matProj = XMMatrixPerspectiveFovLH(m_fFOV, m_fAspectRatio, 1.f, m_fFar);
 	}
 
-
 	m_matProjInv = XMMatrixInverse(nullptr, m_matProj);
+
+	CalRay();
 }
 
 
@@ -140,8 +143,8 @@ void CCamera::SortGameObject()
 
 			if (nullptr == pRenderCom
 			    || nullptr == pRenderCom->GetMesh()
-			    || nullptr == pRenderCom->GetMaterial()
-			    || nullptr == pRenderCom->GetMaterial()->GetShader())
+			    || nullptr == pRenderCom->GetMaterial(0)
+			    || nullptr == pRenderCom->GetMaterial(0)->GetShader())
 			{
 				continue;
 			}
@@ -154,7 +157,7 @@ void CCamera::SortGameObject()
 				continue;
 			}
 
-			Ptr<CGraphicsShader> pShader = pRenderCom->GetMaterial()->GetShader();
+			Ptr<CGraphicsShader> pShader = pRenderCom->GetMaterial(0)->GetShader();
 
 			switch (pShader->GetShaderDomain())
 			{
@@ -337,6 +340,29 @@ void CCamera::CheckLayerMask(const wstring& _strLayerName)
 	CLayer* pLayer = pScene->GetLayer(_strLayerName);
 
 	CheckLayerMask(pLayer->GetLayerIdx());
+}
+
+void CCamera::CalRay()
+{
+	// 마우스 방향을 향하는 Ray 구하기
+	// SwapChain 타겟의 ViewPort 정보
+	CMRT* pMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
+	D3D11_VIEWPORT tVP = pMRT->GetViewPort();
+
+	//  현재 마우스 좌표
+	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+
+	// 직선은 카메라의 좌표를 반드시 지난다.
+	m_ray.vStart = Transform()->GetWorldPos();
+
+	// view space 에서의 방향
+	m_ray.vDir.x = ((((vMousePos.x - tVP.TopLeftX) * 2.f / tVP.Width) - 1.f) - m_matProj._31) / m_matProj._11;
+	m_ray.vDir.y = (-(((vMousePos.y - tVP.TopLeftY) * 2.f / tVP.Height) - 1.f) - m_matProj._32) / m_matProj._22;
+	m_ray.vDir.z = 1.f;
+
+	// world space 에서의 방향
+	m_ray.vDir = XMVector3TransformNormal(m_ray.vDir, m_matViewInv);
+	m_ray.vDir.Normalize();
 }
 
 

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <wrl/client.h>
 using namespace Microsoft::WRL;
 
@@ -37,9 +36,25 @@ using std::make_pair;
 
 #include <assert.h>
 
+// FileSystem
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+using namespace std::experimental;
+using namespace std::experimental::filesystem;
+
+// Fbx Loader
+#include <FBXLoader/fbxsdk.h>
+
+#ifdef _DEBUG
+#pragma comment(lib, "FBXLoader/x64/debug/libfbxsdk-md.lib")
+#else
+#pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
+#endif
+
 
 #include "define.h"
 #include "struct.h"
 #include "extern.h"
 #include "singleton.h"
 #include "func.h"
+

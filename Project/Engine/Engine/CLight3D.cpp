@@ -93,7 +93,7 @@ void CLight3D::SetObject()
 	}
 
 	m_pLightMeshObj->MeshRender()->
-	                 SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"));
+	                 SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"),0);
 	CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"Default");
 	CSceneMgr::GetInst()->SpawnObject(m_pLightMeshObj, pLayer->GetLayerIdx());
 }
@@ -183,7 +183,7 @@ void CLight3D::render()
 	Transform()->UpdateData();
 	m_pLightMtrl->UpdateData();
 
-	m_pVolumeMesh->render();
+	m_pVolumeMesh->render(0);
 }
 
 void CLight3D::render_shadowmap()

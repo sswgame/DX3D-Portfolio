@@ -31,7 +31,7 @@ void MeshRenderUI::render_update()
 
 	CMeshRender*   pMeshRender = GetTargetObject()->MeshRender();
 	Ptr<CMesh>     pMesh       = pMeshRender->GetMesh();
-	Ptr<CMaterial> pMtrl       = pMeshRender->GetMaterial();
+	Ptr<CMaterial> pMtrl       = pMeshRender->GetMaterial(0);
 
 	string strMeshName, strMtrlName;
 	if (nullptr != pMesh)
@@ -119,5 +119,5 @@ void MeshRenderUI::MtrlSelect(DWORD_PTR _param)
 	assert(pMtrl.Get());
 
 	CMeshRender* pMeshRender = GetTargetObject()->MeshRender();
-	pMeshRender->SetSharedMaterial(pMtrl);
+	pMeshRender->SetSharedMaterial(pMtrl, 0);
 }

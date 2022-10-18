@@ -6,6 +6,7 @@
 
 #include "CTransform.h"
 #include "CAnimator2D.h"
+#include "CAnimator3D.h"
 
 CMeshRender::CMeshRender()
 	:
@@ -18,22 +19,57 @@ void CMeshRender::finalupdate() {}
 
 void CMeshRender::render()
 {
-	if (nullptr == GetMesh() || nullptr == GetMaterial())
+	if (nullptr == GetMesh() || nullptr == GetMaterial(0))
 		return;
+
+
+	// ==========
+	// UpdateData
+	// ==========
+
+	Transform()->UpdateData();
 
 	if (Animator2D())
 	{
 		Animator2D()->UpdateData();
 	}
-
-	Transform()->UpdateData();
-	GetMaterial()->UpdateData();
-	GetMesh()->render();
-
-	if (Animator2D())
+	
+	// Animator3D 업데이트
+	if (Animator3D())
 	{
-		CAnimator2D::Clear();
+		Animator3D()->UpdateData();
+
+		for (size_t i = 0; i < GetMtrlCount(); ++i)
+		{
+			if (nullptr == GetMaterial(i))
+				continue;
+			GetMaterial(i)->SetAnim3D(true); // Animation Mesh 알리기
+			GetMaterial(i)->SetBoneCount(Animator3D()->GetBoneCount());
+		}
 	}
+
+	// ======
+	// Render
+	// ======
+	UINT iSubsetCount = GetMesh()->GetSubsetCount();
+	for (size_t i = 0; i < iSubsetCount; ++i)
+	{
+		if (nullptr == GetMaterial(i))
+			continue;
+
+		GetMaterial(i)->UpdateData();
+		GetMesh()->render(i);
+	}
+
+
+	// =====
+	// Clear
+	// =====
+	if (Animator2D())
+		CAnimator2D::Clear();
+
+	if (Animator3D())
+		Animator3D()->ClearData();
 }
 
 void CMeshRender::SaveToScene(FILE* _pFile)

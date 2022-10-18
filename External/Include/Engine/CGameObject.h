@@ -7,6 +7,7 @@ class CComponent;
 class CTransform;
 class CCollider2D;
 class CAnimator2D;
+class CAnimator3D;
 class CCamera;
 class CLight2D;
 class CLight3D;
@@ -78,6 +79,7 @@ public:
 	GET_COMPONENT(Camera, CAMERA)
 	GET_COMPONENT(Collider2D, COLLIDER2D)
 	GET_COMPONENT(Animator2D, ANIMATOR2D)
+	GET_COMPONENT(Animator3D, ANIMATOR3D)
 	GET_COMPONENT(TileMap, TILEMAP)
 	GET_COMPONENT(ParticleSystem, PARTICLESYSTEM)
 	GET_COMPONENT(SkyBox, SKYBOX)

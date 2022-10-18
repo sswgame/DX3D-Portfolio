@@ -106,7 +106,7 @@ void CCollider2D::render()
 	m_pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &m_iCollisionCount);
 	m_pMtrl->UpdateData();
 
-	m_pMesh->render();
+	m_pMesh->render(0);
 }
 
 void CCollider2D::OnCollisionEnter(CCollider2D* _Other)

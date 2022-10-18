@@ -15,14 +15,14 @@ struct VTX_IN
 
 struct VTX_OUT
 {
-    float4 vPosition : SV_Position;   
+    float4 vPosition : SV_Position;
     float2 vUV : TEXCOORD;
     
-    float3 vViewPos : POSITION;        
+    float3 vViewPos : POSITION;
     
-    float3 vViewTangent : TANGENT;    
-    float3 vViewNormal : NORMAL;  
-    float3 vViewBinormal : BINORMAL;    
+    float3 vViewTangent : TANGENT;
+    float3 vViewNormal : NORMAL;
+    float3 vViewBinormal : BINORMAL;
 };
 
 
@@ -54,31 +54,31 @@ VTX_OUT VS_Std3D(VTX_IN _in)
 
 float4 PS_Std3D(VTX_OUT _in) : SV_Target
 {
-    float4 vObjectColor = (float4) float4(1.f, 0.f, 0.1f, 1.f);    
+    float4 vObjectColor = (float4) float4(1.f, 0.f, 0.1f, 1.f);
     float4 vOutColor = (float4) float4(0.f, 0.f, 0.f, 1.f);
              
     float3 vViewNormal = _in.vViewNormal;
     
     // 오브젝트 색상 추출
-    if(g_btex_0)
+    if (g_btex_0)
     {
         vObjectColor = g_tex_0.Sample(g_sam_0, _in.vUV);
-    }    
+    }
     
     // 노말맵핑
     if (g_btex_1)
     {
         float3 vNormal = g_tex_1.Sample(g_sam_0, _in.vUV).rgb;
-        vNormal = vNormal * 2.f - 1.f;  // 0~1 값을 -1 ~ 1 로 확장       
+        vNormal = vNormal * 2.f - 1.f; // 0~1 값을 -1 ~ 1 로 확장       
         
         float3x3 matRot =
         {
-              _in.vViewTangent
+            _in.vViewTangent
             , _in.vViewBinormal
             , _in.vViewNormal
         };
         
-        vViewNormal = normalize(mul(vNormal, matRot));        
+        vViewNormal = normalize(mul(vNormal, matRot));
     }
           
     
@@ -129,13 +129,13 @@ VTX_SKY_OUT VS_SkyBox(VTX_SKY_IN _in)
     float3 vViewPos = _in.vPos * 2.f;
     
     // View 의 회전만 적용시켜서, 카메라 앞에 원하는 부위를 배치시킴
-    vViewPos = mul(float4(vViewPos, 0.f), g_matView);    
+    vViewPos = mul(float4(vViewPos, 0.f), g_matView).xyz;
     
     // 투영
     float4 vProjPos = mul(float4(vViewPos, 1.f), g_matProj);
-    vProjPos.z = vProjPos.w;    
+    vProjPos.z = vProjPos.w;
     
-    output.vPosition = vProjPos;      
+    output.vPosition = vProjPos;
     output.vUV = _in.vUV;
     output.vDirUV = normalize(_in.vPos);
     
@@ -143,11 +143,11 @@ VTX_SKY_OUT VS_SkyBox(VTX_SKY_IN _in)
 }
 
 float4 PS_SkyBox(VTX_SKY_OUT _in) : SV_Target
-{    
+{
     float4 vOutColor = (float4) float4(0.3f, 0.3f, 0.3f, 1.f);
 
     // Sphere Type
-    if(0 == g_int_0)
+    if (0 == g_int_0)
     {
         if (g_btex_0)
         {
@@ -156,40 +156,18 @@ float4 PS_SkyBox(VTX_SKY_OUT _in) : SV_Target
     }
     
     // Cube Type
-    else if(1 == g_int_0)
+    else if (1 == g_int_0)
     {
-        if(g_btexcube_0)
+        if (g_btexcube_0)
         {
             vOutColor = g_texcube_0.Sample(g_sam_0, _in.vDirUV);
-        }        
+        }
     }
         
     return vOutColor;
 }
 
-// =========================
-// Std3D Wire Shader
-# define color g_vec4_0
 
-// DOMAIN : Forward
-// Rasterizer : NO_TEST_NO_WRITE
-// DepthStencilState : LESS
-// BlendState : DEFAULT
-// =========================
-VTX_OUT VS_Std3DWire(VTX_IN _in)
-{
-    VTX_OUT output = (VTX_OUT)0.f;
-
-    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
-
-    return output;
-}
-
-float4 PS_Std3DWire(VTX_OUT _in) : SV_Target
-{
-    float4 vOutColor = color;
-    return vOutColor;
-}
 
 
 

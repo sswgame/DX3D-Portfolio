@@ -5,13 +5,12 @@
 
 static float GaussianFilter[5][5] =
 {
-    0.003f , 0.0133f, 0.0219f, 0.0133f, 0.003f,
+    0.003f, 0.0133f, 0.0219f, 0.0133f, 0.003f,
     0.0133f, 0.0596f, 0.0983f, 0.0596f, 0.0133f,
     0.0219f, 0.0983f, 0.1621f, 0.0983f, 0.0219f,
     0.0133f, 0.0596f, 0.0983f, 0.0596f, 0.0133f,
-    0.003f , 0.0133f, 0.0219f, 0.0133f, 0.003f,
+    0.003f, 0.0133f, 0.0219f, 0.0133f, 0.003f,
 };
-
 
 int IsBind(in Texture2D _tex)
 {
@@ -19,7 +18,7 @@ int IsBind(in Texture2D _tex)
     uint height = 0;
     _tex.GetDimensions(width, height);
     
-    if(0 != width || 0 != height)
+    if (0 != width || 0 != height)
         return 1;
    
     return 0;
@@ -29,7 +28,7 @@ float4 GaussianSample(in Texture2D _noisetex, float2 _vUV)
 {
     float4 vOutColor = (float4) 0.f;
     
-    if(0.f < _vUV.x)
+    if (0.f < _vUV.x)
     {
         _vUV.x = frac(_vUV.x);
     }
@@ -38,8 +37,6 @@ float4 GaussianSample(in Texture2D _noisetex, float2 _vUV)
     {
         _vUV.y = frac(_vUV.y);
     }
-    
-    
     
     // NoiseTexture 해상도를 이용해서 픽셀 인덱스(정수) 를 알아낸다.
     int2 iPixelIdx = (int2) (vNoiseResolution * _vUV);
@@ -75,7 +72,7 @@ float3 CalculateLight2D(float3 _vWorldPos, float3 _vWorldNormal)
         {
             // 빛의 방향과 월드 노말의 내적(램버트 코사인법칙)
             fLightPow = saturate(dot(_vWorldNormal, g_Light2DBuffer[i].vLightDir));
-            vLightColor += g_Light2DBuffer[i].color.vDiff.rgb * fLightPow;            
+            vLightColor += g_Light2DBuffer[i].color.vDiff.rgb * fLightPow;
         }
         else if (1 == g_Light2DBuffer[i].iLightType)
         {
@@ -100,11 +97,11 @@ float3 CalculateLight2D(float3 _vWorldPos, float3 _vWorldNormal)
 
 void CalculateLight3D(float3 _vViewPos, float3 _vViewNormal, int _iLight3DIdx, inout tLightColor _colorOut)
 {
-    tLightInfo info = g_Light3DBuffer[_iLight3DIdx];    
+    tLightInfo info = g_Light3DBuffer[_iLight3DIdx];
     
     float fDiffusePower = 0.f;
     float fReflectPower = 0.f;
-    float fRatio = 1.f;         // 거리에 따른 빛의 세기 비율
+    float fRatio = 1.f; // 거리에 따른 빛의 세기 비율
     
     
     // Directional Light
@@ -131,7 +128,7 @@ void CalculateLight3D(float3 _vViewPos, float3 _vViewNormal, int _iLight3DIdx, i
     else if (1 == info.iLightType)
     {
         // View Light Position
-        float3 vViewLightPos = mul(float4(info.vWorldPos, 1.f), g_matView).xyz;        
+        float3 vViewLightPos = mul(float4(info.vWorldPos, 1.f), g_matView).xyz;
         
         // ObjectPos - LightPos ==> LightDir
         float3 vViewLight = _vViewPos - vViewLightPos;
@@ -143,7 +140,7 @@ void CalculateLight3D(float3 _vViewPos, float3 _vViewNormal, int _iLight3DIdx, i
      
         // 반사벡터
         float3 vViewReflect = -vViewLight + dot(vViewLight, _vViewNormal) * 2.f * _vViewNormal;
-        vViewReflect = normalize(vViewReflect);        
+        vViewReflect = normalize(vViewReflect);
         
         // 시선 벡터와 반사벡터를 내적해서 해당 표면의 반사광의 세기를 구한다.
         float3 vEye = -normalize(_vViewPos);
@@ -158,36 +155,13 @@ void CalculateLight3D(float3 _vViewPos, float3 _vViewNormal, int _iLight3DIdx, i
     // Spot Light
     else
     {
-        // View Light Position
-        float3 vViewLightPos = mul(float4(info.vWorldPos, 1.f), g_matView).xyz;
-
-        // ObjectPos - LightPos ==> LightDir
-        float3 vViewLight = _vViewPos - vViewLightPos;
-        float fDistance = length(vViewLight);
-        vViewLight = -normalize(vViewLight);
-
-        // Diffuse Power
-        fDiffusePower = saturate(dot(vViewLight, _vViewNormal));
-
-        // 반사벡터
-        float3 vViewReflect = -vViewLight + dot(vViewLight, _vViewNormal) * 2.f * _vViewNormal;
-        vViewReflect = normalize(vViewReflect);
-
-        // 시선 벡터와 반사벡터를 내적해서 해당 표면의 반사광의 세기를 구한다.
-        float3 vEye = -normalize(_vViewPos);
-        fReflectPower = saturate(dot(vViewReflect, vEye));
-        fReflectPower = pow(fReflectPower, 20);
-
-        // 거리에 따른 빛의 감쇄 효과
-        //fRatio = saturate(1.f - fDistance / info.fRange);
-        fRatio = saturate(cos(saturate(fDistance / info.fRange) * (3.14159289f / 2.f)));
-
+        
     }
        
     
     _colorOut.vDiff += info.color.vDiff * fDiffusePower * fRatio;
     _colorOut.vSpec += info.color.vSpec * fReflectPower * fRatio;
-    _colorOut.vAmb += info.color.vAmb;    
+    _colorOut.vAmb += info.color.vAmb;
 }
 
 
@@ -206,7 +180,7 @@ void CalculateLight3D_Particle(float3 _vViewPos, int _iLight3DIdx, inout tLightC
         float3 vViewLight = -normalize(mul(float4(info.vLightDir, 0.f), g_matView).xyz);
    
         // Diffuse Power
-        fDiffusePower = 1.f;      
+        fDiffusePower = 1.f;
     }
     
     // Point Light
@@ -217,7 +191,7 @@ void CalculateLight3D_Particle(float3 _vViewPos, int _iLight3DIdx, inout tLightC
         
         // ObjectPos - LightPos ==> LightDir
         float3 vViewLight = _vViewPos - vViewLightPos;
-        float fDistance = length(vViewLight);        
+        float fDistance = length(vViewLight);
         
         // Diffuse Power
         fDiffusePower = 1.f;
@@ -233,7 +207,6 @@ void CalculateLight3D_Particle(float3 _vViewPos, int _iLight3DIdx, inout tLightC
         
     }
        
-    
     _colorOut.vDiff += info.color.vDiff * fDiffusePower * fRatio;
     _colorOut.vSpec += info.color.vSpec * fReflectPower * fRatio;
     _colorOut.vAmb += info.color.vAmb;
@@ -258,5 +231,106 @@ float GetTessFactor(float3 _vViewPos, float _iMinLevel, float _iMaxLevel, float 
     return clamp(fTessLv, _iMinLevel, _iMaxLevel);
 }
 
+
+
+int IntersectsLay(float3 _vertices[3], float3 _vStart, float3 _vDir, out float3 _vCrossPoint, out float _fResult)
+{
+    float3 edge[2] = { (float3) 0.f, (float3) 0.f };
+    edge[0] = _vertices[1].xyz - _vertices[0].xyz;
+    edge[1] = _vertices[2].xyz - _vertices[0].xyz;
+
+    float3 normal = normalize(cross(edge[0], edge[1]));
+    float b = dot(normal, _vDir);
+
+    float3 w0 = _vStart - _vertices[0].xyz;
+    float a = -dot(normal, w0);
+    float t = a / b;
+
+    _fResult = t;
+
+    float3 p = _vStart + t * _vDir;
+
+    _vCrossPoint = p;
+
+    float uu, uv, vv, wu, wv, inverseD;
+    uu = dot(edge[0], edge[0]);
+    uv = dot(edge[0], edge[1]);
+    vv = dot(edge[1], edge[1]);
+
+    float3 w = p - _vertices[0].xyz;
+    wu = dot(w, edge[0]);
+    wv = dot(w, edge[1]);
+    inverseD = uv * uv - uu * vv;
+    inverseD = 1.0f / inverseD;
+
+    float u = (uv * wv - vv * wu) * inverseD;
+    if (u < 0.0f || u > 1.0f)
+    {
+        return 0;
+    }
+
+    float v = (uv * wu - uu * wv) * inverseD;
+    if (v < 0.0f || (u + v) > 1.0f)
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
+
+
+
+matrix GetBoneMat(int _iBoneIdx, int _iRowIdx)
+{
+    return g_arrBoneMat[(g_iBoneCount * _iRowIdx) + _iBoneIdx];
+}
+
+void Skinning(inout float3 _vPos, inout float3 _vTangent, inout float3 _vBinormal, inout float3 _vNormal
+    , inout float4 _vWeight, inout float4 _vIndices
+    , int _iRowIdx)
+{
+    tSkinningInfo info = (tSkinningInfo) 0.f;
+
+    if (_iRowIdx == -1)
+        return;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        if (0.f == _vWeight[i])
+            continue;
+
+        matrix matBone = GetBoneMat((int) _vIndices[i], _iRowIdx);
+
+        info.vPos += (mul(float4(_vPos, 1.f), matBone) * _vWeight[i]).xyz;
+        info.vTangent += (mul(float4(_vTangent, 0.f), matBone) * _vWeight[i]).xyz;
+        info.vBinormal += (mul(float4(_vBinormal, 0.f), matBone) * _vWeight[i]).xyz;
+        info.vNormal += (mul(float4(_vNormal, 0.f), matBone) * _vWeight[i]).xyz;
+    }
+
+    _vPos = info.vPos;
+    _vTangent = normalize(info.vTangent);
+    _vBinormal = normalize(info.vBinormal);
+    _vNormal = normalize(info.vNormal);
+}
+
+
+float encode(float4 _value)
+{
+    uint rgba = (uint(_value.x * 255.f) << 24) + (uint(_value.y * 255.f) << 16) + (uint(_value.z * 255.f) << 8) + uint(_value.w * 255.f);
+    return asfloat(rgba);
+}
+
+float4 decode(float _value)
+{
+    uint rgba = asint(_value);
+
+    float r = (float) (rgba >> 24) / 255.f;
+    float g = (float) ((rgba & 0x00ff0000) >> 16) / 255.f;
+    float b = (float) ((rgba & 0x0000ff00) >> 8) / 255.f;
+    float a = (float) (rgba & 0x000000ff) / 255.f;
+
+    return float4(r, g, b, a);
+}
 
 #endif

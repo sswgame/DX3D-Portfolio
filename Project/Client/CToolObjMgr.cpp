@@ -46,7 +46,7 @@ void CToolObjMgr::init()
 	pGridObj->Transform()->SetRelativeRotation(Vec3(XM_PI / 2.f, 0.f, 0.f));
 
 	pGridObj->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	pGridObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\GridMtrl.mtrl"));
+	pGridObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\GridMtrl.mtrl"),0);
 
 	pGridObj->GetScript<CGridScript>()->SetToolCamera(pToolObj);
 	pGridObj->GetScript<CGridScript>()->SetGridColor(Vec3(0.2f, 0.2f, 0.7f));
@@ -78,8 +78,8 @@ void CToolObjMgr::progress()
 	{
 		if (nullptr == m_vecObj[i]->GetRenderComponent()
 		    || nullptr == m_vecObj[i]->GetRenderComponent()->GetMesh()
-		    || nullptr == m_vecObj[i]->GetRenderComponent()->GetMaterial()
-		    || nullptr == m_vecObj[i]->GetRenderComponent()->GetMaterial()->GetShader())
+		    || nullptr == m_vecObj[i]->GetRenderComponent()->GetMaterial(0)
+		    || nullptr == m_vecObj[i]->GetRenderComponent()->GetMaterial(0)->GetShader())
 			continue;
 
 		m_vecObj[i]->render();

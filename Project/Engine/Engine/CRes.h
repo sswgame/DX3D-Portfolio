@@ -46,6 +46,8 @@ public:
 	virtual ~CRes();
 
 	friend class CResMgr;
+	friend class CFBXLoader;
+	friend class CMeshData;
 
 	template <typename T>
 	friend class Ptr;

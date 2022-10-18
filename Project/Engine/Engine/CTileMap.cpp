@@ -19,7 +19,7 @@ CTileMap::CTileMap()
 {
 	// 메쉬, 재질
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"TileMapMtrl"));
+	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"TileMapMtrl"), 0);
 
 	m_vecTileData.resize((size_t)(m_iTileCountX * m_iTileCountY));
 	m_pBuffer = new CStructuredBuffer;
@@ -53,12 +53,12 @@ void CTileMap::UpdateData()
 	if (nullptr == m_pAtlasTex)
 		return;
 
-	GetMaterial()->SetTexParam(TEX_PARAM::TEX_0, m_pAtlasTex);
+	GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, m_pAtlasTex);
 
-	GetMaterial()->SetScalarParam(SCALAR_PARAM::INT_0, &m_iTileCountX);
-	GetMaterial()->SetScalarParam(SCALAR_PARAM::INT_1, &m_iTileCountY);
+	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &m_iTileCountX);
+	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_1, &m_iTileCountY);
 
-	GetMaterial()->SetScalarParam(SCALAR_PARAM::VEC2_0, &m_vSliceUV);
+	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_0, &m_vSliceUV);
 
 	// 모든 타일 데이터(m_vecTileData) 를 구조화버퍼를 통해 t16 레지스터로 바인딩
 	if (false == m_bBufferUpdated)
@@ -73,14 +73,14 @@ void CTileMap::UpdateData()
 
 void CTileMap::render()
 {
-	if (nullptr == GetMesh() || nullptr == GetMaterial() || nullptr == m_pAtlasTex)
+	if (nullptr == GetMesh() || nullptr == GetMaterial(0) || nullptr == m_pAtlasTex)
 		return;
 
 	UpdateData();
 
 	Transform()->UpdateData();
-	GetMaterial()->UpdateData();
-	GetMesh()->render();
+	GetMaterial(0)->UpdateData();
+	GetMesh()->render(0);
 }
 
 
