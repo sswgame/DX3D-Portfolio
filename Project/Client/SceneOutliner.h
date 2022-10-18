@@ -30,6 +30,7 @@ public:
 
 public:
     void Reset();
+    void ResetTreeUI();
     void ObjectClicked(DWORD_PTR _dw);
 
 

@@ -8,7 +8,7 @@ CameraUI::CameraUI()
 	:
 	ComponentUI("Camera", COMPONENT_TYPE::CAMERA)
 {
-	SetSize(Vec2(0.f, 180.f));
+	SetSize(Vec2(0.f, 135.f));
 }
 
 CameraUI::~CameraUI() {}
@@ -18,6 +18,8 @@ void CameraUI::update() {}
 void CameraUI::render_update()
 {
 	ComponentUI::render_update();
+	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
+	else { SetSize(Vec2(0.f, 135.f)); }
 
 	CCamera* pCameraCom = GetTargetObject()->Camera();
 

@@ -172,18 +172,18 @@ void CTestScene::CreateTestScene()
 	// FBX Loading
 	// ============	
 	{
-		Ptr<CMeshData> pMeshData = nullptr;
-		CGameObject* pObj = nullptr;
+		//Ptr<CMeshData> pMeshData = nullptr;
+		//CGameObject* pObj = nullptr;
 
 		//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\Monster.fbx");
 		//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());		
+//
+	//	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\Monster.mdat", L"meshdata\\Monster.mdat");
 
-		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\Monster.mdat", L"meshdata\\Monster.mdat");
-
-		pObj = pMeshData->Instantiate();
-		pObj->SetName(L"Monster");
-		pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-		pCurScene->AddObject(pObj, 0);
+	//	pObj = pMeshData->Instantiate();
+	//	pObj->SetName(L"Monster");
+	//	pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+		//pCurScene->AddObject(pObj, 0);
 	}
 
 

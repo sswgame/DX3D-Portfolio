@@ -12,13 +12,13 @@ class CRes;
 class InspectorUI : public UI
 {
 private:
-	CScene*				m_pTargetScene;
-	CLayer*				m_pTargetLayer;
-	CGameObject*		m_pTargetObject;
-	CRes*				m_pTargetRes;
+	CScene* m_pTargetScene;
+	CLayer* m_pTargetLayer;
+	CGameObject* m_pTargetObject;
+	CRes* m_pTargetRes;
 
-	ComponentUI*		m_arrComUI[(UINT)COMPONENT_TYPE::END];
-	ResInfoUI*			m_arrResUI[(UINT)RES_TYPE::END];
+	ComponentUI* m_arrComUI[(UINT)COMPONENT_TYPE::END];
+	ResInfoUI* m_arrResUI[(UINT)RES_TYPE::END];
 
 	vector<ScriptUI*>	m_vecScriptUI;
 
@@ -35,9 +35,19 @@ public:
 	CLayer* GetTargetLayer() { return m_pTargetLayer; }
 
 
-	void DeleteComponent(DWORD_PTR _param);
+
 private:
 	ScriptUI* AddScriptUI();
+	void RenderButton();
+
+public:
+	// DELEGATE FUNC
+	void AddComponent(DWORD_PTR _param);
+	void AddScript(DWORD_PTR _param);
+
+	void DeleteComponent(DWORD_PTR _param);
+	void DeleteScript(DWORD_PTR _param);
+
 
 public:
 	virtual void update() override;

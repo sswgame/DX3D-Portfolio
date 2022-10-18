@@ -24,6 +24,10 @@ public:
 	void DisconnectParent(CGameObject* _pObject);
 	void ClearLayer();
 
+	// DESTROY 
+	void DeleteObject(CGameObject* _pDestroyObject);
+
+
 	CGameObject* FindObjectByName(const wstring& _strName);
 	void         FindObjectsByName(wstring& _strName, vector<CGameObject*>& _vecOut);
 

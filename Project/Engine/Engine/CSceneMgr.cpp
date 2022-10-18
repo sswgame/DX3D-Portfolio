@@ -108,6 +108,15 @@ void CSceneMgr::ClearLayer()
 	}
 }
 
+void CSceneMgr::DeleteObject(CGameObject* _pDestroyObject)
+{
+	tEventInfo info = {};
+	info.eType = EVENT_TYPE::DELETE_OBJ;
+	info.lParam = (DWORD_PTR)_pDestroyObject;
+
+	CEventMgr::GetInst()->AddEvent(info);
+}
+
 CGameObject* CSceneMgr::FindObjectByName(const wstring& _strName)
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)

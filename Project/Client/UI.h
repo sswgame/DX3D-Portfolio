@@ -9,7 +9,7 @@ private:
 	const string m_strName;
 	string       m_strTitle;
 	vector<UI*>  m_vecChildUI;
-	UI*          m_pParentUI;
+	UI* m_pParentUI;
 
 	Vec2 m_vPos;
 	Vec2 m_vSize;

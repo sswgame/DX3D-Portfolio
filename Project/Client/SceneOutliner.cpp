@@ -56,10 +56,68 @@ void SceneOutliner::update()
 
 void SceneOutliner::render_update()
 {
+	//마우스 우측 클릭으로 마우스 위치에 팝업 만들기
+	const ImVec2   windowLeftTop = ImGui::GetCursorScreenPos();
+	const ImVec2   windowSize = ImGui::GetContentRegionAvail();
+	const ImGuiIO& io = ImGui::GetIO();
+	const ImVec2   mousePos = io.MousePos - windowLeftTop;
+
+	static bool bIsOpenPopUp = false;
+	if (0 < mousePos.x && mousePos.x < windowSize.x
+		&& 0 < mousePos.y && mousePos.y < windowSize.y)
+	{
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+		{
+			ImGui::OpenPopup("PREFAB_POPUP");
+			bIsOpenPopUp = true;
+		}
+	}
+
+	if (bIsOpenPopUp)
+	{
+		static const std::string menus[] = {
+			"Create"
+		  , "Delete"
+		  , "Add Component"
+		  , "Delete Component"
+		  , "Add Script"
+		  , "Delete Script"
+		  , "Make as Prefab"
+		  , "Change Name"
+		};
+		if (ImGui::BeginPopup("PREFAB_POPUP"))
+		{
+			for (int i = 0; i < std::size(menus); ++i)
+			{
+				if (ImGui::Selectable(menus[i].c_str()))
+				{
+
+				}
+			}
+			ImGui::EndPopup();
+		}
+	}
 
 }
 
 void SceneOutliner::Reset()
+{
+	ResetTreeUI();
+
+	// InspectorUI 를 얻어옴
+	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
+	pInspectorUI->SetTargetObject(nullptr);
+	pInspectorUI->SetTargetLayer(nullptr);
+	pInspectorUI->SetTargetScene(nullptr);
+
+	// SceneOutlinerUI 갱신
+	m_pSelectedScene = nullptr;
+	m_pSelectedLayer = nullptr;
+	m_pSelectedGameObject = nullptr;
+
+}
+
+void SceneOutliner::ResetTreeUI()
 {
 	m_TreeUI->Clear();
 
@@ -80,22 +138,10 @@ void SceneOutliner::Reset()
 		vector<CGameObject*>& vecRoots = pLayer->GetRootObjects();
 		for (size_t i = 0; i < vecRoots.size(); ++i)
 		{
+			// 3. GAMEOBJECT NODE
 			AddGameObjectToTree(vecRoots[i], pLayerNode);
 		}
 	}
-
-	// InspectorUI 를 얻어옴
-	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
-	pInspectorUI->SetTargetObject(nullptr);
-	pInspectorUI->SetTargetLayer(nullptr);
-	pInspectorUI->SetTargetScene(nullptr);
-
-
-	// SceneOutlinerUI 갱신
-	m_pSelectedScene = nullptr;
-	m_pSelectedLayer = nullptr;
-	m_pSelectedGameObject = nullptr;
-
 }
 
 void SceneOutliner::ObjectClicked(DWORD_PTR _dw)

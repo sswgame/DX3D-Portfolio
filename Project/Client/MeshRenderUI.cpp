@@ -13,7 +13,7 @@ MeshRenderUI::MeshRenderUI()
 	:
 	ComponentUI("MeshRender", COMPONENT_TYPE::MESHRENDER)
 {
-	SetSize(Vec2(0.f, 200.f));
+	SetSize(Vec2(0.f, 70.f));
 }
 
 MeshRenderUI::~MeshRenderUI() {}
@@ -26,6 +26,8 @@ void MeshRenderUI::update()
 void MeshRenderUI::render_update()
 {
 	ComponentUI::render_update();
+	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
+	else { SetSize(Vec2(0.f, 70.f)); }
 
 	ImGui::PushItemWidth(200);
 
