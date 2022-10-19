@@ -33,13 +33,13 @@ void CMeshRender::render()
 	{
 		Animator2D()->UpdateData();
 	}
-	
+
 	// Animator3D 업데이트
 	if (Animator3D())
 	{
 		Animator3D()->UpdateData();
 
-		for (size_t i = 0; i < GetMtrlCount(); ++i)
+		for (UINT i = 0; i < GetMtrlCount(); ++i)
 		{
 			if (nullptr == GetMaterial(i))
 				continue;
@@ -52,7 +52,7 @@ void CMeshRender::render()
 	// Render
 	// ======
 	UINT iSubsetCount = GetMesh()->GetSubsetCount();
-	for (size_t i = 0; i < iSubsetCount; ++i)
+	for (UINT i = 0; i < iSubsetCount; ++i)
 	{
 		if (nullptr == GetMaterial(i))
 			continue;

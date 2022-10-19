@@ -623,28 +623,26 @@
     <None Include="particle.fx">
       <Filter>Engine\ShaderCode\ComputeShader\Particle</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="animation3d.fx">
+    <None Include="func.fx">
+      <Filter>Engine\ShaderCode</Filter>
+    </None>
+    <None Include="struct.fx">
+      <Filter>Engine\ShaderCode</Filter>
+    </None>
+    <None Include="value.fx">
+      <Filter>Engine\ShaderCode</Filter>
+    </None>
+    <None Include="animation3d.fx">
       <Filter>Engine\ShaderCode\ComputeShader\Animation3D</Filter>
-    </FxCompile>
-    <FxCompile Include="func.fx">
-      <Filter>Engine\ShaderCode</Filter>
-    </FxCompile>
-    <FxCompile Include="struct.fx">
-      <Filter>Engine\ShaderCode</Filter>
-    </FxCompile>
-    <FxCompile Include="value.fx">
-      <Filter>Engine\ShaderCode</Filter>
-    </FxCompile>
-    <FxCompile Include="heightmap.fx">
+    </None>
+    <None Include="heightmap.fx">
       <Filter>Engine\ShaderCode\ComputeShader\LandScape\HeightMap</Filter>
-    </FxCompile>
-    <FxCompile Include="raycast.fx">
+    </None>
+    <None Include="raycast.fx">
       <Filter>Engine\ShaderCode\ComputeShader\LandScape\Raycast</Filter>
-    </FxCompile>
-    <FxCompile Include="weightmap.fx">
+    </None>
+    <None Include="weightmap.fx">
       <Filter>Engine\ShaderCode\ComputeShader\LandScape\WeightMap</Filter>
-    </FxCompile>
+    </None>
   </ItemGroup>
 </Project>

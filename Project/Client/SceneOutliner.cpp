@@ -14,7 +14,8 @@
 
 
 SceneOutliner::SceneOutliner()
-	: UI("SceneOutliner")
+	:
+	UI("SceneOutliner")
 {
 	m_TreeUI = new TreeUI(true);
 	m_TreeUI->SetTitle("SceneOutliner");
@@ -39,10 +40,7 @@ SceneOutliner::SceneOutliner()
 	Reset();
 }
 
-SceneOutliner::~SceneOutliner()
-{
-
-}
+SceneOutliner::~SceneOutliner() {}
 
 void SceneOutliner::update()
 {
@@ -58,13 +56,13 @@ void SceneOutliner::render_update()
 {
 	//마우스 우측 클릭으로 마우스 위치에 팝업 만들기
 	const ImVec2   windowLeftTop = ImGui::GetCursorScreenPos();
-	const ImVec2   windowSize = ImGui::GetContentRegionAvail();
-	const ImGuiIO& io = ImGui::GetIO();
-	const ImVec2   mousePos = io.MousePos - windowLeftTop;
+	const ImVec2   windowSize    = ImGui::GetContentRegionAvail();
+	const ImGuiIO& io            = ImGui::GetIO();
+	const ImVec2   mousePos      = io.MousePos - windowLeftTop;
 
 	static bool bIsOpenPopUp = false;
 	if (0 < mousePos.x && mousePos.x < windowSize.x
-		&& 0 < mousePos.y && mousePos.y < windowSize.y)
+	    && 0 < mousePos.y && mousePos.y < windowSize.y)
 	{
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 		{
@@ -76,28 +74,18 @@ void SceneOutliner::render_update()
 	if (bIsOpenPopUp)
 	{
 		static const std::string menus[] = {
-			"Create"
-		  , "Delete"
-		  , "Add Component"
-		  , "Delete Component"
-		  , "Add Script"
-		  , "Delete Script"
-		  , "Make as Prefab"
-		  , "Change Name"
+			"Create", "Delete", "Add Component", "Delete Component", "Add Script", "Delete Script", "Make as Prefab",
+			"Change Name"
 		};
 		if (ImGui::BeginPopup("PREFAB_POPUP"))
 		{
 			for (int i = 0; i < std::size(menus); ++i)
 			{
-				if (ImGui::Selectable(menus[i].c_str()))
-				{
-
-				}
+				if (ImGui::Selectable(menus[i].c_str())) { }
 			}
 			ImGui::EndPopup();
 		}
 	}
-
 }
 
 void SceneOutliner::Reset()
@@ -111,10 +99,9 @@ void SceneOutliner::Reset()
 	pInspectorUI->SetTargetScene(nullptr);
 
 	// SceneOutlinerUI 갱신
-	m_pSelectedScene = nullptr;
-	m_pSelectedLayer = nullptr;
+	m_pSelectedScene      = nullptr;
+	m_pSelectedLayer      = nullptr;
 	m_pSelectedGameObject = nullptr;
-
 }
 
 void SceneOutliner::ResetTreeUI()
@@ -148,56 +135,52 @@ void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 {
 	TreeNode* pNode = (TreeNode*)_dw;
 
-	string			strKey = pNode->GetName();
-	NODE_TYPE		NodeType = pNode->GetNodeType();
-	DWORD_PTR		pData = pNode->GetData();
+	string       strKey       = pNode->GetName();
+	NODE_TYPE    NodeType     = pNode->GetNodeType();
+	DWORD_PTR    pData        = pNode->GetData();
 	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
 
 	switch (NodeType)
 	{
-
 	case NODE_TYPE::ENGINE_SCENE:
-	{
-		CScene* pScene = (CScene*)pData;
-		assert(pScene);
-		pInspectorUI->SetTargetScene(pScene);
-		pInspectorUI->SetTargetLayer(nullptr);
-		pInspectorUI->SetTargetObject(nullptr);
+		{
+			CScene* pScene = (CScene*)pData;
+			assert(pScene);
+			pInspectorUI->SetTargetScene(pScene);
+			pInspectorUI->SetTargetLayer(nullptr);
+			pInspectorUI->SetTargetObject(nullptr);
 
-		m_pSelectedScene = pScene;
-		m_pSelectedLayer = nullptr;
-		m_pSelectedGameObject = nullptr;
-
-	}
-	break;
+			m_pSelectedScene      = pScene;
+			m_pSelectedLayer      = nullptr;
+			m_pSelectedGameObject = nullptr;
+		}
+		break;
 	case NODE_TYPE::ENGINE_LAYER:
-	{
-		CLayer* pLayer = (CLayer*)pData;
-		assert(pLayer);
-		pInspectorUI->SetTargetLayer(pLayer);
-		pInspectorUI->SetTargetObject(nullptr);
+		{
+			CLayer* pLayer = (CLayer*)pData;
+			assert(pLayer);
+			pInspectorUI->SetTargetLayer(pLayer);
+			pInspectorUI->SetTargetObject(nullptr);
 
-		m_pSelectedLayer = pLayer;
-		m_pSelectedGameObject = nullptr;	}
-	break;
+			m_pSelectedLayer      = pLayer;
+			m_pSelectedGameObject = nullptr;
+		}
+		break;
 	case NODE_TYPE::ENGINE_GAMEOBJECT:
-	{
-		CGameObject* pObj = (CGameObject*)pData;
-		assert(pObj);
-		pInspectorUI->SetTargetObject(pObj);
+		{
+			CGameObject* pObj = (CGameObject*)pData;
+			assert(pObj);
+			pInspectorUI->SetTargetObject(pObj);
 
-		m_pSelectedGameObject = pObj;
-	}
-	break;
-
+			m_pSelectedGameObject = pObj;
+		}
+		break;
 	}
 }
 
 TreeNode* SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestNode)
 {
-	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode
-		, string(_pObject->GetName().begin(), _pObject->GetName().end())
-		, (DWORD_PTR)_pObject);
+	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode, ToString(_pObject->GetName()), (DWORD_PTR)_pObject);
 	pNode->SetNodeType(NODE_TYPE::ENGINE_GAMEOBJECT);
 
 
@@ -213,21 +196,16 @@ TreeNode* SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _p
 
 TreeNode* SceneOutliner::AddSceneToTree(CScene* _pScene, TreeNode* _pDestNode)
 {
-	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode
-		, "Scene " + string(_pScene->GetName().begin(), _pScene->GetName().end())
-		, (DWORD_PTR)_pScene);
+	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode, "Scene " + ToString(_pScene->GetName()), (DWORD_PTR)_pScene);
 	pNode->SetNodeType(NODE_TYPE::ENGINE_SCENE);
 
 	return pNode;
-
 }
 
 TreeNode* SceneOutliner::AddLayerToTree(CLayer* _pLayer, TreeNode* _pDestNode)
 {
-	int layerIdx = _pLayer->GetLayerIdx();
-	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode
-		, "Layer " + string(_pLayer->GetName().begin(), _pLayer->GetName().end())
-		, (DWORD_PTR)_pLayer);
+	int       layerIdx = _pLayer->GetLayerIdx();
+	TreeNode* pNode    = m_TreeUI->AddTreeNode(_pDestNode, "Layer " + ToString(_pLayer->GetName()), (DWORD_PTR)_pLayer);
 
 	pNode->SetNodeType(NODE_TYPE::ENGINE_LAYER);
 	return pNode;
@@ -251,7 +229,7 @@ void SceneOutliner::PressDelete(DWORD_PTR _dw)
 
 void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 {
-	CGameObject* pChildObject = (CGameObject*)_dwDrag;
+	CGameObject* pChildObject      = (CGameObject*)_dwDrag;
 	CGameObject* pDropTargetObject = (CGameObject*)_dwDrop;
 
 
@@ -259,7 +237,7 @@ void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 	if (nullptr != pDropTargetObject)
 	{
 		if (pChildObject == pDropTargetObject
-			|| pDropTargetObject->IsAncestor(pChildObject))
+		    || pDropTargetObject->IsAncestor(pChildObject))
 		{
 			return;
 		}

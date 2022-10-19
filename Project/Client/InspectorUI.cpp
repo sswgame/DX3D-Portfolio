@@ -238,7 +238,7 @@ void InspectorUI::RenderButton()
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(80.f / 255.f, 80.f / 255.f, 80.f / 255.f, 1.f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(80.f / 255.f, 80.f / 255.f, 80.f / 255.f, 1.f));
 		wstring wstrObjName = m_pTargetObject->GetName();
-		string  strObjName  = string(wstrObjName.begin(), wstrObjName.end());
+		string  strObjName  = ToString(wstrObjName);
 		ImGui::Button(strObjName.c_str());
 		ImGui::PopStyleColor(3);
 		ImGui::PopID();
@@ -265,7 +265,7 @@ void InspectorUI::RenderButton()
 			if (buf[0] != NULL)
 			{
 				string  strName  = buf;
-				wstring wstrName = wstring(strName.begin(), strName.end());
+				wstring wstrName = ToWString(strName);
 				m_pTargetObject->SetName(wstrName);
 
 				// CImGuiMgr 에 Delegate 등록 
@@ -305,7 +305,7 @@ void InspectorUI::RenderButton()
 	if (ImGui::BeginPopupModal(u8"OBJECT 삭제 경고창", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		wstring wstrObjName = m_pTargetObject->GetName();
-		string  strObjName  = string(wstrObjName.begin(), wstrObjName.end());
+		string  strObjName  = ToString(wstrObjName);
 		ImGui::TextColored(ImVec4(1.f, 0.f, 0.3f, 1.f), u8"[ %s ] \n\nOBJECT를 정말로 삭제하시겠습니까?\n\n", strObjName.c_str());
 		ImGui::Separator();
 

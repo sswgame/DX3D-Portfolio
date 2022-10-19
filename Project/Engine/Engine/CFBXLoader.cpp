@@ -1,4 +1,3 @@
-
 #include "pch.h"
 #include "CFBXLoader.h"
 #include "CMesh.h"
@@ -12,11 +11,10 @@
 using std::experimental::filesystem::path;
 
 CFBXLoader::CFBXLoader()
-	: m_pManager(NULL)
-	, m_pScene(NULL)
-	, m_pImporter(NULL)
-{
-}
+	:
+	m_pManager(NULL)
+  , m_pScene(NULL)
+  , m_pImporter(NULL) {}
 
 CFBXLoader::~CFBXLoader()
 {
@@ -60,7 +58,7 @@ void CFBXLoader::LoadFbx(const wstring& _strPath)
 	m_pImporter = FbxImporter::Create(m_pManager, "");
 
 	//wstring str = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(strName.c_str());
-	string strPath(_strPath.begin(), _strPath.end());
+	string strPath = ToString(_strPath);
 
 	if (!m_pImporter->Initialize(strPath.c_str(), -1, m_pManager->GetIOSettings()))
 		assert(nullptr);
@@ -139,7 +137,7 @@ void CFBXLoader::LoadMesh(FbxMesh* _pFbxMesh)
 	m_vecContainer.push_back(tContainer{});
 	tContainer& Container = m_vecContainer[m_vecContainer.size() - 1];
 
-	string strName = _pFbxMesh->GetName();
+	string strName    = _pFbxMesh->GetName();
 	Container.strName = wstring(strName.begin(), strName.end());
 
 	int iVtxCnt = _pFbxMesh->GetControlPointsCount();
@@ -177,7 +175,7 @@ void CFBXLoader::LoadMesh(FbxMesh* _pFbxMesh)
 		for (int j = 0; j < iPolySize; ++j)
 		{
 			// i 번째 폴리곤에, j 번째 정점
-			int iIdx = _pFbxMesh->GetPolygonVertex(i, j);
+			int iIdx  = _pFbxMesh->GetPolygonVertex(i, j);
 			arrIdx[j] = iIdx;
 
 			GetTangent(_pFbxMesh, &Container, iIdx, iVtxOrder);
@@ -200,49 +198,42 @@ void CFBXLoader::LoadMaterial(FbxSurfaceMaterial* _pMtrlSur)
 {
 	tFbxMaterial tMtrlInfo{};
 
-	string str = _pMtrlSur->GetName();
+	string str            = _pMtrlSur->GetName();
 	tMtrlInfo.strMtrlName = wstring(str.begin(), str.end());
 
 	// Diff
-	tMtrlInfo.tMtrl.vDiff = GetMtrlData(_pMtrlSur
-		, FbxSurfaceMaterial::sDiffuse
-		, FbxSurfaceMaterial::sDiffuseFactor);
+	tMtrlInfo.tMtrl.vDiff = GetMtrlData(_pMtrlSur, FbxSurfaceMaterial::sDiffuse, FbxSurfaceMaterial::sDiffuseFactor);
 
 	// Amb
-	tMtrlInfo.tMtrl.vAmb = GetMtrlData(_pMtrlSur
-		, FbxSurfaceMaterial::sAmbient
-		, FbxSurfaceMaterial::sAmbientFactor);
+	tMtrlInfo.tMtrl.vAmb = GetMtrlData(_pMtrlSur, FbxSurfaceMaterial::sAmbient, FbxSurfaceMaterial::sAmbientFactor);
 
 	// Spec
-	tMtrlInfo.tMtrl.vSpec = GetMtrlData(_pMtrlSur
-		, FbxSurfaceMaterial::sSpecular
-		, FbxSurfaceMaterial::sSpecularFactor);
+	tMtrlInfo.tMtrl.vSpec = GetMtrlData(_pMtrlSur, FbxSurfaceMaterial::sSpecular, FbxSurfaceMaterial::sSpecularFactor);
 
 	// Emisv
-	tMtrlInfo.tMtrl.vEmv = GetMtrlData(_pMtrlSur
-		, FbxSurfaceMaterial::sEmissive
-		, FbxSurfaceMaterial::sEmissiveFactor);
+	tMtrlInfo.tMtrl.vEmv = GetMtrlData(_pMtrlSur, FbxSurfaceMaterial::sEmissive, FbxSurfaceMaterial::sEmissiveFactor);
 
 	// Texture Name
-	tMtrlInfo.strDiff = GetMtrlTextureName(_pMtrlSur, FbxSurfaceMaterial::sDiffuse);
+	tMtrlInfo.strDiff   = GetMtrlTextureName(_pMtrlSur, FbxSurfaceMaterial::sDiffuse);
 	tMtrlInfo.strNormal = GetMtrlTextureName(_pMtrlSur, FbxSurfaceMaterial::sNormalMap);
-	tMtrlInfo.strSpec = GetMtrlTextureName(_pMtrlSur, FbxSurfaceMaterial::sSpecular);
+	tMtrlInfo.strSpec   = GetMtrlTextureName(_pMtrlSur, FbxSurfaceMaterial::sSpecular);
 
 	m_vecContainer.back().vecMtrl.push_back(tMtrlInfo);
 }
 
-void CFBXLoader::GetTangent(FbxMesh* _pMesh
-	, tContainer* _pContainer
-	, int _iIdx		 /*해당 정점의 인덱스*/
-	, int _iVtxOrder /*폴리곤 단위로 접근하는 순서*/)
+void CFBXLoader::GetTangent(FbxMesh*    _pMesh,
+                            tContainer* _pContainer,
+                            int         _iIdx /*해당 정점의 인덱스*/
+                           ,
+                            int _iVtxOrder /*폴리곤 단위로 접근하는 순서*/)
 {
 	int iTangentCnt = _pMesh->GetElementTangentCount();
 	if (1 != iTangentCnt)
 		assert(NULL); // 정점 1개가 포함하는 탄젠트 정보가 2개 이상이다.
 
 	// 탄젠트 data 의 시작 주소
-	FbxGeometryElementTangent* pTangent = _pMesh->GetElementTangent();
-	UINT iTangentIdx = 0;
+	FbxGeometryElementTangent* pTangent    = _pMesh->GetElementTangent();
+	UINT                       iTangentIdx = 0;
 
 	if (pTangent->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
 	{
@@ -273,8 +264,8 @@ void CFBXLoader::GetBinormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx
 		assert(NULL); // 정점 1개가 포함하는 종법선 정보가 2개 이상이다.
 
 	// 종법선 data 의 시작 주소
-	FbxGeometryElementBinormal* pBinormal = _pMesh->GetElementBinormal();
-	UINT iBinormalIdx = 0;
+	FbxGeometryElementBinormal* pBinormal    = _pMesh->GetElementBinormal();
+	UINT                        iBinormalIdx = 0;
 
 	if (pBinormal->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
 	{
@@ -305,8 +296,8 @@ void CFBXLoader::GetNormal(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, 
 		assert(NULL); // 정점 1개가 포함하는 종법선 정보가 2개 이상이다.
 
 	// 종법선 data 의 시작 주소
-	FbxGeometryElementNormal* pNormal = _pMesh->GetElementNormal();
-	UINT iNormalIdx = 0;
+	FbxGeometryElementNormal* pNormal    = _pMesh->GetElementNormal();
+	UINT                      iNormalIdx = 0;
 
 	if (pNormal->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
 	{
@@ -340,29 +331,30 @@ void CFBXLoader::GetUV(FbxMesh* _pMesh, tContainer* _pContainer, int _iIdx, int 
 	else
 		iUVIdx = pUV->GetIndexArray().GetAt(_iIdx);
 
-	iUVIdx = _iUVIndex;
-	FbxVector2 vUV = pUV->GetDirectArray().GetAt(iUVIdx);
+	iUVIdx                      = _iUVIndex;
+	FbxVector2 vUV              = pUV->GetDirectArray().GetAt(iUVIdx);
 	_pContainer->vecUV[_iIdx].x = (float)vUV.mData[0];
 	_pContainer->vecUV[_iIdx].y = 1.f - (float)vUV.mData[1]; // fbx uv 좌표계는 좌하단이 0,0
 }
 
-Vec4 CFBXLoader::GetMtrlData(FbxSurfaceMaterial* _pSurface
-	, const char* _pMtrlName
-	, const char* _pMtrlFactorName)
+Vec4 CFBXLoader::GetMtrlData(FbxSurfaceMaterial* _pSurface, const char* _pMtrlName, const char* _pMtrlFactorName)
 {
-	FbxDouble3  vMtrl;
-	FbxDouble	dFactor = 0.;
+	FbxDouble3 vMtrl;
+	FbxDouble  dFactor = 0.;
 
-	FbxProperty tMtrlProperty = _pSurface->FindProperty(_pMtrlName);
+	FbxProperty tMtrlProperty       = _pSurface->FindProperty(_pMtrlName);
 	FbxProperty tMtrlFactorProperty = _pSurface->FindProperty(_pMtrlFactorName);
 
 	if (tMtrlProperty.IsValid() && tMtrlFactorProperty.IsValid())
 	{
-		vMtrl = tMtrlProperty.Get<FbxDouble3>();
+		vMtrl   = tMtrlProperty.Get<FbxDouble3>();
 		dFactor = tMtrlFactorProperty.Get<FbxDouble>();
 	}
 
-	Vec4 vRetVal = Vec4((float)vMtrl.mData[0] * (float)dFactor, (float)vMtrl.mData[1] * (float)dFactor, (float)vMtrl.mData[2] * (float)dFactor, (float)dFactor);
+	Vec4 vRetVal = Vec4((float)vMtrl.mData[0] * (float)dFactor,
+	                    (float)vMtrl.mData[1] * (float)dFactor,
+	                    (float)vMtrl.mData[2] * (float)dFactor,
+	                    (float)dFactor);
 	return vRetVal;
 }
 
@@ -411,9 +403,9 @@ void CFBXLoader::LoadTexture()
 
 			for (size_t k = 0; k < vecPath.size(); ++k)
 			{
-				path_origin = vecPath[k];
+				path_origin   = vecPath[k];
 				path_filename = vecPath[k].filename();
-				path_dest = path_fbx_texture.wstring() + path_filename.wstring();
+				path_dest     = path_fbx_texture.wstring() + path_filename.wstring();
 
 				if (false == exists(path_dest))
 				{
@@ -425,9 +417,12 @@ void CFBXLoader::LoadTexture()
 
 				switch (k)
 				{
-				case 0: m_vecContainer[i].vecMtrl[j].strDiff = path_dest; break;
-				case 1: m_vecContainer[i].vecMtrl[j].strNormal = path_dest; break;
-				case 2: m_vecContainer[i].vecMtrl[j].strSpec = path_dest; break;
+				case 0: m_vecContainer[i].vecMtrl[j].strDiff = path_dest;
+					break;
+				case 1: m_vecContainer[i].vecMtrl[j].strNormal = path_dest;
+					break;
+				case 2: m_vecContainer[i].vecMtrl[j].strSpec = path_dest;
+					break;
 				}
 			}
 		}
@@ -464,26 +459,26 @@ void CFBXLoader::CreateMaterial()
 			pMaterial->SetRelativePath(strKey);
 			pMaterial->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"Std3D_DeferredShader"));
 
-			wstring strTexKey = m_vecContainer[i].vecMtrl[j].strDiff;
-			Ptr<CTexture> pTex = CResMgr::GetInst()->FindRes<CTexture>(strTexKey);
+			wstring       strTexKey = m_vecContainer[i].vecMtrl[j].strDiff;
+			Ptr<CTexture> pTex      = CResMgr::GetInst()->FindRes<CTexture>(strTexKey);
 			if (NULL != pTex)
 				pMaterial->SetTexParam(TEX_PARAM::TEX_0, pTex.Get());
 
 			strTexKey = m_vecContainer[i].vecMtrl[j].strNormal;
-			pTex = CResMgr::GetInst()->FindRes<CTexture>(strTexKey);
+			pTex      = CResMgr::GetInst()->FindRes<CTexture>(strTexKey);
 			if (NULL != pTex)
 				pMaterial->SetTexParam(TEX_PARAM::TEX_1, pTex.Get());
 
 			strTexKey = m_vecContainer[i].vecMtrl[j].strSpec;
-			pTex = CResMgr::GetInst()->FindRes<CTexture>(strTexKey);
+			pTex      = CResMgr::GetInst()->FindRes<CTexture>(strTexKey);
 			if (NULL != pTex)
 				pMaterial->SetTexParam(TEX_PARAM::TEX_2, pTex.Get());
 
 			pMaterial->SetMaterialCoefficient(
-				m_vecContainer[i].vecMtrl[j].tMtrl.vDiff
-				, m_vecContainer[i].vecMtrl[j].tMtrl.vSpec
-				, m_vecContainer[i].vecMtrl[j].tMtrl.vAmb
-				, m_vecContainer[i].vecMtrl[j].tMtrl.vEmv);
+			                                  m_vecContainer[i].vecMtrl[j].tMtrl.vDiff,
+			                                  m_vecContainer[i].vecMtrl[j].tMtrl.vSpec,
+			                                  m_vecContainer[i].vecMtrl[j].tMtrl.vAmb,
+			                                  m_vecContainer[i].vecMtrl[j].tMtrl.vEmv);
 
 			CResMgr::GetInst()->AddRes<CMaterial>(pMaterial->GetKey(), pMaterial);
 		}
@@ -508,7 +503,7 @@ void CFBXLoader::LoadSkeleton_Re(FbxNode* _pNode, int _iDepth, int _iIdx, int _i
 		string strBoneName = _pNode->GetName();
 
 		pBone->strBoneName = wstring(strBoneName.begin(), strBoneName.end());
-		pBone->iDepth = _iDepth++;
+		pBone->iDepth      = _iDepth++;
 		pBone->iParentIndx = _iParentIdx;
 
 		m_vecBone.push_back(pBone);
@@ -543,12 +538,12 @@ void CFBXLoader::LoadAnimationClip()
 		pAnimClip->strName = wstring(strClipName.begin(), strClipName.end());
 
 		FbxTakeInfo* pTakeInfo = m_pScene->GetTakeInfo(pAnimStack->GetName());
-		pAnimClip->tStartTime = pTakeInfo->mLocalTimeSpan.GetStart();
-		pAnimClip->tEndTime = pTakeInfo->mLocalTimeSpan.GetStop();
+		pAnimClip->tStartTime  = pTakeInfo->mLocalTimeSpan.GetStart();
+		pAnimClip->tEndTime    = pTakeInfo->mLocalTimeSpan.GetStop();
 
-		pAnimClip->eMode = m_pScene->GetGlobalSettings().GetTimeMode();
-		pAnimClip->llTimeLength = pAnimClip->tEndTime.GetFrameCount(pAnimClip->eMode) - pAnimClip->tStartTime.GetFrameCount(pAnimClip->eMode);
-
+		pAnimClip->eMode        = m_pScene->GetGlobalSettings().GetTimeMode();
+		pAnimClip->llTimeLength = pAnimClip->tEndTime.GetFrameCount(pAnimClip->eMode) - pAnimClip->tStartTime.
+		                          GetFrameCount(pAnimClip->eMode);
 
 
 		m_vecAnimClip.push_back(pAnimClip);
@@ -560,9 +555,9 @@ void CFBXLoader::Triangulate(FbxNode* _pNode)
 	FbxNodeAttribute* pAttr = _pNode->GetNodeAttribute();
 
 	if (pAttr &&
-		(pAttr->GetAttributeType() == FbxNodeAttribute::eMesh
-			|| pAttr->GetAttributeType() == FbxNodeAttribute::eNurbs
-			|| pAttr->GetAttributeType() == FbxNodeAttribute::eNurbsSurface))
+	    (pAttr->GetAttributeType() == FbxNodeAttribute::eMesh
+	     || pAttr->GetAttributeType() == FbxNodeAttribute::eNurbs
+	     || pAttr->GetAttributeType() == FbxNodeAttribute::eNurbsSurface))
 	{
 		FbxGeometryConverter converter(m_pManager);
 		converter.Triangulate(pAttr, true);
@@ -639,12 +634,13 @@ void CFBXLoader::CheckWeightAndIndices(FbxMesh* _pMesh, tContainer* _pContainer)
 		if ((*iter).size() > 1)
 		{
 			// 가중치 값 순으로 내림차순 정렬
-			sort((*iter).begin(), (*iter).end()
-				, [](const tWeightsAndIndices& left, const tWeightsAndIndices& right)
-				{
-					return left.dWeight > right.dWeight;
-				}
-			);
+			sort((*iter).begin(),
+			     (*iter).end(),
+			     [](const tWeightsAndIndices& left, const tWeightsAndIndices& right)
+			     {
+				     return left.dWeight > right.dWeight;
+			     }
+			    );
 
 			double dWeight = 0.f;
 			for (UINT i = 0; i < (*iter).size(); ++i)
@@ -681,17 +677,20 @@ void CFBXLoader::CheckWeightAndIndices(FbxMesh* _pMesh, tContainer* _pContainer)
 	}
 }
 
-void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
-	, const FbxAMatrix& _matNodeTransform, int _iBoneIdx, tContainer* _pContainer)
+void CFBXLoader::LoadKeyframeTransform(FbxNode*          _pNode,
+                                       FbxCluster*       _pCluster,
+                                       const FbxAMatrix& _matNodeTransform,
+                                       int               _iBoneIdx,
+                                       tContainer*       _pContainer)
 {
 	if (m_vecAnimClip.empty())
 		return;
 
-	FbxVector4	v1 = { 1, 0, 0, 0 };
-	FbxVector4	v2 = { 0, 0, 1, 0 };
-	FbxVector4	v3 = { 0, 1, 0, 0 };
-	FbxVector4	v4 = { 0, 0, 0, 1 };
-	FbxAMatrix	matReflect;
+	FbxVector4 v1 = {1, 0, 0, 0};
+	FbxVector4 v2 = {0, 0, 1, 0};
+	FbxVector4 v3 = {0, 1, 0, 0};
+	FbxVector4 v4 = {0, 0, 0, 1};
+	FbxAMatrix matReflect;
 	matReflect.mData[0] = v1;
 	matReflect.mData[1] = v2;
 	matReflect.mData[2] = v3;
@@ -702,29 +701,30 @@ void CFBXLoader::LoadKeyframeTransform(FbxNode* _pNode, FbxCluster* _pCluster
 	FbxTime::EMode eTimeMode = m_pScene->GetGlobalSettings().GetTimeMode();
 
 	FbxLongLong llStartFrame = m_vecAnimClip[0]->tStartTime.GetFrameCount(eTimeMode);
-	FbxLongLong llEndFrame = m_vecAnimClip[0]->tEndTime.GetFrameCount(eTimeMode);
+	FbxLongLong llEndFrame   = m_vecAnimClip[0]->tEndTime.GetFrameCount(eTimeMode);
 
 	for (FbxLongLong i = llStartFrame; i < llEndFrame; ++i)
 	{
 		tKeyFrame tFrame = {};
-		FbxTime   tTime = 0;
+		FbxTime   tTime  = 0;
 
 		tTime.SetFrame(i, eTimeMode);
 
 		FbxAMatrix matFromNode = _pNode->EvaluateGlobalTransform(tTime) * _matNodeTransform;
 		FbxAMatrix matCurTrans = matFromNode.Inverse() * _pCluster->GetLink()->EvaluateGlobalTransform(tTime);
-		matCurTrans = matReflect * matCurTrans * matReflect;
+		matCurTrans            = matReflect * matCurTrans * matReflect;
 
-		tFrame.dTime = tTime.GetSecondDouble();
+		tFrame.dTime        = tTime.GetSecondDouble();
 		tFrame.matTransform = matCurTrans;
 
 		m_vecBone[_iBoneIdx]->vecKeyFrame.push_back(tFrame);
 	}
 }
 
-void CFBXLoader::LoadOffsetMatrix(FbxCluster* _pCluster
-	, const FbxAMatrix& _matNodeTransform
-	, int _iBoneIdx, tContainer* _pContainer)
+void CFBXLoader::LoadOffsetMatrix(FbxCluster*       _pCluster,
+                                  const FbxAMatrix& _matNodeTransform,
+                                  int               _iBoneIdx,
+                                  tContainer*       _pContainer)
 {
 	FbxAMatrix matClusterTrans;
 	FbxAMatrix matClusterLinkTrans;
@@ -733,10 +733,10 @@ void CFBXLoader::LoadOffsetMatrix(FbxCluster* _pCluster
 	_pCluster->GetTransformLinkMatrix(matClusterLinkTrans);
 
 	// Reflect Matrix
-	FbxVector4 V0 = { 1, 0, 0, 0 };
-	FbxVector4 V1 = { 0, 0, 1, 0 };
-	FbxVector4 V2 = { 0, 1, 0, 0 };
-	FbxVector4 V3 = { 0, 0, 0, 1 };
+	FbxVector4 V0 = {1, 0, 0, 0};
+	FbxVector4 V1 = {0, 0, 1, 0};
+	FbxVector4 V2 = {0, 1, 0, 0};
+	FbxVector4 V3 = {0, 0, 0, 1};
 
 	FbxAMatrix matReflect;
 	matReflect[0] = V0;
@@ -752,9 +752,7 @@ void CFBXLoader::LoadOffsetMatrix(FbxCluster* _pCluster
 }
 
 
-void CFBXLoader::LoadWeightsAndIndices(FbxCluster* _pCluster
-	, int _iBoneIdx
-	, tContainer* _pContainer)
+void CFBXLoader::LoadWeightsAndIndices(FbxCluster* _pCluster, int _iBoneIdx, tContainer* _pContainer)
 {
 	int iIndicesCount = _pCluster->GetControlPointIndicesCount();
 
@@ -764,14 +762,13 @@ void CFBXLoader::LoadWeightsAndIndices(FbxCluster* _pCluster
 
 		// 각 정점에게 본 인덱스 정보와, 가중치 값을 알린다.
 		tWI.iBoneIdx = _iBoneIdx;
-		tWI.dWeight = _pCluster->GetControlPointWeights()[i];
+		tWI.dWeight  = _pCluster->GetControlPointWeights()[i];
 
 		int iVtxIdx = _pCluster->GetControlPointIndices()[i];
 
 		_pContainer->vecWI[iVtxIdx].push_back(tWI);
 	}
 }
-
 
 
 int CFBXLoader::FindBoneIndex(string _strBoneName)

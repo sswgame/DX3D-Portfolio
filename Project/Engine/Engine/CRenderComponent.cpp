@@ -7,24 +7,24 @@
 #include "CTransform.h"
 
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
-	: CComponent(_type)
-	, m_pMesh(nullptr)
-	, m_bDynamicShadow(false)
-	, m_bFrustumCulling(false)
-{
-}
+	:
+	CComponent(_type)
+  , m_pMesh(nullptr)
+  , m_bDynamicShadow(false)
+  , m_bFrustumCulling(false) {}
 
 CRenderComponent::CRenderComponent(const CRenderComponent& _origin)
-	: CComponent(_origin)
-	, m_pMesh(_origin.m_pMesh)
-	, m_bDynamicShadow(_origin.m_bDynamicShadow)
-	, m_bFrustumCulling(_origin.m_bFrustumCulling)
+	:
+	CComponent(_origin)
+  , m_pMesh(_origin.m_pMesh)
+  , m_bDynamicShadow(_origin.m_bDynamicShadow)
+  , m_bFrustumCulling(_origin.m_bFrustumCulling)
 {
 	if (false != _origin.m_vecMtrls.empty())
 	{
 		for (size_t i = 0; i < _origin.m_vecMtrls.size(); ++i)
 		{
-			SetSharedMaterial(_origin.m_vecMtrls[i].pSharedMtrl, i);
+			SetSharedMaterial(_origin.m_vecMtrls[i].pSharedMtrl, static_cast<UINT>(i));
 		}
 	}
 }
@@ -34,7 +34,7 @@ CRenderComponent::~CRenderComponent()
 	for (size_t i = 0; i < m_vecMtrls.size(); ++i)
 	{
 		if (nullptr != m_vecMtrls[i].pDynamicMtrl)
-			delete  m_vecMtrls[i].pDynamicMtrl.Get();
+			delete m_vecMtrls[i].pDynamicMtrl.Get();
 	}
 }
 
@@ -55,7 +55,7 @@ void CRenderComponent::SetMesh(Ptr<CMesh> _pMesh)
 void CRenderComponent::SetSharedMaterial(Ptr<CMaterial> _pMtrl, UINT _iIdx)
 {
 	m_vecMtrls[_iIdx].pSharedMtrl = _pMtrl;
-	m_vecMtrls[_iIdx].pMtrl = _pMtrl;
+	m_vecMtrls[_iIdx].pMtrl       = _pMtrl;
 }
 
 Ptr<CMaterial> CRenderComponent::GetMaterial(UINT _iIdx)
@@ -81,9 +81,10 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _iIdx)
 	if (CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
 		return nullptr;
 
-	if (nullptr != m_vecMtrls[_iIdx].pDynamicMtrl && m_vecMtrls[_iIdx].pDynamicMtrl->GetMasterMtrl() != m_vecMtrls[_iIdx].pSharedMtrl)
+	if (nullptr != m_vecMtrls[_iIdx].pDynamicMtrl && m_vecMtrls[_iIdx].pDynamicMtrl->GetMasterMtrl() != m_vecMtrls[
+		    _iIdx].pSharedMtrl)
 	{
-		CMaterial* pMtrl = m_vecMtrls[_iIdx].pDynamicMtrl.Get();
+		CMaterial* pMtrl               = m_vecMtrls[_iIdx].pDynamicMtrl.Get();
 		m_vecMtrls[_iIdx].pDynamicMtrl = nullptr;
 		delete pMtrl;
 	}
@@ -97,7 +98,6 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _iIdx)
 
 	return m_vecMtrls[_iIdx].pMtrl;
 }
-
 
 
 void CRenderComponent::render_shadowmap()

@@ -15,9 +15,6 @@ void CFontMgr::Init()
 		MessageBox(nullptr, L"dwrite 초기화 실패", L"Error", MB_OK);
 		assert(nullptr);
 	}
-
-	//Engine Font Loading
-	LoadFontFromFile(L"font/fa-solid-900.ttf");
 }
 
 ComPtr<IDWriteTextFormat> CFontMgr::LoadFontFromFile(const std::wstring& _relativePath)
@@ -147,34 +144,34 @@ ComPtr<IDWriteTextFormat> CFontMgr::CreateFontFromFile(const std::wstring& _key,
 }
 
 
-ComPtr<ID2D1SolidColorBrush> CFontMgr::GetBrush(const Vec4& color)
+ComPtr<ID2D1SolidColorBrush> CFontMgr::GetBrush(const Vec4& _color)
 {
-	ComPtr<ID2D1SolidColorBrush> pBrush = FindColor(color);
+	ComPtr<ID2D1SolidColorBrush> pBrush = FindColor(_color);
 	if (nullptr != pBrush)
 	{
 		return pBrush;
 	}
 
-	if (FAILED(CDevice::GetInst()->GetRtv2D()->CreateSolidColorBrush(D2D1::ColorF{color.x,color.y,color.z,color.w},
+	if (FAILED(CDevice::GetInst()->GetRtv2D()->CreateSolidColorBrush(D2D1::ColorF{_color.x,_color.y,_color.z,_color.w},
 		           pBrush.GetAddressOf())))
 	{
 		MessageBox(nullptr, L"브러시 생성 실패", L"Error",MB_OK);
 		assert(nullptr);
 	}
-	m_mapBrush.insert({GetColorID(color), pBrush});
+	m_mapBrush.insert({GetColorID(_color), pBrush});
 
 	return pBrush;
 }
 
-ComPtr<ID2D1SolidColorBrush> CFontMgr::GetBrush(const D2D1::ColorF& color)
+ComPtr<ID2D1SolidColorBrush> CFontMgr::GetBrush(const D2D1::ColorF& _color)
 {
-	return GetBrush(Vec4{color.r, color.g, color.b, color.a});
+	return GetBrush(Vec4{_color.r, _color.g, _color.b, _color.a});
 }
 
 
-ComPtr<ID2D1SolidColorBrush> CFontMgr::FindColor(const Vec4& color)
+ComPtr<ID2D1SolidColorBrush> CFontMgr::FindColor(const Vec4& _color)
 {
-	const auto iter = m_mapBrush.find(GetColorID(color));
+	const auto iter = m_mapBrush.find(GetColorID(_color));
 	if (iter != m_mapBrush.end())
 	{
 		return iter->second;
@@ -182,15 +179,15 @@ ComPtr<ID2D1SolidColorBrush> CFontMgr::FindColor(const Vec4& color)
 	return nullptr;
 }
 
-UINT CFontMgr::GetColorID(const Vec4& color)
+UINT CFontMgr::GetColorID(const Vec4& _color)
 {
 	UINT  colorID{};
 	UCHAR R{}, G{}, B{}, A{};
 
-	R = static_cast<UCHAR>(color.x * 255);
-	G = static_cast<UCHAR>(color.y * 255);
-	B = static_cast<UCHAR>(color.z * 255);
-	A = static_cast<UCHAR>(color.w * 255);
+	R = static_cast<UCHAR>(_color.x * 255);
+	G = static_cast<UCHAR>(_color.y * 255);
+	B = static_cast<UCHAR>(_color.z * 255);
+	A = static_cast<UCHAR>(_color.w * 255);
 
 	colorID = (R << 24) | (G << 16) | (B << 8) | A;
 
