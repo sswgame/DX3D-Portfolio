@@ -24,15 +24,15 @@ int CDevice::init(HWND _hWnd, Vec2 _vRenderResolution)
 	g_global.vResolution = m_vRenderResolution;
 
 
-	UINT iFlag = 0;
+	UINT iFlag = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #ifdef _DEBUG
-	iFlag = D3D11_CREATE_DEVICE_DEBUG;
+	iFlag |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 	D3D_FEATURE_LEVEL iFeautureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 
 	HRESULT hr = D3D11CreateDevice(nullptr,
 	                               D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-	                               0,
+	                               nullptr,
 	                               iFlag,
 	                               nullptr,
 	                               0,
@@ -96,6 +96,8 @@ int CDevice::init(HWND _hWnd, Vec2 _vRenderResolution)
 
 	// Sampler 생성
 	CreateSamplerState();
+
+	Init2D();
 
 	return S_OK;
 }
@@ -388,16 +390,16 @@ void CDevice::CreateSamplerState()
 	tDesc.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 	tDesc.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 	tDesc.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-	tDesc.Filter = D3D11_FILTER::D3D11_FILTER_ANISOTROPIC;
-	tDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	tDesc.Filter   = D3D11_FILTER::D3D11_FILTER_ANISOTROPIC;
+	tDesc.MaxLOD   = D3D11_FLOAT32_MAX;
 
 	DEVICE->CreateSamplerState(&tDesc, m_arrSam[0].GetAddressOf());
 
 	tDesc.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 	tDesc.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 	tDesc.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-	tDesc.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_MIP_POINT;
-	tDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	tDesc.Filter   = D3D11_FILTER::D3D11_FILTER_MIN_MAG_MIP_POINT;
+	tDesc.MaxLOD   = D3D11_FLOAT32_MAX;
 
 	DEVICE->CreateSamplerState(&tDesc, m_arrSam[1].GetAddressOf());
 
@@ -414,4 +416,29 @@ void CDevice::CreateSamplerState()
 	CONTEXT->GSSetSamplers(1, 1, m_arrSam[1].GetAddressOf());
 	CONTEXT->PSSetSamplers(1, 1, m_arrSam[1].GetAddressOf());
 	CONTEXT->CSSetSamplers(1, 1, m_arrSam[1].GetAddressOf());
+}
+
+void CDevice::Init2D()
+{
+	// 2D Factory 생성
+	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, m_pFactory2D.GetAddressOf())))
+	{
+		MessageBox(nullptr, L"2D Failed", L"Error",MB_OK);
+		assert(nullptr);
+	}
+	// 3D BackBuffer의 Surface를 얻어온다.
+	ComPtr<IDXGISurface> pBackBuffer{};
+
+	m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+
+	// 2D용 렌더타겟을 만들어준다.
+	D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_HARDWARE,
+	                                                                   D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN,
+		                                                                   D2D1_ALPHA_MODE_PREMULTIPLIED));
+
+	if (FAILED(m_pFactory2D->CreateDxgiSurfaceRenderTarget(pBackBuffer.Get(), props, m_pRtv2D.GetAddressOf())))
+	{
+		MessageBox(nullptr, L"2D 호환 실패", L"Error",MB_OK);
+		assert(nullptr);
+	}
 }

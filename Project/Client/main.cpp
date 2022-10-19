@@ -15,6 +15,8 @@
 #include "CImGuiMgr.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "CTestScene.h"
+#include <sstream>
+#include <Engine/CFontMgr.h>
 
 // 전역 변수:
 HINSTANCE hInst;
@@ -92,6 +94,35 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 			// ImGui Update, render
 			CImGuiMgr::GetInst()->progress();
 			CImGuiMgr::GetInst()->render();
+
+#pragma region FONT_MANAGER_TEST_CODE
+			//CDevice::GetInst()->GetRtv2D()->BeginDraw();
+			//std::wstringstream ss{};
+			//ss << L"This is font test.\n";
+
+			//CDevice::GetInst()->GetRtv2D()->DrawText(ss.str().c_str(),
+			//	static_cast<UINT32>(ss.str().size()),
+			//	CFontMgr::GetInst()->
+			//	LoadFontFromFile(L"font/Pretendard-Medium.ttf").
+			//	Get(),
+			//	D2D1::RectF(500.f, 500.f, 600.f, 600.f),
+			//	CFontMgr::GetInst()->GetBrush(Vec4{ 1.f, 1.f, 1.f, 1.f }).Get());
+
+			//CDevice::GetInst()->GetRtv2D()->DrawText(ss.str().c_str(),
+			//	static_cast<UINT32>(ss.str().size()),
+			//	CFontMgr::GetInst()->LoadFontFromFile(L"font/fa-solid-900.ttf").
+			//	Get(),
+			//	D2D1::RectF(900, 500.f, 1200.f, 600.f),
+			//	CFontMgr::GetInst()->GetBrush(Vec4{ 1.f, 1.f, 1.f, 1.f }).Get());
+			//CDevice::GetInst()->GetRtv2D()->DrawText(ss.str().c_str(),
+			//	static_cast<UINT32>(ss.str().size()),
+			//	CFontMgr::GetInst()->LoadFontFromFile(L"font/Halloween.ttf").
+			//	Get(),
+			//	D2D1::RectF(900, 900.f, 1200.f, 600.f),
+			//	CFontMgr::GetInst()->GetBrush(Vec4{ 1.f, 1.f, 1.f, 1.f }).Get());
+			//HRESULT hr = CDevice::GetInst()->GetRtv2D()->EndDraw();
+#pragma endregion
+
 
 			// Present
 			CDevice::GetInst()->Present();

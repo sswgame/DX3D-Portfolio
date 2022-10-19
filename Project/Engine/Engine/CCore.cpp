@@ -9,6 +9,7 @@
 #include "CSceneMgr.h"
 #include "CRenderMgr.h"
 #include "CEventMgr.h"
+#include "CFontMgr.h"
 
 CCore::CCore()
 	:
@@ -40,6 +41,8 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CRenderMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
 
+	//Direct2D
+	CFontMgr::GetInst()->Init();
 
 	return S_OK;
 }

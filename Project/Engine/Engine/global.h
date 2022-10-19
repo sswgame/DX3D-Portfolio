@@ -14,6 +14,12 @@ using namespace::DirectX::PackedVector;
 #pragma comment(lib, "d3dcompiler")
 #pragma comment(lib, "dxguid")
 
+//Direct2D
+#include <d2d1.h>
+#include <dwrite.h>
+#pragma comment(lib,"d2d1")
+#pragma comment(lib,"dwrite")
+
 
 #include "SimpleMath.h"
 using namespace DirectX::SimpleMath;
@@ -57,4 +63,3 @@ using namespace std::experimental::filesystem;
 #include "extern.h"
 #include "singleton.h"
 #include "func.h"
-

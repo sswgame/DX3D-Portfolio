@@ -193,6 +193,9 @@
     <ClInclude Include="CWeightMapShader.h">
       <Filter>Engine\ShaderCode\ComputeShader\LandScape\WeightMap</Filter>
     </ClInclude>
+    <ClInclude Include="CFontMgr.h">
+      <Filter>Engine\03. Manager\10. FontManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -374,6 +377,9 @@
     </ClCompile>
     <ClCompile Include="CWeightMapShader.cpp">
       <Filter>Engine\ShaderCode\ComputeShader\LandScape\WeightMap</Filter>
+    </ClCompile>
+    <ClCompile Include="CFontMgr.cpp">
+      <Filter>Engine\03. Manager\10. FontManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -568,6 +574,9 @@
     </Filter>
     <Filter Include="Engine\ShaderCode\ComputeShader\LandScape\Raycast">
       <UniqueIdentifier>{a8aeebad-956f-407b-9ef9-ffc5f4a533b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\10. FontManager">
+      <UniqueIdentifier>{1444baf0-6f8c-4ab2-bfd8-acf124f6ad3c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
