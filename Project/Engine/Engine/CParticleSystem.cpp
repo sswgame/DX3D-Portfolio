@@ -58,6 +58,7 @@ CParticleSystem::CParticleSystem(const CParticleSystem& _origin)
   , m_fAccTime(_origin.m_fAccTime)
   , m_iEmissive(_origin.m_iEmissive)
   , m_iLighting(_origin.m_iLighting)
+  , m_vDirection{_origin.m_vDirection}
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -97,6 +98,45 @@ void CParticleSystem::SetMaxParticleCount(UINT _iMax)
 	m_iMaxCount = _iMax;
 }
 
+void CParticleSystem::SetAliveCount(UINT _iCount)
+{
+	m_iAliveCount = ClampData(_iCount, 0u, m_iMaxCount);
+}
+
+void CParticleSystem::SetMinMaxLifeTime(float fMin, float fMax)
+{
+	m_fMinLifeTime = ClampData(fMin, 0.f,D3D11_FLOAT32_MAX);
+	m_fMaxLifeTime = ClampData(fMax, 0.f, D3D11_FLOAT32_MAX);
+}
+
+void CParticleSystem::SetMinMaxSpeed(float fMin, float fMax)
+{
+	m_fStartSpeed = fMin;
+	m_fEndSpeed   = fMax;
+}
+
+void CParticleSystem::SetStartEndColor(const Vec4& vStartColor, const Vec4& vEndColor)
+{
+	m_vStartColor = vStartColor;
+	m_vEndColor   = vEndColor;
+}
+
+void CParticleSystem::SetStartEndScale(const Vec3& vStartScale, const Vec3& vEndScale)
+{
+	m_vStartScale = vStartScale;
+	m_vEndScale   = vEndScale;
+}
+
+void CParticleSystem::SetRange(float _fRange)
+{
+	m_fParticleCreateDistance = ClampData(_fRange, 0.f, D3D11_FLOAT32_MAX);
+}
+
+void CParticleSystem::SetTerm(float _fTerm)
+{
+	m_fParticleCreateTerm = ClampData(_fTerm, 0.f, D3D11_FLOAT32_MAX);
+}
+
 void CParticleSystem::finalupdate()
 {
 	m_fAccTime += DT;
@@ -117,7 +157,7 @@ void CParticleSystem::finalupdate()
 	m_CS->SetStartEndSpeed(m_fStartSpeed, m_fEndSpeed);
 	m_CS->SetStartEndColor(m_vStartColor, m_vEndColor);
 	m_CS->SetStartEndScale(m_vStartScale, m_vEndScale);
-
+	m_CS->SetDirection(m_vDirection);
 	m_CS->SetObjectWorldPos(Transform()->GetWorldPos());
 
 	m_CS->Excute();
@@ -160,6 +200,9 @@ void CParticleSystem::SaveToScene(FILE* _pFile)
 	fwrite(&m_vEndScale, sizeof(Vec3), 1, _pFile);
 	fwrite(&m_fParticleCreateDistance, sizeof(float), 1, _pFile);
 	fwrite(&m_fParticleCreateTerm, sizeof(float), 1, _pFile);
+	fwrite(&m_vDirection, sizeof(Vec2), 1, _pFile);
+	fwrite(&m_iEmissive, sizeof(int), 1, _pFile);
+	fwrite(&m_iLighting, sizeof(int), 1, _pFile);
 }
 
 void CParticleSystem::LoadFromScene(FILE* _pFile)
@@ -186,4 +229,7 @@ void CParticleSystem::LoadFromScene(FILE* _pFile)
 	fread(&m_vEndScale, sizeof(Vec3), 1, _pFile);
 	fread(&m_fParticleCreateDistance, sizeof(float), 1, _pFile);
 	fread(&m_fParticleCreateTerm, sizeof(float), 1, _pFile);
+	fread(&m_vDirection, sizeof(Vec2), 1, _pFile);
+	fread(&m_iEmissive, sizeof(int), 1, _pFile);
+	fread(&m_iLighting, sizeof(int), 1, _pFile);
 }

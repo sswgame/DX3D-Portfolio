@@ -11,7 +11,7 @@ public:
 	void SetParticleBuffer(CStructuredBuffer* _buffer) { m_ParticleBuffer = _buffer; }
 	void SetParticleDataBuffer(CStructuredBuffer* _buffer) { m_ParticleDataBuffer = _buffer; }
 
-	void SetObjectWorldPos(Vec3 _vWorldPos)
+	void SetObjectWorldPos(const Vec3& _vWorldPos)
 	{
 		m_Param.fArr[1] = _vWorldPos.x;
 		m_Param.fArr[2] = _vWorldPos.y;
@@ -21,14 +21,15 @@ public:
 	void SetParticleCreateDistance(float _fDist) { m_Param.fArr[0] = _fDist; }
 	void SetParticleMinMaxTime(float _fMin, float _fMax) { m_Param.v2Arr[0] = Vec2(_fMin, _fMax); }
 	void SetStartEndSpeed(float _fMin, float _fMax) { m_Param.v2Arr[1] = Vec2(_fMin, _fMax); }
+	void SetDirection(Vec2 _vDirection) { m_Param.v2Arr[2] = _vDirection; }
 
-	void SetStartEndColor(Vec4 _vStart, Vec4 _vEnd)
+	void SetStartEndColor(const Vec4& _vStart, const Vec4& _vEnd)
 	{
 		m_Param.v4Arr[0] = _vStart;
 		m_Param.v4Arr[1] = _vEnd;
 	}
 
-	void SetStartEndScale(Vec3 _vStart, Vec3 _vEnd)
+	void SetStartEndScale(const Vec3& _vStart, const Vec3& _vEnd)
 	{
 		m_Param.v4Arr[2] = _vStart;
 		m_Param.v4Arr[3] = _vEnd;

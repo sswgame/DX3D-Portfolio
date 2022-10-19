@@ -95,6 +95,9 @@
     <ClCompile Include="CGridScript.cpp">
       <Filter>EditorObject\EditorScript</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleSystemUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\10. ParticleSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -207,6 +210,9 @@
     </ClInclude>
     <ClInclude Include="IconsFontAwesome5.h">
       <Filter>ImGui\Code</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystemUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\10. ParticleSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

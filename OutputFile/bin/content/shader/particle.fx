@@ -19,6 +19,8 @@
 #define MinSpeed            g_vec2_1.x
 #define MaxSpeed            g_vec2_1.y
 
+#define Direction           g_vec2_2
+
 #define StartColor          g_vec4_0
 #define EndColor            g_vec4_1
 #define StartScale          g_vec4_2

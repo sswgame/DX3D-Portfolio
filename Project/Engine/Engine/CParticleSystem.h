@@ -36,11 +36,43 @@ private:
 	int m_iEmissive; // 파티클 발광여부
 	int m_iLighting; // 광원 적용 여부
 
-public:
-	void SetEmissive(bool _bEmissive);
-	void SetApplyLighting(bool _bLighting);
-	void SetMaxParticleCount(UINT _iMax);
+	Vec2 m_vDirection;
 
+public:
+	void                       SetEmissive(bool _bEmissive);
+	void                       SetApplyLighting(bool _bLighting);
+	void                       SetComputeShader(Ptr<CParticleUpdateShader> pCS) { m_CS = pCS; }
+	Ptr<CParticleUpdateShader> GetComputeShader() const { return m_CS; }
+
+	void SetMaxParticleCount(UINT count);
+	UINT GetMaxParticleCount() const { return m_iMaxCount; }
+
+	void SetPosInherit(bool _enable) { m_bPosInherit = _enable; }
+	bool PosInherit() const { return m_bPosInherit; }
+
+	void SetAliveCount(UINT _iCount);
+	UINT GetAliveCount() const { return m_iAliveCount; }
+
+	void SetMinMaxLifeTime(float fMin, float fMax);
+	Vec2 GetMinMaxLifeTime() const { return Vec2{m_fMinLifeTime, m_fMaxLifeTime}; }
+
+	void SetMinMaxSpeed(float fMin, float fMax);
+	Vec2 GetMinMaxSpeed() const { return Vec2{m_fStartSpeed, m_fEndSpeed}; }
+
+	void                  SetStartEndColor(const Vec4& vStartColor, const Vec4& vEndColor);
+	std::pair<Vec4, Vec4> GetStartEndColor() const { return std::pair<Vec4, Vec4>{m_vStartColor, m_vEndColor}; }
+
+	void                  SetStartEndScale(const Vec3& vStartScale, const Vec3& vEndScale);
+	std::pair<Vec3, Vec3> GetStartEndScale() const { return std::pair<Vec3, Vec3>{m_vStartScale, m_vEndScale}; }
+
+	void  SetRange(float _fRange);
+	float GetRange() const { return m_fParticleCreateDistance; }
+
+	void  SetTerm(float _fTerm);
+	float GetTerm() const { return m_fParticleCreateTerm; }
+
+	void SetDirection(Vec2 direction) { m_vDirection = direction; }
+	Vec2 GetDirection() const { return m_vDirection; }
 
 public:
 	virtual void finalupdate() override;
