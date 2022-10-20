@@ -98,6 +98,9 @@
     <ClCompile Include="ParticleSystemUI.cpp">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\10. ParticleSystem</Filter>
     </ClCompile>
+    <ClCompile Include="DecalUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\12. Decal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -213,6 +216,9 @@
     </ClInclude>
     <ClInclude Include="ParticleSystemUI.h">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\10. ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="DecalUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\12. Decal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

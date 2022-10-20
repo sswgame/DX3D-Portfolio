@@ -19,7 +19,7 @@ ParticleSystemUI::ParticleSystemUI()
   , m_fTerm{3.f}
   , m_bShaderUseDirection{false}
 {
-	SetSize(Vec2{0, 300});
+	SetSize(Vec2{0, 330});
 }
 
 ParticleSystemUI::~ParticleSystemUI() {}
@@ -83,7 +83,7 @@ void ParticleSystemUI::render_update()
 		const auto& mapRes  = CResMgr::GetInst()->GetResList(RES_TYPE::COMPUTE_SHADER);
 		ListUI*     pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 		pListUI->Clear();
-		pListUI->SetTitle("TEXTURE_LIST");
+		pListUI->SetTitle("COMPUTESHADER_LIST");
 
 		for (const auto& pairData : mapRes)
 		{

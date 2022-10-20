@@ -5,23 +5,26 @@
 #include <Engine/CScript.h>
 #include <Engine/CGameObject.h>
 
+#include "CImGuiMgr.h"
+#include "SceneOutliner.h"
 
+// Component UI
 #include "TransformUI.h"
 #include "MeshRenderUI.h"
 #include "CameraUI.h"
 #include "ScriptUI.h"
 #include "MaterialUI.h"
 #include "TextureUI.h"
-#include "ListUI.h"
+#include "ParticleSystemUI.h"
+#include "DecalUI.h"
 
+// etc UI
+#include "ListUI.h"
 #include "MaterialUI.h"
 #include "TextureUI.h"
 #include "IconsFontAwesome5.h"
 
-#include "CImGuiMgr.h"
-#include "SceneOutliner.h"
-
-// COMPONENT-TYPE
+// Engine > COMPONENT-TYPE
 #include <Engine/CTransform.h>
 #include <Engine/CCamera.h>
 #include <Engine/CCollider2D.h>
@@ -35,13 +38,12 @@
 #include <Engine/CLandScape.h>
 #include <Engine/CSkyBox.h>
 #include <Engine/CLight3D.h>
+#include <Engine/CDecal.h>
 
+// Engine > etc
 #include <Engine/CMaterial.h>
-
-
 #include <Script/CScriptMgr.h>
 
-#include "ParticleSystemUI.h"
 
 
 InspectorUI::InspectorUI()
@@ -70,6 +72,10 @@ InspectorUI::InspectorUI()
 	pComUI = new ParticleSystemUI{};
 	AddChild(pComUI);
 	m_arrComUI[(UINT)COMPONENT_TYPE::PARTICLESYSTEM] = pComUI;
+
+	pComUI = new DecalUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::DECAL] = pComUI;
 
 	// ==============
 	// ResInfoUI »ý¼º
@@ -519,6 +525,12 @@ void InspectorUI::AddComponent(DWORD_PTR _param)
 				}
 				break;
 			case COMPONENT_TYPE::DECAL:
+				{
+					if (nullptr != m_pTargetObject->GetRenderComponent())
+						break;
+
+					m_pTargetObject->AddComponent(new CDecal);
+				}
 				break;
 			case COMPONENT_TYPE::SKYBOX:
 				{

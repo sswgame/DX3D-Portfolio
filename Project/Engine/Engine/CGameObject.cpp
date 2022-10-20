@@ -161,7 +161,7 @@ void CGameObject::finalupdate_module()
 
 void CGameObject::render()
 {
-	if (m_pRenderComponent->IsActive())
+ 	if (m_pRenderComponent->IsActive())
 		m_pRenderComponent->render();
 
 	if (nullptr != Collider2D())

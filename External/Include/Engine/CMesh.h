@@ -19,7 +19,7 @@ private:
     ComPtr<ID3D11Buffer>    m_VB;
     D3D11_BUFFER_DESC       m_tVBDesc;
     UINT                    m_iVtxCount;
-    void* m_pVtxSys;
+    void*                   m_pVtxSys;
 
     // 하나의 버텍스버퍼에 여러개의 인덱스버퍼가 연결
     vector<tIndexInfo>		m_vecIdxInfo;
@@ -28,8 +28,8 @@ private:
     vector<tMTAnimClip>		m_vecAnimClip;
     vector<tMTBone>			m_vecBones;
 
-    CStructuredBuffer* m_pBoneFrameData;   // 전체 본 프레임 정보(크기, 이동, 회전) (프레임 개수만큼)
-    CStructuredBuffer* m_pBoneOffset;	    // 각 뼈의 offset 행렬(각 뼈의 위치를 되돌리는 행렬) (1행 짜리)
+    CStructuredBuffer*      m_pBoneFrameData;   // 전체 본 프레임 정보(크기, 이동, 회전) (프레임 개수만큼)
+    CStructuredBuffer*      m_pBoneOffset;	    // 각 뼈의 offset 행렬(각 뼈의 위치를 되돌리는 행렬) (1행 짜리)
 
 
 public:

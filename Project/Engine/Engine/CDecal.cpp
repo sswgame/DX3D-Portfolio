@@ -4,13 +4,12 @@
 #include "CTransform.h"
 
 CDecal::CDecal()
-	:
-	CRenderComponent(COMPONENT_TYPE::DECAL)
-  , m_eType(DECAL_TYPE::CUBE)
+	: CRenderComponent(COMPONENT_TYPE::DECAL)
+	, m_eType(DECAL_TYPE::CUBE)
+	, m_bUseDeferredLighting(false)
 {
 	SetDecalType(m_eType);
 }
-
 CDecal::~CDecal() {}
 
 void CDecal::SetDecalType(DECAL_TYPE _eType)
@@ -20,10 +19,12 @@ void CDecal::SetDecalType(DECAL_TYPE _eType)
 	if (DECAL_TYPE::CUBE == m_eType)
 	{
 		SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh"));
+		SetDeferredLighting(m_bUseDeferredLighting);
 	}
 	else
 	{
 		SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+		SetDeferredLighting(m_bUseDeferredLighting);
 	}
 }
 
@@ -43,6 +44,19 @@ void CDecal::SetDeferredLighting(bool _bLighting)
 	}
 
 	SetSharedMaterial(pMtrl, 0);
+}
+
+wstring CDecal::GetDecalTypeName(int _idx)
+{
+	switch (_idx)
+	{
+	case 0:
+		return L"SPHERE";
+	case 1:
+		return L"CUBE";
+	}
+
+	return L"INVALID_TYPE";
 }
 
 void CDecal::finalupdate() {}

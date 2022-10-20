@@ -43,10 +43,9 @@ void CTestScene::CreateTestScene()
 
 	// Texture 한장 로딩해보기
 	//CResMgr::GetInst()->Load<CTexture>(L"texture\\Player.bmp", L"texture\\Player.bmp");
-	//CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png", L"texture\\MagicCircle.png");
+	Ptr<CTexture> pMagicCircle =  CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png", L"texture\\MagicCircle.png");
 
-	//Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
-	//                                                            L"texture\\tile\\TILE_01.tga");
+	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga", L"texture\\tile\\TILE_01.tga");
 	//Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga",
 	//                                                             L"texture\\tile\\TILE_01_N.tga");
 
@@ -93,24 +92,34 @@ void CTestScene::CreateTestScene()
 
 	pCurScene->AddObject(pLight3D, L"Default");
 
-
 	// Point Light
-	/*CGameObject* pLight3D = new CGameObject;
-	pLight3D->SetName(L"Point Light");
+	//CGameObject* pLight3D = new CGameObject;
+	//pLight3D->SetName(L"Point Light");
 
-	pLight3D->AddComponent(new CTransform);
-	pLight3D->AddComponent(new CLight3D);
+	//pLight3D->AddComponent(new CTransform);
+	//pLight3D->AddComponent(new CLight3D);
 
-	pLight3D->Transform()->SetRelativePos(Vec3(0.f, 500.f, 500.f));
+	//pLight3D->Transform()->SetRelativePos(Vec3(0.f, 500.f, 500.f));
 
-	pLight3D->Light3D()->SetLightType(LIGHT_TYPE::POINT);	
-	pLight3D->Light3D()->SetRange(1000.f);
+	//pLight3D->Light3D()->SetLightType(LIGHT_TYPE::POINT);	
+	//pLight3D->Light3D()->SetRange(1000.f);
 
-	pLight3D->Light3D()->SetDiffuse(Vec3(1.f, 1.f, 1.f));
-	pLight3D->Light3D()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
-	pLight3D->Light3D()->SetAmbient(Vec3(0.f, 0.f, 0.f));
+	//pLight3D->Light3D()->SetDiffuse(Vec3(1.f, 1.f, 1.f));
+	//pLight3D->Light3D()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
+	//pLight3D->Light3D()->SetAmbient(Vec3(0.f, 0.f, 0.f));
 
-	pCurScene->AddObject(pLight3D, L"Default");*/
+	//pCurScene->AddObject(pLight3D, L"Default");
+
+	// particle
+	//CGameObject* pParticleObj = new CGameObject;
+	//pParticleObj->SetName(L"Test Particle");
+
+	//pParticleObj->AddComponent(new CTransform);
+	//pParticleObj->AddComponent(new CParticleSystem);
+
+	//pParticleObj->Transform()->SetRelativePos(Vec3(0.f, 100.f, 0.f));
+
+	//pCurScene->AddObject(pParticleObj, L"Default");
 
 
 	// SkyBox 추가
@@ -148,6 +157,42 @@ void CTestScene::CreateTestScene()
  
 	//pCurScene->AddObject(pObject, L"Default");
 
+	// Sphere
+	CGameObject* pObject = new CGameObject;
+	pObject->SetName(L"Sphere");
+
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+
+	pObject->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+	pObject->Transform()->SetRelativeScale(600.f, 600.f, 600.f);
+	pObject->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+
+	const Ptr<CMesh> pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
+	const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3D_DeferredMtrl.mtrl");
+	pObject->MeshRender()->SetMesh(pMesh);
+	pObject->MeshRender()->SetSharedMaterial(pMaterial, 0);
+	pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
+
+	pCurScene->AddObject(pObject, L"Default");
+
+
+	// Decal
+	CGameObject* pDecal = new CGameObject;
+	pDecal->SetName(L"Decal");
+	
+	pDecal->AddComponent(new CTransform);
+	pDecal->AddComponent(new CDecal);
+
+	pDecal->Transform()->SetRelativePos(0.f, 290.f, 0.f);
+	pDecal->Transform()->SetRelativeScale(300.f, 1.f, 300.f);
+	pDecal->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+	
+	pDecal->Decal()->SetDecalType(DECAL_TYPE::CUBE);
+	pDecal->Decal()->SetDecalTexture(pMagicCircle);
+	pDecal->Decal()->SetDeferredLighting(false);
+
+	pCurScene->AddObject(pDecal, L"Default");
 
 	// Tessellation Object
 	//pObject = new CGameObject;
@@ -177,12 +222,12 @@ void CTestScene::CreateTestScene()
 
 		//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\Monster.fbx");
 		//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());		
-//
-	//	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\Monster.mdat", L"meshdata\\Monster.mdat");
+		
+		//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\Monster.mdat", L"meshdata\\Monster.mdat");
 
-	//	pObj = pMeshData->Instantiate();
-	//	pObj->SetName(L"Monster");
-	//	pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+		//pObj = pMeshData->Instantiate();
+		//pObj->SetName(L"Monster");
+		//pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 		//pCurScene->AddObject(pObj, 0);
 	}
 

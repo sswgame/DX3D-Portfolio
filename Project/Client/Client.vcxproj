@@ -169,6 +169,7 @@
     <ClInclude Include="ComponentUI.h" />
     <ClInclude Include="CTestScene.h" />
     <ClInclude Include="CToolObjMgr.h" />
+    <ClInclude Include="DecalUI.h" />
     <ClInclude Include="IconsFontAwesome5.h" />
     <ClInclude Include="MaterialUI.h" />
     <ClInclude Include="MenuUI.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="ComponentUI.cpp" />
     <ClCompile Include="CTestScene.cpp" />
     <ClCompile Include="CToolObjMgr.cpp" />
+    <ClCompile Include="DecalUI.cpp" />
     <ClCompile Include="MaterialUI.cpp" />
     <ClCompile Include="MenuUI.cpp" />
     <ClCompile Include="ParamUI.cpp" />

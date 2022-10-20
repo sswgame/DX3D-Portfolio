@@ -157,3 +157,18 @@ void LoadResPtr(Ptr<RES>& _ptr, FILE* _pFile)
 }
 
 Vec3 DecomposeRotMat(const Matrix& _matRot);
+
+template <typename T>
+T ClampData(T _target, T _min, T _max)
+{
+	T temp = _target;
+	if (temp < _min)
+	{
+		temp = _min;
+	}
+	else if (temp > _max)
+	{
+		temp = _max;
+	}
+	return temp;
+}

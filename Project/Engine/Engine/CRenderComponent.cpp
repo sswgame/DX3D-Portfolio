@@ -7,11 +7,10 @@
 #include "CTransform.h"
 
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
-	:
-	CComponent(_type)
-  , m_pMesh(nullptr)
-  , m_bDynamicShadow(false)
-  , m_bFrustumCulling(false) {}
+	: CComponent(_type)
+	, m_pMesh(nullptr)
+	, m_bDynamicShadow(false)
+	, m_bFrustumCulling(false) {}
 
 CRenderComponent::CRenderComponent(const CRenderComponent& _origin)
 	:

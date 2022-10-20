@@ -110,7 +110,6 @@ void CRenderMgr::render_play()
 
 
 	// Foward ¹°Ã¼ ·»´õ¸µ	
-
 	pMainCam->render_forward();
 
 	// Masked ¹°Ã¼ ·»´õ¸µ
