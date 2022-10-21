@@ -77,6 +77,23 @@ void CRenderMgr::render()
 
 	m_vecLight2D.clear();
 	m_vecLight3D.clear();
+
+
+	// Render Frustum - Eitor Camera
+	if (m_pEditorCam != nullptr)
+		m_pEditorCam->render_frustum();
+
+	// Render Frustum - Camera 
+	if (!m_vecCam.empty())
+	{
+		for (int i = 0; i < m_vecCam.size(); ++i)
+		{
+			CCamera* pCam = m_vecCam[i];
+			if (pCam != nullptr && pCurScene->GetSceneState() == SCENE_STATE::STOP)
+				pCam->render_frustum();
+		}
+	}
+
 }
 
 void CRenderMgr::render_play()

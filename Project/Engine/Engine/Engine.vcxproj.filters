@@ -196,6 +196,9 @@
     <ClInclude Include="CFontMgr.h">
       <Filter>Engine\03. Manager\10. FontManager</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimation3D.h">
+      <Filter>Engine\05. Component\06. Animator3D\Animation3D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -380,6 +383,9 @@
     </ClCompile>
     <ClCompile Include="CFontMgr.cpp">
       <Filter>Engine\03. Manager\10. FontManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimation3D.cpp">
+      <Filter>Engine\05. Component\06. Animator3D\Animation3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -577,6 +583,9 @@
     </Filter>
     <Filter Include="Engine\03. Manager\10. FontManager">
       <UniqueIdentifier>{1444baf0-6f8c-4ab2-bfd8-acf124f6ad3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Component\06. Animator3D\Animation3D">
+      <UniqueIdentifier>{778a100f-6dbe-471b-9720-29789dd0c5c4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

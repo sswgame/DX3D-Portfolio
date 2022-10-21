@@ -47,7 +47,7 @@ public:
 	template<typename type>
 	Ptr<type> FindRes(const wstring& _strKey);
 
-	Ptr<CMeshData> LoadFBX(const wstring& _strPath);
+	vector<Ptr<CMeshData>> LoadFBX(const wstring& _strPath);
 
 	const map<wstring, CRes*>& GetResList(RES_TYPE _eType) { return m_Res[(UINT)_eType]; }
 

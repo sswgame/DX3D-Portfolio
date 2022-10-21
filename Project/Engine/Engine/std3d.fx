@@ -169,6 +169,29 @@ float4 PS_SkyBox(VTX_SKY_OUT _in) : SV_Target
 
 
 
+// =========================
+// Std3D Wire Shader
+# define color g_vec4_0
+
+// DOMAIN               : Forward
+// Rasterizer           : NO_TEST_NO_WRITE
+// DepthStencilState    : LESS
+// BlendState           : DEFAULT
+// =========================
+VTX_OUT VS_Std3DWire(VTX_IN _in)
+{
+    VTX_OUT output = (VTX_OUT)0.f;
+
+    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+
+    return output;
+}
+
+float4 PS_Std3DWire(VTX_OUT _in) : SV_Target
+{
+    float4 vOutColor = color;
+    return vOutColor;
+}
 
 
 

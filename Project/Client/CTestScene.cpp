@@ -21,6 +21,7 @@
 #include <Engine\CLandScape.h>
 #include <Engine/CSceneFile.h>
 #include <Engine/CSound.h>
+#include <Engine/CAnimator3D.h>
 
 #include <Engine\CMeshData.h>
 
@@ -231,6 +232,20 @@ void CTestScene::CreateTestScene()
 		//pCurScene->AddObject(pObj, 0);
 	}
 
+	// ANIMATION TEST 
+	Ptr<CMeshData> pMeshData = nullptr;
+	CGameObject* pObj = nullptr;
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
+	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\Monster0.mdat", L"meshdata\\Monster0.mdat");
+
+	pObj = pMeshData->Instantiate();
+	pObj->SetName(L"Monster");
+	pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	pObj->Animator3D()->Play(L"test", true);
+
+	pCurScene->AddObject(pObj, 0);
 
 	// 충돌 레이어 설정
 	pCurScene->SetResKey(L"scene\\TestScene.scene");

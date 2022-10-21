@@ -17,6 +17,7 @@
 #include "TextureUI.h"
 #include "ParticleSystemUI.h"
 #include "DecalUI.h"
+#include "Animator3DUI.h"
 
 // etc UI
 #include "ListUI.h"
@@ -39,6 +40,7 @@
 #include <Engine/CSkyBox.h>
 #include <Engine/CLight3D.h>
 #include <Engine/CDecal.h>
+#include <Engine/CAnimator3D.h>
 
 // Engine > etc
 #include <Engine/CMaterial.h>
@@ -76,6 +78,10 @@ InspectorUI::InspectorUI()
 	pComUI = new DecalUI{};
 	AddChild(pComUI);
 	m_arrComUI[(UINT)COMPONENT_TYPE::DECAL] = pComUI;
+
+	pComUI = new Animator3DUI;
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::ANIMATOR3D] = pComUI;
 
 	// ==============
 	// ResInfoUI »ý¼º

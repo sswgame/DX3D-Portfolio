@@ -20,6 +20,8 @@ DecalUI::~DecalUI()
 void DecalUI::render_update()
 {
 	ComponentUI::render_update();
+	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
+	else { SetSize(Vec2(0.f, 100.f)); }
 
 	// Target Decal ¼³Á¤
 	m_pTargetDecal = GetTargetObject()->Decal();

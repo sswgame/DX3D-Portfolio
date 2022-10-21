@@ -101,6 +101,27 @@
     <ClCompile Include="DecalUI.cpp">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\12. Decal</Filter>
     </ClCompile>
+    <ClCompile Include="Animator3DUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\06. Animator3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Anim3DSequencer.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\06. Animator3D\Anim3DSequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo\GraphEditor.cpp">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo\ImCurveEdit.cpp">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo\ImGradient.cpp">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo\ImGuizmo.cpp">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo\ImSequencer.cpp">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -220,6 +241,30 @@
     <ClInclude Include="DecalUI.h">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\12. Decal</Filter>
     </ClInclude>
+    <ClInclude Include="Animator3DUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\06. Animator3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Anim3DSequencer.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\06. Animator3D\Anim3DSequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo\GraphEditor.h">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo\ImCurveEdit.h">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo\ImGradient.h">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo\ImGuizmo.h">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo\ImSequencer.h">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo\ImZoomSlider.h">
+      <Filter>ImGui\ImGuizmo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">
@@ -328,6 +373,12 @@
     </Filter>
     <Filter Include="EditorObject\EditorScript">
       <UniqueIdentifier>{eafce2cc-7ccf-41f9-9b28-bd1ccb71c10d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\UI\01. InspectorUI\ComponentUI\06. Animator3D\Anim3DSequencer">
+      <UniqueIdentifier>{a5dce55a-091e-4ae8-96ba-6417eaddf0c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\ImGuizmo">
+      <UniqueIdentifier>{e342bf89-a912-45fa-a833-2be9f2059116}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

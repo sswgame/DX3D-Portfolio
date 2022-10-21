@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CameraUI.h"
+#include "IconsFontAwesome5.h"
 
 
 #include <Engine/CCamera.h>
@@ -8,7 +9,7 @@ CameraUI::CameraUI()
 	:
 	ComponentUI("Camera", COMPONENT_TYPE::CAMERA)
 {
-	SetSize(Vec2(0.f, 135.f));
+	SetSize(Vec2(0.f, 160.f));
 }
 
 CameraUI::~CameraUI() {}
@@ -19,7 +20,7 @@ void CameraUI::render_update()
 {
 	ComponentUI::render_update();
 	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
-	else { SetSize(Vec2(0.f, 135.f)); }
+	else { SetSize(Vec2(0.f, 160.f)); }
 
 	CCamera* pCameraCom = GetTargetObject()->Camera();
 
@@ -29,7 +30,7 @@ void CameraUI::render_update()
 
 	PROJ_TYPE eType = pCameraCom->GetProjType();
 
-	const char* szProjType[2] = {"ORTHOGRAPHIC", "PERSPECTIVE"};
+	const char* szProjType[2] = { "ORTHOGRAPHIC", "PERSPECTIVE" };
 
 	if (ImGui::BeginCombo("##ProjType", szProjType[(int)eType]))
 	{
@@ -92,4 +93,13 @@ void CameraUI::render_update()
 	float fFar = pCameraCom->GetFar();
 	ImGui::InputFloat("##InputFar", &fFar);
 	pCameraCom->SetFar(fFar);
+
+	// 절두체 렌더링 여부
+	ImGui::Text("Frustum");
+	ImGui::SameLine(100);
+	bool bShowFrustum = pCameraCom->GetShowFrustum();
+	ImGui::Checkbox("##SetShowFrustum", &bShowFrustum);
+	pCameraCom->SetShowFrustum(bShowFrustum);
+
+
 }

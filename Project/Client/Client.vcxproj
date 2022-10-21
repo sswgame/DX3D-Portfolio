@@ -160,6 +160,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Anim3DSequencer.h" />
+    <ClInclude Include="Animator3DUI.h" />
     <ClInclude Include="CameraUI.h" />
     <ClInclude Include="CCameraEx.h" />
     <ClInclude Include="CEditorCamScript.h" />
@@ -171,6 +173,12 @@
     <ClInclude Include="CToolObjMgr.h" />
     <ClInclude Include="DecalUI.h" />
     <ClInclude Include="IconsFontAwesome5.h" />
+    <ClInclude Include="ImGuizmo\GraphEditor.h" />
+    <ClInclude Include="ImGuizmo\ImCurveEdit.h" />
+    <ClInclude Include="ImGuizmo\ImGradient.h" />
+    <ClInclude Include="ImGuizmo\ImGuizmo.h" />
+    <ClInclude Include="ImGuizmo\ImSequencer.h" />
+    <ClInclude Include="ImGuizmo\ImZoomSlider.h" />
     <ClInclude Include="MaterialUI.h" />
     <ClInclude Include="MenuUI.h" />
     <ClInclude Include="ParamUI.h" />
@@ -201,6 +209,8 @@
     <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Anim3DSequencer.cpp" />
+    <ClCompile Include="Animator3DUI.cpp" />
     <ClCompile Include="CameraUI.cpp" />
     <ClCompile Include="CCameraEx.cpp" />
     <ClCompile Include="CEditorCamScript.cpp" />
@@ -211,6 +221,11 @@
     <ClCompile Include="CTestScene.cpp" />
     <ClCompile Include="CToolObjMgr.cpp" />
     <ClCompile Include="DecalUI.cpp" />
+    <ClCompile Include="ImGuizmo\GraphEditor.cpp" />
+    <ClCompile Include="ImGuizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="ImGuizmo\ImGradient.cpp" />
+    <ClCompile Include="ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="MaterialUI.cpp" />
     <ClCompile Include="MenuUI.cpp" />
     <ClCompile Include="ParamUI.cpp" />

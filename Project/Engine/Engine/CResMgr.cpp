@@ -92,7 +92,7 @@ Ptr<CTexture> CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRe
 
 
 
-Ptr<CMeshData> CResMgr::LoadFBX(const wstring& _strPath)
+vector<Ptr<CMeshData>> CResMgr::LoadFBX(const wstring& _strPath)
 {
 	wstring strFileName = path(_strPath).stem();
 
@@ -101,16 +101,30 @@ Ptr<CMeshData> CResMgr::LoadFBX(const wstring& _strPath)
 
 	Ptr<CMeshData> pMeshData = FindRes<CMeshData>(strName);
 
-	if (nullptr != pMeshData)
-		return pMeshData;
+	//if (nullptr != pMeshData)
+	//	return pMeshData;
 
-	pMeshData = CMeshData::LoadFromFBX(_strPath);
-	pMeshData->SetKey(strName);
-	pMeshData->SetRelativePath(strName);
+	vector<CMeshData*> vecMeshData;
+	vector<Ptr<CMeshData>> ptrMeshData;
+
+	vecMeshData = CMeshData::LoadFromFBX(_strPath);
+	for (int i = 0; i < vecMeshData.size(); ++i)
+	{
+		ptrMeshData.push_back(vecMeshData[i]);
+		wstring strName = L"meshdata\\";
+		wstring strFileName = path(_strPath).stem();
+		string strNum = std::to_string(i);
+		strFileName += wstring(strNum.begin(), strNum.end());
+		strName += strFileName + L".mdat";
+
+		ptrMeshData[i]->SetKey(strName);
+		ptrMeshData[i]->SetRelativePath(strName);
+		m_Res[(UINT)RES_TYPE::MESHDATA].insert(make_pair(strName, ptrMeshData[i].Get()));
+	}
 	//pMeshData->m_bEngineRes = true;
-	m_Res[(UINT)RES_TYPE::MESHDATA].insert(make_pair(strName, pMeshData.Get()));
 
-	return pMeshData;
+
+	return ptrMeshData;
 }
 
 void CResMgr::DeleteRes(const wstring& _strKey)

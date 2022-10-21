@@ -42,10 +42,10 @@ VTX_OUT VS_Std3D_Deferred(VTX_IN _in)
 {
     VTX_OUT output = (VTX_OUT) 0.f;
         
-  /*  if (g_iAnim)
+    if (g_iAnim)
     {
         Skinning(_in.vPos, _in.vTangent, _in.vBinormal, _in.vNormal, _in.vWeights, _in.vIndices, 0);
-    }*/
+    }
 
     output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
     

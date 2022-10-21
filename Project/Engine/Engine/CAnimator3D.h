@@ -2,47 +2,72 @@
 #include "CComponent.h"
 
 #include "Ptr.h"
-#include "CTexture.h"
-#include "CMaterial.h"
-#include "CMesh.h"
+
 
 class CStructuredBuffer;
+class CAnimation3D;
 
 class CAnimator3D :
     public CComponent
 {
 private:
-    const vector<tMTBone>* m_pVecBones;
-    const vector<tMTAnimClip>* m_pVecClip;
-
-    vector<float>				m_vecClipUpdateTime;
-    vector<Matrix>				m_vecFinalBoneMat; // 텍스쳐에 전달할 최종 행렬정보
-    int							m_iFrameCount; // 30
-    double						m_dCurTime;
-    int							m_iCurClip; // 클립 인덱스	
-
-    int							m_iFrameIdx; // 클립의 현재 프레임
-    int							m_iNextFrameIdx; // 클립의 다음 프레임
-    float						m_fRatio;	// 프레임 사이 비율
-
-    CStructuredBuffer* m_pBoneFinalMatBuffer;  // 특정 프레임의 최종 행렬
-    bool						m_bFinalMatUpdate; // 최종행렬 연산 수행여부
-
-public:
-    virtual void finalupdate() override;
-    virtual void UpdateData() override;
-
-public:
-    void SetBones(const vector<tMTBone>* _vecBones) { m_pVecBones = _vecBones; m_vecFinalBoneMat.resize(m_pVecBones->size()); }
-    void SetAnimClip(const vector<tMTAnimClip>* _vecAnimClip);
-    void SetClipTime(int _iClipIdx, float _fTime) { m_vecClipUpdateTime[_iClipIdx] = _fTime; }
-
-    CStructuredBuffer* GetFinalBoneMat() { return m_pBoneFinalMatBuffer; }
-    UINT GetBoneCount() { return (UINT)m_pVecBones->size(); }
-    void ClearData();
+    const vector<tMTBone>*      m_pVecBones;
+    const vector<tMTAnimClip>*  m_pVecClip;
+    int						    m_iFrameCount;			// 30
 
 private:
-    void check_mesh(Ptr<CMesh> _pMesh);
+    map<wstring, CAnimation3D*> m_mapAnim;               // 전체 애니메이션 
+
+    CAnimation3D*               m_pPrevAnim;             // 이전 애니메이션 
+    CAnimation3D*               m_pCurAnim;              // 현재 애니메이션 
+    CAnimation3D*               m_pNextAnim;             // 다음 애니메이션 
+
+    bool                        m_bRepeat;               // 애니메이션 반복 여부 
+
+public:
+    virtual void    finalupdate() override;
+    virtual void    UpdateData() override;
+    void            ClearData();
+
+
+public:
+    CAnimation3D* FindAnim(const wstring& _strName);
+    void          DeleteAnim(const wstring& _wstrName);
+    void          CreateAnim(   const  wstring& _strName,
+                                int     _clipNum = 0,
+                                double  _startTime = (0.0),
+                                double  _endTime = (0.0),
+                                int     _startFrame = 0,
+                                int     _EndFrame = 0);
+    void          Play(const wstring& _strName, bool _bRepeat = false);
+    void          Clear();
+
+public:
+    // [ SET PART ]
+    void SetBones(const vector<tMTBone>* _vecBones) { m_pVecBones = _vecBones; }
+    void SetAnimClip(const vector<tMTAnimClip>* _vecAnimClip);
+    void SetRepeat(bool _b) { m_bRepeat = _b; }
+    void SetFrameCount(int _iFrameCnt) { m_iFrameCount = _iFrameCnt; }
+    void SetLerpTimeOnAllAnim(float _fLerpTime);
+
+public:
+    // [ GET PART ]
+    const map<wstring, CAnimation3D*>   GetAllAnim() { return m_mapAnim; }  // 전체 애니메이션을 받는다. 
+
+    UINT            GetBoneCount()              { return (UINT)m_pVecBones->size(); }
+    tMTAnimClip     GetAnimClip(int _clipIdx)   { return m_pVecClip->at(_clipIdx); }
+    bool            GetRepeat()                 { return m_bRepeat; }
+
+    CAnimation3D* GetPrevAnim() { return m_pPrevAnim; }
+    CAnimation3D* GetCurAnim()  { return m_pCurAnim; }
+    CAnimation3D* GetNextAnim() { return m_pNextAnim; }
+
+    int GetFrameCount() { return m_iFrameCount; }
+
+
+public:
+    void RegisterPrevAnim(CAnimation3D* _pPrevAnim) { m_pPrevAnim = _pPrevAnim; }
+    void RegisterNextAnim(CAnimation3D* _pNextAnim);
 
 public:
     virtual void SaveToScene(FILE* _pFile) override;

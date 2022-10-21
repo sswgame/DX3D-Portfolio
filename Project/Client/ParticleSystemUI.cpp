@@ -60,6 +60,8 @@ void ParticleSystemUI::SetData()
 void ParticleSystemUI::render_update()
 {
 	ComponentUI::render_update();
+	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
+	else { SetSize(Vec2(0.f, 330.f)); }
 
 	SetData();
 
