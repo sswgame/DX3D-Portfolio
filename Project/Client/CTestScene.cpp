@@ -158,24 +158,24 @@ void CTestScene::CreateTestScene()
  
 	//pCurScene->AddObject(pObject, L"Default");
 
-	// Sphere
-	CGameObject* pObject = new CGameObject;
-	pObject->SetName(L"Sphere");
+	//// Sphere
+	//CGameObject* pObject = new CGameObject;
+	//pObject->SetName(L"Sphere");
 
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CMeshRender);
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CMeshRender);
 
-	pObject->Transform()->SetRelativePos(0.f, 0.f, 0.f);
-	pObject->Transform()->SetRelativeScale(600.f, 600.f, 600.f);
-	pObject->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+	//pObject->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+	//pObject->Transform()->SetRelativeScale(600.f, 600.f, 600.f);
+	//pObject->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 
-	const Ptr<CMesh> pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
-	const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3D_DeferredMtrl.mtrl");
-	pObject->MeshRender()->SetMesh(pMesh);
-	pObject->MeshRender()->SetSharedMaterial(pMaterial, 0);
-	pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
+	//const Ptr<CMesh> pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
+	//const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3D_DeferredMtrl.mtrl");
+	//pObject->MeshRender()->SetMesh(pMesh);
+	//pObject->MeshRender()->SetSharedMaterial(pMaterial, 0);
+	//pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
 
-	pCurScene->AddObject(pObject, L"Default");
+	//pCurScene->AddObject(pObject, L"Default");
 
 
 	// Decal
@@ -230,6 +230,7 @@ void CTestScene::CreateTestScene()
 		//pObj->SetName(L"Monster");
 		//pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 		//pCurScene->AddObject(pObj, 0);
+
 	}
 
 	// ANIMATION TEST 
@@ -238,14 +239,29 @@ void CTestScene::CreateTestScene()
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\Monster0.mdat", L"meshdata\\Monster0.mdat");
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat", L"meshdata\\player_sword0.mdat");
 
 	pObj = pMeshData->Instantiate();
-	pObj->SetName(L"Monster");
+	pObj->SetName(L"player");
 	pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 	pObj->Animator3D()->Play(L"test", true);
 
 	pCurScene->AddObject(pObj, 0);
+
+
+	Ptr<CMeshData> pMeshDataWeapon = nullptr;
+	CGameObject* pObjWeapon = nullptr;
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
+	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
+	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
+
+	pObjWeapon = pMeshDataWeapon->Instantiate();
+	pObjWeapon->SetName(L"player_sword1");
+	pObjWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	pObjWeapon->Animator3D()->Play(L"test", true);
+
+	pCurScene->AddObject(pObjWeapon, 0);
 
 	// 충돌 레이어 설정
 	pCurScene->SetResKey(L"scene\\TestScene.scene");
