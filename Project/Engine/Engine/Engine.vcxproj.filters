@@ -199,6 +199,9 @@
     <ClInclude Include="CAnimation3D.h">
       <Filter>Engine\05. Component\06. Animator3D\Animation3D</Filter>
     </ClInclude>
+    <ClInclude Include="CCollider3D.h">
+      <Filter>Engine\05. Component\04. Collider3D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -386,6 +389,9 @@
     </ClCompile>
     <ClCompile Include="CAnimation3D.cpp">
       <Filter>Engine\05. Component\06. Animator3D\Animation3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollider3D.cpp">
+      <Filter>Engine\05. Component\04. Collider3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -592,7 +598,6 @@
     <None Include="SimpleMath.inl">
       <Filter>Engine\Module</Filter>
     </None>
-    <None Include="cpp.hint" />
     <None Include="landscape.fx">
       <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>

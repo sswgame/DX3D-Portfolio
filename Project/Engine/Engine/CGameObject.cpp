@@ -10,6 +10,7 @@
 #include "CTransform.h"
 #include "CMeshRender.h"
 #include "CCollider2D.h"
+#include "CCollider3D.h"
 #include "CLight2D.h"
 #include "CRenderComponent.h"
 
@@ -18,25 +19,25 @@
 
 
 CGameObject::CGameObject()
-	:
-	m_arrCom{}
-  , m_pRenderComponent(nullptr)
-  , m_pParent(nullptr)
-  , m_iLayerIdx(-1)
-  , m_bDead(false)
-  , m_bActive(true)
-  , m_bDynamicShadow(false)
-  , m_bFrustumCulling(false) {}
+	: m_arrCom{}
+	, m_pRenderComponent(nullptr)
+	, m_pParent(nullptr)
+	, m_iLayerIdx(-1)
+	, m_bDead(false)
+	, m_bActive(true)
+	, m_bDynamicShadow(false)
+	, m_bFrustumCulling(false)
+{
+}
 
 CGameObject::CGameObject(const CGameObject& _origin)
-	:
-	CEntity(_origin)
-  , m_arrCom{}
-  , m_pRenderComponent(nullptr)
-  , m_pParent(nullptr)
-  , m_iLayerIdx(-1)
-  , m_bDead(false)
-  , m_bActive(true)
+	: CEntity(_origin)
+	, m_arrCom{}
+	, m_pRenderComponent(nullptr)
+	, m_pParent(nullptr)
+	, m_iLayerIdx(-1)
+	, m_bDead(false)
+	, m_bActive(true)
 {
 	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
 	{
@@ -161,11 +162,16 @@ void CGameObject::finalupdate_module()
 
 void CGameObject::render()
 {
- 	if (m_pRenderComponent->IsActive())
+	if (m_pRenderComponent->IsActive())
 		m_pRenderComponent->render();
 
 	if (nullptr != Collider2D())
 		Collider2D()->render();
+
+	if (nullptr != Collider3D())
+	{
+		Collider3D()->render();
+	}
 }
 
 CScript* CGameObject::GetScript(UINT _iIdx)
@@ -369,21 +375,19 @@ void CGameObject::DeleteComponent(COMPONENT_TYPE _eType)
 
 	switch (_eType)
 	{
-		case COMPONENT_TYPE::MESHRENDER:
-		case COMPONENT_TYPE::TILEMAP:
-		case COMPONENT_TYPE::PARTICLESYSTEM:
-		case COMPONENT_TYPE::LANDSCAPE:
-		case COMPONENT_TYPE::DECAL:
-		case COMPONENT_TYPE::SKYBOX:
-			{
-				// m_pRenderComponent 가 무조건 존재한다. 
-				if (nullptr != m_pRenderComponent)
-					m_pRenderComponent = nullptr; // SAFE_DELETE 를 했기때문에 쓰레기값이 들어있다. 
-			}
+	case COMPONENT_TYPE::MESHRENDER:
+	case COMPONENT_TYPE::TILEMAP:
+	case COMPONENT_TYPE::PARTICLESYSTEM:
+	case COMPONENT_TYPE::LANDSCAPE:
+	case COMPONENT_TYPE::DECAL:
+	case COMPONENT_TYPE::SKYBOX:
+		{
+			// m_pRenderComponent 가 무조건 존재한다. 
+			if (nullptr != m_pRenderComponent)
+				m_pRenderComponent = nullptr; // SAFE_DELETE 를 했기때문에 쓰레기값이 들어있다. 
+		}
 		break;
 	}
-
-
 }
 
 void CGameObject::Destroy()
@@ -457,22 +461,30 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CCollider2D);
 			Collider2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D))
+		{
+		}
 		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR2D))
 		{
 			AddComponent(new CAnimator2D);
 			Animator2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D))
+		{
+		}
 		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT2D))
 		{
 			AddComponent(new CLight2D);
 			Light2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D))
+		{
+		}
 
 
-		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX))
+		{
+		}
 		else if (strComponentName == ToWString(COMPONENT_TYPE::MESHRENDER))
 		{
 			AddComponent(new CMeshRender);
@@ -488,7 +500,11 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CTileMap);
 			TileMap()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE)) { }
-		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE))
+		{
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL))
+		{
+		}
 	}
 }

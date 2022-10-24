@@ -18,13 +18,13 @@ private:
 
 	COLLIDER2D_TYPE m_eColliderType;
 
-	Vec2 m_vOffsetPos;   // 오브젝트로 부터의 충돌체의 상대 거리
-	Vec2 m_vOffsetScale; // 오브젝트 크기로 부터 충돌체의 배율
+	Vec2 m_vOffsetPos;
+	Vec2 m_vOffsetScale;
 
-	Ptr<CMesh>     m_pMesh; // 충돌체 모양
-	Ptr<CMaterial> m_pMtrl; // 충돌체 랜더링 재질
+	Ptr<CMesh>     m_pMesh;
+	Ptr<CMaterial> m_pMtrl;
 
-	int m_iCollisionCount; // 충돌 횟수
+	int m_iCollisionCount;
 
 
 public:
@@ -48,13 +48,8 @@ public:
 	void         render();
 
 public:
-	// 이전 프레임에는 충돌 X, 이번 프레임에 충돌 시작일 때
 	void OnCollisionEnter(CCollider2D* _Other);
-
-	// 이전 프레임에도 충돌 중, 지금도 충돌 중일 때
 	void OnCollision(CCollider2D* _Other);
-
-	// 이전 프레임에 충돌 중, 지금은 충돌 X 일때
 	void OnCollisionExit(CCollider2D* _Other);
 
 public:

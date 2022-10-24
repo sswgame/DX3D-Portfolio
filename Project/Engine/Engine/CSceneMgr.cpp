@@ -19,8 +19,9 @@
 
 
 CSceneMgr::CSceneMgr()
-	:
-	m_pCurScene(nullptr) {}
+	: m_pCurScene(nullptr)
+{
+}
 
 CSceneMgr::~CSceneMgr()
 {
@@ -28,7 +29,9 @@ CSceneMgr::~CSceneMgr()
 }
 
 
-void CSceneMgr::init() { }
+void CSceneMgr::init()
+{
+}
 
 void CSceneMgr::progress()
 {
@@ -43,7 +46,7 @@ void CSceneMgr::progress()
 	m_pCurScene->finalupdate();
 
 	// Collision Check
-	if (SCENE_STATE::PLAY == eState)
+	//if (SCENE_STATE::PLAY == eState)
 	{
 		CCollisionMgr::GetInst()->update();
 	}
@@ -111,8 +114,8 @@ void CSceneMgr::ClearLayer()
 void CSceneMgr::DeleteObject(CGameObject* _pDestroyObject)
 {
 	tEventInfo info = {};
-	info.eType = EVENT_TYPE::DELETE_OBJ;
-	info.lParam = (DWORD_PTR)_pDestroyObject;
+	info.eType      = EVENT_TYPE::DELETE_OBJ;
+	info.lParam     = (DWORD_PTR)_pDestroyObject;
 
 	CEventMgr::GetInst()->AddEvent(info);
 }

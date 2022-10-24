@@ -15,11 +15,23 @@ private:
 	bool m_bActive;
 
 public:
-	virtual void start() {}
-	virtual void update() {}
-	virtual void lateupdate() {}
+	virtual void start()
+	{
+	}
+
+	virtual void update()
+	{
+	}
+
+	virtual void lateupdate()
+	{
+	}
+
 	virtual void finalupdate() = 0;
-	virtual void finalupdate_module() {};
+
+	virtual void finalupdate_module()
+	{
+	};
 
 	void Activate();
 	void Deactivate();
@@ -43,6 +55,7 @@ public:
 	GET_OTHER_COMPONENT(Light3D)
 	GET_OTHER_COMPONENT(Decal)
 	GET_OTHER_COMPONENT(LandScape)
+	GET_OTHER_COMPONENT(Collider3D);
 
 	CComponent* Clone() = 0;
 

@@ -19,7 +19,6 @@
 #include "CMRT.h"
 
 
-
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
 	, m_ray{}
@@ -51,7 +50,9 @@ CCamera::CCamera(const CCamera& _origin)
 	m_Frustum.m_pCam = this;
 }
 
-CCamera::~CCamera() {}
+CCamera::~CCamera()
+{
+}
 
 void CCamera::finalupdate()
 {
@@ -346,8 +347,8 @@ void CCamera::CalRay()
 {
 	// 마우스 방향을 향하는 Ray 구하기
 	// SwapChain 타겟의 ViewPort 정보
-	CMRT* pMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
-	D3D11_VIEWPORT tVP = pMRT->GetViewPort();
+	CMRT*          pMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
+	D3D11_VIEWPORT tVP  = pMRT->GetViewPort();
 
 	//  현재 마우스 좌표
 	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();

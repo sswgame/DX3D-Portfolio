@@ -8,11 +8,14 @@
 #include <Engine/CCamera.h>
 
 CEditorCamScript::CEditorCamScript()
-	:
-	CScript(-1)
-  , m_fSpeed(200.f) {}
+	: CScript(-1)
+	, m_fSpeed(200.f)
+{
+}
 
-CEditorCamScript::~CEditorCamScript() {}
+CEditorCamScript::~CEditorCamScript()
+{
+}
 
 void CEditorCamScript::update()
 {
