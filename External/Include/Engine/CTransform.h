@@ -46,6 +46,7 @@ public:
     Vec3 GetWorldPos() { return m_matWorld.Translation(); }
     Vec3 GetWorldScale();
     Matrix GetWorldRotation();
+    bool GetIgnorantParentScale() { return m_bIgnoreParentScale; }
 
     const Matrix& GetWorldMat() { return m_matWorld; }
     const Matrix& GetWorldInvMat() { return m_matWorldInv; }

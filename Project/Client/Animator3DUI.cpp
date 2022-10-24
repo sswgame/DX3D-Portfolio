@@ -1,8 +1,14 @@
 #include "pch.h"
 #include "Animator3DUI.h"
 
+#include <fstream>
+#include <sstream>
+
+
 #include <Engine/CAnimation3D.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CPathMgr.h>
+
 
 #include "CImGuiMgr.h"
 #include "IconsFontAwesome5.h"
@@ -15,7 +21,7 @@ Animator3DUI::Animator3DUI()
 	, m_fCommonLerpTime(1.f)
 
 {
-	SetSize(Vec2(0.f, 100.f));
+	SetSize(Vec2(0.f, 150.f));
 	m_FrameTimeLine.m_FrameMin = 0;
 	m_FrameTimeLine.m_FrameMax = 0;
 }
@@ -34,18 +40,24 @@ void Animator3DUI::render_update()
 {
 	ComponentUI::render_update();
 	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
-	else { SetSize(Vec2(0.f, 100.f)); }
-
-	CGameObject* pTargetObject = GetTargetObject();
-	m_pAnimator3D = pTargetObject->Animator3D();
-	m_pCurAnim3D = m_pAnimator3D->GetCurAnim();
-	const map<wstring, CAnimation3D*> MapAnim = m_pAnimator3D->GetAllAnim();
+	else { SetSize(Vec2(0.f, 150.f)); }
 
 	if (m_FrameTimeLine.GetOwner() == nullptr)
-	{
 		m_FrameTimeLine.SetOwner(this);
 
+	CGameObject* pTargetObject = GetTargetObject();
+	CAnimator3D* pAnimator3D = pTargetObject->Animator3D();
+	// 애니메이션3D 를 보유한 객체를  처음 선택했을 때 갱신 
+	if (pAnimator3D != m_pAnimator3D)
+	{
+		m_pAnimator3D = pAnimator3D;
+		m_FrameTimeLine.m_pCurAnimator3D = m_pAnimator3D;
+		m_FrameTimeLine.Reset();
+		Reset((DWORD_PTR)nullptr);
+
 	}
+	m_pCurAnim3D = m_pAnimator3D->GetCurAnim();
+	const map<wstring, CAnimation3D*> MapAnim = m_pAnimator3D->GetAllAnim();
 
 	if (MapAnim.size() != m_FrameTimeLine.m_vecAnimItem.size())
 	{
@@ -55,17 +67,54 @@ void Animator3DUI::render_update()
 	RenderAnim3DClipWindow();
 	RenderComponentWindow();
 
-
-
 }
 void Animator3DUI::RenderComponentWindow()
 {
 
-	// 1. Clear All List
-	string ButtonName = ICON_FA_BROOM;
-	ButtonName += " Clear";
-	if (ImGui::Button(ButtonName.c_str()))
+	// 1. All Animation Same Lerp Time 
+	const map<wstring, CAnimation3D*> MapAnim = m_pAnimator3D->GetAllAnim();
+	string ButtonName = ICON_FA_CIRCLE_DOWN;
+	//ButtonName += " LerpTime";
+	if (ImGui::Button(ButtonName.c_str(), ImVec2(20.f, 20.f)))
+		ImGui::OpenPopup("Apply All LerpTime");
+
+	if (ImGui::BeginPopupModal("Apply All LerpTime", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::TextColored(ImVec4(1.f, 1.f, 1.f, 1.f)
+			, u8"모든 애니메이션에 [ %.3f ] 보간시간이 적용됩니다. \n\n", m_fCommonLerpTime);
+
+		if (ImGui::Button("OK", ImVec2(100, 0)))
+		{
+			// 전체 애니메이션에 공통 보간시간 적용 
+			m_pAnimator3D->SetLerpTimeOnAllAnim(m_fCommonLerpTime);
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SetItemDefaultFocus();
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel", ImVec2(120, 0)))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+	ImGui::SameLine();
+	ImGui::PushItemWidth(125.f);
+	ImGui::DragFloat("##LerpTimeSetting", &m_fCommonLerpTime, 0.1f, 0.f, 100.f);
+	ImGui::PopItemWidth();
+
+	ImGui::SameLine();
+	ImGui::Text(" LerpTime On All Anim");
+
+
+	// 2. Clear All List
+	ButtonName = ICON_FA_BROOM;
+	//ButtonName += " Clear";
+	if (ImGui::Button(ButtonName.c_str(), ImVec2(20.f, 20.f)))
 		ImGui::OpenPopup("Clear All Animation");
+
+	ImGui::SameLine();
+	ImGui::Text("Clear All Animation");
 
 	if (ImGui::BeginPopupModal("Clear All Animation", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
@@ -86,44 +135,6 @@ void Animator3DUI::RenderComponentWindow()
 
 		ImGui::EndPopup();
 	}
-	ImGui::SameLine(100.f);
-	ImGui::Text("Delete All Animation");
-
-	// 2. All Animation Same Lerp Time 
-	const map<wstring, CAnimation3D*> MapAnim = m_pAnimator3D->GetAllAnim();
-	ButtonName = ICON_FA_CIRCLE_DOWN;
-	ButtonName += " LerpTime";
-	if (ImGui::Button(ButtonName.c_str()))
-		ImGui::OpenPopup("Apply All LerpTime");
-
-	if (ImGui::BeginPopupModal("Apply All LerpTime", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-	{
-		ImGui::TextColored(ImVec4(1.f, 1.f, 1.f, 1.f)
-			, u8"모든 애니메이션에 [ %.3f ] 보간시간이 적용됩니다. \n\n", m_fCommonLerpTime);
-
-		if (ImGui::Button("OK", ImVec2(120, 0)))
-		{
-			// 전체 애니메이션에 공통 보간시간 적용 
-			m_pAnimator3D->SetLerpTimeOnAllAnim(m_fCommonLerpTime);
-			ImGui::CloseCurrentPopup();
-		}
-		ImGui::SetItemDefaultFocus();
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel", ImVec2(120, 0)))
-		{
-			ImGui::CloseCurrentPopup();
-		}
-
-		ImGui::EndPopup();
-	}
-	ImGui::SameLine(100.f);
-	ImGui::PushItemWidth(125.f);
-	ImGui::DragFloat("##LerpTimeSetting", &m_fCommonLerpTime, 0.1f, 0.f, 100.f);
-	ImGui::PopItemWidth();
-
-	ImGui::SameLine();
-	ImGui::Text(" - ALL ANIM");
-
 
 	// 3. play all Animation list 
 	static bool bPlayAllList = false;
@@ -132,7 +143,7 @@ void Animator3DUI::RenderComponentWindow()
 	else
 		ButtonName = ICON_FA_PLAY;
 
-	ButtonName += " AllAnim";
+	ButtonName += " Play All Anim";
 	ImGui::Checkbox(ButtonName.c_str(), &bPlayAllList);
 	if (bPlayAllList)
 	{
@@ -151,8 +162,46 @@ void Animator3DUI::RenderComponentWindow()
 		}
 	}
 
+	ButtonName = ICON_FA_CHILD;
+	//ButtonName += "Apply To Child Object";
+	if (ImGui::Button(ButtonName.c_str(), ImVec2(20.f, 20.f)))
+		ImGui::OpenPopup("Apply To Child Object");
+
+	ImGui::SameLine();
+	ImGui::Text("Apply To Child Object");
 
 
+	if (ImGui::BeginPopupModal("Apply To Child Object", NULL, ImGuiWindowFlags_Modal))
+	{
+		wstring wstrName = GetTargetObject()->GetName();
+		string name = string(wstrName.begin(), wstrName.end());
+		ImGui::TextWrapped(
+			u8"하위 객체에 동일한 애니메이션을 적용합니다.\n\n"
+			u8"하위 객체의 개별 애니메이션은 사라지며\n\n"
+			u8"%s 객체의 애니메이션과 동일한 애니메이션을 갖게됩니다.", name.c_str());
+
+		if (ImGui::Button("OK", ImVec2(120, 0)))
+		{
+			ApplyAnim3DToChild(GetTargetObject());
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SetItemDefaultFocus();
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel", ImVec2(120, 0)))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+
+
+	// 4. Play With Child Animator3D
+	bool bPlayWithChild = m_pAnimator3D->GetPlayWithChild();
+	ButtonName = ICON_FA_CHILD;
+	ButtonName += " Play With Child";
+	ImGui::Checkbox(ButtonName.c_str(), &bPlayWithChild);
+	m_pAnimator3D->SetPlayWithChild(bPlayWithChild);
 
 }
 
@@ -177,7 +226,9 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			fSpeed -= 0.1f;
 			if (fSpeed <= 0.f)
 				fSpeed = 0.f;
-			m_pCurAnim3D->SetSpeed(fSpeed);
+			//m_pCurAnim3D->SetSpeed(fSpeed);
+			m_pAnimator3D->SetSpeed(fSpeed);
+
 		}
 
 		ImGui::SameLine();
@@ -190,7 +241,9 @@ void Animator3DUI::RenderAnim3DClipWindow()
 
 			if (ImGui::Button(ButtonName.c_str()))
 			{
-				m_pCurAnim3D->Play(false);
+				//m_pCurAnim3D->Play(false);
+				m_pAnimator3D->SetAnimState(m_pCurAnim3D->GetName(), ANIMATION_STATE::STOP);
+
 			}
 		}
 		else
@@ -200,8 +253,9 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			ButtonName += "  ";
 			if (ImGui::Button(ButtonName.c_str()))
 			{
-				m_pCurAnim3D->Play(true);
-				m_pCurAnim3D->SetFinish(false);
+				m_pAnimator3D->SetAnimState(m_pCurAnim3D->GetName(), ANIMATION_STATE::PLAY);
+				//m_pCurAnim3D->Play(true);
+				//m_pCurAnim3D->SetFinish(false);
 
 			}
 		}
@@ -213,13 +267,14 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			fSpeed += 0.1f;
 			if (fSpeed >= 3.f)
 				fSpeed = 3.f;
-			m_pCurAnim3D->SetSpeed(fSpeed);
+			//m_pCurAnim3D->SetSpeed(fSpeed);
+			m_pAnimator3D->SetSpeed(fSpeed);
 
 		}
 
 		ImGui::SameLine();
 		bool bRepeatAnim = m_pAnimator3D->GetRepeat();
-		if (ImGui::Checkbox(ICON_FA_ROTATE_RIGHT, &bRepeatAnim))
+		if (ImGui::Checkbox(ICON_FA_REPEAT, &bRepeatAnim))
 		{
 			m_pAnimator3D->SetRepeat(bRepeatAnim);
 		}
@@ -288,6 +343,80 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		ImGui::EndPopup();
 	}
 
+
+	// [ CREATE NEW ANIMATION - LOAD FROM .txt File ]
+	ImGui::SameLine();
+	if (ImGui::Button("Load"))
+		ImGui::OpenPopup("Load Animation");
+
+	if (ImGui::BeginPopupModal("Load Animation", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		static char buf[512];
+		ImGui::InputText("txt File Path", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_None);
+		if (ImGui::Button("OK", ImVec2(120, 0)))
+		{
+			string FileName = "AnimationInfo\\";
+			FileName += buf;
+			wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
+			string strPath = string(ContentPath.begin(), ContentPath.end());
+			strPath += FileName;
+
+			// 파일 입출력 
+			std::ifstream FileStream(strPath);
+			if (FileStream.is_open())
+			{
+				string strLine;
+				while (std::getline(FileStream, strLine))
+				{
+					vector<string> vecWords;
+					string strWord;
+					std::stringstream SStream(strLine);
+					while (std::getline(SStream, strWord, ' ')) // 공백에 따라 단어 분리 
+					{
+						vecWords.push_back(strWord);
+					}
+					string	AnimName = vecWords[0];				// 1. 애니메이션 이름 
+					int		FrameStartIdx = std::stoi(vecWords[1]);   // 2. 시작 프레임 인덱스 
+					int		FrameEndIdx = std::stoi(vecWords[2]);	// 3. 끝   프레임 인덱스 
+
+
+					wstring wstrName = wstring(AnimName.begin(), AnimName.end());
+					if (MapAnim.find(wstrName) == MapAnim.end())
+					{
+						// 타임라인에 적용
+						m_FrameTimeLine.AddAnimName(AnimName);
+						int idx = m_FrameTimeLine.m_vecAnimName.size() - 1;
+						m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ AnimName, idx, FrameStartIdx, FrameEndIdx });
+
+						// 컴포넌트에 적용 
+						int	   FrameCnt = m_pAnimator3D->GetFrameCount();
+						double FrameStartTime = (double)FrameStartIdx / (double)FrameCnt;
+						double FrameEndTime = (double)FrameEndIdx / (double)FrameCnt;
+
+						m_pAnimator3D->CreateAnim(wstrName, 0, FrameStartTime, FrameEndTime, FrameStartIdx, FrameEndIdx);
+						m_pAnimator3D->Play(wstrName, false);
+						m_pCurAnim3D = m_pAnimator3D->GetCurAnim();
+						m_iSelectedIdx = idx;
+
+					}
+				}
+
+				FileStream.close();
+			}
+			buf[0] = NULL;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SetItemDefaultFocus();
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel", ImVec2(120, 0)))
+		{
+			buf[0] = NULL;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
+	}
+
+
 	if (m_pCurAnim3D != nullptr)
 	{
 		ImGui::SameLine();
@@ -333,7 +462,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			ImGui::EndPopup();
 		}
 	}
-	
+
 
 	// [ CHANGE TIME / FRAME ]
 	ImGui::Text("TImeLine (s)"); ImGui::SameLine(100.f);
@@ -527,6 +656,10 @@ void Animator3DUI::Reset(DWORD_PTR _ptr)
 
 	}
 
+	m_iSelectedIdx = -1;
+	m_iSelectedPrevIdx = -1;
+	m_iCurFrameUI = 0;
+
 	return;
 }
 
@@ -577,5 +710,28 @@ CAnimation3D* Animator3DUI::GetNextAnim()
 
 	}
 	return pNextAnim;
+}
+
+void Animator3DUI::ApplyAnim3DToChild(CGameObject* pObj)
+{
+	CAnimator3D* pAnimator3D = pObj->Animator3D();
+	if (pAnimator3D == nullptr)
+		return;
+
+	// 1. 애니메이션 복사
+	const map<wstring, CAnimation3D*> MapAnim = pAnimator3D->GetAllAnim();
+
+	// 2. 하위 객체에도 적용 
+	vector<CGameObject*> vecChild = pObj->GetChild();
+	for (int i = 0; i < vecChild.size(); ++i)
+	{
+		CAnimator3D* pA3D = vecChild[i]->Animator3D();
+		if (pA3D == nullptr)
+			continue;
+		pA3D->CopyAllAnim(MapAnim);
+		ApplyAnim3DToChild(vecChild[i]);
+	}
+
+
 }
 

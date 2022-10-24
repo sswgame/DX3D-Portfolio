@@ -9,8 +9,8 @@ class Animator3DUI :
     public ComponentUI
 {
 private:
-    CAnimator3D*        m_pAnimator3D;
-    CAnimation3D*       m_pCurAnim3D;
+    CAnimator3D* m_pAnimator3D;
+    CAnimation3D* m_pCurAnim3D;
     Anim3DSequencer     m_FrameTimeLine;
 
 
@@ -34,6 +34,7 @@ public:
 public:
     CAnimator3D* GetCurAnimator3D() { return m_pAnimator3D; }
     CAnimation3D* GetNextAnim();
+    void ApplyAnim3DToChild(CGameObject* pObj);
 
 
 public:

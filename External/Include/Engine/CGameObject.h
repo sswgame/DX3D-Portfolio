@@ -19,6 +19,7 @@ class CDecal;
 class CScript;
 class CRenderComponent;
 class CLandScape;
+class CCollider3D;
 
 class CGameObject : public CEntity
 {
@@ -68,7 +69,7 @@ public:
 public:
 	void              AddChild(CGameObject* _pChild);
 	void              AddComponent(CComponent* _component);
-	void			  DeleteComponent(COMPONENT_TYPE _eType);
+	void              DeleteComponent(COMPONENT_TYPE _eType);
 	CComponent*       GetComponent(COMPONENT_TYPE _eType) { return m_arrCom[(UINT)_eType]; }
 	CRenderComponent* GetRenderComponent() { return m_pRenderComponent; }
 
@@ -87,6 +88,7 @@ public:
 	GET_COMPONENT(Light3D, LIGHT3D)
 	GET_COMPONENT(Decal, DECAL)
 	GET_COMPONENT(LandScape, LANDSCAPE)
+	GET_COMPONENT(Collider3D, COLLIDER3D);
 
 	const vector<CScript*>& GetScripts() { return m_vecScript; }
 	CScript*                GetScript(UINT _iIdx);
@@ -110,6 +112,7 @@ public:
 	friend class CEventMgr;
 	friend class CScene;
 	friend class CLayer;
+	friend class CCollider3D;
 };
 
 template <typename T>

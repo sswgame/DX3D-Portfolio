@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CAnimation3D.h"
+#include "CAnimator3D.h"
 
 #include "CTimeMgr.h"
 #include "CMeshRender.h"
@@ -12,7 +13,6 @@
 
 CAnimation3D::CAnimation3D()
 	: m_pOwner(nullptr)
-	, m_pBoneFinalMatBuffer(nullptr)
 	, m_bFinalMatUpdate(false)
 	, m_bFinish(false)
 	, m_iCurClip(0)
@@ -26,14 +26,12 @@ CAnimation3D::CAnimation3D()
 	, m_iFrameCnt(30)
 
 {
-	m_pBoneFinalMatBuffer = new CStructuredBuffer;
 
 }
 
 
 CAnimation3D::CAnimation3D(const CAnimation3D& _origin)
 	: m_pOwner(nullptr)
-	, m_pBoneFinalMatBuffer(nullptr)
 	, m_bFinalMatUpdate(false)
 	, m_bFinish(false)
 	, m_iCurClip(_origin.m_iCurClip)
@@ -45,11 +43,9 @@ CAnimation3D::CAnimation3D(const CAnimation3D& _origin)
 	, m_fSpeed(_origin.m_fSpeed)
 	, m_fLerpTime(_origin.m_fLerpTime)
 {
-	m_pBoneFinalMatBuffer = new CStructuredBuffer;
 }
 CAnimation3D::~CAnimation3D()
 {
-	SAFE_DELETE(m_pBoneFinalMatBuffer);
 
 }
 
@@ -154,7 +150,7 @@ void CAnimation3D::UpdateData()
 		// Data Setting  
 		pUpdateShader->SetFrameDataBuffer(pMesh->GetBoneFrameDataBuffer());
 		pUpdateShader->SetOffsetMatBuffer(pMesh->GetBoneOffsetBuffer());
-		pUpdateShader->SetOutputBuffer(m_pBoneFinalMatBuffer);
+		pUpdateShader->SetOutputBuffer(m_pOwner->GetBoneFinalMatBuffer());
 
 		UINT iBoneCount = m_pOwner->GetBoneCount();
 		pUpdateShader->SetBoneCount(iBoneCount);
@@ -169,17 +165,34 @@ void CAnimation3D::UpdateData()
 	}
 
 	// t30 레지스터에 최종행렬 데이터(구조버퍼) 바인딩		
-	m_pBoneFinalMatBuffer->UpdateData(PIPELINE_STAGE::VS, 30);
+	m_pOwner->GetBoneFinalMatBuffer()->UpdateData(PIPELINE_STAGE::VS, 30);
 
 }
 
+void CAnimation3D::ClearData()
+{
+	m_pOwner->GetBoneFinalMatBuffer()->Clear();
+
+	UINT iMtrlCount = m_pOwner->MeshRender()->GetMtrlCount();
+	Ptr<CMaterial> pMtrl = nullptr;
+	for (UINT i = 0; i < iMtrlCount; ++i)
+	{
+		pMtrl = m_pOwner->MeshRender()->GetSharedMaterial(i);
+		if (nullptr == pMtrl)
+			continue;
+
+		pMtrl->SetAnim3D(false); // Animation Mesh 알리기
+		pMtrl->SetBoneCount(0);
+	}
+
+}
 
 void CAnimation3D::check_mesh(Ptr<CMesh> _pMesh)
 {
 	UINT iBoneCount = _pMesh->GetBoneCount();
-	if (m_pBoneFinalMatBuffer->GetElementCount() != iBoneCount)
+	if (m_pOwner->GetBoneFinalMatBuffer()->GetElementCount() != iBoneCount)
 	{
-		m_pBoneFinalMatBuffer->Create(sizeof(Matrix), iBoneCount, SB_TYPE::READ_WRITE, false, nullptr);
+		m_pOwner->GetBoneFinalMatBuffer()->Create(sizeof(Matrix), iBoneCount, SB_TYPE::READ_WRITE, false, nullptr);
 	}
 }
 
@@ -228,23 +241,22 @@ void CAnimation3D::ResetStartEndFrameTime()
 	m_tClip.dEndTime = (double)m_tClip.iEndFrame / (double)m_iFrameCnt;
 }
 
-void CAnimation3D::ClearData()
+void CAnimation3D::CopyInfo(CAnimation3D** _pCopyAnim)
 {
-	m_pBoneFinalMatBuffer->Clear();
-
-	UINT iMtrlCount = m_pOwner->MeshRender()->GetMtrlCount();
-	Ptr<CMaterial> pMtrl = nullptr;
-	for (UINT i = 0; i < iMtrlCount; ++i)
-	{
-		pMtrl = m_pOwner->MeshRender()->GetSharedMaterial(i);
-		if (nullptr == pMtrl)
-			continue;
-
-		pMtrl->SetAnim3D(false); // Animation Mesh 알리기
-		pMtrl->SetBoneCount(0);
-	}
+	(*_pCopyAnim)->SetClipInfo(m_tClip);
+	(*_pCopyAnim)->SetAnimState(m_eCurState);
+	(*_pCopyAnim)->SetFinish(m_bFinish);
+	(*_pCopyAnim)->SetPlay(m_bPlay);
+	(*_pCopyAnim)->SetClipNum(m_iCurClip);
+	(*_pCopyAnim)->SetPrevFrameEndIdx(m_iPrevAnimEndFrameIdx);
+	(*_pCopyAnim)->SetCurFrameIdx(m_iCurFrameIdx);
+	(*_pCopyAnim)->SetSpeed(m_fSpeed);
+	(*_pCopyAnim)->SetLerpTime(m_fLerpTime);
+	(*_pCopyAnim)->CopyClipUpdateTime(m_vecClipUpdateTime);
 
 }
+
+
 
 void CAnimation3D::SetFrameInfo(int _ClipNum
 	, double _startTime, double _endTime
@@ -366,6 +378,13 @@ void CAnimation3D::SetCurFrameIdx(int _curIdx)
 	}
 
 }
+
+int CAnimation3D::GetMaxFrameIdx()
+{
+	return m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1;
+}
+
+
 
 void CAnimation3D::SaveToScene(FILE* _pFile)
 {

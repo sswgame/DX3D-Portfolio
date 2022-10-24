@@ -494,7 +494,7 @@ bool CCollisionMgr::ExistSAT(const Vec3&            _vCenter,
 tCollider3DInfo CCollisionMgr::ExtractColliderInfo(const CCollider3D* _pCollider)
 {
 	// 큐브를 이루는 정점
-	static constexpr Vec3 arrLocal[8] =
+	static Vec3 arrLocal[8] =
 	{
 		// 윗면
 		Vec3(-0.5f, 0.5f, 0.5f),	// 0

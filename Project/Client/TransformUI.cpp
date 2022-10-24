@@ -22,31 +22,36 @@ void TransformUI::update()
 
 	CTransform* pTransform = pTargetObj->Transform();
 
-	m_vRelativePos   = pTransform->GetRelativePos();
+	m_vRelativePos = pTransform->GetRelativePos();
 	m_vRelativeScale = pTransform->GetRelativeScale();
-	m_vRelativeRot   = pTransform->GetRelativeRotation();
+	m_vRelativeRot = pTransform->GetRelativeRotation();
 }
 
 void TransformUI::render_update()
 {
 	ComponentUI::render_update();
 	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
-	else { SetSize(Vec2(0.f, 90.f)); }
+	else {
+		if (GetTargetObject()->GetParent() == nullptr)
+			SetSize(Vec2(0.f, 105.f));
+		else
+			SetSize(Vec2(0.f, 130.f));
+	}
 
 	CGameObject* pTargetObject = GetTargetObject();
-	CTransform*  pTrans        = pTargetObject->Transform();
-	Vec3         vPos          = pTrans->GetRelativePos();
-	Vec3         vScale        = pTrans->GetRelativeScale();
-	Vec3         vRot          = pTrans->GetRelativeRotation();
+	CTransform* pTrans = pTargetObject->Transform();
+	Vec3         vPos = pTrans->GetRelativePos();
+	Vec3         vScale = pTrans->GetRelativeScale();
+	Vec3         vRot = pTrans->GetRelativeRotation();
 	vRot.ToDegree();
 
 
 	ImGui::PushItemWidth(200); // Float3 위젯 간격 설정
-
-	ImGui::Text("Relative Position", 100.f);
+	ImGui::Text("[ RELATIVE ]");
+	ImGui::Text("Position", 100.f);
 	ImGui::SameLine();
 
-	ImGui::TextColored(ImVec4(1.f, 0.f ,0.f, 1.f),"X"); ImGui::SameLine(0.f);
+	ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "X"); ImGui::SameLine(0.f);
 	ImGui::PushItemWidth(60);
 	ImGui::DragFloat("##LeftTop X_drag", &vPos.x);
 	ImGui::SameLine();
@@ -65,7 +70,7 @@ void TransformUI::render_update()
 	pTrans->SetRelativePos(vPos);
 
 
-	ImGui::Text("Relative Scale     ", 100.f);
+	ImGui::Text("Scale     ", 100.f);
 	ImGui::SameLine();
 
 	ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "X"); ImGui::SameLine(0.f);
@@ -87,7 +92,7 @@ void TransformUI::render_update()
 	pTrans->SetRelativeScale(vScale);
 
 
-	ImGui::Text("Relative Rotation", 100.f);
+	ImGui::Text("Rotation", 100.f);
 	ImGui::SameLine();
 
 	ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "X"); ImGui::SameLine(0.f);
@@ -109,12 +114,12 @@ void TransformUI::render_update()
 	vRot.ToRadian();
 	pTrans->SetRelativeRotation(vRot);
 
-	//if (nullptr != pTargetObject->GetParent())
-	//{
-	//	m_bIgnorantParentScale = pTrans->GetIgnoreParentScale();
-	//	ImGui::Checkbox("IgnoreParentScale", &m_bIgnorantParentScale);
-	//	{
-	//		pTrans->SetIgnoreParentScale(m_bIgnorantParentScale);
-	//	}
-	//}
+	if (nullptr != pTargetObject->GetParent())
+	{
+		m_bIgnorantParentScale = pTrans->GetIgnorantParentScale();
+		ImGui::Checkbox("IgnoreParentScale", &m_bIgnorantParentScale);
+		{
+			pTrans->SetIgnoreParentScale(m_bIgnorantParentScale);
+		}
+	}
 }

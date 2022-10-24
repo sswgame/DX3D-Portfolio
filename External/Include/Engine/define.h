@@ -156,7 +156,6 @@ enum class DIR_TYPE
 };
 
 
-
 enum class SCALAR_PARAM
 {
 	INT_0,

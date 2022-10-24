@@ -1,6 +1,7 @@
 #pragma once
 #include "CEntity.h"
-#include "CAnimator3D.h"
+
+class CAnimator3D;
 
 enum class ANIMATION_STATE
 {
@@ -19,7 +20,6 @@ class CAnimation3D :
 private:
 	CAnimator3D*			m_pOwner;
 	tMTAnimClip				m_tClip;				// 애니메이션 정보  
-	CStructuredBuffer*		m_pBoneFinalMatBuffer;  // 특정 프레임의 최종 행렬
 
 	ANIMATION_STATE			m_eCurState;			// 현재 애니메이션 상태 
 
@@ -43,9 +43,6 @@ private:
 	float					m_fLerpTime;			// 보간 시간 
 
 
-
-
-
 public:
 	void			finalupdate();
 	virtual void	UpdateData() override;
@@ -58,6 +55,7 @@ public:
 	void Reset();
 	void ResetStartEndFrameIdx();
 	void ResetStartEndFrameTime();
+	void CopyInfo(CAnimation3D** _pCopyAnim); // Copy될 Animation의 이중포인터를 넘겨라 
 
 
 
@@ -67,41 +65,46 @@ public:
 	void SetFrameInfo(int _ClipNum, double _startTime = (0.0), double _endTime = (0.0), int _startFrameIdx = 0, int _EndFrame = 0);
 	void SetClipUpdateTime(int _vecClipSize);
 	void SetPrevFrameEndIdx(int _idx) { m_iPrevAnimEndFrameIdx = _idx; }
+	void CopyClipUpdateTime(vector<double> _vecClipUpdateTime) { m_vecClipUpdateTime = _vecClipUpdateTime; }
+
 
 
 	// - SET CLIP INFO 
+	void SetClipInfo(tMTAnimClip _tClip)	{ m_tClip = _tClip; }
+	void SetClipNum(int _ClipNum)			{ m_iCurClip = _ClipNum; }
 	void SetStartTime(double _startTime);
 	void SetEndTime(double _endTime);
 	void SetStartFrameIdx(int _startIdx);
 	void SetEndFrameIdx(int _endIdx);
 	void SetCurFrameIdx(int _curIdx);
-	void SetClipNum(int _ClipNum) { m_iCurClip = _ClipNum; }
 
-	void SetSpeed(float _fSpeed) { m_fSpeed = _fSpeed; }
-	void SetFinish(bool _b) { if (m_bFinish && !_b) m_vecClipUpdateTime[m_iCurClip] = 0.f; m_bFinish = _b; }
-	void SetPlay(bool _b) { m_bPlay = _b; m_eCurState = ANIMATION_STATE::STOP; }
-	void SetAnimState(ANIMATION_STATE _eState) { m_eCurState = _eState; }
-	void SetLerpTime(float _fTime) { m_fLerpTime = _fTime; }
+	void SetSpeed(float _fSpeed)				{ m_fSpeed = _fSpeed; }
+	void SetFinish(bool _b)						{ if (m_bFinish && !_b) m_vecClipUpdateTime[m_iCurClip] = 0.f; m_bFinish = _b; }
+	void SetPlay(bool _b)						{ m_bPlay = _b; m_eCurState = ANIMATION_STATE::STOP; }
+	void SetAnimState(ANIMATION_STATE _eState)	{ m_eCurState = _eState; }
+	void SetLerpTime(float _fTime)				{ m_fLerpTime = _fTime; }
 
 public:
 	// [ GET PART ]
-	bool			IsPlay()			{ return m_bPlay; }
-	bool			IsFinish()			{ return m_bFinish; }
-	int				GetClipNum()		{ return m_iCurClip; }
-	float			GetSpeed()			{ return m_fSpeed; }
-	ANIMATION_STATE	GetState()		{ return m_eCurState; }
+	bool			IsPlay()				{ return m_bPlay; }
+	bool			IsFinish()				{ return m_bFinish; }
+	int				GetClipNum()			{ return m_iCurClip; }
+	float			GetSpeed()				{ return m_fSpeed; }
+	ANIMATION_STATE	GetState()				{ return m_eCurState; }
 	// - GET INDEX -
-	int				GetCurFrameIdx()	{ return m_iCurFrameIdx; }
-	int				GetStartFrameIdx()	{ return m_tClip.iStartFrame; }
-	int				GetEndFrameIdx()	{ return m_tClip.iEndFrame; }
-	int				GetMaxFrameIdx()	{ return m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1; }
+	int				GetCurFrameIdx()		{ return m_iCurFrameIdx; }
+	int				GetStartFrameIdx()		{ return m_tClip.iStartFrame; }
+	int				GetEndFrameIdx()		{ return m_tClip.iEndFrame; }
+	int				GetMaxFrameIdx();
+
+
 	// - GET TIME -
-	float			GetLerpTime()		{ return m_fLerpTime; }
-	double			GetStartTime()		{ return m_tClip.dStartTime; }
-	double			GetEndTime()		{ return m_tClip.dEndTime; }
-	double			GetAccTime()		{ return m_vecClipUpdateTime[m_iCurClip]; }
-	
-	
+	float			GetLerpTime()			{ return m_fLerpTime; }
+	double			GetStartTime()			{ return m_tClip.dStartTime; }
+	double			GetEndTime()			{ return m_tClip.dEndTime; }
+	double			GetAccTime()			{ return m_vecClipUpdateTime[m_iCurClip]; }
+
+
 private:
 	void check_mesh(Ptr<CMesh> _pMesh);
 

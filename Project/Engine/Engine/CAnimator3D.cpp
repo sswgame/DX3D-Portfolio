@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "CAnimator3D.h"
+#include "CAnimation3D.h"
 
 #include "CTimeMgr.h"
 #include "CMeshRender.h"
@@ -10,18 +11,24 @@
 #include "CMaterial.h"
 #include "CMesh.h"
 #include "CAnimation3DShader.h"
+#include "CGameObject.h"
+#include "CComponent.h"
 
 #include "CKeyMgr.h"
-
-#include "CAnimation3D.h"
 
 
 CAnimator3D::CAnimator3D()
 	: m_pVecBones(nullptr)
 	, m_pVecClip(nullptr)
 	, m_iFrameCount(30)
+	, m_pBoneFinalMatBuffer(nullptr)
+	, m_pPrevAnim(nullptr)
+	, m_pCurAnim(nullptr)
+	, m_pNextAnim(nullptr)
+	, m_bRepeat(false)
 	, CComponent(COMPONENT_TYPE::ANIMATOR3D)
 {
+	m_pBoneFinalMatBuffer = new CStructuredBuffer;
 
 }
 
@@ -29,12 +36,20 @@ CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
 	: m_pVecBones(_origin.m_pVecBones)
 	, m_pVecClip(_origin.m_pVecClip)
 	, m_iFrameCount(_origin.m_iFrameCount)
+	, m_pBoneFinalMatBuffer(nullptr)
+	, m_pPrevAnim(_origin.m_pPrevAnim)
+	, m_pCurAnim(_origin.m_pCurAnim)
+	, m_pNextAnim(_origin.m_pNextAnim)
+	, m_bRepeat(_origin.m_bRepeat)
 	, CComponent(COMPONENT_TYPE::ANIMATOR3D)
 {
+	m_pBoneFinalMatBuffer = new CStructuredBuffer;
+
 }
 
 CAnimator3D::~CAnimator3D()
 {
+	SAFE_DELETE(m_pBoneFinalMatBuffer);
 	Safe_Del_Map(m_mapAnim);
 }
 
@@ -85,6 +100,22 @@ CAnimation3D* CAnimator3D::FindAnim(const wstring& _strName)
 	return iter->second;
 }
 
+void CAnimator3D::CopyAllAnim(const map<wstring, CAnimation3D*> _mapAnim)
+{
+	Clear();
+	map<wstring, CAnimation3D*>::const_iterator iter = _mapAnim.begin();
+	for (; iter != _mapAnim.end(); ++iter)
+	{
+		CreateAnim(iter->second->GetName(),
+			iter->second->GetClipNum(),
+			iter->second->GetStartTime(),
+			iter->second->GetEndTime(),
+			iter->second->GetStartFrameIdx(),
+			iter->second->GetEndFrameIdx()
+		);
+	}
+}
+
 void CAnimator3D::CreateAnim(const wstring& _strName, int _clipNum
 	, double _startTime, double _endTime, int _startFrame, int _EndFrame)
 {
@@ -99,6 +130,20 @@ void CAnimator3D::CreateAnim(const wstring& _strName, int _clipNum
 	pAnim->SetFrameInfo(_clipNum, _startTime, _endTime, _startFrame, _EndFrame);
 
 	m_mapAnim.insert(make_pair(_strName, pAnim));
+
+	if (m_bPlayWithChild)
+	{
+		vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+		for (int i = 0; i < vecChildObj.size(); ++i)
+		{
+			CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+			if (pChildAnimator3D != nullptr)
+			{
+				pChildAnimator3D->CreateAnim(_strName, _clipNum, _startTime
+					, _endTime, _startFrame, _EndFrame);
+			}
+		}
+	}
 
 }
 
@@ -119,7 +164,6 @@ void CAnimator3D::Play(const wstring& _strName, bool _bRepeat)
 		// 애니메이션 진행 중 다른 애니메이션을 재생한 경우 
 		else
 			pAnim->SetPrevFrameEndIdx(m_pPrevAnim->GetCurFrameIdx());
-
 	}
 
 	m_pCurAnim = pAnim;
@@ -127,7 +171,28 @@ void CAnimator3D::Play(const wstring& _strName, bool _bRepeat)
 
 	if (m_pPrevAnim != nullptr)
 		m_pPrevAnim->Reset();
+
+	if (m_bPlayWithChild)
+	{
+		// 하위 객체들도 같이 애니메이션 Play 
+		vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+		for (int i = 0; i < vecChildObj.size(); ++i)
+		{
+
+			CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+			if (pChildAnimator3D != nullptr)
+			{
+				CAnimation3D* pChildAnim = pChildAnimator3D->FindAnim(_strName);
+				if (pChildAnim != nullptr)
+				{
+					pAnim->CopyInfo(&pChildAnim); // pChildAnim 에 pAnim 의 정보를 복사한다. 
+					pChildAnimator3D->Play(_strName, _bRepeat);
+				}
+			}
+		}
+	}
 }
+
 
 
 void CAnimator3D::SaveToScene(FILE* _pFile)
@@ -185,6 +250,35 @@ void CAnimator3D::DeleteAnim(const wstring& _wstrName)
 	CAnimation3D* pDelAnim = m_mapAnim.find(_wstrName)->second;
 	SAFE_DELETE(pDelAnim);
 	m_mapAnim.erase(_wstrName);
+
+	if (m_bPlayWithChild)
+	{
+		// [ DELETE PARENT OBJ / ANIMATION ] - 부모 애니 삭제 
+		CGameObject* pParentObj = GetOwner()->GetParent();
+		if (pParentObj != nullptr)
+		{
+			CAnimator3D* pAnimator3D = pParentObj->Animator3D();
+			if (pAnimator3D != nullptr)
+			{
+				pAnimator3D->DeleteAnim(_wstrName);
+			}
+		}
+		// [ DELETE CHILD OBJ / ANIMTION ] - 자식 애니 삭제 
+		vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+		for (int i = 0; i < vecChildObj.size(); ++i)
+		{
+			CAnimator3D* pAnimator3D = vecChildObj[i]->Animator3D();
+			if (pAnimator3D != nullptr)
+			{
+				pAnimator3D->DeleteAnim(_wstrName);
+
+			}
+		}
+	}
+
+
+
+
 }
 
 
@@ -195,5 +289,200 @@ void CAnimator3D::SetLerpTimeOnAllAnim(float _fLerpTime)
 	{
 		iter->second->SetLerpTime(_fLerpTime);
 	}
+
+	if (m_bPlayWithChild)
+	{
+		vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+		for (int i = 0; i < vecChildObj.size(); ++i)
+		{
+			CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+			if (pChildAnimator3D != nullptr)
+			{
+				pChildAnimator3D->SetLerpTimeOnAllAnim(_fLerpTime);
+			}
+		}
+	}
 }
 
+void CAnimator3D::SetAnimState(wstring _Name, ANIMATION_STATE _eState)
+{
+	switch (_eState)
+	{
+	case ANIMATION_STATE::BEFORE_PLAY:
+	{
+		CAnimation3D* pAnim = FindAnim(_Name);
+		pAnim->SetAnimState(_eState);
+
+		// CHILD OBJECT SETTING 
+		if (m_bPlayWithChild)
+		{
+			vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+			for (int i = 0; i < vecChildObj.size(); ++i)
+			{
+				CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+				if (pChildAnimator3D != nullptr)
+				{
+					CAnimation3D* pChildAnim3D = pChildAnimator3D->FindAnim(_Name);
+					if (pChildAnim3D != nullptr)
+						pChildAnim3D->SetAnimState(_eState);
+				}
+			}
+		}
+	}
+	break;
+	case ANIMATION_STATE::PLAY:
+	{
+		// OBJECT SETTING 
+		CAnimation3D* pAnim = FindAnim(_Name);
+		pAnim->SetAnimState(_eState);
+		pAnim->Play(true);
+		pAnim->SetFinish(false);
+
+		// CHILD OBJECT SETTING 
+		if (m_bPlayWithChild)
+		{
+			vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+			for (int i = 0; i < vecChildObj.size(); ++i)
+			{
+				CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+				if (pChildAnimator3D != nullptr)
+				{
+					CAnimation3D* pChildAnim3D = pChildAnimator3D->FindAnim(_Name);
+					if (pChildAnim3D != nullptr)
+					{
+						pChildAnim3D->SetAnimState(_eState);
+						pChildAnim3D->Play(true);
+						pChildAnim3D->SetFinish(false);
+					}
+				}
+			}
+		}
+	}
+	break;
+	case ANIMATION_STATE::STOP:
+	{
+		// OBJECT SETTING 
+		CAnimation3D* pAnim = FindAnim(_Name);
+		pAnim->SetAnimState(_eState);
+		pAnim->Play(false);
+
+		// CHILD OBJECT SETTING 
+		if (m_bPlayWithChild)
+		{
+			vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+			for (int i = 0; i < vecChildObj.size(); ++i)
+			{
+				CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+				if (pChildAnimator3D != nullptr)
+				{
+					CAnimation3D* pChildAnim3D = pChildAnimator3D->FindAnim(_Name);
+					if (pChildAnim3D != nullptr)
+					{
+						pChildAnim3D->SetAnimState(_eState);
+						pChildAnim3D->Play(false);
+					}
+				}
+			}
+		}
+	}
+	break;
+	case ANIMATION_STATE::FINISH:
+	{
+		CAnimation3D* pAnim = FindAnim(_Name);
+		pAnim->SetAnimState(_eState);
+
+		// CHILD OBJECT SETTING 
+		if (m_bPlayWithChild)
+		{
+			vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+			for (int i = 0; i < vecChildObj.size(); ++i)
+			{
+				CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+				if (pChildAnimator3D != nullptr)
+				{
+					CAnimation3D* pChildAnim3D = pChildAnimator3D->FindAnim(_Name);
+					if (pChildAnim3D != nullptr)
+						pChildAnim3D->SetAnimState(_eState);
+				}
+			}
+		}
+	}
+	break;
+	}
+}
+
+void CAnimator3D::SetSpeed(float _fSpeed)
+{
+	m_pCurAnim->SetSpeed(_fSpeed);
+	if (m_bPlayWithChild)
+	{
+		vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+		for (int i = 0; i < vecChildObj.size(); ++i)
+		{
+			CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+			if (pChildAnimator3D != nullptr)
+			{
+				CAnimation3D* pAnim = pChildAnimator3D->GetCurAnim();
+				if (pAnim != nullptr)
+					pAnim->SetSpeed(_fSpeed);
+
+			}
+		}
+	}
+
+}
+
+void CAnimator3D::SetLerpTime(float _fTime)
+{
+
+	m_pCurAnim->SetLerpTime(_fTime);
+	if (m_bPlayWithChild)
+	{
+		vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+		for (int i = 0; i < vecChildObj.size(); ++i)
+		{
+			CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+			if (pChildAnimator3D != nullptr)
+			{
+				CAnimation3D* pAnim = pChildAnimator3D->GetCurAnim();
+				if (pAnim != nullptr)
+					pAnim->SetLerpTime(_fTime);
+			}
+		}
+	}
+}
+
+
+void CAnimator3D::SetPlayWithChild(bool _bPlayWithChild)
+{
+	m_bPlayWithChild = _bPlayWithChild;
+	// 하위 객체들도 같이 애니메이션 Play 
+	vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+	for (int i = 0; i < vecChildObj.size(); ++i)
+	{
+		CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+		if (pChildAnimator3D != nullptr)
+		{
+			pChildAnimator3D->SetPlayWithChild(_bPlayWithChild);
+		}
+	}
+}
+
+
+void CAnimator3D::SetRepeat(bool _b)
+{
+	m_bRepeat = _b;
+
+	if (m_bPlayWithChild)
+	{
+		vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+		for (int i = 0; i < vecChildObj.size(); ++i)
+		{
+			CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+			if (pChildAnimator3D != nullptr)
+			{
+				pChildAnimator3D->SetRepeat(_b);
+			}
+		}
+	}
+}
