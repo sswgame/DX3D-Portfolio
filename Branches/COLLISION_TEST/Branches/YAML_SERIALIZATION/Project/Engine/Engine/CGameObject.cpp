@@ -1,0 +1,536 @@
+#include "pch.h"
+#include "CGameObject.h"
+
+#include "CSceneMgr.h"
+#include "CScene.h"
+#include "CLayer.h"
+#include "CEventMgr.h"
+
+#include "CComponent.h"
+#include "CTransform.h"
+#include "CMeshRender.h"
+#include "CCollider2D.h"
+#include "CLight2D.h"
+#include "CRenderComponent.h"
+
+
+#include "CScript.h"
+
+
+void CGameObject::Serialize(YAML::Emitter& emitter)
+{
+	emitter << YAML::Key << "NAME" << YAML::Value << ToString(GetName());
+	emitter << YAML::Key << "m_bActive" << YAML::Value << m_bActive;
+	emitter << YAML::Key << "m_bDynamicShadow" << YAML::Value << m_bDynamicShadow;
+	emitter << YAML::Key << "m_bFrustumCulling" << YAML::Value << m_bFrustumCulling;
+
+
+	// Component 저장
+	emitter << YAML::Key << "COMPONENTS";
+	emitter << YAML::Value << YAML::BeginSeq;
+	for (int i = 0; i < (int)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i])
+		{
+			emitter << YAML::BeginMap;
+			emitter << YAML::Key << ToString((COMPONENT_TYPE)i);
+			emitter << YAML::Value << YAML::BeginMap;
+			m_arrCom[i]->Serialize(emitter);
+			emitter << YAML::EndMap;
+			emitter << YAML::EndMap;
+		}
+	}
+	emitter << YAML::EndSeq;
+}
+
+void CGameObject::Deserialize(const YAML::Node& node)
+{
+	const std::string name = node["NAME"].as<std::string>();
+	SetName(ToWString(name));
+	m_bActive         = node["m_bActive"].as<bool>();
+	m_bDynamicShadow  = node["m_bDynamicShadow"].as<bool>();
+	m_bFrustumCulling = node["m_bFrustumCulling"].as<bool>();
+
+	const YAML::Node& components = node["COMPONENTS"];
+	for (size_t i = 0; i < components.size(); ++i)
+	{
+		const std::string componentName = (components[i].begin())->first.as<std::string>();
+		CComponent*       pComponent    = CComponent::MakeComponent(ToWString(componentName));
+		AddComponent(pComponent);
+		pComponent->Deserialize(components[i].begin()->second);
+	}
+}
+
+CGameObject::CGameObject()
+	:
+	m_arrCom{}
+  , m_pRenderComponent(nullptr)
+  , m_pParent(nullptr)
+  , m_iLayerIdx(-1)
+  , m_bDead(false)
+  , m_bActive(true)
+  , m_bDynamicShadow(false)
+  , m_bFrustumCulling(false) {}
+
+CGameObject::CGameObject(const CGameObject& _origin)
+	:
+	CEntity(_origin)
+  , m_arrCom{}
+  , m_pRenderComponent(nullptr)
+  , m_pParent(nullptr)
+  , m_iLayerIdx(-1)
+  , m_bDead(false)
+  , m_bActive(true)
+{
+	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != _origin.m_arrCom[i])
+		{
+			AddComponent(_origin.m_arrCom[i]->Clone());
+		}
+	}
+
+	for (auto& pScript : _origin.m_vecScript)
+	{
+		AddComponent(pScript->Clone());
+	}
+	for (size_t i = 0; i < _origin.m_vecChild.size(); ++i)
+	{
+		AddChild(_origin.m_vecChild[i]->Clone());
+	}
+}
+
+CGameObject::~CGameObject()
+{
+	Safe_Del_Arr(m_arrCom);
+	Safe_Del_Vec(m_vecScript);
+	Safe_Del_Vec(m_vecChild);
+}
+
+void CGameObject::start()
+{
+	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i])
+			m_arrCom[i]->start();
+	}
+
+	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	{
+		m_vecScript[i]->start();
+	}
+
+
+	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	{
+		m_vecChild[i]->start();
+	}
+}
+
+void CGameObject::update()
+{
+	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i] && m_arrCom[i]->IsActive())
+			m_arrCom[i]->update();
+	}
+
+	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	{
+		if (m_vecScript[i]->IsActive())
+			m_vecScript[i]->update();
+	}
+
+
+	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	{
+		if (m_vecChild[i]->IsActive())
+			m_vecChild[i]->update();
+	}
+}
+
+void CGameObject::lateupdate()
+{
+	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i] && m_arrCom[i]->IsActive())
+			m_arrCom[i]->lateupdate();
+	}
+
+	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	{
+		if (m_vecScript[i]->IsActive())
+			m_vecScript[i]->lateupdate();
+	}
+
+	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	{
+		if (m_vecChild[i]->IsActive())
+			m_vecChild[i]->lateupdate();
+	}
+}
+
+void CGameObject::finalupdate()
+{
+	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i])
+			m_arrCom[i]->finalupdate();
+	}
+
+	// Layer 에 등록
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	CLayer* pLayer    = pCurScene->GetLayer(m_iLayerIdx);
+	pLayer->RegisterObject(this);
+
+	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	{
+		m_vecChild[i]->finalupdate();
+	}
+}
+
+void CGameObject::finalupdate_module()
+{
+	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i])
+			m_arrCom[i]->finalupdate_module();
+	}
+
+	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	{
+		m_vecChild[i]->finalupdate_module();
+	}
+}
+
+void CGameObject::render()
+{
+	if (m_pRenderComponent->IsActive())
+		m_pRenderComponent->render();
+
+	if (nullptr != Collider2D())
+		Collider2D()->render();
+}
+
+CScript* CGameObject::GetScript(UINT _iIdx)
+{
+	auto iter = std::find_if(m_vecScript.begin(),
+	                         m_vecScript.end(),
+	                         [_iIdx](CScript* pScript)
+	                         {
+		                         return pScript->GetScriptType() == _iIdx;
+	                         });
+	if (iter != m_vecScript.end())
+	{
+		return *iter;
+	}
+	return nullptr;
+	//return m_vecScript[_iIdx];
+}
+
+CScript* CGameObject::GetScriptByName(const wstring& _strName)
+{
+	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	{
+		if (m_vecScript[i]->GetName() == _strName)
+			return m_vecScript[i];
+	}
+
+	return nullptr;
+}
+
+
+void CGameObject::active()
+{
+	for (UINT i = 1; i < (UINT)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i])
+			m_arrCom[i]->active();
+	}
+
+	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	{
+		m_vecScript[i]->active();
+	}
+
+
+	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	{
+		m_vecChild[i]->active();
+	}
+}
+
+void CGameObject::deactive()
+{
+	for (UINT i = 1; i < (UINT)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i])
+			m_arrCom[i]->deactive();
+	}
+
+	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	{
+		m_vecScript[i]->deactive();
+	}
+
+	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	{
+		m_vecChild[i]->deactive();
+	}
+}
+
+
+void CGameObject::Deregister()
+{
+	if (-1 == m_iLayerIdx)
+	{
+		return;
+	}
+
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	CLayer* pCurLayer = pCurScene->GetLayer(m_iLayerIdx);
+	pCurLayer->DeregisterObject(this);
+}
+
+void CGameObject::DisconnectBetweenParent()
+{
+	assert(m_pParent);
+
+	vector<CGameObject*>::iterator iter = m_pParent->m_vecChild.begin();
+	for (; iter != m_pParent->m_vecChild.end(); ++iter)
+	{
+		if ((*iter) == this)
+		{
+			m_pParent->m_vecChild.erase(iter);
+			m_pParent = nullptr;
+			return;
+		}
+	}
+}
+
+void CGameObject::Activate()
+{
+	tEventInfo info = {};
+
+	info.eType  = EVENT_TYPE::ACTIVATE_OBJECT;
+	info.lParam = (DWORD_PTR)this;
+
+	CEventMgr::GetInst()->AddEvent(info);
+}
+
+void CGameObject::Deactivate()
+{
+	tEventInfo info = {};
+
+	info.eType  = EVENT_TYPE::DEACTIVATE_OBJECT;
+	info.lParam = (DWORD_PTR)this;
+
+	CEventMgr::GetInst()->AddEvent(info);
+}
+
+bool CGameObject::IsAncestor(CGameObject* _pObj)
+{
+	CGameObject* pObj = m_pParent;
+
+	while (pObj)
+	{
+		if (pObj == _pObj)
+			return true;
+
+		pObj = pObj->m_pParent;
+	}
+
+	return false;
+}
+
+void CGameObject::AddChild(CGameObject* _pChild)
+{
+	int iChildLayerOriginalIdx = _pChild->m_iLayerIdx;
+
+	// 자식으로 들어오는 오브젝트가 루트 오브젝트이고, 특정 레이어 소속이라면
+	if (nullptr == _pChild->GetParent() && -1 != iChildLayerOriginalIdx)
+	{
+		// 레이어에서 루트 오브젝트로서 등록 해제
+		//여기서 본인의 레이어를 -1로 변경시킴
+		_pChild->Deregister();
+		//따라서 원래 레이어로 복귀하는 코드
+		_pChild->m_iLayerIdx = iChildLayerOriginalIdx;
+	}
+
+	// 다른 부모오브젝트가 이미 있다면
+	if (_pChild->GetParent())
+	{
+		_pChild->DisconnectBetweenParent();
+	}
+
+	//루트오브젝트가 아니고, 여전히 아무런 레이어에 속해있지 않다면, 
+	//부모의 레이어를 따라간다
+	if (-1 == _pChild->m_iLayerIdx)
+	{
+		_pChild->m_iLayerIdx = m_iLayerIdx;
+	}
+	m_vecChild.push_back(_pChild);
+	_pChild->m_pParent = this;
+}
+
+void CGameObject::AddComponent(CComponent* _component)
+{
+	COMPONENT_TYPE eType = _component->GetType();
+
+	if (COMPONENT_TYPE::SCRIPT != eType)
+	{
+		assert(nullptr == m_arrCom[(UINT)eType]);
+
+		m_arrCom[(UINT)eType] = _component;
+		_component->m_pOwner  = this;
+
+		switch (_component->GetType())
+		{
+		case COMPONENT_TYPE::MESHRENDER:
+		case COMPONENT_TYPE::TILEMAP:
+		case COMPONENT_TYPE::PARTICLESYSTEM:
+		case COMPONENT_TYPE::LANDSCAPE:
+		case COMPONENT_TYPE::DECAL:
+		case COMPONENT_TYPE::SKYBOX:
+			{
+				// 하나의 오브젝트에 Render 기능을 가진 컴포넌트는 2개이상 들어올 수 없다.
+				assert(!m_pRenderComponent);
+				m_pRenderComponent = (CRenderComponent*)_component;
+			}
+			break;
+		}
+	}
+	else
+	{
+		m_vecScript.push_back((CScript*)_component);
+		_component->m_pOwner = this;
+	}
+}
+
+void CGameObject::DeleteComponent(COMPONENT_TYPE _eType)
+{
+	SAFE_DELETE(m_arrCom[(UINT)_eType]);
+
+	switch (_eType)
+	{
+	case COMPONENT_TYPE::MESHRENDER:
+	case COMPONENT_TYPE::TILEMAP:
+	case COMPONENT_TYPE::PARTICLESYSTEM:
+	case COMPONENT_TYPE::LANDSCAPE:
+	case COMPONENT_TYPE::DECAL:
+	case COMPONENT_TYPE::SKYBOX:
+		{
+			// m_pRenderComponent 가 무조건 존재한다. 
+			if (nullptr != m_pRenderComponent)
+				m_pRenderComponent = nullptr; // SAFE_DELETE 를 했기때문에 쓰레기값이 들어있다. 
+		}
+		break;
+	}
+}
+
+void CGameObject::Destroy()
+{
+	if (m_bDead)
+		return;
+
+	tEventInfo info = {};
+
+	info.eType  = EVENT_TYPE::DELETE_OBJ;
+	info.lParam = (DWORD_PTR)this;
+
+	CEventMgr::GetInst()->AddEvent(info);
+}
+
+
+#include "CCamera.h"
+#include "CCollider2D.h"
+//#include "CCollider3D.h"
+#include "CAnimator2D.h"
+#include "CAnimator3D.h"
+#include "CParticleSystem.h"
+#include "CTileMap.h"
+
+void CGameObject::SaveToScene(FILE* _pFile)
+{
+	CEntity::SaveToScene(_pFile);
+	fwrite(&m_bActive, sizeof(BYTE), 1, _pFile);
+	fwrite(&m_bDynamicShadow, sizeof(BYTE), 1, _pFile);
+	fwrite(&m_bFrustumCulling, sizeof(BYTE), 1, _pFile);
+
+	// Component 저장
+	for (int i = 0; i < (int)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i])
+		{
+			SaveWStringToFile(ToWString((COMPONENT_TYPE)i), _pFile);
+			m_arrCom[i]->SaveToScene(_pFile);
+		}
+	}
+	SaveWStringToFile(L"END", _pFile);
+}
+
+void CGameObject::LoadFromScene(FILE* _pFile)
+{
+	CEntity::LoadFromScene(_pFile);
+	fread(&m_bActive, sizeof(BYTE), 1, _pFile);
+	fread(&m_bDynamicShadow, sizeof(BYTE), 1, _pFile);
+	fread(&m_bFrustumCulling, sizeof(BYTE), 1, _pFile);
+	// Component 불러오기
+	wstring strComponentName;
+
+	while (true)
+	{
+		LoadWStringFromFile(strComponentName, _pFile);
+		if (strComponentName == L"END")
+			break;
+
+		if (strComponentName == ToWString(COMPONENT_TYPE::TRANSFORM))
+		{
+			AddComponent(new CTransform);
+			Transform()->LoadFromScene(_pFile);
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::CAMERA))
+		{
+			AddComponent(new CCamera);
+			Camera()->LoadFromScene(_pFile);
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER2D))
+		{
+			AddComponent(new CCollider2D);
+			Collider2D()->LoadFromScene(_pFile);
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR2D))
+		{
+			AddComponent(new CAnimator2D);
+			Animator2D()->LoadFromScene(_pFile);
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT2D))
+		{
+			AddComponent(new CLight2D);
+			Light2D()->LoadFromScene(_pFile);
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D)) { }
+
+
+		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::MESHRENDER))
+		{
+			AddComponent(new CMeshRender);
+			MeshRender()->LoadFromScene(_pFile);
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::PARTICLESYSTEM))
+		{
+			AddComponent(new CParticleSystem);
+			ParticleSystem()->LoadFromScene(_pFile);
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::TILEMAP))
+		{
+			AddComponent(new CTileMap);
+			TileMap()->LoadFromScene(_pFile);
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL)) { }
+	}
+}
