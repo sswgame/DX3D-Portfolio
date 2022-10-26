@@ -273,6 +273,8 @@ void CTestScene::CreateTestScene()
 	pCol->Transform()->SetRelativePos(Vec3(0.f, 30.f, 0.f));
 	pCol->Transform()->SetRelativeScale(Vec3(30.f, 30.f, 30.f));
 
+	pCol->Collider3D()->SetOffseetScale(Vec3(30.f, 30.f, 30.f));
+
 	pCurScene->AddObject(pCol, L"Default");
 
 
@@ -283,6 +285,8 @@ void CTestScene::CreateTestScene()
 
 	pCol->Transform()->SetRelativePos(Vec3(-36.f, 30.f, 0.f));
 	pCol->Transform()->SetRelativeScale(Vec3(30.f, 30.f, 30.f));
+
+	pCol->Collider3D()->SetOffseetScale(Vec3(30.f, 30.f, 30.f));
 
 	pCurScene->AddObject(pCol, L"Default");
 

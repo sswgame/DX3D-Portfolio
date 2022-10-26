@@ -243,6 +243,8 @@ void CCollisionMgr::CollisionBetween3D(const std::vector<CGameObject*>& _vecLeft
 			if (nullptr == pRightCol)
 				continue;
 
+			if (pLeftCol == pRightCol)
+				continue;
 
 			// 두 충돌체가 이전에 충돌했었는지 확인
 			// 두 충돌체의 조합 아이디 생성

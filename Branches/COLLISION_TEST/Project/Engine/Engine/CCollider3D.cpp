@@ -152,8 +152,8 @@ void CCollider3D::finalupdate_debug()
 {
 	if (nullptr != m_pDebugObj)
 	{
-		m_pDebugObj->Transform()->SetRelativePos(Transform()->GetWorldPos());
-		m_pDebugObj->Transform()->SetRelativeScale(Transform()->GetWorldScale());
+		m_pDebugObj->Transform()->SetRelativePos(Transform()->GetWorldPos() + m_vOffsetPos);
+		m_pDebugObj->Transform()->SetRelativeScale(m_vOffsetScale);
 		m_pDebugObj->Transform()->SetRelativeRotation(DecomposeRotMat(Transform()->GetWorldRotation()));
 
 		m_pDebugObj->MeshRender()->SetMesh(m_pMesh);
