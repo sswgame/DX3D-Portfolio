@@ -699,9 +699,9 @@ void CResMgr::CreateEngineShader()
 
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_TRANSLUCENT);
 	pShader->SetRSType(RS_TYPE::WIRE_FRAME);
-	//pShader->SetDSType(DS_TYPE::NO_TEST);
+	pShader->SetDSType(DS_TYPE::NO_TEST);
 
-	// pShader->AddScalarParamInfo(L"IsCollision", SCALAR_PARAM::INT_0);
+	pShader->AddScalarParamInfo(L"IsCollision", SCALAR_PARAM::INT_0);
 
 	AddRes<CGraphicsShader>(L"Collider3DShader", pShader, true);
 

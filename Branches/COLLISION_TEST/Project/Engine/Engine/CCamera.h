@@ -23,11 +23,11 @@ private:
 	vector<CGameObject*> m_vecPostProcess;   // 후 처리 물체
 
 	vector<CGameObject*> m_vecDynamicShadow; // 동적 그림자 물체
+	vector<CComponent*> m_vecComponentDebug;		 // 디버그 오브젝트
 
 protected:
 	CFrustum m_Frustum;
 
-protected:
 	Matrix m_matView;
 	Matrix m_matViewInv;
 	Matrix m_matProj;
@@ -56,7 +56,6 @@ public:
 	void SetFar(float _Far) { m_fFar = _Far; }
 	void SetShowFrustum(bool _bShow) { m_Frustum.SetShowFrustum(_bShow); }
 
-
 	float GetWidth() { return m_fWidth; }
 	float GetAspectRatio() { return m_fAspectRatio; }
 	float GetFOV() { return m_fFOV; }
@@ -76,6 +75,7 @@ public:
 
 private:
 	void SortGameObject(); // Shader Domain 에 따른 물체 분류
+	void SortDebugGameObject(CGameObject* _pObj);
 	void CalRay();  // 마우스 방향으로 광선 연산
 
 public:
@@ -92,8 +92,9 @@ public:
 	void         render_translucent();
 	void         render_postprocess();
 
-	void render_shadowmap();
-	void render_frustum();
+	void		 render_shadowmap();
+	void		 render_debug();
+
 public:
 	virtual void SaveToScene(FILE* _pFile) override;
 	virtual void LoadFromScene(FILE* _pFile) override;

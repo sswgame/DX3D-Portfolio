@@ -3,13 +3,20 @@
 
 #include "CEventMgr.h"
 
-CComponent::CComponent(COMPONENT_TYPE _eType)
-	:
-	m_eComType(_eType)
-  , m_pOwner{nullptr}
-  , m_bActive(true) {}
+#include "CTransform.h"
+#include "CMeshRender.h"
 
-CComponent::~CComponent() {}
+CComponent::CComponent(COMPONENT_TYPE _eType)
+	: m_eComType(_eType)
+	, m_pOwner{nullptr}
+	, m_bActive(true)
+	, m_pDebugObj(nullptr) {}
+
+CComponent::~CComponent() 
+{
+	if (nullptr != m_pDebugObj)
+		delete(m_pDebugObj);
+}
 
 void CComponent::Activate()
 {

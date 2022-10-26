@@ -129,17 +129,29 @@ void CGameObject::lateupdate()
 
 void CGameObject::finalupdate()
 {
+
 	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
 	{
 		if (nullptr != m_arrCom[i])
+		{
 			m_arrCom[i]->finalupdate();
+			if (nullptr != m_arrCom[i] && nullptr != m_arrCom[i]->GetDebugObj())
+			{
+				m_arrCom[i]->finalupdate_debug();
+			}
+		}
 	}
+
+	// Layer가 없으면 넘어간다 (ex-DebugObj)
+	if (m_iLayerIdx == -1)
+		return;
 
 	// Layer 에 등록
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	CLayer* pLayer    = pCurScene->GetLayer(m_iLayerIdx);
 	pLayer->RegisterObject(this);
 
+	// 자식 object final update
 	for (size_t i = 0; i < m_vecChild.size(); ++i)
 	{
 		m_vecChild[i]->finalupdate();

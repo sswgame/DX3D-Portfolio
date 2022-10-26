@@ -11,8 +11,17 @@ CCollider3D::CCollider3D()
 	, m_iCollisionCount{0}
 	, m_eCollider3DType{COLLIDER3D_TYPE::CUBE}
 {
-	m_pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
+	// Debug Obj Ãß°¡
+	m_pDebugObj = new CGameObject;
+	m_pDebugObj->SetName(L"Collider_debug");
+	m_pDebugObj->AddComponent(new CTransform);
+	m_pDebugObj->AddComponent(new CMeshRender);
+
+	m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
 	m_pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Collider3D.mtrl");
+
+	m_pDebugObj->MeshRender()->SetMesh(m_pMesh);
+	m_pDebugObj->MeshRender()->SetSharedMaterial(m_pMaterial, 0);
 }
 
 CCollider3D::CCollider3D(const CCollider3D& _origin)
@@ -35,13 +44,12 @@ void CCollider3D::SetCollider3DType(COLLIDER3D_TYPE _type)
 	if (COLLIDER3D_TYPE::CUBE == _type)
 	{
 		m_eCollider3DType = _type;
-		m_pMesh           = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
+		m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
 	}
 	else
 	{
 		m_eCollider3DType = _type;
-		m_pMesh           = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
-		SetOffseetScale(m_vOffsetScale);
+		m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
 	}
 }
 
@@ -140,14 +148,36 @@ void CCollider3D::finalupdate()
 	m_matWorld = m_matWorld * matGameObjectScaleInverse * matGameobjectWorld;
 }
 
+void CCollider3D::finalupdate_debug()
+{
+	if (nullptr != m_pDebugObj)
+	{
+		m_pDebugObj->Transform()->SetRelativePos(Transform()->GetWorldPos());
+		m_pDebugObj->Transform()->SetRelativeScale(Transform()->GetWorldScale());
+		m_pDebugObj->Transform()->SetRelativeRotation(DecomposeRotMat(Transform()->GetWorldRotation()));
+
+		m_pDebugObj->MeshRender()->SetMesh(m_pMesh);
+		m_pDebugObj->MeshRender()->SetSharedMaterial(m_pMaterial, 0);
+		m_pDebugObj->MeshRender()->GetSharedMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &m_iCollisionCount);
+
+		m_pDebugObj->finalupdate();
+	}
+}
+
+void CCollider3D::render_debug()
+{
+	if (!m_pDebugObj->IsActive())
+		return;
+
+	m_pDebugObj->Transform()->UpdateData();
+
+	m_pDebugObj->MeshRender()->GetMaterial(0)->UpdateData();
+	m_pDebugObj->MeshRender()->GetMesh()->render(0);
+}
+
 void CCollider3D::render()
 {
 	UpdateData();
-
-	m_pMaterial->SetScalarParam(SCALAR_PARAM::INT_0, &m_iCollisionCount);
-	m_pMaterial->UpdateData();
-
-	m_pMesh->render(0);
 }
 
 void CCollider3D::SaveToScene(FILE* _pFile)

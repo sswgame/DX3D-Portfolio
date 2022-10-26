@@ -12,7 +12,10 @@ private:
 	const COMPONENT_TYPE m_eComType;
 	CGameObject*         m_pOwner;
 
-	bool m_bActive;
+	bool				 m_bActive;
+
+protected:
+	CGameObject* 		 m_pDebugObj;
 
 public:
 	virtual void start()
@@ -28,6 +31,8 @@ public:
 	}
 
 	virtual void finalupdate() = 0;
+	virtual void finalupdate_debug() {};
+	virtual void render_debug() {};
 
 	virtual void finalupdate_module()
 	{
@@ -37,6 +42,14 @@ public:
 	void Deactivate();
 
 	bool IsActive() { return m_bActive; }
+
+	void		 SetDebugObj(CGameObject* _pObj) { m_pDebugObj = _pObj; }
+	CGameObject* GetDebugObj(){return m_pDebugObj;}
+
+	void ActiateDebugObj()		{ assert(m_pDebugObj); m_pDebugObj->Activate(); }
+	void DeactivateDebugObj()	{ assert(m_pDebugObj); m_pDebugObj->Deactivate(); }
+	bool IsActivateDebugObj()	{ assert(m_pDebugObj); return m_pDebugObj->IsActive(); }
+
 
 public:
 	COMPONENT_TYPE GetType() { return m_eComType; }

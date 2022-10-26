@@ -12,16 +12,22 @@
 #include "CLayer.h"
 
 CLight3D::CLight3D()
-	:
-	CComponent(COMPONENT_TYPE::LIGHT3D)
+	: CComponent(COMPONENT_TYPE::LIGHT3D)
   , m_LightInfo{}
   , m_iLightIdx(-1)
   , m_pLightCam(nullptr)
-  , m_pLightMeshObj(nullptr)
 {
 	m_pLightCam = new CGameObject;
 	m_pLightCam->AddComponent(new CTransform);
 	m_pLightCam->AddComponent(new CCamera);
+
+	// Debug Obj 추가
+	m_pDebugObj = new CGameObject;
+	m_pDebugObj->SetName(L"Light_debug");
+	m_pDebugObj->AddComponent(new CTransform);
+	m_pDebugObj->AddComponent(new CMeshRender);
+	m_pDebugObj->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+	m_pDebugObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"), 0);
 }
 
 CLight3D::CLight3D(const CLight3D& _origin)
@@ -30,15 +36,12 @@ CLight3D::CLight3D(const CLight3D& _origin)
   , m_LightInfo(_origin.m_LightInfo)
   , m_iLightIdx(-1)
   , m_pLightCam(nullptr)
-  , m_pLightMeshObj(nullptr)
 {
 	m_pLightCam = _origin.m_pLightCam->Clone();
 }
 
 CLight3D::~CLight3D()
 {
-	if (nullptr != m_pLightMeshObj)
-		m_pLightMeshObj->Destroy();
 	SAFE_DELETE(m_pLightCam);
 }
 
@@ -65,37 +68,6 @@ void CLight3D::SetLightType(LIGHT_TYPE _eType)
 		m_pLightMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\SpotLightMtrl.mtrl");
 		break;
 	}
-}
-
-void CLight3D::SetObject()
-{
-	if (nullptr != m_pLightMeshObj)
-		return;
-	if (m_LightInfo.iLightType == 0)
-		return;
-
-	m_pLightMeshObj = new CGameObject;
-	m_pLightMeshObj->SetName(L"Volume Mesh Line");
-	m_pLightMeshObj->AddComponent(new CTransform);
-	m_pLightMeshObj->AddComponent(new CMeshRender);
-	m_pLightMeshObj->Transform()->SetRelativePos(GetOwner()->Transform()->GetRelativePos());
-	m_pLightMeshObj->Transform()->SetRelativeScale(GetOwner()->Transform()->GetRelativeScale());
-	m_pLightMeshObj->Transform()->SetRelativeRotation(GetOwner()->Transform()->GetRelativeRotation());
-
-	switch (m_LightInfo.iLightType)
-	{
-	case 1:
-		m_pLightMeshObj->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
-		break;
-	case 2:
-		m_pLightMeshObj->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"ConeMesh_LineStrip"));
-		break;
-	}
-
-	m_pLightMeshObj->MeshRender()->
-	                 SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"),0);
-	CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"Default");
-	CSceneMgr::GetInst()->SpawnObject(m_pLightMeshObj, pLayer->GetLayerIdx());
 }
 
 void CLight3D::SetLightDir(Vec3 _vDir)
@@ -137,36 +109,31 @@ void CLight3D::update() {}
 
 void CLight3D::finalupdate()
 {
-	if (nullptr != m_pLightMeshObj)
-	{
-		m_pLightMeshObj->Transform()->SetRelativePos(Transform()->GetRelativePos());
-		m_pLightMeshObj->Transform()->SetRelativeScale(Transform()->GetRelativeScale());
-		m_pLightMeshObj->Transform()->SetRelativeRotation(Transform()->GetRelativeRotation());
-	}
-
-	if (KEY_TAP(KEY::_1))
-	{
-		SetObject();
-	}
-	if (KEY_TAP(KEY::_2))
-	{
-		if (nullptr != m_pLightMeshObj)
-			m_pLightMeshObj->Destroy();
-		m_pLightMeshObj = nullptr;
-	}
-
-
 	m_LightInfo.vWorldPos = Transform()->GetWorldPos();
 	m_LightInfo.vLightDir = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 	m_LightInfo.fRange    = Transform()->GetWorldScale().x / 2.f;
 
 	m_iLightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
 
-
 	// 광원의 카메라도 광원과 동일한 Transform 이 되도록 업데이트 한다.
 	m_pLightCam->Transform()->SetRelativePos(Transform()->GetWorldPos());
 	m_pLightCam->Transform()->SetRelativeRotation(DecomposeRotMat(Transform()->GetWorldRotation()));
 	m_pLightCam->finalupdate_module();
+}
+
+void CLight3D::finalupdate_debug()
+{
+	if (nullptr != m_pDebugObj)
+	{
+		m_pDebugObj->Transform()->SetRelativePos(Transform()->GetWorldPos());
+		m_pDebugObj->Transform()->SetRelativeScale(Transform()->GetWorldScale());
+		m_pDebugObj->Transform()->SetRelativeRotation(DecomposeRotMat(Transform()->GetWorldRotation()));
+
+		m_pDebugObj->MeshRender()->SetMesh(m_pVolumeMesh);
+		m_pDebugObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"), 0);
+		
+		m_pDebugObj->finalupdate();
+	}
 }
 
 void CLight3D::render()
@@ -181,8 +148,8 @@ void CLight3D::render()
 	}
 
 	Transform()->UpdateData();
-	m_pLightMtrl->UpdateData();
 
+	m_pLightMtrl->UpdateData();
 	m_pVolumeMesh->render(0);
 }
 
@@ -190,6 +157,24 @@ void CLight3D::render_shadowmap()
 {
 	m_pLightCam->Camera()->SortShadowObject();
 	m_pLightCam->Camera()->render_shadowmap();
+}
+
+void CLight3D::render_debug()
+{
+	if (!m_pDebugObj->IsActive())
+		return;
+
+	if (LIGHT_TYPE::DIRECTIONAL == (LIGHT_TYPE)m_LightInfo.iLightType)
+		return;
+
+	m_pDebugObj->Transform()->UpdateData();
+
+	if (nullptr != m_pDebugObj->MeshRender()->GetMesh()
+		&& nullptr != m_pDebugObj->MeshRender()->GetMaterial(0))
+	{
+		m_pDebugObj->MeshRender()->GetMaterial(0)->UpdateData();
+		m_pDebugObj->MeshRender()->GetMesh()->render(0);
+	}
 }
 
 void CLight3D::SaveToScene(FILE* _pFile)
