@@ -12,13 +12,14 @@
 #include <Engine/CTransform.h>
 #include <Engine/CMeshRender.h>
 #include <Engine/CCollider2D.h>
+#include <Engine/CCollider3D.h>
 #include <Engine/CParticleSystem.h>
 #include <Engine/CCamera.h>
 #include <Engine/CLight2D.h>
 #include <Engine/CLight3D.h>
 #include <Engine/CSkyBox.h>
-#include <Engine\CDecal.h>
-#include <Engine\CLandScape.h>
+#include <Engine/CDecal.h>
+#include <Engine/CLandScape.h>
 #include <Engine/CSceneFile.h>
 #include <Engine/CSound.h>
 #include <Engine/CAnimator3D.h>
@@ -94,7 +95,7 @@ void CTestScene::CreateTestScene()
 	pCurScene->AddObject(pLight3D, L"Default");
 
 	// Point Light
-	//CGameObject* pLight3D = new CGameObject;
+	//pLight3D = new CGameObject;
 	//pLight3D->SetName(L"Point Light");
 
 	//pLight3D->AddComponent(new CTransform);
@@ -179,21 +180,21 @@ void CTestScene::CreateTestScene()
 
 
 	// Decal
-	CGameObject* pDecal = new CGameObject;
-	pDecal->SetName(L"Decal");
-	
-	pDecal->AddComponent(new CTransform);
-	pDecal->AddComponent(new CDecal);
+	//CGameObject* pDecal = new CGameObject;
+	//pDecal->SetName(L"Decal");
+	//
+	//pDecal->AddComponent(new CTransform);
+	//pDecal->AddComponent(new CDecal);
 
-	pDecal->Transform()->SetRelativePos(0.f, 290.f, 0.f);
-	pDecal->Transform()->SetRelativeScale(300.f, 1.f, 300.f);
-	pDecal->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-	
-	pDecal->Decal()->SetDecalType(DECAL_TYPE::CUBE);
-	pDecal->Decal()->SetDecalTexture(pMagicCircle);
-	pDecal->Decal()->SetDeferredLighting(false);
+	//pDecal->Transform()->SetRelativePos(0.f, 290.f, 0.f);
+	//pDecal->Transform()->SetRelativeScale(300.f, 1.f, 300.f);
+	//pDecal->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+	//
+	//pDecal->Decal()->SetDecalType(DECAL_TYPE::CUBE);
+	//pDecal->Decal()->SetDecalTexture(pMagicCircle);
+	//pDecal->Decal()->SetDeferredLighting(false);
 
-	pCurScene->AddObject(pDecal, L"Default");
+	//pCurScene->AddObject(pDecal, L"Default");
 
 	// Tessellation Object
 	//pObject = new CGameObject;
@@ -234,34 +235,62 @@ void CTestScene::CreateTestScene()
 	}
 
 	// ANIMATION TEST 
-	Ptr<CMeshData> pMeshData = nullptr;
-	CGameObject* pObj = nullptr;
+	//Ptr<CMeshData> pMeshData = nullptr;
+	//CGameObject* pObj = nullptr;
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat", L"meshdata\\player_sword0.mdat");
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat", L"meshdata\\player_sword0.mdat");
 
-	pObj = pMeshData->Instantiate();
-	pObj->SetName(L"player");
-	pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	pObj->Animator3D()->Play(L"test", true);
+	//pObj = pMeshData->Instantiate();
+	//pObj->SetName(L"player");
+	//pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	//pObj->Animator3D()->Play(L"test", true);
 
-	pCurScene->AddObject(pObj, 0);
+	//pCurScene->AddObject(pObj, 0);
 
 
-	Ptr<CMeshData> pMeshDataWeapon = nullptr;
-	CGameObject* pObjWeapon = nullptr;
+	//Ptr<CMeshData> pMeshDataWeapon = nullptr;
+	//CGameObject* pObjWeapon = nullptr;
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
+	//pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
 
-	pObjWeapon = pMeshDataWeapon->Instantiate();
-	pObjWeapon->SetName(L"player_sword1");
-	pObjWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	pObjWeapon->Animator3D()->Play(L"test", true);
+	//pObjWeapon = pMeshDataWeapon->Instantiate();
+	//pObjWeapon->SetName(L"player_sword1");
+	//pObjWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	//pObjWeapon->Animator3D()->Play(L"test", true);
 
-	pCurScene->AddObject(pObjWeapon, 0);
+	//pCurScene->AddObject(pObjWeapon, 0);
+
+	// collision test
+	CGameObject* pCol = new CGameObject;
+	pCol->SetName(L"collision1");
+	pCol->AddComponent(new CTransform);
+	pCol->AddComponent(new CCollider3D);
+
+	pCol->Transform()->SetRelativePos(Vec3(0.f, 30.f, 0.f));
+	pCol->Transform()->SetRelativeScale(Vec3(30.f, 30.f, 30.f));
+
+	pCol->Collider3D()->SetOffseetScale(Vec3(30.f, 30.f, 30.f));
+
+	pCurScene->AddObject(pCol, L"Default");
+
+
+	pCol = new CGameObject;
+	pCol->SetName(L"collision2");
+	pCol->AddComponent(new CTransform);
+	pCol->AddComponent(new CCollider3D);
+
+	pCol->Transform()->SetRelativePos(Vec3(-36.f, 30.f, 0.f));
+	pCol->Transform()->SetRelativeScale(Vec3(30.f, 30.f, 30.f));
+
+	pCol->Collider3D()->SetOffseetScale(Vec3(30.f, 30.f, 30.f));
+
+	pCurScene->AddObject(pCol, L"Default");
+
+	CCollisionMgr::GetInst()->CollisionCheck(1, 1);
 
 	// 충돌 레이어 설정
 	pCurScene->SetResKey(L"scene\\TestScene.scene");

@@ -78,22 +78,6 @@ void CRenderMgr::render()
 	m_vecLight2D.clear();
 	m_vecLight3D.clear();
 
-
-	// Render Frustum - Eitor Camera
-	if (m_pEditorCam != nullptr)
-		m_pEditorCam->render_frustum();
-
-	// Render Frustum - Camera 
-	if (!m_vecCam.empty())
-	{
-		for (int i = 0; i < m_vecCam.size(); ++i)
-		{
-			CCamera* pCam = m_vecCam[i];
-			if (pCam != nullptr && pCurScene->GetSceneState() == SCENE_STATE::STOP)
-				pCam->render_frustum();
-		}
-	}
-
 }
 
 void CRenderMgr::render_play()
@@ -135,6 +119,9 @@ void CRenderMgr::render_play()
 	// Alpha ¹°Ã¼ ·»´õ¸µ
 	pMainCam->render_translucent();
 
+	// Debug Object ·»´õ¸µ 
+	pMainCam->render_debug();
+
 	// PostProcess ¹°Ã¼ ·»´õ¸µ
 	pMainCam->render_postprocess();
 
@@ -158,6 +145,14 @@ void CRenderMgr::render_play()
 
 		// Alpha ¹°Ã¼ ·»´õ¸µ
 		m_vecCam[i]->render_translucent();
+
+		// Debug Object Render
+		m_vecCam[i]->render_debug();
+
+		// PostProcess ¹°Ã¼ ·»´õ¸µ
+		pMainCam->render_postprocess();
+
+
 	}
 }
 
@@ -209,6 +204,9 @@ void CRenderMgr::render_editor()
 
 	// Alpha ¹°Ã¼ ·»´õ¸µ
 	m_pEditorCam->render_translucent();
+
+	// Debug Object ·»´õ¸µ 
+	m_pEditorCam->render_debug();
 
 	// PostProcess ¹°Ã¼ ·»´õ¸µ
 	m_pEditorCam->render_postprocess();

@@ -12,8 +12,7 @@ private:
 	Ptr<CMaterial> m_pLightMtrl;
 
 	CGameObject* m_pLightCam;
-
-	CGameObject* m_pLightMeshObj;
+	
 
 public:
 	const tLightInfo& GetLightInfo() { return m_LightInfo; }
@@ -27,16 +26,14 @@ public:
 	void SetLightType(LIGHT_TYPE _eType);
 
 	LIGHT_TYPE GetLightType() { return (LIGHT_TYPE)m_LightInfo.iLightType; }
-
-	void SetObject();
-
-
 public:
 	virtual void update() override;
 	virtual void finalupdate() override;
+	virtual void finalupdate_debug() override;
 
 	void render();
 	void render_shadowmap();
+	virtual void render_debug() override;
 
 public:
 	virtual void SaveToScene(FILE* _pFile) override;

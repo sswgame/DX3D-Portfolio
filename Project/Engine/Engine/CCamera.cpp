@@ -126,6 +126,7 @@ void CCamera::SortGameObject()
 	m_vecForwardDecal.clear();
 	m_vecTranslucent.clear();
 	m_vecPostProcess.clear();
+	m_vecComponentDebug.clear();
 
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 
@@ -135,25 +136,30 @@ void CCamera::SortGameObject()
 		if (!(m_iLayerMask & (1 << i)))
 			continue;
 
-		CLayer*               pLayer = pCurScene->GetLayer(i);
+		CLayer* pLayer = pCurScene->GetLayer(i);
 		vector<CGameObject*>& vecObj = pLayer->GetObjects();
 
+		
 		for (size_t j = 0; j < vecObj.size(); ++j)
 		{
+			// Register Component Debug Object
+			SortDebugGameObject(vecObj[j]);
+
+			// Register Render Component
 			CRenderComponent* pRenderCom = vecObj[j]->GetRenderComponent();
 
 			if (nullptr == pRenderCom
-			    || nullptr == pRenderCom->GetMesh()
-			    || nullptr == pRenderCom->GetMaterial(0)
-			    || nullptr == pRenderCom->GetMaterial(0)->GetShader())
+				|| nullptr == pRenderCom->GetMesh()
+				|| nullptr == pRenderCom->GetMaterial(0)
+				|| nullptr == pRenderCom->GetMaterial(0)->GetShader())
 			{
 				continue;
 			}
 
 			// 오브젝트가 카메라 시야 밖에 있으면 제외
 			if (pRenderCom->IsFrustumCulling()
-			    && !m_Frustum.SphereCheck(vecObj[j]->Transform()->GetWorldPos(),
-			                              vecObj[j]->Transform()->GetWorldScale().x / 2.f))
+				&& !m_Frustum.SphereCheck(vecObj[j]->Transform()->GetWorldPos(),
+					vecObj[j]->Transform()->GetWorldScale().x / 2.f))
 			{
 				continue;
 			}
@@ -209,6 +215,18 @@ void CCamera::SortShadowObject()
 			}
 		}
 	}
+}
+
+void CCamera::SortDebugGameObject(CGameObject* _pObj)
+{
+	for (int i = 0; i < (int)COMPONENT_TYPE::END; ++i)
+	{
+		CComponent* pComponents = _pObj->GetComponent((COMPONENT_TYPE)i);
+
+		if (nullptr != pComponents && nullptr != pComponents->GetDebugObj())
+			m_vecComponentDebug.push_back(pComponents);
+	}
+
 }
 
 void CCamera::render_deferred()
@@ -293,10 +311,20 @@ void CCamera::render_shadowmap()
 	}
 }
 
-void CCamera::render_frustum()
+void CCamera::render_debug()
 {
+	// Camera Debug Object render
 	if (m_Frustum.GetShowFrustum() == true)
 		m_Frustum.render();
+
+	// Other Component Debug Object render
+	for (size_t i = 0; i < m_vecComponentDebug.size(); ++i)
+	{
+		if (m_vecComponentDebug[i]->IsActive())
+		{
+			m_vecComponentDebug[i]->render_debug();
+		}
+	}
 }
 
 void CCamera::SetCameraAsMain()

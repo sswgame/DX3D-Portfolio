@@ -10,7 +10,9 @@ CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	: CComponent(_type)
 	, m_pMesh(nullptr)
 	, m_bDynamicShadow(false)
-	, m_bFrustumCulling(false) {}
+	, m_bFrustumCulling(false)
+	, m_vecMtrls{}
+	{}
 
 CRenderComponent::CRenderComponent(const CRenderComponent& _origin)
 	:

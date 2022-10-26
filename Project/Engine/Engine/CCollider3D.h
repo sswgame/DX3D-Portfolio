@@ -42,7 +42,10 @@ public:
 public:
 	void UpdateData() override;
 	void finalupdate() override;
+	void finalupdate_debug() override;
+
 	void render();
+	void render_debug() override;
 
 	CLONE(CCollider3D);
 
