@@ -233,3 +233,48 @@ void CParticleSystem::LoadFromScene(FILE* _pFile)
 	fread(&m_iEmissive, sizeof(int), 1, _pFile);
 	fread(&m_iLighting, sizeof(int), 1, _pFile);
 }
+
+void CParticleSystem::Serialize(YAML::Emitter& emitter)
+{
+	CRenderComponent::Serialize(emitter);
+	CRes& shader = *m_CS.Get();
+	emitter << YAML::Key << "SHADER" << YAML::Value << shader;
+
+	emitter << YAML::Key << NAME_OF(m_iMaxCount) << YAML::Value << m_iMaxCount;
+	emitter << YAML::Key << NAME_OF(m_bPosInherit) << YAML::Value << m_bPosInherit;
+	emitter << YAML::Key << NAME_OF(m_iAliveCount) << YAML::Value << m_iAliveCount;
+	emitter << YAML::Key << NAME_OF(m_fMinLifeTime) << YAML::Value << m_fMinLifeTime;
+	emitter << YAML::Key << NAME_OF(m_fMaxLifeTime) << YAML::Value << m_fMaxLifeTime;
+	emitter << YAML::Key << NAME_OF(m_fStartSpeed) << YAML::Value << m_fStartSpeed;
+	emitter << YAML::Key << NAME_OF(m_fEndSpeed) << YAML::Value << m_fEndSpeed;
+	emitter << YAML::Key << NAME_OF(m_vStartColor) << YAML::Value << m_vStartColor;
+	emitter << YAML::Key << NAME_OF(m_vEndColor) << YAML::Value << m_vEndColor;
+	emitter << YAML::Key << NAME_OF(m_fParticleCreateDistance) << YAML::Value << m_fParticleCreateDistance;
+	emitter << YAML::Key << NAME_OF(m_fParticleCreateTerm) << YAML::Value << m_fParticleCreateTerm;
+	emitter << YAML::Key << NAME_OF(m_vDirection) << YAML::Value << m_vDirection;
+	emitter << YAML::Key << NAME_OF(m_iEmissive) << YAML::Value << m_iEmissive;
+	emitter << YAML::Key << NAME_OF(m_iLighting) << YAML::Value << m_iLighting;
+}
+
+void CParticleSystem::Deserialize(const YAML::Node& node)
+{
+	CRenderComponent::Deserialize(node);
+	auto keyValue = GetResourceInfo(node["SHADER"]);
+	m_CS = (CParticleUpdateShader*)CResMgr::GetInst()->FindRes<CComputeShader>(keyValue.first).Get();
+	m_iMaxCount = node[NAME_OF(m_iMaxCount)].as<int>();
+	SetMaxParticleCount(m_iMaxCount);
+	m_bPosInherit = node[NAME_OF(m_bPosInherit)].as<int>();
+	m_iAliveCount = node[NAME_OF(m_iAliveCount)].as<int>();
+	m_fMinLifeTime = node[NAME_OF(m_fMinLifeTime)].as<float>();
+	m_fMaxLifeTime = node[NAME_OF(m_fMaxLifeTime)].as<float>();
+	m_fStartSpeed = node[NAME_OF(m_fStartSpeed)].as<float>();
+	m_fEndSpeed = node[NAME_OF(m_fEndSpeed)].as<float>();
+	m_vStartColor = node[NAME_OF(m_vStartColor)].as<Vec4>();
+	m_vEndColor = node[NAME_OF(m_vEndColor)].as<Vec4>();
+	m_fParticleCreateDistance = node[NAME_OF(m_fParticleCreateDistance)].as<float>();
+	m_fParticleCreateTerm = node[NAME_OF(m_fParticleCreateTerm)].as<float>();
+	m_vDirection = node[NAME_OF(m_vDirection)].as<Vec2>();
+	m_iEmissive = node[NAME_OF(m_iEmissive)].as<int>();
+	m_iLighting = node[NAME_OF(m_iLighting)].as<int>();
+
+}

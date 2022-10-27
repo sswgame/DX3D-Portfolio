@@ -28,6 +28,10 @@ public:
 	virtual void SaveToScene(FILE* _pFile) override;
 	virtual void LoadFromScene(FILE* _pFile) override;
 	CLONE(CLight2D);
+
+public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 public:
 	CLight2D();
 	virtual ~CLight2D();

@@ -520,3 +520,47 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 		}
 	}
 }
+
+void CGameObject::Serialize(YAML::Emitter& emitter)
+{
+	emitter << YAML::Key << "NAME" << YAML::Value << ToString(GetName());
+	emitter << YAML::Key << "m_bActive" << YAML::Value << m_bActive;
+	emitter << YAML::Key << "m_bDynamicShadow" << YAML::Value << m_bDynamicShadow;
+	emitter << YAML::Key << "m_bFrustumCulling" << YAML::Value << m_bFrustumCulling;
+
+
+	// Component ÀúÀå
+	emitter << YAML::Key << "COMPONENTS";
+	emitter << YAML::Value << YAML::BeginSeq;
+	for (int i = 0; i < (int)COMPONENT_TYPE::END; ++i)
+	{
+		if (nullptr != m_arrCom[i])
+		{
+			emitter << YAML::BeginMap;
+			emitter << YAML::Key << ToString((COMPONENT_TYPE)i);
+			emitter << YAML::Value << YAML::BeginMap;
+			m_arrCom[i]->Serialize(emitter);
+			emitter << YAML::EndMap;
+			emitter << YAML::EndMap;
+		}
+	}
+	emitter << YAML::EndSeq;
+}
+
+void CGameObject::Deserialize(const YAML::Node& node)
+{
+	const std::string name = node["NAME"].as<std::string>();
+	SetName(ToWString(name));
+	m_bActive         = node["m_bActive"].as<bool>();
+	m_bDynamicShadow  = node["m_bDynamicShadow"].as<bool>();
+	m_bFrustumCulling = node["m_bFrustumCulling"].as<bool>();
+
+	const YAML::Node& components = node["COMPONENTS"];
+	for (size_t i = 0; i < components.size(); ++i)
+	{
+		const std::string componentName = (components[i].begin())->first.as<std::string>();
+		CComponent*       pComponent    = CComponent::MakeComponent(ToWString(componentName));
+		AddComponent(pComponent);
+		pComponent->Deserialize(components[i].begin()->second);
+	}
+}

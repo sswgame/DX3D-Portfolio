@@ -196,3 +196,19 @@ void CCollider3D::LoadFromScene(FILE* _pFile)
 
 	SetCollider3DType(m_eCollider3DType);
 }
+
+void CCollider3D::Serialize(YAML::Emitter& emitter)
+{
+	emitter << YAML::Key << NAME_OF(m_eCollider3DType) << YAML::Value << (int)m_eCollider3DType;
+	emitter << YAML::Key << NAME_OF(m_vOffsetPos) << YAML::Value << m_vOffsetPos;
+	emitter << YAML::Key << NAME_OF(m_vOffsetScale) << YAML::Value << m_vOffsetScale;
+}
+
+void CCollider3D::Deserialize(const YAML::Node& node)
+{
+	m_eCollider3DType = (COLLIDER3D_TYPE)node[NAME_OF(m_eCollider3DType)].as<int>();
+	m_vOffsetPos    = node[NAME_OF(m_vOffsetPos)].as<Vec3>();
+	m_vOffsetScale  = node[NAME_OF(m_vOffsetScale)].as<Vec3>();
+
+	SetCollider3DType(m_eCollider3DType);
+}

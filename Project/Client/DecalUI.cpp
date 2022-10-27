@@ -35,7 +35,7 @@ void DecalUI::render_update()
 
 	if (ImGui::BeginCombo("##iDecalType", strCurTypeName.c_str()))
 	{
-		for (size_t i = 0; i < (int)DECAL_TYPE::END; i++)
+		for (int i = 0; i < (int)DECAL_TYPE::END; i++)
 		{
 			string strTypeName = ToString(m_pTargetDecal->GetDecalTypeName(i));
 			if (ImGui::Selectable(strTypeName.c_str()))

@@ -424,3 +424,25 @@ void CCamera::LoadFromScene(FILE* _pFile)
 	fread(&m_iLayerMask, sizeof(UINT), 1, _pFile);
 	fread(&m_iCamIdx, sizeof(int), 1, _pFile);
 }
+
+void CCamera::Serialize(YAML::Emitter& emitter)
+{
+	emitter << YAML::Key << NAME_OF(m_eProjType) << YAML::Value << (int)m_eProjType;
+	emitter << YAML::Key << NAME_OF(m_fWidth) << YAML::Value << m_fWidth;
+	emitter << YAML::Key << NAME_OF(m_fAspectRatio) << YAML::Value << m_fAspectRatio;
+	emitter << YAML::Key << NAME_OF(m_fFOV) << YAML::Value << m_fFOV;
+	emitter << YAML::Key << NAME_OF(m_fFar) << YAML::Value << m_fFar;
+	emitter << YAML::Key << NAME_OF(m_iLayerMask) << YAML::Value << m_iLayerMask;
+	emitter << YAML::Key << NAME_OF(m_iCamIdx) << YAML::Value << m_iCamIdx;
+}
+
+void CCamera::Deserialize(const YAML::Node& node)
+{
+	m_eProjType    = (PROJ_TYPE)node[NAME_OF(m_eProjType)].as<int>();
+	m_fWidth       = node[NAME_OF(m_fWidth)].as<float>();
+	m_fAspectRatio = node[NAME_OF(m_fAspectRatio)].as<float>();
+	m_fFOV         = node[NAME_OF(m_fFOV)].as<float>();
+	m_fFar         = node[NAME_OF(m_fFar)].as<float>();
+	m_iLayerMask   = node[NAME_OF(m_iLayerMask)].as<UINT>();
+	m_iCamIdx      = node[NAME_OF(m_iCamIdx)].as<int>();
+}

@@ -1,10 +1,10 @@
 #pragma once
+#include "CAnimation3D.h"
 #include "CComponent.h"
 #include "Ptr.h"
 
 
 class CStructuredBuffer;
-class CAnimation3D;
 
 class CAnimator3D :
     public CComponent

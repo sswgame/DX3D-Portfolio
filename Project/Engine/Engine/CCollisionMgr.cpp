@@ -58,6 +58,8 @@ void CCollisionMgr::CollisionBetweenLayer(const vector<CGameObject*>& _left, con
 			if (nullptr == pRightCol)
 				continue;
 
+			if (pLeftCol == pRightCol)
+				continue;
 
 			// 두 충돌체가 이전에 충돌했었는지 확인
 			// 두 충돌체의 조합 아이디 생성

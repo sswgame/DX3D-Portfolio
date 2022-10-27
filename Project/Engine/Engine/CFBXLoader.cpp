@@ -59,7 +59,7 @@ void CFBXLoader::LoadFbx(const wstring& _strPath)
 	m_pImporter = FbxImporter::Create(m_pManager, "");
 
 	//wstring str = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(strName.c_str());
-	string strPath(_strPath.begin(), _strPath.end());
+	string strPath = ToString(_strPath);
 
 	if (!m_pImporter->Initialize(strPath.c_str(), -1, m_pManager->GetIOSettings()))
 		assert(nullptr);

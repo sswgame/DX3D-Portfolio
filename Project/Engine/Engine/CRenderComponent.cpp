@@ -148,3 +148,33 @@ void CRenderComponent::LoadFromScene(FILE* _pFile)
 	fread(&m_bDynamicShadow, 1, 1, _pFile);
 	fread(&m_bFrustumCulling, 1, 1, _pFile);
 }
+
+void CRenderComponent::Serialize(YAML::Emitter& emitter)
+{
+	CRes& mesh = *m_pMesh.Get();
+	emitter << YAML::Key << "MESH" << YAML::Value << mesh;
+	int materialCount = GetMtrlCount();
+	emitter << YAML::Key << "MATERIAL COUNT" << YAML::Value << materialCount;
+	for (int i = 0; i < materialCount; ++i)
+	{
+		CRes& material = *m_vecMtrls[i].pSharedMtrl.Get();
+		emitter << YAML::Key << i << YAML::Value << material;
+	}
+	emitter << YAML::Key << NAME_OF(m_bDynamicShadow) << YAML::Value << m_bDynamicShadow;
+	emitter << YAML::Key << NAME_OF(m_bFrustumCulling) << YAML::Value << m_bFrustumCulling;
+}
+
+void CRenderComponent::Deserialize(const YAML::Node& node)
+{
+	m_pMesh           = LoadAs<CMesh>(node["MESH"]);
+	int materialCount = node["MATERIAL COUNT"].as<int>();
+
+	m_vecMtrls.resize(materialCount);
+	for (int i = 0; i < materialCount; ++i)
+	{
+		Ptr<CMaterial> pMaterial = LoadAs<CMaterial>(node[i]);
+		SetSharedMaterial(pMaterial, i);
+	}
+	m_bDynamicShadow  = node[NAME_OF(m_bDynamicShadow)].as<bool>();
+	m_bFrustumCulling = node[NAME_OF(m_bFrustumCulling)].as<bool>();
+}

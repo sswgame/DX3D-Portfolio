@@ -163,3 +163,23 @@ void CTileMap::LoadFromScene(FILE* _pFile)
 	ClearTileData();
 	fread(m_vecTileData.data(), sizeof(tTileData), (size_t)(m_iTileCountX * m_iTileCountY), _pFile);
 }
+
+void CTileMap::Serialize(YAML::Emitter& emitter)
+{
+	CRenderComponent::Serialize(emitter);
+
+	CRes& texture = *m_pAtlasTex.Get();
+	emitter << YAML::Key << "SHADER" << YAML::Value << texture;
+	emitter << YAML::Key << NAME_OF(m_vSlicePixel) << YAML::Value << m_vSlicePixel;
+	emitter << YAML::Key << NAME_OF(m_vSliceUV) << YAML::Value << m_vSliceUV;
+	emitter << YAML::Key << NAME_OF(m_iRowCount) << YAML::Value << m_iRowCount;
+	emitter << YAML::Key << NAME_OF(m_iColCount) << YAML::Value << m_iColCount;
+	emitter << YAML::Key << NAME_OF(m_iTileCountX) << YAML::Value << m_iTileCountX;
+	emitter << YAML::Key << NAME_OF(m_iTileCountY) << YAML::Value << m_iTileCountY;
+	emitter << YAML::Key << NAME_OF(m_vecTileData) << YAML::Value << m_vecTileData.data();
+}
+
+void CTileMap::Deserialize(const YAML::Node& node)
+{
+	CRenderComponent::Deserialize(node);
+}

@@ -297,6 +297,6 @@ void CTestScene::CreateTestScene()
 	wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
 	CSceneSaveLoad::SaveScene(pCurScene, strSceneFilePath + L"scene\\TestScene.scene");
 
-	//pCurScene->start();	
+	pCurScene->start();	
 	pCurScene->SetSceneState(SCENE_STATE::STOP);
 }

@@ -54,7 +54,7 @@ public:
     virtual int GetFrameMin() const { return m_FrameMin; }
     virtual int GetFrameMax() const { return m_FrameMax; }
     virtual int GetItemCount() const { return (int)m_vecAnimItem.size(); }
-    virtual int GetItemTypeCount() const { return m_vecAnimName.size(); }
+    virtual int GetItemTypeCount() const { return (int)m_vecAnimName.size(); }
 
     virtual const char* GetItemTypeName(int typeIndex) const { return m_vecAnimName[typeIndex].c_str(); }
     virtual const char* GetItemLabel(int index) const;

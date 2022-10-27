@@ -8,12 +8,16 @@
 
 #include "CRenderMgr.h"
 #include "CComponent.h"
+#include "CFSM.h"
 
 CEventMgr::CEventMgr()
-	:
-	m_bObjEvn(false) {}
+	: m_bObjEvn(false)
+{
+}
 
-CEventMgr::~CEventMgr() {}
+CEventMgr::~CEventMgr()
+{
+}
 
 void CEventMgr::update()
 {
@@ -173,8 +177,33 @@ void CEventMgr::update()
 				m_bObjEvn = true;
 			}
 			break;
-		}
+		case EVENT_TYPE::CHANGE_FSM_STATE:
+			{
+				const std::wstring strNextStateName = (const wchar_t*)m_vecEvent[i].wParam;
+				CFSM*              pFSM             = (CFSM*)m_vecEvent[i].lParam;
+				const auto         iter             = pFSM->m_mapState.find(strNextStateName);
+				assert(iter != pFSM->m_mapState.end() && "STATE NOT FOUND");
+				std::wstring strCurrentStateName = (nullptr != pFSM->m_pCurrentState)
+					                                   ? pFSM->m_pCurrentState->m_tState.strName
+					                                   : L"";
 
+				if (false == strCurrentStateName.empty())
+				{
+					if (nullptr != pFSM->m_pCurrentState->m_endFunc)
+					{
+						pFSM->m_pCurrentState->m_endFunc(pFSM->m_pCurrentState->m_tState);
+					}
+				}
+				pFSM->m_pCurrentState                            = &pFSM->m_mapState[strNextStateName];
+				pFSM->m_pCurrentState->m_tState.fStateTime       = 0.f;
+				pFSM->m_pCurrentState->m_tState.strPrevStateName = strCurrentStateName;
+
+				if (nullptr != pFSM->m_pCurrentState->m_startFunc)
+				{
+					pFSM->m_pCurrentState->m_startFunc(pFSM->m_pCurrentState->m_tState);
+				}
+				break;
+			}
 
 		// 이벤트 중에  변경 이벤트가 있었다면,
 		// 나머지 이벤트는 다 무시하고 종료
@@ -182,6 +211,7 @@ void CEventMgr::update()
 		{
 			break;
 		}*/
+		}
 	}
 
 	m_vecEvent.clear();

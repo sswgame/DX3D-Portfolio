@@ -198,6 +198,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CFBXLoader.h" />
     <ClInclude Include="CFontMgr.h" />
     <ClInclude Include="CFrustum.h" />
+    <ClInclude Include="CFSM.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGraphicsShader.h" />
     <ClInclude Include="CHeightMapShader.h" />
@@ -225,6 +226,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CSceneFile.h" />
     <ClInclude Include="CSceneMgr.h" />
     <ClInclude Include="CScript.h" />
+    <ClInclude Include="CSerializer.h" />
     <ClInclude Include="CShader.h" />
     <ClInclude Include="CSkyBox.h" />
     <ClInclude Include="CSound.h" />
@@ -267,6 +269,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CFBXLoader.cpp" />
     <ClCompile Include="CFontMgr.cpp" />
     <ClCompile Include="CFrustum.cpp" />
+    <ClCompile Include="CFSM.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGraphicsShader.cpp" />
     <ClCompile Include="CHeightMapShader.cpp" />
@@ -296,6 +299,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CSceneFile.cpp" />
     <ClCompile Include="CSceneMgr.cpp" />
     <ClCompile Include="CScript.cpp" />
+    <ClCompile Include="CSerializer.cpp" />
     <ClCompile Include="CShader.cpp" />
     <ClCompile Include="CSkyBox.cpp" />
     <ClCompile Include="CSound.cpp" />

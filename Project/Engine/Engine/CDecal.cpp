@@ -95,3 +95,16 @@ void CDecal::LoadFromScene(FILE* _pFile)
 	fread(&m_eType, sizeof(UINT), 1, _pFile);
 	SetDecalType(m_eType);
 }
+
+void CDecal::Serialize(YAML::Emitter& emitter)
+{
+	CRenderComponent::Serialize(emitter);
+	emitter << YAML::Key << NAME_OF(m_eType) << YAML::Value << (int)m_eType;
+}
+
+void CDecal::Deserialize(const YAML::Node& node)
+{
+	CRenderComponent::Deserialize(node);
+	m_eType = (DECAL_TYPE)node[NAME_OF(m_eType)].as<int>();
+	SetDecalType(m_eType);
+}

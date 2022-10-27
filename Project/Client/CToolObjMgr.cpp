@@ -10,7 +10,9 @@
 #include "CEditorCamScript.h"
 #include "CGridScript.h"
 
-CToolObjMgr::CToolObjMgr() {}
+CToolObjMgr::CToolObjMgr()
+{
+}
 
 CToolObjMgr::~CToolObjMgr()
 {
@@ -46,7 +48,7 @@ void CToolObjMgr::init()
 	pGridObj->Transform()->SetRelativeRotation(Vec3(XM_PI / 2.f, 0.f, 0.f));
 
 	pGridObj->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	pGridObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\GridMtrl.mtrl"),0);
+	pGridObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\GridMtrl.mtrl"), 0);
 
 	pGridObj->GetScript<CGridScript>()->SetToolCamera(pToolObj);
 	pGridObj->GetScript<CGridScript>()->SetGridColor(Vec3(0.2f, 0.2f, 0.7f));

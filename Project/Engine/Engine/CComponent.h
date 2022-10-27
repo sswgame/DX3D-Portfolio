@@ -8,14 +8,16 @@
 
 class CComponent : public CEntity
 {
+public:
+	static CComponent* MakeComponent(const std::wstring& name);
 private:
 	const COMPONENT_TYPE m_eComType;
-	CGameObject*         m_pOwner;
+	CGameObject* m_pOwner;
 
-	bool				 m_bActive;
+	bool m_bActive;
 
 protected:
-	CGameObject* 		 m_pDebugObj;
+	CGameObject* m_pDebugObj;
 
 public:
 	virtual void start()
@@ -31,8 +33,14 @@ public:
 	}
 
 	virtual void finalupdate() = 0;
-	virtual void finalupdate_debug() {};
-	virtual void render_debug() {};
+
+	virtual void finalupdate_debug()
+	{
+	};
+
+	virtual void render_debug()
+	{
+	};
 
 	virtual void finalupdate_module()
 	{
@@ -43,32 +51,47 @@ public:
 
 	bool IsActive() { return m_bActive; }
 
-	void		 SetDebugObj(CGameObject* _pObj) { m_pDebugObj = _pObj; }
-	CGameObject* GetDebugObj(){return m_pDebugObj;}
+	void         SetDebugObj(CGameObject* _pObj) { m_pDebugObj = _pObj; }
+	CGameObject* GetDebugObj() { return m_pDebugObj; }
 
-	void ActiateDebugObj()		{ assert(m_pDebugObj); m_pDebugObj->Activate(); }
-	void DeactivateDebugObj()	{ assert(m_pDebugObj); m_pDebugObj->Deactivate(); }
-	bool IsActivateDebugObj()	{ assert(m_pDebugObj); return m_pDebugObj->IsActive(); }
+	void ActiateDebugObj()
+	{
+		assert(m_pDebugObj);
+		m_pDebugObj->Activate();
+	}
+
+	void DeactivateDebugObj()
+	{
+		assert(m_pDebugObj);
+		m_pDebugObj->Deactivate();
+	}
+
+	bool IsActivateDebugObj()
+	{
+		assert(m_pDebugObj);
+		return m_pDebugObj->IsActive();
+	}
 
 
 public:
 	COMPONENT_TYPE GetType() { return m_eComType; }
-	CGameObject*   GetOwner() { return m_pOwner; }
+	CGameObject* GetOwner() { return m_pOwner; }
 
 	GET_OTHER_COMPONENT(Transform)
-	GET_OTHER_COMPONENT(MeshRender)
-	GET_OTHER_COMPONENT(Camera)
-	GET_OTHER_COMPONENT(Collider2D)
-	GET_OTHER_COMPONENT(Animator2D)
-	GET_OTHER_COMPONENT(Animator3D)
-	GET_OTHER_COMPONENT(TileMap)
-	GET_OTHER_COMPONENT(ParticleSystem)
-	GET_OTHER_COMPONENT(SkyBox)
-	GET_OTHER_COMPONENT(Light2D)
-	GET_OTHER_COMPONENT(Light3D)
-	GET_OTHER_COMPONENT(Decal)
-	GET_OTHER_COMPONENT(LandScape)
-	GET_OTHER_COMPONENT(Collider3D);
+		GET_OTHER_COMPONENT(MeshRender)
+		GET_OTHER_COMPONENT(Camera)
+		GET_OTHER_COMPONENT(Collider2D)
+		GET_OTHER_COMPONENT(Animator2D)
+		GET_OTHER_COMPONENT(Animator3D)
+		GET_OTHER_COMPONENT(TileMap)
+		GET_OTHER_COMPONENT(ParticleSystem)
+		GET_OTHER_COMPONENT(SkyBox)
+		GET_OTHER_COMPONENT(Light2D)
+		GET_OTHER_COMPONENT(Light3D)
+		GET_OTHER_COMPONENT(Decal)
+		GET_OTHER_COMPONENT(LandScape)
+		GET_OTHER_COMPONENT(Collider3D);
+	GET_OTHER_COMPONENT(FSM);
 
 	CComponent* Clone() = 0;
 

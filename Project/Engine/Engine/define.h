@@ -140,7 +140,7 @@ enum class COMPONENT_TYPE
 	LANDSCAPE,		// 지형 렌더링
 	DECAL,			// 데칼 오브젝트
 	SKYBOX,
-
+	FINITE_STATE_MACHINE,
 	END,
 
 	// Update
@@ -233,7 +233,7 @@ enum class EVENT_TYPE
 	DEACTIVATE_COMOPNENT,   // lParam : Component Adress
 
 	SCENE_CHANGE,			// lParam : Next Stage Enum
-	CHANGE_AI_STATE,		// lParam : FSM Adress, wParam : Next State Type
+	CHANGE_FSM_STATE,		// lParam : FSM Adress, wParam : Next State Type
 
 	DELETE_RES,				// lParam : ResAdress
 

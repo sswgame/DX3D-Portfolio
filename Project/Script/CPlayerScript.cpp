@@ -3,17 +3,18 @@
 #include "CMissileScript.h"
 
 CPlayerScript::CPlayerScript()
-	:
-	CScript((int)SCRIPT_TYPE::PLAYERSCRIPT)
-  , m_pMissilePrefab(nullptr)
-  , m_fSpeed(10.f)
-  , m_fBurnStrength(0.f)
-  , m_bBurn(false)
+	: CScript((int)SCRIPT_TYPE::PLAYERSCRIPT)
+	, m_pMissilePrefab(nullptr)
+	, m_fSpeed(10.f)
+	, m_fBurnStrength(0.f)
+	, m_bBurn(false)
 {
 	AddScriptParam("PlayerSpeed", SCRIPTPARAM_TYPE::FLOAT, &m_fSpeed);
 }
 
-CPlayerScript::~CPlayerScript() {}
+CPlayerScript::~CPlayerScript()
+{
+}
 
 void CPlayerScript::start()
 {
@@ -78,7 +79,9 @@ void CPlayerScript::update()
 	Burnning();
 }
 
-void CPlayerScript::lateupdate() {}
+void CPlayerScript::lateupdate()
+{
+}
 
 
 void CPlayerScript::Burnning()
@@ -109,4 +112,14 @@ void CPlayerScript::SaveToScene(FILE* _pFile)
 void CPlayerScript::LoadFromScene(FILE* _pFile)
 {
 	fread(&m_fSpeed, sizeof(float), 1, _pFile);
+}
+
+void CPlayerScript::Serialize(YAML::Emitter& emitter)
+{
+	emitter << YAML::Key << NAME_OF(m_fSpeed) << YAML::Value << m_fSpeed;
+}
+
+void CPlayerScript::Deserialize(const YAML::Node& node)
+{
+	m_fSpeed = node[NAME_OF(m_fSpeed)].as<float>();
 }

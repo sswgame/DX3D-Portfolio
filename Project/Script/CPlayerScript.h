@@ -1,7 +1,5 @@
 #pragma once
-
 #include <Engine/CScript.h>
-
 
 class CPlayerScript : public CScript
 {
@@ -30,6 +28,9 @@ public:
 
 	CLONE(CPlayerScript)
 
+public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 public:
 	CPlayerScript();
 	virtual ~CPlayerScript();

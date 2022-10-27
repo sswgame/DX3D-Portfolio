@@ -62,3 +62,17 @@ void CSkyBox::LoadFromScene(FILE* _pFile)
 	fread(&m_eType, sizeof(UINT), 1, _pFile);
 	SetSkyboxType(m_eType);
 }
+
+void CSkyBox::Serialize(YAML::Emitter& emitter)
+{
+	CRenderComponent::Serialize(emitter);
+	emitter << YAML::Key << NAME_OF(m_eType) << YAML::Value << (int)m_eType;
+}
+
+void CSkyBox::Deserialize(const YAML::Node& node)
+{
+	CRenderComponent::Deserialize(node);
+	m_eType = (SKYBOX_TYPE)node[NAME_OF(m_eType)].as<int>();
+
+	SetSkyboxType(m_eType);
+}

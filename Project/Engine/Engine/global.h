@@ -57,9 +57,18 @@ using namespace std::experimental::filesystem;
 #pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
 #endif
 
+#define YAML_CPP_STATIC_DEFINE
+#include <yaml-cpp/yaml.h>
+#if _DEBUG
+#pragma comment(lib,"yaml-cpp/yaml-cppd")
+#else
+#pragma comment(lib,"yaml-cpp/yaml-cpp")
+#endif
+
 
 #include "define.h"
 #include "struct.h"
 #include "extern.h"
 #include "singleton.h"
 #include "func.h"
+#include "CSerializer.h"

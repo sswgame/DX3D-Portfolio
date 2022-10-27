@@ -23,7 +23,7 @@ private:
     Ptr<CTexture>           m_pBrushArrTex; // 브러쉬용 텍스쳐
 
     Ptr<CWeightMapShader>   m_pCSWeightMap;     // 가중치 쉐이더
-    CStructuredBuffer* m_pWeightMapBuffer; // 가중치 저장 버퍼
+    CStructuredBuffer*      m_pWeightMapBuffer; // 가중치 저장 버퍼
     UINT					m_iWeightWidth;		// 가중치 버퍼 가로세로 행렬 수
     UINT					m_iWeightHeight;	// 가중치 버퍼 가로세로 행렬 수
     UINT                    m_iWeightIdx;		// 증가 시킬 가중치 부위
@@ -55,6 +55,8 @@ private:
     void CreateMesh();
     void CreateTexture();
 
+public:
+    void Deserialize(const YAML::Node& node) override;
 public:
     CLONE(CLandScape);
     CLandScape();

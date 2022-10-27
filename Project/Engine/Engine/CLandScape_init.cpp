@@ -194,3 +194,9 @@ void CLandScape::CreateTexture()
 
 
 }
+
+void CLandScape::Deserialize(const YAML::Node& node)
+{
+	Create();
+	//CRenderComponent::Deserialize(node);
+}

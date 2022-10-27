@@ -121,3 +121,40 @@ void CAnimation2D::LoadFromScene(FILE* _pFile)
 
 	LoadResPtr(m_pAtlasTex, _pFile);
 }
+
+void CAnimation2D::Serialize(YAML::Emitter& emitter)
+{
+	int frameCount = static_cast<int>(m_vecFrm.size());
+	emitter << YAML::Key << "FRAME COUNT" << YAML::Value << frameCount;
+
+	for (int i = 0; i < frameCount; ++i)
+	{
+		emitter << YAML::Key << i << YAML::Value << YAML::Flow << YAML::BeginMap;
+		emitter << YAML::Key << "LEFT TOP" << YAML::Value << m_vecFrm[i].vLT;
+		emitter << YAML::Key << "OFFSET" << YAML::Value << m_vecFrm[i].vOffset;
+		emitter << YAML::Key << "DURATION" << YAML::Value << m_vecFrm[i].fDuration;
+		emitter << YAML::Key << "SLICE" << YAML::Value << m_vecFrm[i].vSlice;
+		emitter << YAML::EndMap;
+	}
+	emitter << YAML::Key << NAME_OF(m_vBackgroundSize) << YAML::Value << m_vBackgroundSize;
+	CRes& atlasTex = *m_pAtlasTex.Get();
+	emitter << YAML::Key << "ATLAS" << YAML::Value << atlasTex;
+}
+
+void CAnimation2D::Deserialize(const YAML::Node& node)
+{
+	int frameCount = node["FRAME COUNT"].as<int>();
+
+	for (int i = 0; i < frameCount; ++i)
+	{
+		tAnim2DFrame frame{};
+		frame.vLT       = node[i]["LEFT TOP"].as<Vec2>();
+		frame.vOffset   = node[i]["OFFSET"].as<Vec2>();
+		frame.fDuration = node[i]["DURATION"].as<float>();
+		frame.vSlice    = node[i]["SLICE"].as<Vec2>();
+
+		m_vecFrm.push_back(frame);
+	}
+	m_vBackgroundSize = node[NAME_OF(m_vBackgroundSize)].as<Vec2>();
+	m_pAtlasTex       = LoadAs<CTexture>(node["ATLAS"]);
+}

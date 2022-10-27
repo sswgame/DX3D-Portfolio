@@ -174,7 +174,7 @@ void Animator3DUI::RenderComponentWindow()
 	if (ImGui::BeginPopupModal("Apply To Child Object", NULL, ImGuiWindowFlags_Modal))
 	{
 		wstring wstrName = GetTargetObject()->GetName();
-		string name = string(wstrName.begin(), wstrName.end());
+		string name = ToString(wstrName);
 		ImGui::TextWrapped(
 			u8"하위 객체에 동일한 애니메이션을 적용합니다.\n\n"
 			u8"하위 객체의 개별 애니메이션은 사라지며\n\n"
@@ -312,7 +312,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			{
 				// 타임라인에 적용
 				m_FrameTimeLine.AddAnimName(strName);
-				int idx = m_FrameTimeLine.m_vecAnimName.size() - 1;
+				int idx = (int)(m_FrameTimeLine.m_vecAnimName.size() - 1);
 				m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ strName, idx, FrameStartIdx, FrameEndIdx });
 
 				// 컴포넌트에 적용 
@@ -358,7 +358,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			string FileName = "AnimationInfo\\";
 			FileName += buf;
 			wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
-			string strPath = string(ContentPath.begin(), ContentPath.end());
+			string strPath = ToString(ContentPath);
 			strPath += FileName;
 
 			// 파일 입출력 
@@ -385,7 +385,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 					{
 						// 타임라인에 적용
 						m_FrameTimeLine.AddAnimName(AnimName);
-						int idx = m_FrameTimeLine.m_vecAnimName.size() - 1;
+						int idx = (int)(m_FrameTimeLine.m_vecAnimName.size() - 1);
 						m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ AnimName, idx, FrameStartIdx, FrameEndIdx });
 
 						// 컴포넌트에 적용 
@@ -426,7 +426,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		if (ImGui::BeginPopupModal("Delete Animation", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			wstring wstrName = m_pCurAnim3D->GetName();
-			string strName = string(wstrName.begin(), wstrName.end());
+			string strName = ToString(wstrName);
 
 			ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f)
 				, u8"[ %s ]\n 애니메이션을 삭제하시겠습니까?\n\n", strName.c_str());
@@ -434,7 +434,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			if (ImGui::Button("OK", ImVec2(120, 0)))
 			{
 				wstring wstrName = m_pCurAnim3D->GetName();
-				string strName = string(wstrName.begin(), wstrName.end());
+				string strName = ToString(wstrName);
 
 				// 1. 타임라인 정리 
 				m_FrameTimeLine.SubAnimName(strName);
@@ -470,7 +470,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 	if (m_pCurAnim3D != nullptr)
 	{
 		double StartTime = m_pCurAnim3D->GetStartTime(); // double 인데 float 으로 받아서 값이 조금 달라짐 
-		float StartDiffTime = StartTime;
+		float StartDiffTime = (float)StartTime;
 		ImGui::PushItemWidth(60);
 		ImGui::DragFloat("##START_drag", &StartDiffTime, 0.01f);
 		ImGui::PopItemWidth();
@@ -482,7 +482,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		ImGui::Text("  ~  "); ImGui::SameLine();
 
 		double EndTime = m_pCurAnim3D->GetEndTime();
-		float EndDiffTime = EndTime;
+		float EndDiffTime = (float)EndTime;
 		ImGui::PushItemWidth(60);
 		ImGui::DragFloat("##END_drag", &EndDiffTime, 0.01f);
 		ImGui::PopItemWidth();
@@ -647,7 +647,7 @@ void Animator3DUI::Reset(DWORD_PTR _ptr)
 		wstring AnimName = iter->first;
 		CAnimation3D* pAnim = iter->second;
 
-		string name = string(AnimName.begin(), AnimName.end());
+		string name =ToString(AnimName);
 		int StartFrameIdx = pAnim->GetStartFrameIdx();
 		int EndFrameIdx = pAnim->GetEndFrameIdx();
 
@@ -702,7 +702,7 @@ CAnimation3D* Animator3DUI::GetNextAnim()
 	if (pNextAnim != nullptr)
 	{
 		wstring wstrName = pNextAnim->GetName();
-		string strName = string(wstrName.begin(), wstrName.end());
+		string strName = ToString(wstrName);
 
 		m_iSelectedIdx = m_FrameTimeLine.GetAnimNameIndex(strName);
 		m_iSelectedPrevIdx = m_iSelectedIdx;

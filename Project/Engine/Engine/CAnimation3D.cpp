@@ -75,7 +75,7 @@ void CAnimation3D::finalupdate()
 		m_iNextFrameIdx = m_tClip.iStartFrame;
 
 		float TimeWeight = 1.f / m_fLerpTime;
-		m_fRatio = m_vecClipUpdateTime[m_iCurClip] * TimeWeight;
+		m_fRatio = (float)(m_vecClipUpdateTime[m_iCurClip] * TimeWeight);
 
 		// 보간 끝! -> 메인 애니메이션을 출력하라. 
 		if (m_vecClipUpdateTime[m_iCurClip] >= m_fLerpTime)

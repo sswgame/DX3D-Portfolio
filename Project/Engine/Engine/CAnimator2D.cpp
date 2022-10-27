@@ -9,14 +9,14 @@
 CAnimator2D::CAnimator2D()
 	:
 	CComponent(COMPONENT_TYPE::ANIMATOR2D)
-  , m_pCurAnim(nullptr)
-  , m_bRepeat(false) {}
+	, m_pCurAnim(nullptr)
+	, m_bRepeat(false) {}
 
 CAnimator2D::CAnimator2D(const CAnimator2D& _origin)
 	:
 	CComponent(_origin)
-  , m_pCurAnim(nullptr)
-  , m_bRepeat(_origin.m_bRepeat)
+	, m_pCurAnim(nullptr)
+	, m_bRepeat(_origin.m_bRepeat)
 {
 	for (auto& pair : _origin.m_mapAnim)
 	{
@@ -60,7 +60,7 @@ void CAnimator2D::UpdateData()
 void CAnimator2D::Clear()
 {
 	static CConstBuffer* pBuffer = CDevice::GetInst()->GetCB(CB_TYPE::ANIM2D);
-	tAnim2D              info    = {};
+	tAnim2D              info = {};
 	pBuffer->SetData(&info, sizeof(tAnim2D));
 	pBuffer->UpdateData();
 }
@@ -78,13 +78,13 @@ CAnimation2D* CAnimator2D::FindAnim(const wstring& _strName)
 }
 
 void CAnimator2D::CreateAnim(const wstring& _strName,
-                             Ptr<CTexture>  _pAtlas,
-                             Vec2           _vBackgroundSizePixel,
-                             Vec2           _vLeftTopPixel,
-                             Vec2           _vSlicePixel,
-                             Vec2           _vStepPixel,
-                             float          _fDuration,
-                             int            _iFrameCount)
+	Ptr<CTexture>  _pAtlas,
+	Vec2           _vBackgroundSizePixel,
+	Vec2           _vLeftTopPixel,
+	Vec2           _vSlicePixel,
+	Vec2           _vStepPixel,
+	float          _fDuration,
+	int            _iFrameCount)
 {
 	assert(!FindAnim(_strName));
 
@@ -149,4 +149,41 @@ void CAnimator2D::LoadFromScene(FILE* _pFile)
 	m_pCurAnim = FindAnim(strCurAnimName);
 
 	fread(&m_bRepeat, sizeof(bool), 1, _pFile);
+}
+
+
+void CAnimator2D::Serialize(YAML::Emitter& emitter)
+{
+	for (auto& pairData : m_mapAnim)
+	{
+		emitter << YAML::Key << ToString(pairData.first) << YAML::Value << YAML::BeginSeq;
+		pairData.second->Serialize(emitter);
+		emitter << YAML::EndSeq;
+	}
+	std::string currentAnimationName = (m_pCurAnim) ? ToString(m_pCurAnim->GetName()) : "";
+	emitter << YAML::Key << "CURRENT ANIMATION NAME" << YAML::Value << currentAnimationName;
+	emitter << YAML::Key << NAME_OF(m_bRepeat) << YAML::Value << m_bRepeat;
+}
+
+void CAnimator2D::Deserialize(const YAML::Node& node)
+{
+	for (auto dataNode : node)
+	{
+		std::string key = dataNode.first.as<std::string>();
+		if (key == "CURRENT ANIMATION NAME")
+		{
+			break;
+		}
+		YAML::Node    animationNode = dataNode.second;
+		CAnimation2D* pAnimation2D = new CAnimation2D{};
+		pAnimation2D->Deserialize(animationNode);
+		std::wstring animationName = ToWString(key);
+		m_mapAnim.insert({ animationName, pAnimation2D });
+	}
+	std::string currentAnimName = node["CURRENT ANIMATION NAME"].as<std::string>();
+	if (false == currentAnimName.empty())
+	{
+		m_pCurAnim = m_mapAnim.find(ToWString(currentAnimName))->second;
+	}
+	m_bRepeat = node[NAME_OF(m_bRepeat)].as<bool>();
 }

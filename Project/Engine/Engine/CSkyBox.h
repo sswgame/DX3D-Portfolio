@@ -28,6 +28,10 @@ public:
 	virtual void LoadFromScene(FILE* _pFile) override;
 
 	CLONE(CSkyBox)
+
+public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 public:
 	CSkyBox();
 	virtual ~CSkyBox();

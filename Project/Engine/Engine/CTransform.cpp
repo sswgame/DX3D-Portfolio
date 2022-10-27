@@ -156,3 +156,19 @@ void CTransform::LoadFromScene(FILE* _pFile)
 	fread(&m_vRelativeRot, sizeof(Vec3), 1, _pFile);
 	fread(&m_bIgnoreParentScale, sizeof(bool), 1, _pFile);
 }
+
+void CTransform::Serialize(YAML::Emitter& emitter)
+{
+	emitter << YAML::Key << "m_vRelativePos" << YAML::Value << m_vRelativePos;
+	emitter << YAML::Key << "m_vRelativeScale" << YAML::Value << m_vRelativeScale;
+	emitter << YAML::Key << "m_vRelativeRot" << YAML::Value << m_vRelativeRot;
+	emitter << YAML::Key << "m_bIgnoreParentScale" << YAML::Value << m_bIgnoreParentScale;
+}
+
+void CTransform::Deserialize(const YAML::Node& node)
+{
+	m_vRelativePos       = node["m_vRelativePos"].as<Vec3>();
+	m_vRelativeScale     = node["m_vRelativeScale"].as<Vec3>();
+	m_vRelativeRot       = node["m_vRelativeRot"].as<Vec3>();
+	m_bIgnoreParentScale = node["m_bIgnoreParentScale"].as<bool>();
+}

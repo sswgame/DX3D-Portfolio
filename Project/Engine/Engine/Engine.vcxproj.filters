@@ -202,6 +202,12 @@
     <ClInclude Include="CCollider3D.h">
       <Filter>Engine\05. Component\04. Collider3D</Filter>
     </ClInclude>
+    <ClInclude Include="CFSM.h">
+      <Filter>Engine\05. Component\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CSerializer.h">
+      <Filter>Engine\01. Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -392,6 +398,12 @@
     </ClCompile>
     <ClCompile Include="CCollider3D.cpp">
       <Filter>Engine\05. Component\04. Collider3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CFSM.cpp">
+      <Filter>Engine\05. Component\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CSerializer.cpp">
+      <Filter>Engine\01. Header</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -592,6 +604,9 @@
     </Filter>
     <Filter Include="Engine\05. Component\06. Animator3D\Animation3D">
       <UniqueIdentifier>{778a100f-6dbe-471b-9720-29789dd0c5c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Component\FSM">
+      <UniqueIdentifier>{7cbc60b2-a81f-4883-832f-41a1fca93c51}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

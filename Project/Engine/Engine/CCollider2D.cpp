@@ -159,3 +159,19 @@ void CCollider2D::LoadFromScene(FILE* _pFile)
 
 	SetCollider2DType(m_eColliderType);
 }
+
+void CCollider2D::Serialize(YAML::Emitter& emitter)
+{
+	emitter << YAML::Key << NAME_OF(m_eColliderType) << YAML::Value << (int)m_eColliderType;
+	emitter << YAML::Key << NAME_OF(m_vOffsetPos) << YAML::Value << m_vOffsetPos;
+	emitter << YAML::Key << NAME_OF(m_vOffsetScale) << YAML::Value << m_vOffsetScale;
+}
+
+void CCollider2D::Deserialize(const YAML::Node& node)
+{
+	m_eColliderType = (COLLIDER2D_TYPE)node[NAME_OF(m_eColliderType)].as<int>();
+	m_vOffsetPos    = node[NAME_OF(m_vOffsetPos)].as<Vec2>();
+	m_vOffsetScale  = node[NAME_OF(m_vOffsetScale)].as<Vec2>();
+
+	SetCollider2DType(m_eColliderType);
+}

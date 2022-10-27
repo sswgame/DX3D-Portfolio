@@ -126,7 +126,7 @@ void CAnimator3D::CreateAnim(const wstring& _strName, int _clipNum
 
 	pAnim->SetName(_strName);
 	pAnim->SetOwner(this);
-	pAnim->SetClipUpdateTime(m_pVecClip->size());
+	pAnim->SetClipUpdateTime((int)m_pVecClip->size());
 	pAnim->SetFrameInfo(_clipNum, _startTime, _endTime, _startFrame, _EndFrame);
 
 	m_mapAnim.insert(make_pair(_strName, pAnim));
