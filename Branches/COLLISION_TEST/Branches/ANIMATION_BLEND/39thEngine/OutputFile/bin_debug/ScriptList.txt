@@ -1,3 +1,0 @@
-CCameraMoveScript
-CMissileScript
-CPlayerScript

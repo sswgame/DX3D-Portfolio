@@ -101,6 +101,9 @@ public:
 	CLONE(CCamera)
 
 public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
+public:
 	CCamera();
 	CCamera(const CCamera& _origin);
 	virtual ~CCamera();

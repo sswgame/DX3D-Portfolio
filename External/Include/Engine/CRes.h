@@ -20,8 +20,8 @@ protected:
 	void Changed() { m_bChanged = true; }
 
 public:
-	const wstring& GetKey() { return m_strKey; }
-	const wstring& GetRelativePath() { return m_strRelativePath; }
+	const wstring& GetKey() const { return m_strKey; }
+	const wstring& GetRelativePath() const { return m_strRelativePath; }
 	UINT           GetRefCount() { return m_iRefCount; }
 	RES_TYPE       GetResType() { return m_eResType; }
 	bool           IsEngineRes() { return m_bEngineRes; }
@@ -51,4 +51,6 @@ public:
 
 	template <typename T>
 	friend class Ptr;
+
+	friend struct YAML::convert<CRes>;
 };

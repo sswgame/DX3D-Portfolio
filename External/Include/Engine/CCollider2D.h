@@ -56,6 +56,10 @@ public:
 	virtual void SaveToScene(FILE* _pFile) override;
 	virtual void LoadFromScene(FILE* _pFile) override;
 	CLONE(CCollider2D)
+
+public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 public:
 	CCollider2D();
 	CCollider2D(const CCollider2D& _Origin);

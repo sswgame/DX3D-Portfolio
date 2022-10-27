@@ -45,6 +45,9 @@ public:
 	virtual void LoadFromScene(FILE* _pFile) override;
 
 public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
+public:
 	CRenderComponent(COMPONENT_TYPE _type);
 	CRenderComponent(const CRenderComponent& _origin);
 	virtual ~CRenderComponent();

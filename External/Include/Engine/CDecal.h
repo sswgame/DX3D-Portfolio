@@ -20,10 +20,10 @@ public:
 	void SetDeferredLighting(bool _bLighting);
 	void SetDecalTexture(Ptr<CTexture> _pTex) { m_pDecalTex = _pTex; }
 
-	DECAL_TYPE		GetDecalType()				{ return m_eType; }
+	DECAL_TYPE		GetDecalType() { return m_eType; }
 	wstring			GetDecalTypeName(int _idx);
-	Ptr<CTexture>	GetDecalTexture()			{ return m_pDecalTex; }
-	bool			IsUsingDeferredLighting()	{ return m_bUseDeferredLighting; }
+	Ptr<CTexture>	GetDecalTexture() { return m_pDecalTex; }
+	bool			IsUsingDeferredLighting() { return m_bUseDeferredLighting; }
 
 public:
 	virtual void finalupdate() override;
@@ -36,6 +36,9 @@ public:
 	virtual void LoadFromScene(FILE* _pFile) override;
 
 	CLONE(CDecal)
+public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 public:
 	CDecal();
 	virtual ~CDecal();

@@ -20,6 +20,7 @@ class CScript;
 class CRenderComponent;
 class CLandScape;
 class CCollider3D;
+class CFSM;
 
 class CGameObject : public CEntity
 {
@@ -89,6 +90,7 @@ public:
 	GET_COMPONENT(Decal, DECAL)
 	GET_COMPONENT(LandScape, LANDSCAPE)
 	GET_COMPONENT(Collider3D, COLLIDER3D);
+	GET_COMPONENT(FSM, FINITE_STATE_MACHINE);
 
 	const vector<CScript*>& GetScripts() { return m_vecScript; }
 	CScript*                GetScript(UINT _iIdx);
@@ -104,6 +106,9 @@ public:
 	virtual void LoadFromScene(FILE* _pFile) override;
 	CLONE(CGameObject)
 
+public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 public:
 	CGameObject();
 	CGameObject(const CGameObject& _origin);

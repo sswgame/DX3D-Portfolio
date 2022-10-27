@@ -12,7 +12,7 @@ private:
 	Ptr<CMaterial> m_pLightMtrl;
 
 	CGameObject* m_pLightCam;
-	
+
 
 public:
 	const tLightInfo& GetLightInfo() { return m_LightInfo; }
@@ -39,6 +39,10 @@ public:
 	virtual void SaveToScene(FILE* _pFile) override;
 	virtual void LoadFromScene(FILE* _pFile) override;
 	CLONE(CLight3D);
+
+public:
+	void Serialize(YAML::Emitter& emitter) override;;
+	void Deserialize(const YAML::Node& node) override;
 public:
 	CLight3D();
 	CLight3D(const CLight3D& _origin);

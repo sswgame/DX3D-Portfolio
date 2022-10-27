@@ -54,10 +54,10 @@ public:
 	UINT GetAliveCount() const { return m_iAliveCount; }
 
 	void SetMinMaxLifeTime(float fMin, float fMax);
-	Vec2 GetMinMaxLifeTime() const { return Vec2{m_fMinLifeTime, m_fMaxLifeTime}; }
+	Vec2 GetMinMaxLifeTime() const { return Vec2{ m_fMinLifeTime, m_fMaxLifeTime }; }
 
 	void SetMinMaxSpeed(float fMin, float fMax);
-	Vec2 GetMinMaxSpeed() const { return Vec2{m_fStartSpeed, m_fEndSpeed}; }
+	Vec2 GetMinMaxSpeed() const { return Vec2{ m_fStartSpeed, m_fEndSpeed }; }
 
 	void                  SetStartEndColor(const Vec4& vStartColor, const Vec4& vEndColor);
 	std::pair<Vec4, Vec4> GetStartEndColor() const { return std::pair<Vec4, Vec4>{m_vStartColor, m_vEndColor}; }
@@ -83,6 +83,10 @@ public:
 	virtual void SaveToScene(FILE* _pFile) override;
 	virtual void LoadFromScene(FILE* _pFile) override;
 	CLONE(CParticleSystem);
+
+public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 public:
 	CParticleSystem();
 	CParticleSystem(const CParticleSystem& _origin);

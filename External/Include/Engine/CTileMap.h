@@ -26,7 +26,7 @@ public:
 	void SetAtlasTex(Ptr<CTexture> _pAtlasTex)
 	{
 		m_pAtlasTex = _pAtlasTex;
-		m_vSliceUV  = m_vSlicePixel / Vec2(m_pAtlasTex->Width(), m_pAtlasTex->Height());
+		m_vSliceUV = m_vSlicePixel / Vec2(m_pAtlasTex->Width(), m_pAtlasTex->Height());
 	}
 
 	void SetTileSize(Vec2 _vPixelSize)
@@ -50,6 +50,11 @@ public:
 	virtual void SaveToScene(FILE* _pFile) override;
 	virtual void LoadFromScene(FILE* _pFile) override;
 	CLONE(CTileMap)
+
+public:
+	void Serialize(YAML::Emitter& emitter) override;;
+	void Deserialize(const YAML::Node& node) override;
+
 public:
 	CTileMap();
 	CTileMap(const CTileMap& _origin);
