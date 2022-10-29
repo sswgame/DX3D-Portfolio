@@ -1,25 +1,25 @@
+
 #pragma once
 
 #include <vector>
 #include <string>
+using namespace std;
 
 enum class SCRIPT_TYPE
-{
-	CAMERAMOVESCRIPT,
+{	CAMERAMOVESCRIPT,
 	MISSILESCRIPT,
 	PLAYERSCRIPT,
-	END,
-};
 
-using namespace std;
+    END
+};
 
 class CScript;
 
 class CScriptMgr
 {
 public:
-	static void GetScriptInfo(vector<wstring>& _vec);
-	static CScript * GetScript(const wstring& _strScriptName);
-	static CScript * GetScript(UINT _iScriptType);
-	static const wchar_t * GetScriptName(CScript * _pScript);
+    static void GetScriptInfo(vector<wstring>& _vec);
+    static CScript* GetScript(const wstring& _strScriptName);
+    static CScript* GetScript(UINT _iScriptType);
+    static const wchar_t* GetScriptName(CScript* _pScript);
 };

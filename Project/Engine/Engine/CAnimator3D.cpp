@@ -26,6 +26,7 @@ CAnimator3D::CAnimator3D()
 	, m_pCurAnim(nullptr)
 	, m_pNextAnim(nullptr)
 	, m_bRepeat(false)
+	, m_eCreateMode(CREATE_ANIMATION_MODE::FRAME)
 	, CComponent(COMPONENT_TYPE::ANIMATOR3D)
 {
 	m_pBoneFinalMatBuffer = new CStructuredBuffer;
@@ -106,18 +107,28 @@ void CAnimator3D::CopyAllAnim(const map<wstring, CAnimation3D*> _mapAnim)
 	map<wstring, CAnimation3D*>::const_iterator iter = _mapAnim.begin();
 	for (; iter != _mapAnim.end(); ++iter)
 	{
-		CreateAnim(iter->second->GetName(),
-			iter->second->GetClipNum(),
-			iter->second->GetStartTime(),
-			iter->second->GetEndTime(),
-			iter->second->GetStartFrameIdx(),
-			iter->second->GetEndFrameIdx()
-		);
+		if (m_eCreateMode == CREATE_ANIMATION_MODE::FRAME)
+		{
+			CreateAnimByFrame(iter->second->GetName(),
+				iter->second->GetClipNum(),
+				iter->second->GetStartFrameIdx(),
+				iter->second->GetEndFrameIdx()
+			);
+		}
+		else if (m_eCreateMode == CREATE_ANIMATION_MODE::TIME)
+		{
+			CreateAnimByTime(iter->second->GetName(),
+				iter->second->GetClipNum(),
+				iter->second->GetStartTime(),
+				iter->second->GetEndTime()
+			);
+		}
+		
 	}
 }
 
-void CAnimator3D::CreateAnim(const wstring& _strName, int _clipNum
-	, double _startTime, double _endTime, int _startFrame, int _EndFrame)
+void CAnimator3D::CreateAnimByFrame(const wstring& _strName, int _clipNum
+	, int _startFrame, int _EndFrame)
 {
 	if (FindAnim(_strName) != nullptr) return;
 	//assert(!FindAnim(_strName));
@@ -127,7 +138,7 @@ void CAnimator3D::CreateAnim(const wstring& _strName, int _clipNum
 	pAnim->SetName(_strName);
 	pAnim->SetOwner(this);
 	pAnim->SetClipUpdateTime((int)m_pVecClip->size());
-	pAnim->SetFrameInfo(_clipNum, _startTime, _endTime, _startFrame, _EndFrame);
+	pAnim->SetFrameInfoByFrame(_clipNum, _startFrame, _EndFrame);
 
 	m_mapAnim.insert(make_pair(_strName, pAnim));
 
@@ -139,12 +150,40 @@ void CAnimator3D::CreateAnim(const wstring& _strName, int _clipNum
 			CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
 			if (pChildAnimator3D != nullptr)
 			{
-				pChildAnimator3D->CreateAnim(_strName, _clipNum, _startTime
-					, _endTime, _startFrame, _EndFrame);
+				pChildAnimator3D->CreateAnimByFrame(_strName, _clipNum, _startFrame, _EndFrame);
 			}
 		}
 	}
 
+}
+
+void CAnimator3D::CreateAnimByTime(const wstring& _strName, int _clipNum
+	, double _StartTime, double _EndTime)
+{
+	if (FindAnim(_strName) != nullptr) return;
+	//assert(!FindAnim(_strName));
+
+	CAnimation3D* pAnim = new CAnimation3D;
+
+	pAnim->SetName(_strName);
+	pAnim->SetOwner(this);
+	pAnim->SetClipUpdateTime((int)m_pVecClip->size());
+	pAnim->SetFrameInfoByTime(_clipNum, _StartTime, _EndTime);
+
+	m_mapAnim.insert(make_pair(_strName, pAnim));
+
+	if (m_bPlayWithChild)
+	{
+		vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
+		for (int i = 0; i < vecChildObj.size(); ++i)
+		{
+			CAnimator3D* pChildAnimator3D = vecChildObj[i]->Animator3D();
+			if (pChildAnimator3D != nullptr)
+			{
+				pChildAnimator3D->CreateAnimByTime(_strName, _clipNum, _StartTime, _EndTime);
+			}
+		}
+	}
 }
 
 void CAnimator3D::Play(const wstring& _strName, bool _bRepeat)
@@ -455,7 +494,9 @@ void CAnimator3D::SetLerpTime(float _fTime)
 
 void CAnimator3D::SetPlayWithChild(bool _bPlayWithChild)
 {
+
 	m_bPlayWithChild = _bPlayWithChild;
+
 	// 하위 객체들도 같이 애니메이션 Play 
 	vector<CGameObject*> vecChildObj = GetOwner()->GetChild();
 	for (int i = 0; i < vecChildObj.size(); ++i)

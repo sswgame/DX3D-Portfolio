@@ -62,7 +62,11 @@ public:
 public:
 	// [ SET PART ]
 	void SetOwner(CAnimator3D* _owner) { m_pOwner = _owner; }
-	void SetFrameInfo(int _ClipNum, double _startTime = (0.0), double _endTime = (0.0), int _startFrameIdx = 0, int _EndFrame = 0);
+	void SetFrameInfoByFrame(int _ClipNum,
+		int _startFrameIdx = 0, int _EndFrameIdx = 0);
+	void SetFrameInfoByTime(int _ClipNum,
+		double _StartTime = 0.0, double _EndTime = 0.0);
+
 	void SetClipUpdateTime(int _vecClipSize);
 	void SetPrevFrameEndIdx(int _idx) { m_iPrevAnimEndFrameIdx = _idx; }
 	void CopyClipUpdateTime(vector<double> _vecClipUpdateTime) { m_vecClipUpdateTime = _vecClipUpdateTime; }

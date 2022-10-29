@@ -1,49 +1,39 @@
 #pragma once
 #include "CComponent.h"
+#include "CState.h"
 
-struct tStateInfo
-{
-	float        fStateTime;
-	std::wstring strName;
-	std::wstring strPrevStateName;
-};
-
-class CState
+class CFSM 
+	: public CComponent
 {
 private:
-	tStateInfo                             m_tState;
-	std::function<void(const tStateInfo&)> m_updateFunc;
-	std::function<void(const tStateInfo&)> m_startFunc;
-	std::function<void(const tStateInfo&)> m_endFunc;
+	// [ STATE INFO ]
+	map<wstring, CState*>	m_mapState;
+
+	CState*					m_pCurState;
+
+	wstring					m_sPrevStateType;
+	wstring					m_sCurStateType;
+	wstring					m_sNextStateType;
 
 public:
-	void CallUpdateFunc();
+	void DeleteState(wstring _eStateType);
+	void AddState(wstring _sStateType, CState* _pState);
+	void ChangeState(wstring _sStateType);
+	
+public:
+	// [ GET PART ]
+	CState* GetCurState()		{ return m_pCurState; }
+	wstring GetPrevStateType()	{ return m_sPrevStateType; }
+	wstring GetCurStateType()	{ return m_sCurStateType; }
+	wstring GetNextStateType()	{ return m_sNextStateType; }
+
+	// [ SET PART ]
+	void SetCurState(CState* _pCurState) { m_pCurState = _pCurState; }
 
 public:
-	friend class CFSM;
-	friend class CEventMgr;
-};
-
-class CFSM final : public CComponent
-{
-private:
-	std::map<std::wstring, CState> m_mapState;
-
-	CState* m_pCurrentState;
-
-public:
-	const std::wstring& GetCurrentStateName() const;
-	float               GetCurrentStateTime() const;
-
-public:
-	void finalupdate() override;
-
-	void ChangeState(const std::wstring& _strNextStateName);
-
-	void CreateState(const std::wstring&                            _strStateName,
-	                 std::function<void(const tStateInfo& _tState)> _updateFunc,
-	                 std::function<void(const tStateInfo& _tState)> _startFunc = nullptr,
-	                 std::function<void(const tStateInfo& _tState)> _endFunc   = nullptr);
+	virtual void finalupdate() override;
+	virtual void update() override;
+	virtual void lateupdate() override;
 
 public:
 	friend class CEventMgr;
@@ -52,4 +42,4 @@ public:
 	virtual ~CFSM();
 };
 
-#define BIND_FN(func) std::bind(func,this,std::placeholders::_1)
+//#define BIND_FN(func) std::bind(func,this,std::placeholders::_1)

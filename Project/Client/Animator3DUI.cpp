@@ -289,19 +289,58 @@ void Animator3DUI::RenderAnim3DClipWindow()
 
 	if (ImGui::BeginPopupModal("Create Animation", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		static char buf[512];
-		ImGui::InputText("Name", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_None);
+
+		CREATE_ANIMATION_MODE eMode = m_pAnimator3D->GetCreateMode();
+		string ButtonName;
+		if (eMode == CREATE_ANIMATION_MODE::FRAME)
+		{
+			ButtonName = "FRAME";
+		}
+		else if (eMode == CREATE_ANIMATION_MODE::TIME)
+		{
+			ButtonName = "TIME";
+		}
+		if (ImGui::Button(ButtonName.c_str(), ImVec2(75.f, 0.f)))
+		{
+			if (eMode == CREATE_ANIMATION_MODE::FRAME)
+				eMode = CREATE_ANIMATION_MODE::TIME;
+			else if (eMode == CREATE_ANIMATION_MODE::TIME)
+				eMode = CREATE_ANIMATION_MODE::FRAME;
+		}
+		m_pAnimator3D->SetCreateMode(eMode);
+
 		static int FrameStartIdx = 0;
 		static int FrameEndIdx = 0;
-		ImGui::Text("Frame");
-		ImGui::PushItemWidth(100.f);
-		ImGui::SameLine();
-		ImGui::InputInt("##Start", &FrameStartIdx);
-		ImGui::SameLine();
-		ImGui::Text(" ~ ");
-		ImGui::SameLine();
-		ImGui::InputInt("##End", &FrameEndIdx);
-		ImGui::PopItemWidth();
+
+		static double FrameStartTime = 0.0;
+		static double FrameEndTime = 0.0;
+		if (eMode == CREATE_ANIMATION_MODE::FRAME)
+		{
+			ImGui::Text("Frame");
+			ImGui::PushItemWidth(100.f);
+			ImGui::SameLine();
+			ImGui::InputInt("##Start", &FrameStartIdx);
+			ImGui::SameLine();
+			ImGui::Text(" ~ ");
+			ImGui::SameLine();
+			ImGui::InputInt("##End", &FrameEndIdx);
+			ImGui::PopItemWidth();
+		}
+		if (eMode == CREATE_ANIMATION_MODE::TIME)
+		{
+			ImGui::Text("Time");
+			ImGui::PushItemWidth(100.f);
+			ImGui::SameLine();
+			ImGui::InputDouble("##Start", &FrameStartTime);
+			ImGui::SameLine();
+			ImGui::Text(" ~ ");
+			ImGui::SameLine();
+			ImGui::InputDouble("##End", &FrameEndTime);
+			ImGui::PopItemWidth();
+		}
+		
+		static char buf[512];
+		ImGui::InputText("Name", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_None);
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
 		{
@@ -313,20 +352,29 @@ void Animator3DUI::RenderAnim3DClipWindow()
 				// 타임라인에 적용
 				m_FrameTimeLine.AddAnimName(strName);
 				int idx = (int)(m_FrameTimeLine.m_vecAnimName.size() - 1);
-				m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ strName, idx, FrameStartIdx, FrameEndIdx });
-
-				// 컴포넌트에 적용 
 				int frameCnt = m_pAnimator3D->GetFrameCount();
-				double FrameStartTime = (double)FrameStartIdx / (double)frameCnt;
-				double FrameEndTime = (double)FrameEndIdx / (double)frameCnt;
-
-				m_pAnimator3D->CreateAnim(wstrName, 0, FrameStartTime, FrameEndTime, FrameStartIdx, FrameEndIdx);
+				if (eMode == CREATE_ANIMATION_MODE::FRAME)
+				{
+					m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ strName, idx, FrameStartIdx, FrameEndIdx });
+					m_pAnimator3D->CreateAnimByFrame(wstrName, 0, FrameStartIdx, FrameEndIdx);
+				}
+				else if (eMode == CREATE_ANIMATION_MODE::TIME)
+				{
+					int sIdx = FrameStartTime * (double)frameCnt;
+					int eIdx = FrameEndTime * (double)frameCnt;
+					m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ strName, idx, FrameStartIdx, FrameEndIdx });
+					m_pAnimator3D->CreateAnimByTime(wstrName, 0, FrameStartTime, FrameEndTime);
+				}
+				
 				m_pAnimator3D->Play(wstrName, false);
 				m_pCurAnim3D = m_pAnimator3D->GetCurAnim();
 				m_iSelectedIdx = idx;
 			}
 			FrameStartIdx = 0;
 			FrameEndIdx = 0;
+			FrameStartTime = 0.0;
+			FrameEndTime = 0.0;
+
 			buf[0] = NULL;
 			ImGui::CloseCurrentPopup();
 		}
@@ -336,6 +384,9 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		{
 			FrameStartIdx = 0;
 			FrameEndIdx = 0;
+			FrameStartTime = 0.0;
+			FrameEndTime = 0.0;
+
 			buf[0] = NULL;
 			ImGui::CloseCurrentPopup();
 		}
@@ -371,13 +422,13 @@ void Animator3DUI::RenderAnim3DClipWindow()
 					vector<string> vecWords;
 					string strWord;
 					std::stringstream SStream(strLine);
-					while (std::getline(SStream, strWord, ' ')) // 공백에 따라 단어 분리 
+					while (std::getline(SStream, strWord, ' '))			// 공백에 따라 단어 분리 
 					{
 						vecWords.push_back(strWord);
 					}
-					string	AnimName = vecWords[0];				// 1. 애니메이션 이름 
-					int		FrameStartIdx = std::stoi(vecWords[1]);   // 2. 시작 프레임 인덱스 
-					int		FrameEndIdx = std::stoi(vecWords[2]);	// 3. 끝   프레임 인덱스 
+					string	AnimName = vecWords[0];						// 1. 애니메이션 이름 
+					int		FrameStartIdx = std::stoi(vecWords[1]);		// 2. 시작 프레임 인덱스 
+					int		FrameEndIdx = std::stoi(vecWords[2]);		// 3. 끝   프레임 인덱스 
 
 
 					wstring wstrName = wstring(AnimName.begin(), AnimName.end());
@@ -393,7 +444,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 						double FrameStartTime = (double)FrameStartIdx / (double)FrameCnt;
 						double FrameEndTime = (double)FrameEndIdx / (double)FrameCnt;
 
-						m_pAnimator3D->CreateAnim(wstrName, 0, FrameStartTime, FrameEndTime, FrameStartIdx, FrameEndIdx);
+						m_pAnimator3D->CreateAnimByFrame(wstrName, 0, FrameStartIdx, FrameEndIdx);
 						m_pAnimator3D->Play(wstrName, false);
 						m_pCurAnim3D = m_pAnimator3D->GetCurAnim();
 						m_iSelectedIdx = idx;

@@ -70,6 +70,7 @@ enum class KEY
 
 	LBTN,
 	RBTN,
+	MBTN,
 
 	KEY_END,
 };

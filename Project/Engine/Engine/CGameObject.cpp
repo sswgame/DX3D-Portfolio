@@ -402,6 +402,19 @@ void CGameObject::DeleteComponent(COMPONENT_TYPE _eType)
 	}
 }
 
+void CGameObject::DeleteScript(UINT _ScriptID)
+{
+	for (int i = 0; i < m_vecScript.size(); ++i)
+	{
+		if (m_vecScript[i]->GetID() == _ScriptID)
+		{
+			SAFE_DELETE(m_vecScript[i]);
+			m_vecScript.erase(m_vecScript.begin() + i);
+			break;
+		}
+	}
+}
+
 void CGameObject::Destroy()
 {
 	if (m_bDead)

@@ -3,71 +3,69 @@
 #include "CTimeMgr.h"
 #include "CEventMgr.h"
 
-void CState::CallUpdateFunc()
-{
-	if (nullptr == m_updateFunc)
-	{
-		return;
-	}
-	m_tState.fStateTime += DT;
-	m_updateFunc(m_tState);
-}
-
 CFSM::CFSM()
 	: CComponent{COMPONENT_TYPE::FINITE_STATE_MACHINE}
-	, m_pCurrentState{nullptr}
+	, m_pCurState(nullptr)
 {
 }
 
 CFSM::~CFSM()
 {
+	Safe_Del_Map(m_mapState);
 }
 
-void CFSM::CreateState(const std::wstring&                            _strStateName,
-                       std::function<void(const tStateInfo& _tState)> _updateFunc,
-                       std::function<void(const tStateInfo& _tState)> _startFunc/*=nullptr*/,
-                       std::function<void(const tStateInfo& _tState)> _endFunc/*=nullptr*/)
-{
-	const auto iter = m_mapState.find(_strStateName);
-	assert(iter == m_mapState.end() && "ALREADY HAS A STATE WITH THE NAME");
 
-	CState& newState          = m_mapState[_strStateName];
-	newState.m_tState.strName = _strStateName;
-	newState.m_updateFunc     = _updateFunc;
-	newState.m_startFunc      = _startFunc;
-	newState.m_endFunc        = _endFunc;
+void CFSM::update()
+{
+	if (m_pCurState != nullptr)
+		m_pCurState->Update();
+
+}
+
+void CFSM::lateupdate()
+{
+	if (m_pCurState != nullptr)
+		m_pCurState->LateUpdate();
+
 }
 
 void CFSM::finalupdate()
 {
-	if (nullptr == m_pCurrentState)
-	{
-		return;
-	}
-	m_pCurrentState->CallUpdateFunc();
 }
 
-void CFSM::ChangeState(const std::wstring& _strNextStateName)
+void CFSM::AddState(wstring _sStateType, CState* _pState)
 {
-	static std::wstring s_temp{};
-	s_temp = _strNextStateName;
+	map<wstring, CState*>::iterator iter = m_mapState.find(_sStateType);
+	if (iter != m_mapState.end())
+		return;
+
+	m_mapState.insert(make_pair(_sStateType, _pState));
+}
+
+void CFSM::ChangeState(wstring _sStateType)
+{
 	tEventInfo info{};
-	info.eType  = EVENT_TYPE::CHANGE_FSM_STATE;
+
+	info.eType = EVENT_TYPE::CHANGE_FSM_STATE;
 	info.lParam = (DWORD_PTR)this;
-	info.wParam = (DWORD_PTR)s_temp.c_str();
+	info.wParam = (DWORD_PTR)_sStateType.c_str();
 
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
 
-const std::wstring& CFSM::GetCurrentStateName() const
+void CFSM::DeleteState(wstring _eStateType)
 {
-	assert(m_pCurrentState);
-	return m_pCurrentState->m_tState.strName;
+	map<wstring, CState*>::iterator iter = m_mapState.begin();
+	for (; iter != m_mapState.end(); ++iter)
+	{
+		if (iter->first == _eStateType)
+		{
+			SAFE_DELETE(iter->second);
+			iter->second = nullptr;
+			break;
+		}
+	}
+
 }
 
-float CFSM::GetCurrentStateTime() const
-{
-	assert(m_pCurrentState);
-	return m_pCurrentState->m_tState.fStateTime;
-}

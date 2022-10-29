@@ -72,6 +72,8 @@ int g_iVK[(UINT)KEY::KEY_END] =
 
 	VK_LBUTTON,
 	VK_RBUTTON,
+	VK_MBUTTON,
+
 };
 
 CKeyMgr::CKeyMgr() {}

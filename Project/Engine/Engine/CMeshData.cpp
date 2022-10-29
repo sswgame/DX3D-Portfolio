@@ -45,7 +45,8 @@ CGameObject* CMeshData::Instantiate()
 	pAnimator->SetAnimClip(m_pMesh->GetAnimClip());
 
 	// todo 
-	pAnimator->CreateAnim(L"test", 0, 0.f, 13.f, 0, 0);
+	int MaxFrameIdx = pAnimator->GetAnimClip(0).iFrameLength - 1;
+	pAnimator->CreateAnimByFrame(L"test", 0, 0, MaxFrameIdx);
 
 	return pNewObj;
 }

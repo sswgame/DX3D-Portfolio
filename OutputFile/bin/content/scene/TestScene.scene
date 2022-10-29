@@ -2,7 +2,56 @@ SCENE NAME: ""
 LAYERS:
   - LAYER NAME: Tile
     GAME OBJECTS:
-      []
+      - NAME: player
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [1, 1, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+          - ANIMATOR3D:
+              {}
+          - MESHRENDER:
+              MESH: [mesh\player_sword0.mesh, mesh\player_sword0.mesh]
+              MATERIAL COUNT: 4
+              0: [material\body-top.mtrl, material\body-top.mtrl]
+              1: [material\body-bottom.mtrl, material\body-bottom.mtrl]
+              2: [material\scarf.mtrl, material\scarf.mtrl]
+              3: [material\yaak.mtrl, material\yaak.mtrl]
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+          - FINITE_STATE_MACHINE:
+              {}
+        SCRIPTS:
+          - PlayerScript:
+              {}
+        CHILDREN:
+          []
+      - NAME: player_sword1
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [1, 1, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+          - ANIMATOR3D:
+              {}
+          - MESHRENDER:
+              MESH: [mesh\player_sword1.mesh, mesh\player_sword1.mesh]
+              MATERIAL COUNT: 1
+              0: [material\M_VeilleurSword.mtrl, material\M_VeilleurSword.mtrl]
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
   - LAYER NAME: Default
     GAME OBJECTS:
       - NAME: MainCamera
@@ -24,7 +73,7 @@ LAYERS:
               m_iLayerMask: 4294967295
               m_iCamIdx: -1
         SCRIPTS:
-          - CCameraMoveScript:
+          - CameraMoveScript:
               {}
         CHILDREN:
           []

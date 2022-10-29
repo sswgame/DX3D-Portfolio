@@ -128,7 +128,8 @@ std::wstring ToWString(COMPONENT_TYPE _type)
 		L"PARTICLESYSTEM",
 		L"LANDSCAPE",
 		L"DECAL",
-		L"SKYBOX"
+		L"SKYBOX",
+		L"FINITE_STATE_MACHINE",
 	};
 
 	return szWString[(UINT)_type];

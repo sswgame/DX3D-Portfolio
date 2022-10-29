@@ -37,6 +37,19 @@ public:
 		_pChildUI->m_pParentUI = this;
 		m_vecChildUI.push_back(_pChildUI);
 	}
+	void DeleteChild(UI* _pChildUI)
+	{
+		for (int i = 0; i < m_vecChildUI.size(); ++i)
+		{
+			if (m_vecChildUI[i] == _pChildUI)
+			{
+				SAFE_DELETE(_pChildUI);
+				m_vecChildUI.erase(m_vecChildUI.begin() + i);
+				return;
+			}
+		}
+	}
+
 
 	virtual void Activate() { m_bOpen = true; }
 	virtual void Deactivate() { m_bOpen = false; };

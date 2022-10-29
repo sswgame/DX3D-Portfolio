@@ -179,29 +179,26 @@ void CEventMgr::update()
 			break;
 		case EVENT_TYPE::CHANGE_FSM_STATE:
 			{
-				const std::wstring strNextStateName = (const wchar_t*)m_vecEvent[i].wParam;
-				CFSM*              pFSM             = (CFSM*)m_vecEvent[i].lParam;
-				const auto         iter             = pFSM->m_mapState.find(strNextStateName);
-				assert(iter != pFSM->m_mapState.end() && "STATE NOT FOUND");
-				std::wstring strCurrentStateName = (nullptr != pFSM->m_pCurrentState)
-					                                   ? pFSM->m_pCurrentState->m_tState.strName
-					                                   : L"";
+			// lParam : FSM Component
+			// wParam : Next State Type Name
 
-				if (false == strCurrentStateName.empty())
-				{
-					if (nullptr != pFSM->m_pCurrentState->m_endFunc)
-					{
-						pFSM->m_pCurrentState->m_endFunc(pFSM->m_pCurrentState->m_tState);
-					}
-				}
-				pFSM->m_pCurrentState                            = &pFSM->m_mapState[strNextStateName];
-				pFSM->m_pCurrentState->m_tState.fStateTime       = 0.f;
-				pFSM->m_pCurrentState->m_tState.strPrevStateName = strCurrentStateName;
+				CFSM*   pFSM             = (CFSM*)m_vecEvent[i].lParam;
+				wstring sNextState = (wchar_t*)m_vecEvent[i].wParam;
 
-				if (nullptr != pFSM->m_pCurrentState->m_startFunc)
-				{
-					pFSM->m_pCurrentState->m_startFunc(pFSM->m_pCurrentState->m_tState);
-				}
+				const auto iter = pFSM->m_mapState.find(sNextState);
+				if (iter == pFSM->m_mapState.end())
+					break;
+
+				// 기존 상태 Exit 
+				CState* pPrevState = pFSM->GetCurState();
+				if (pPrevState != nullptr)
+					pPrevState->Exit();
+				
+				// 현재 상태 Enter 
+				CState* pNextState = iter->second;
+				pNextState->Enter();
+				pFSM->SetCurState(pNextState);
+				
 				break;
 			}
 

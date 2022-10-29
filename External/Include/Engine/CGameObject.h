@@ -70,12 +70,15 @@ public:
 public:
 	void              AddChild(CGameObject* _pChild);
 	void              AddComponent(CComponent* _component);
-	void              DeleteComponent(COMPONENT_TYPE _eType);
+	
 	CComponent*       GetComponent(COMPONENT_TYPE _eType) { return m_arrCom[(UINT)_eType]; }
 	CRenderComponent* GetRenderComponent() { return m_pRenderComponent; }
 
-	void Destroy();
+	void              DeleteComponent(COMPONENT_TYPE _eType);
+	void			  DeleteScript(UINT _ScriptID);
 
+	void Destroy();
+	
 	GET_COMPONENT(Transform, TRANSFORM)
 	GET_COMPONENT(MeshRender, MESHRENDER)
 	GET_COMPONENT(Camera, CAMERA)

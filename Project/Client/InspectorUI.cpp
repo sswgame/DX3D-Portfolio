@@ -99,7 +99,10 @@ InspectorUI::InspectorUI()
 	m_arrResUI[(UINT)RES_TYPE::TEXTURE] = pResInfoUI;
 }
 
-InspectorUI::~InspectorUI() {}
+InspectorUI::~InspectorUI() 
+{
+
+}
 
 
 void InspectorUI::update()
@@ -162,6 +165,10 @@ void InspectorUI::SetTargetObject(CGameObject* _pTarget)
 				pScriptUI = AddScriptUI();
 			else
 				pScriptUI = m_vecScriptUI[i];
+
+			// 삭제시키기 위해서 title로 이름 저장 
+			wstring ScriptName = CScriptMgr::GetScriptName(vecScripts[i]);
+			pScriptUI->SetTitle(string(ScriptName.begin(), ScriptName.end()));
 
 			pScriptUI->SetTargetObject(m_pTargetObject);
 			pScriptUI->SetTargetScript(vecScripts[i]);
@@ -376,6 +383,22 @@ void InspectorUI::RenderButton()
 	if (ImGui::Button(ButtonName.c_str(), ImVec2(150.f, 30.f)))
 	{
 		// Todo : AddScript 
+		// ListUI 활성화
+		ListUI* pListUI = (ListUI*)CImGuiMgr::GetInst()->FindUI("##ListUI");
+		pListUI->Clear();
+		pListUI->SetTitle("Script List");
+
+		vector<wstring> vecScriptInfo;
+		CScriptMgr::GetScriptInfo(vecScriptInfo);
+
+		for (int i = 0; i < vecScriptInfo.size(); ++i)
+		{
+			if (nullptr == m_pTargetObject->GetScriptByName(vecScriptInfo[i]))
+				pListUI->AddList(string(vecScriptInfo[i].begin(), vecScriptInfo[i].end()));
+		}
+
+		pListUI->Activate();
+		pListUI->SetDBCEvent(this, (DBCLKED)&InspectorUI::AddScript);
 	}
 	ImGui::PopStyleColor(2);
 
@@ -566,7 +589,51 @@ void InspectorUI::AddComponent(DWORD_PTR _param)
 }
 
 // _param : string ( Script Type Name )
-void InspectorUI::AddScript(DWORD_PTR _param) {}
+void InspectorUI::AddScript(DWORD_PTR _param) 
+{
+	if (m_pTargetObject == nullptr)
+		return;
+
+	string strScriptType = (char*)_param;
+	wstring wstrSCriptType = wstring(strScriptType.begin(), strScriptType.end());
+
+	m_pTargetObject->AddComponent((CComponent*)CScriptMgr::GetScript(wstrSCriptType));
+	CScript* pScript = m_pTargetObject->GetScriptByName(wstrSCriptType);
+	if (pScript != nullptr)
+		pScript->start();
+
+
+	// UI 갱신 
+	const vector<CScript*>& vecScripts = m_pTargetObject->GetScripts();
+	ScriptUI* pScriptUI = nullptr;
+
+	for (size_t i = 0; i < vecScripts.size(); ++i)
+	{
+		if (m_vecScriptUI.size() <= i)
+			pScriptUI = AddScriptUI();
+		else
+			pScriptUI = m_vecScriptUI[i];
+
+		// == todo ==
+		// 삭제시키기 위해서 title로 이름 저장 
+		wstring ScriptName = CScriptMgr::GetScriptName(vecScripts[i]);
+		pScriptUI->SetTitle(string(ScriptName.begin(), ScriptName.end()));
+
+		pScriptUI->SetTargetObject(m_pTargetObject);
+		pScriptUI->SetTargetScript(vecScripts[i]);
+		pScriptUI->Activate();
+	}
+
+	// ScriptUI 가 더 많이 있을때
+	if (vecScripts.size() < m_vecScriptUI.size())
+	{
+		// 대응하는 UI 를 제외한 나머지 ScriptUI 들을 비활성화 한다.ㄴ
+		for (int i = vecScripts.size(); i < m_vecScriptUI.size(); ++i)
+		{
+			m_vecScriptUI[i]->Deactivate();
+		}
+	}
+}
 
 // _param : COMPONENT_TYPE
 void InspectorUI::DeleteComponent(DWORD_PTR _param)
@@ -581,4 +648,24 @@ void InspectorUI::DeleteComponent(DWORD_PTR _param)
 }
 
 // _param : CSCript*
-void InspectorUI::DeleteScript(DWORD_PTR _param) {}
+void InspectorUI::DeleteScript(DWORD_PTR _param) 
+{
+	CScript* pScript = (CScript*)_param;
+
+	// 해당 Script 삭제 
+	wstring wstrScriptName = CScriptMgr::GetScriptName(pScript);
+	string strScriptName = string(wstrScriptName.begin(), wstrScriptName.end());
+	m_pTargetObject->DeleteScript(pScript->GetID());
+
+	// UI 갱신 
+	for (int i = 0; i < m_vecScriptUI.size(); ++i)
+	{
+		if (m_vecScriptUI[i]->GetTitle() == strScriptName)
+		{
+			DeleteChild(m_vecScriptUI[i]);
+			m_vecScriptUI.erase(m_vecScriptUI.begin() + i);
+			break;
+		}
+	}
+
+}

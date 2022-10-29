@@ -11,6 +11,7 @@ private:
 	COMPONENT_TYPE m_eComType;
 
 	bool m_bActive;
+	bool m_bFold;
 
 public:
 	void         SetTargetObject(CGameObject* _pTarget) { m_pTargetObject = _pTarget; }
@@ -21,6 +22,7 @@ public:
 
 protected:
 	bool IsComponentActive() { return m_bActive; }
+	bool IsFold() { return m_bFold; }
 
 public:
 	virtual void update() override;

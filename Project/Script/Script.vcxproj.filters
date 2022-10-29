@@ -5,32 +5,74 @@
       <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="CScriptMgr.h" />
-    <ClInclude Include="CCameraMoveScript.h">
+    <ClInclude Include="CameraMoveScript.h">
       <Filter>Script</Filter>
     </ClInclude>
-    <ClInclude Include="CMissileScript.h">
-      <Filter>Script</Filter>
-    </ClInclude>
-    <ClInclude Include="CPlayerScript.h">
+    <ClInclude Include="MissileScript.h">
       <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="CSceneSaveLoad.h" />
+    <ClInclude Include="CStateMgr.h">
+      <Filter>Script\PlayerScript\StateMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CDieState.h">
+      <Filter>Script\PlayerScript\State\Die</Filter>
+    </ClInclude>
+    <ClInclude Include="CIdleState.h">
+      <Filter>Script\PlayerScript\State\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="CHitState.h">
+      <Filter>Script\PlayerScript\State\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="CAttackState.h">
+      <Filter>Script\PlayerScript\State\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerStat.h">
+      <Filter>Script\PlayerScript\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerScript.h">
+      <Filter>Script\PlayerScript</Filter>
+    </ClInclude>
+    <ClInclude Include="CObjKeyMgr.h">
+      <Filter>Script\PlayerScript\Key</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Default</Filter>
     </ClCompile>
     <ClCompile Include="CScriptMgr.cpp" />
-    <ClCompile Include="CCameraMoveScript.cpp">
+    <ClCompile Include="CameraMoveScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
-    <ClCompile Include="CMissileScript.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
-    <ClCompile Include="CPlayerScript.cpp">
+    <ClCompile Include="MissileScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="CSceneSaveLoad.cpp" />
+    <ClCompile Include="CStateMgr.cpp">
+      <Filter>Script\PlayerScript\StateMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CDieState.cpp">
+      <Filter>Script\PlayerScript\State\Die</Filter>
+    </ClCompile>
+    <ClCompile Include="CIdleState.cpp">
+      <Filter>Script\PlayerScript\State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="CHitState.cpp">
+      <Filter>Script\PlayerScript\State\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="CAttackState.cpp">
+      <Filter>Script\PlayerScript\State\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerStat.cpp">
+      <Filter>Script\PlayerScript\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerScript.cpp">
+      <Filter>Script\PlayerScript</Filter>
+    </ClCompile>
+    <ClCompile Include="CObjKeyMgr.cpp">
+      <Filter>Script\PlayerScript\Key</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -38,6 +80,33 @@
     </Filter>
     <Filter Include="Script">
       <UniqueIdentifier>{ac27a7a1-23b1-4a47-8b9b-231c2e57487d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript">
+      <UniqueIdentifier>{a23fde27-89ca-4bd4-a600-ab785e942220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\StateMgr">
+      <UniqueIdentifier>{3fd3f55f-b709-475c-84ba-36f283eddc39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\Stat">
+      <UniqueIdentifier>{adbeabb8-ceb7-4ae3-a0f5-d145b3bd686e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State">
+      <UniqueIdentifier>{2b8526b3-0109-4729-af73-6a3dfb77008d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\Idle">
+      <UniqueIdentifier>{289e8701-98ce-4190-947b-08f90258bfb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\Attack">
+      <UniqueIdentifier>{1bc12486-cc07-4f53-a9b5-a0d710a1bb16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\Die">
+      <UniqueIdentifier>{74dd7de0-25d9-4df1-ae10-b7562a7f65c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\Hit">
+      <UniqueIdentifier>{b6087e97-6558-4ae8-98a6-7b5b14724f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\Key">
+      <UniqueIdentifier>{8c570a7e-35af-46ae-990a-74a631b0f457}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

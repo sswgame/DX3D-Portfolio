@@ -258,41 +258,22 @@ void CAnimation3D::CopyInfo(CAnimation3D** _pCopyAnim)
 
 
 
-void CAnimation3D::SetFrameInfo(int _ClipNum
-	, double _startTime, double _endTime
-	, int _startFrameIdx, int _EndFrame)
+void CAnimation3D::SetFrameInfoByFrame(int _ClipNum
+	, int _startFrameIdx, int _EndFrameIdx)
 {
 	m_iCurClip = _ClipNum;
-	m_tClip.dStartTime = _startTime;
-	m_tClip.dEndTime = _endTime;
 
+	SetStartFrameIdx(_startFrameIdx);
+	SetEndFrameIdx(_EndFrameIdx);
 
-	if (_startTime <= 0.0)
-	{
-		if (nullptr != m_pOwner)
-			m_tClip.dStartTime = m_pOwner->GetAnimClip(m_iCurClip).dStartTime;
-		else
-			m_tClip.dStartTime = 0.0;
-	}
+}
 
-	if (_endTime < 0.0)
-	{
-		if (nullptr != m_pOwner)
-			m_tClip.dEndTime = m_pOwner->GetAnimClip(m_iCurClip).dTimeLength;
-		else
-			m_tClip.dEndTime = _endTime;
-	}
+void CAnimation3D::SetFrameInfoByTime(int _ClipNum, double _StartTime, double _EndTime)
+{
+	m_iCurClip = _ClipNum;
 
-	// 시간으로 시작/끝 인덱스를 구한다. 
-
-	double dFrameIdx = _startTime * (double)m_iFrameCnt;
-	m_tClip.iStartFrame = (int)(dFrameIdx);
-
-	dFrameIdx = _endTime * (double)m_iFrameCnt;
-	m_tClip.iEndFrame = (int)(dFrameIdx);
-
-
-
+	SetStartTime(_StartTime);
+	SetEndTime(_EndTime);
 }
 
 void CAnimation3D::SetClipUpdateTime(int _vecClipSize)
@@ -305,47 +286,54 @@ void CAnimation3D::SetClipUpdateTime(int _vecClipSize)
 
 }
 
+
 void CAnimation3D::SetStartTime(double _startTime)
 {
 	if (m_tClip.dStartTime == _startTime)
 		return;
 	if ((float)m_tClip.dStartTime == (float)_startTime)
 		return;
-
 	m_tClip.dStartTime = _startTime;
-	if (_startTime <= 0.f)
-		m_tClip.dStartTime = 0.f;
 
-	double dFrameIdx = m_tClip.dStartTime * (double)m_iFrameCnt;
-	if (m_tClip.iStartFrame != (int)dFrameIdx)
-		m_tClip.iStartFrame = (int)(dFrameIdx);
+	if (_startTime <= 0.0)
+		m_tClip.dStartTime = 0.0;
+	if (_startTime >= m_pOwner->GetAnimClip(m_iCurClip).dTimeLength)
+		m_tClip.dStartTime = m_pOwner->GetAnimClip(m_iCurClip).dTimeLength;
+
+	// TIME 으로 INDEX 를 구한다. 
+	m_tClip.iStartFrame = m_tClip.dStartTime * (double)m_iFrameCnt;
 
 }
+
 void CAnimation3D::SetEndTime(double _endTime)
 {
 	if (m_tClip.dEndTime == _endTime)
 		return;
 	if ((float)m_tClip.dEndTime == (float)_endTime)
 		return;
-
 	m_tClip.dEndTime = _endTime;
+
+	if (_endTime <= 0.0)
+		m_tClip.dEndTime = 0.0;
 	if (_endTime >= m_pOwner->GetAnimClip(m_iCurClip).dTimeLength)
 		m_tClip.dEndTime = m_pOwner->GetAnimClip(m_iCurClip).dTimeLength;
 
-	double dFrameIdx = m_tClip.dEndTime * (double)m_iFrameCnt;
-	if (m_tClip.iEndFrame != (int)dFrameIdx)
-		m_tClip.iEndFrame = (int)(dFrameIdx);
+	// TIME 으로 INDEX 를 구한다. 
+	m_tClip.iEndFrame = m_tClip.dEndTime * (double)m_iFrameCnt;
 
 }
 void CAnimation3D::SetStartFrameIdx(int _startIdx)
 {
 	if (m_tClip.iStartFrame == _startIdx)
 		return;
-
 	m_tClip.iStartFrame = _startIdx;
+
 	if (_startIdx <= 0)
 		m_tClip.iStartFrame = 0;
+	if (_startIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
+		m_tClip.iStartFrame = m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1;
 
+	// INDEX 로 TIME 을 구한다. 
 	m_tClip.dStartTime = (double)m_tClip.iStartFrame / (double)m_iFrameCnt;
 
 }
@@ -356,11 +344,16 @@ void CAnimation3D::SetEndFrameIdx(int _endIdx)
 		return;
 
 	m_tClip.iEndFrame = _endIdx;
+
+	if (_endIdx <= 0)
+		m_tClip.iEndFrame = 0;
 	if (_endIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
 		m_tClip.iEndFrame = m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1;
 
+	// INDEX 로 TIME 을 구한다. 
 	m_tClip.dEndTime = (double)m_tClip.iEndFrame / (double)m_iFrameCnt;
 }
+
 
 
 void CAnimation3D::SetCurFrameIdx(int _curIdx)

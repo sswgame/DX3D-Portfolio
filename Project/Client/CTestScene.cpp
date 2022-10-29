@@ -23,12 +23,13 @@
 #include <Engine/CSceneFile.h>
 #include <Engine/CSound.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CFSM.h>
 
 #include <Engine\CMeshData.h>
 
-#include <Script/CPlayerScript.h>
-#include <Script/CCameraMoveScript.h>
-#include <Script/CMissileScript.h>
+#include <Script/PlayerScript.h>
+#include <Script/CameraMoveScript.h>
+#include <Script/MissileScript.h>
 
 #include <Script\CSceneSaveLoad.h>
 
@@ -66,7 +67,7 @@ void CTestScene::CreateTestScene()
 	pCamObj->SetName(L"MainCamera");
 	pCamObj->AddComponent(new CTransform);
 	pCamObj->AddComponent(new CCamera);
-	pCamObj->AddComponent(new CCameraMoveScript);
+	pCamObj->AddComponent(new CameraMoveScript);
 
 	pCamObj->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
 	pCamObj->Camera()->SetCameraAsMain();
@@ -235,34 +236,38 @@ void CTestScene::CreateTestScene()
 	}
 
 	// ANIMATION TEST 
-	//Ptr<CMeshData> pMeshData = nullptr;
-	//CGameObject* pObj = nullptr;
+	Ptr<CMeshData> pMeshData = nullptr;
+	CGameObject* pObj = nullptr;
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat", L"meshdata\\player_sword0.mdat");
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat", L"meshdata\\player_sword0.mdat");
 
-	//pObj = pMeshData->Instantiate();
-	//pObj->SetName(L"player");
-	//pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	//pObj->Animator3D()->Play(L"test", true);
+	pObj = pMeshData->Instantiate();
+	pObj->SetName(L"player");
+	pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	pObj->Animator3D()->Play(L"test", true);
 
-	//pCurScene->AddObject(pObj, 0);
+	pObj->AddComponent(new CFSM);
+	pObj->AddComponent(new PlayerScript);
 
 
-	//Ptr<CMeshData> pMeshDataWeapon = nullptr;
-	//CGameObject* pObjWeapon = nullptr;
+	pCurScene->AddObject(pObj, 0);
+
+
+	Ptr<CMeshData> pMeshDataWeapon = nullptr;
+	CGameObject* pObjWeapon = nullptr;
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	//pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
+	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
 
-	//pObjWeapon = pMeshDataWeapon->Instantiate();
-	//pObjWeapon->SetName(L"player_sword1");
-	//pObjWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	//pObjWeapon->Animator3D()->Play(L"test", true);
+	pObjWeapon = pMeshDataWeapon->Instantiate();
+	pObjWeapon->SetName(L"player_sword1");
+	pObjWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	pObjWeapon->Animator3D()->Play(L"test", true);
 
-	//pCurScene->AddObject(pObjWeapon, 0);
+	pCurScene->AddObject(pObjWeapon, 0);
 
 	// collision test
 	CGameObject* pCol = new CGameObject;
