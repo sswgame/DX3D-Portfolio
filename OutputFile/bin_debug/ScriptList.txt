@@ -1,3 +1,6 @@
 CameraMoveScript
+CCameraMoveScript
+CMissileScript
+CPlayerScript
 MissileScript
 PlayerScript

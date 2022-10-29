@@ -46,7 +46,7 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
     switch((SCRIPT_TYPE)_pScript->GetScriptType())
     {
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
-		return L"CameraMoveScript";
+		return L"CameraMoveScript";		
 	case SCRIPT_TYPE::MISSILESCRIPT:
 		return L"MissileScript";
 	case SCRIPT_TYPE::PLAYERSCRIPT:
