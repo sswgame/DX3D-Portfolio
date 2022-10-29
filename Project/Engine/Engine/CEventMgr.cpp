@@ -182,8 +182,9 @@ void CEventMgr::update()
 			// lParam : FSM Component
 			// wParam : Next State Type Name
 
-				CFSM*   pFSM             = (CFSM*)m_vecEvent[i].lParam;
-				wstring sNextState = (wchar_t*)m_vecEvent[i].wParam;
+				CFSM*    pFSM			 = (CFSM*)	 m_vecEvent[i].lParam;
+				wstring sNextState		 = (const wchar_t*)m_vecEvent[i].wParam;
+	
 
 				const auto iter = pFSM->m_mapState.find(sNextState);
 				if (iter == pFSM->m_mapState.end())

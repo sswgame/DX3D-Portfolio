@@ -6,6 +6,7 @@
 CState::CState(wstring _sState)
 	: m_sStateType(_sState)
 	, m_bTimePlay(true)
+	, m_pOwner(nullptr)
 {
 
 }

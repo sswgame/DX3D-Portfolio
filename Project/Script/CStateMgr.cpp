@@ -13,6 +13,7 @@
 
 #include "CScriptMgr.h"
 #include "PlayerScript.h"
+#include "CPlayerMoveState.h"
 
 
 
@@ -27,9 +28,15 @@ CStateMgr::~CStateMgr()
 
 void CStateMgr::Update()
 {
+	m_sPrevState = L"";
+	m_sPrevState = m_sCurstate;
+	m_sCurstate = ChangeStateByKeyInfo();
+		
+	if (m_sPrevState == m_sCurstate)
+		return;
+
 	// 키 입력에 따른 ChangeState 
-	wstring state = ChangeStateByKeyInfo();
-	
+	ChangeState(m_sCurstate);
 
 }
 
@@ -50,6 +57,8 @@ void CStateMgr::InitState(CGameObject* _pOwner)
 	pFSM->AddState(L"DIE"	, new CDieState);
 	pFSM->AddState(L"HIT"	, new CHitState);
 	pFSM->AddState(L"IDLE"	, new CIdleState);
+	pFSM->AddState(L"MOVE"	, new CPlayerMoveState);
+
 
 	pFSM->ChangeState(L"IDLE");
 
@@ -78,12 +87,12 @@ wstring CStateMgr::ChangeStateByKeyInfo()
 
 		if (m_tCurKeyInfo.iKeyFlags & PLAYER_KEY_OPTION::TAP)
 		{
-			StateByKey = L"WALK";
+			//StateByKey = L"MOVE";
 
 		}
 		else if (m_tCurKeyInfo.iKeyFlags & PLAYER_KEY_OPTION::PRESSED)
 		{
-			StateByKey = L"RUN";
+			StateByKey = L"MOVE";
 
 		}
 		else if (m_tCurKeyInfo.iKeyFlags & PLAYER_KEY_OPTION::AWAY)
@@ -134,5 +143,17 @@ wstring CStateMgr::ChangeStateByKeyInfo()
 	}
 
 	return StateByKey;
+}
+
+void CStateMgr::ChangeState(wstring _sStateName)
+{
+	if (m_pOwnerObj == nullptr)
+		return;
+
+	CFSM* pFSM = m_pOwnerObj->FSM();
+	if (pFSM == nullptr)
+		return;
+
+	pFSM->ChangeState(_sStateName);
 }
 

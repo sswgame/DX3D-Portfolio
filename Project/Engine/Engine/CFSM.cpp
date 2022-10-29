@@ -39,16 +39,18 @@ void CFSM::AddState(wstring _sStateType, CState* _pState)
 	if (iter != m_mapState.end())
 		return;
 
+	_pState->SetOwner(GetOwner());
 	m_mapState.insert(make_pair(_sStateType, _pState));
 }
 
 void CFSM::ChangeState(wstring _sStateType)
 {
+	static wstring sStateTypeName = _sStateType;
 	tEventInfo info{};
 
 	info.eType = EVENT_TYPE::CHANGE_FSM_STATE;
 	info.lParam = (DWORD_PTR)this;
-	info.wParam = (DWORD_PTR)_sStateType.c_str();
+	info.wParam = (DWORD_PTR)sStateTypeName.c_str();
 
 	CEventMgr::GetInst()->AddEvent(info);
 }
@@ -67,7 +69,5 @@ void CFSM::DeleteState(wstring _sStateType)
 		}
 	}
 	m_mapState.erase(_sStateType);
-
-
 }
 

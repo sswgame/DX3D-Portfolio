@@ -36,6 +36,9 @@
     <ClInclude Include="CObjKeyMgr.h">
       <Filter>Script\PlayerScript\Key</Filter>
     </ClInclude>
+    <ClInclude Include="CPlayerMoveState.h">
+      <Filter>Script\PlayerScript\State\Move</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -73,6 +76,9 @@
     <ClCompile Include="CObjKeyMgr.cpp">
       <Filter>Script\PlayerScript\Key</Filter>
     </ClCompile>
+    <ClCompile Include="CPlayerMoveState.cpp">
+      <Filter>Script\PlayerScript\State\Move</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -107,6 +113,9 @@
     </Filter>
     <Filter Include="Script\PlayerScript\Key">
       <UniqueIdentifier>{8c570a7e-35af-46ae-990a-74a631b0f457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\Move">
+      <UniqueIdentifier>{c892f3fc-15c3-41ad-9456-03a160c4509c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

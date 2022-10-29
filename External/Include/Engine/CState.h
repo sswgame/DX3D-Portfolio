@@ -12,6 +12,8 @@ class CState :
     public CEntity
 {
 protected:
+	CGameObject*	m_pOwner;		
+
 	float			m_fTimer;		// 상태별 타이머 
 	wstring			m_sStateType;	// 상태 타입 이름 
 
@@ -28,9 +30,12 @@ public:
 	// [ GET PART ]
 	wstring GetStateType()	{ return m_sStateType; }
 	float	GetTimer()		{ return m_fTimer; }
+	CGameObject* GetOwner() { return m_pOwner; }
 
 	// [ SET PART ]
 	void SetStateType(wstring _sState) { m_sStateType = _sState; }
+	void SetOwner(CGameObject* _pOwner) { m_pOwner = _pOwner; }
+
 
 public:
 	// [ TIMER INFO ]

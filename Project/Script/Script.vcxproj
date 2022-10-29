@@ -187,6 +187,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="CDieState.h" />
     <ClInclude Include="CHitState.h" />
     <ClInclude Include="CIdleState.h" />
+    <ClInclude Include="CPlayerMoveState.h" />
     <ClInclude Include="MissileScript.h" />
     <ClInclude Include="CObjKeyMgr.h" />
     <ClInclude Include="PlayerScript.h" />
@@ -202,6 +203,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="CDieState.cpp" />
     <ClCompile Include="CHitState.cpp" />
     <ClCompile Include="CIdleState.cpp" />
+    <ClCompile Include="CPlayerMoveState.cpp" />
     <ClCompile Include="MissileScript.cpp" />
     <ClCompile Include="CObjKeyMgr.cpp" />
     <ClCompile Include="PlayerScript.cpp" />

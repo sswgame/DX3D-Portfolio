@@ -206,7 +206,7 @@ void CObjKeyMgr::CheckKeyPressed()
 		if (KEY_TAP(m_tMovingKey.eJump) ||
 			KEY_PRESSED(m_tMovingKey.eJump))
 		{
-			m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::DOUBLE_JUMP;
+ 			m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::DOUBLE_JUMP;
 		}
 	}
 

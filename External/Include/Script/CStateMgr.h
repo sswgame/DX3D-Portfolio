@@ -6,6 +6,8 @@ class CStateMgr
 	: public CEntity
 {
 private:
+	wstring					m_sPrevState;
+	wstring					m_sCurstate;
 	CGameObject*			m_pOwnerObj;
 
 	tKey_Zip				m_tCurKeyInfo;
@@ -31,6 +33,7 @@ public:
 
 private:
 	wstring ChangeStateByKeyInfo();
+	void ChangeState(wstring _sStateName);
 
 
 	CLONE(CStateMgr)

@@ -64,7 +64,9 @@ void PlayerScript::update()
 	tKey_Zip tPrevKeyInfo = m_pKeyMgr->GetPrevKeyInfo();
 
 	// 2. 플레이어 방향 정보 업데이트 
-	UpdateDirection(tCurKeyInfo);
+	
+	
+	//UpdateDirection(tCurKeyInfo);
 
 
 	// 3. 플레이어 상태 업데이트 
