@@ -441,8 +441,9 @@ bool CCollisionMgr::IsCollisionCube(const CCollider3D* _pLeftCol, const CCollide
 
 bool CCollisionMgr::IsCollisionSphere(const CCollider3D* _pLeftCol, const CCollider3D* _pRightCol)
 {
-	const float fLeftRadius     = _pLeftCol->GetWorldScale().x;
-	const float fRightRadius    = _pRightCol->GetWorldScale().x;
+	//실제 지정은 지름 크기로 되므로, 0.5f를 곱해주므로써, 반지름 길이로 얻도록 보정.
+	const float fLeftRadius     = _pLeftCol->GetWorldScale().x * .5f;
+	const float fRightRadius    = _pRightCol->GetWorldScale().x * .5f;
 	const float fCenterDistance = Vec3::Distance(_pLeftCol->GetWorldPos(), _pRightCol->GetWorldPos());
 
 	if (fCenterDistance < fLeftRadius + fRightRadius)

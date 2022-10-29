@@ -32,8 +32,9 @@ void CObjKeyMgr::Init()
 	m_tMovingKey.eRight			= KEY::D;
 
 	m_tMovingKey.eJump			= KEY::SPACE;
-	m_tMovingKey.eInteract		= KEY::LSHFT;
-	m_tMovingKey.eSprint		= KEY::LALT;
+	m_tMovingKey.eInteract		= KEY::E;
+	m_tMovingKey.eSprint		= KEY::LSHFT;
+	m_tMovingKey.eWalk			= KEY::LALT;
 
 
 	m_tCombatKey.eLightAttack	= KEY::LBTN;
@@ -139,8 +140,13 @@ void CObjKeyMgr::CheckKeyPressed()
 		m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::FORWARD;
 
 		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
-
 		m_tCurKeyInfo.eKey = m_tMovingKey.eForward;
+
+		if (KEY_TAP(m_tMovingKey.eWalk)
+			|| KEY_PRESSED(m_tMovingKey.eWalk))
+		{
+			m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::WALK;
+		}
 
 	}
 	if (KEY_PRESSED(m_tMovingKey.eBackWard))
@@ -149,6 +155,13 @@ void CObjKeyMgr::CheckKeyPressed()
 		m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::BACKWARD;
 		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
 		m_tCurKeyInfo.eKey = m_tMovingKey.eBackWard;
+
+		if (KEY_TAP(m_tMovingKey.eWalk)
+			|| KEY_PRESSED(m_tMovingKey.eWalk))
+		{
+			m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::WALK;
+
+		}
 	}
 	if (KEY_PRESSED(m_tMovingKey.eLeft))
 	{
@@ -156,6 +169,14 @@ void CObjKeyMgr::CheckKeyPressed()
 		m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::LEFT;
 		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
 		m_tCurKeyInfo.eKey = m_tMovingKey.eLeft;
+
+		if (KEY_TAP(m_tMovingKey.eWalk)
+			|| KEY_PRESSED(m_tMovingKey.eWalk))
+		{
+			m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::WALK;
+
+		}
+
 	}
 	if (KEY_PRESSED(m_tMovingKey.eRight))
 	{
@@ -163,6 +184,14 @@ void CObjKeyMgr::CheckKeyPressed()
 		m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::RIGHT;
 		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
 		m_tCurKeyInfo.eKey = m_tMovingKey.eRight;
+
+		if (KEY_TAP(m_tMovingKey.eWalk)
+			|| KEY_PRESSED(m_tMovingKey.eWalk))
+		{
+			m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::WALK;
+
+		}
+
 	}
 
 
@@ -173,7 +202,14 @@ void CObjKeyMgr::CheckKeyPressed()
 
 		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
 		m_tCurKeyInfo.eKey = m_tMovingKey.eJump;
+
+		if (KEY_TAP(m_tMovingKey.eJump) ||
+			KEY_PRESSED(m_tMovingKey.eJump))
+		{
+			m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::DOUBLE_JUMP;
+		}
 	}
+
 	if (KEY_PRESSED(m_tMovingKey.eInteract))
 	{
 		m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::PRESSED;
@@ -181,6 +217,7 @@ void CObjKeyMgr::CheckKeyPressed()
 		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
 		m_tCurKeyInfo.eKey = m_tMovingKey.eInteract;
 	}
+
 	if (KEY_PRESSED(m_tMovingKey.eSprint))
 	{
 		m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::PRESSED;
@@ -188,6 +225,7 @@ void CObjKeyMgr::CheckKeyPressed()
 		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
 		m_tCurKeyInfo.eKey = m_tMovingKey.eSprint;
 	}
+
 	if (KEY_PRESSED(m_tMovingKey.eWalk))
 	{
 		m_tCurKeyInfo.iKeyFlags |= PLAYER_KEY_OPTION::PRESSED;
@@ -195,6 +233,7 @@ void CObjKeyMgr::CheckKeyPressed()
 		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
 		m_tCurKeyInfo.eKey = m_tMovingKey.eWalk;
 	}
+
 
 }
 

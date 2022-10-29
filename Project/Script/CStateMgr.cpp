@@ -47,9 +47,9 @@ void CStateMgr::InitState(CGameObject* _pOwner)
 
 
 	pFSM->AddState(L"ATTACK", new CAttackState);
-	pFSM->AddState(L"DIE", new CDieState);
-	pFSM->AddState(L"HIT", new CHitState);
-	pFSM->AddState(L"IDLE", new CIdleState);
+	pFSM->AddState(L"DIE"	, new CDieState);
+	pFSM->AddState(L"HIT"	, new CHitState);
+	pFSM->AddState(L"IDLE"	, new CIdleState);
 
 	pFSM->ChangeState(L"IDLE");
 

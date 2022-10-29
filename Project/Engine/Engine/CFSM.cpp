@@ -54,18 +54,20 @@ void CFSM::ChangeState(wstring _sStateType)
 }
 
 
-void CFSM::DeleteState(wstring _eStateType)
+void CFSM::DeleteState(wstring _sStateType)
 {
 	map<wstring, CState*>::iterator iter = m_mapState.begin();
 	for (; iter != m_mapState.end(); ++iter)
 	{
-		if (iter->first == _eStateType)
+		if (iter->first == _sStateType)
 		{
 			SAFE_DELETE(iter->second);
 			iter->second = nullptr;
 			break;
 		}
 	}
+	m_mapState.erase(_sStateType);
+
 
 }
 

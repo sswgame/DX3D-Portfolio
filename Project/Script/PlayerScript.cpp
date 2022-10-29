@@ -106,44 +106,22 @@ void PlayerScript::UpdateDirection(tKey_Zip _keyInfo)
 	{
 	case FORWARD:
 	{
-		// 현재 방향 기준 앞으로 
-		m_vDirection = m_vDirection; // 변화 없음  
+		
 	}
 		break;
 	case BACKWARD:
 	{
-		// 현재 방향 기준 뒤로
-		Vec3 vDir = m_vDirection;
-		vDir.x *= -1.f;
-		vDir.z *= -1.f;
-		m_vDirection = vDir;
+	
 	}
 		break;
 	case LEFT:
 	{
-		// 현재 방향 기준 왼쪽으로 
-		Vec3 vDir = m_vDirection;
-
-		Vec2 A = Vec2(vDir.x, vDir.z);
-		Vec2 B = Vec2(1.f, 0.f);
-		float DefaultAngle = A.Dot(B);
-		DefaultAngle += 90.f;
-		vDir = Vec3(vDir.x * cos(DefaultAngle), vDir.y, vDir.z * sin(DefaultAngle));
-		m_vDirection = vDir;
+		
 	}
 		break;
 	case RIGHT:
 	{
-		// 현재 방향 기준 오른쪽 
-		Vec3 vDir = m_vDirection;
-
-		Vec2 A = Vec2(vDir.x, vDir.z);
-		Vec2 B = Vec2(1.f, 0.f);
-		float DefaultAngle = A.Dot(B);
-		DefaultAngle -= 90.f;
-		vDir = Vec3(vDir.x * cos(DefaultAngle), vDir.y, vDir.z * sin(DefaultAngle));
-
-		m_vDirection = vDir;
+		
 	}
 		break;
 	case JUMP:
