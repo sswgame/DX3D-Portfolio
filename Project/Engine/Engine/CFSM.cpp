@@ -45,7 +45,8 @@ void CFSM::AddState(wstring _sStateType, CState* _pState)
 
 void CFSM::ChangeState(wstring _sStateType)
 {
-	static wstring sStateTypeName = _sStateType;
+	static wstring sStateTypeName; 
+	sStateTypeName = _sStateType;
 	tEventInfo info{};
 
 	info.eType = EVENT_TYPE::CHANGE_FSM_STATE;
