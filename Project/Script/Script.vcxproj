@@ -184,12 +184,22 @@ call CodeGen.exe</Command>
   <ItemGroup>
     <ClInclude Include="CAttackState.h" />
     <ClInclude Include="CameraMoveScript.h" />
+    <ClInclude Include="CAttack_deuxiemie.h" />
+    <ClInclude Include="CDeath_deuxiemie.h" />
     <ClInclude Include="CDieState.h" />
     <ClInclude Include="CHitState.h" />
     <ClInclude Include="CIdleState.h" />
+    <ClInclude Include="CIdle_deuxiemie.h" />
     <ClInclude Include="CPlayerMoveState.h" />
+    <ClInclude Include="CRun_deuxiemie.h" />
+    <ClInclude Include="CShield_deuxiemie.h" />
+    <ClInclude Include="CStun_deuxiemie.h" />
+    <ClInclude Include="CWalk_deuxiemie.h" />
     <ClInclude Include="MissileScript.h" />
     <ClInclude Include="CObjKeyMgr.h" />
+    <ClInclude Include="MonsterGunScript.h" />
+    <ClInclude Include="MonsterShieldScript.h" />
+    <ClInclude Include="MonsterSwordScript.h" />
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="CPlayerStat.h" />
     <ClInclude Include="CSceneSaveLoad.h" />
@@ -200,12 +210,22 @@ call CodeGen.exe</Command>
   <ItemGroup>
     <ClCompile Include="CAttackState.cpp" />
     <ClCompile Include="CameraMoveScript.cpp" />
+    <ClCompile Include="CAttack_deuxiemie.cpp" />
+    <ClCompile Include="CDeath_deuxiemie.cpp" />
     <ClCompile Include="CDieState.cpp" />
     <ClCompile Include="CHitState.cpp" />
     <ClCompile Include="CIdleState.cpp" />
+    <ClCompile Include="CIdle_deuxiemie.cpp" />
     <ClCompile Include="CPlayerMoveState.cpp" />
+    <ClCompile Include="CRun_deuxiemie.cpp" />
+    <ClCompile Include="CShield_deuxiemie.cpp" />
+    <ClCompile Include="CStun_deuxiemie.cpp" />
+    <ClCompile Include="CWalk_deuxiemie.cpp" />
     <ClCompile Include="MissileScript.cpp" />
     <ClCompile Include="CObjKeyMgr.cpp" />
+    <ClCompile Include="MonsterGunScript.cpp" />
+    <ClCompile Include="MonsterShieldScript.cpp" />
+    <ClCompile Include="MonsterSwordScript.cpp" />
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="CPlayerStat.cpp" />
     <ClCompile Include="CSceneSaveLoad.cpp" />

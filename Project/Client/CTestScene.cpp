@@ -46,9 +46,11 @@ void CTestScene::CreateTestScene()
 
 	// Texture 한장 로딩해보기
 	//CResMgr::GetInst()->Load<CTexture>(L"texture\\Player.bmp", L"texture\\Player.bmp");
-	Ptr<CTexture> pMagicCircle =  CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png", L"texture\\MagicCircle.png");
+	Ptr<CTexture> pMagicCircle = CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png",
+	                                                                L"texture\\MagicCircle.png");
 
-	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga", L"texture\\tile\\TILE_01.tga");
+	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
+	                                                            L"texture\\tile\\TILE_01.tga");
 	//Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga",
 	//                                                             L"texture\\tile\\TILE_01_N.tga");
 
@@ -157,7 +159,7 @@ void CTestScene::CreateTestScene()
 	//pObject->LandScape()->SetFrustumCulling(false);
 	//pObject->LandScape()->SetFaceCount(8, 8);
 	//pObject->LandScape()->Create();
- 
+
 	//pCurScene->AddObject(pObject, L"Default");
 
 	//// Sphere
@@ -225,19 +227,18 @@ void CTestScene::CreateTestScene()
 
 		//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\Monster.fbx");
 		//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());		
-		
+
 		//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\Monster.mdat", L"meshdata\\Monster.mdat");
 
 		//pObj = pMeshData->Instantiate();
 		//pObj->SetName(L"Monster");
 		//pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 		//pCurScene->AddObject(pObj, 0);
-
 	}
 
 	// ANIMATION TEST 
 	Ptr<CMeshData> pMeshData = nullptr;
-	CGameObject* pObj = nullptr;
+	CGameObject*   pObj      = nullptr;
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
@@ -256,11 +257,12 @@ void CTestScene::CreateTestScene()
 
 
 	Ptr<CMeshData> pMeshDataWeapon = nullptr;
-	CGameObject* pObjWeapon = nullptr;
+	CGameObject*   pObjWeapon      = nullptr;
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
+	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat",
+	                                                      L"meshdata\\player_sword1.mdat");
 
 	pObjWeapon = pMeshDataWeapon->Instantiate();
 	pObjWeapon->SetName(L"player_sword1");
@@ -302,6 +304,6 @@ void CTestScene::CreateTestScene()
 	wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
 	CSceneSaveLoad::SaveScene(pCurScene, strSceneFilePath + L"scene\\TestScene.scene");
 
-	pCurScene->start();	
+	pCurScene->start();
 	pCurScene->SetSceneState(SCENE_STATE::STOP);
 }

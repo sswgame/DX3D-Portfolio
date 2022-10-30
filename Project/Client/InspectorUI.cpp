@@ -18,6 +18,7 @@
 #include "ParticleSystemUI.h"
 #include "DecalUI.h"
 #include "Animator3DUI.h"
+#include "Collider3DUI.h"
 
 // etc UI
 #include "ListUI.h"
@@ -47,14 +48,12 @@
 #include <Script/CScriptMgr.h>
 
 
-
 InspectorUI::InspectorUI()
-	:
-	UI("Inspector")
-  , m_pTargetObject(nullptr)
-  , m_pTargetRes(nullptr)
-  , m_arrComUI{}
-  , m_arrResUI{}
+	: UI("Inspector")
+	, m_pTargetObject(nullptr)
+	, m_pTargetRes(nullptr)
+	, m_arrComUI{}
+	, m_arrResUI{}
 {
 	// ComponentUI 생성   
 	ComponentUI* pComUI = nullptr;
@@ -62,6 +61,10 @@ InspectorUI::InspectorUI()
 	pComUI = new TransformUI;
 	AddChild(pComUI);
 	m_arrComUI[(UINT)COMPONENT_TYPE::TRANSFORM] = pComUI;
+
+	pComUI = new Collider3DUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::COLLIDER3D] = pComUI;
 
 	pComUI = new MeshRenderUI;
 	AddChild(pComUI);
@@ -99,9 +102,8 @@ InspectorUI::InspectorUI()
 	m_arrResUI[(UINT)RES_TYPE::TEXTURE] = pResInfoUI;
 }
 
-InspectorUI::~InspectorUI() 
+InspectorUI::~InspectorUI()
 {
-
 }
 
 
@@ -589,12 +591,12 @@ void InspectorUI::AddComponent(DWORD_PTR _param)
 }
 
 // _param : string ( Script Type Name )
-void InspectorUI::AddScript(DWORD_PTR _param) 
+void InspectorUI::AddScript(DWORD_PTR _param)
 {
 	if (m_pTargetObject == nullptr)
 		return;
 
-	string strScriptType = (char*)_param;
+	string  strScriptType  = (char*)_param;
 	wstring wstrSCriptType = wstring(strScriptType.begin(), strScriptType.end());
 
 	m_pTargetObject->AddComponent((CComponent*)CScriptMgr::GetScript(wstrSCriptType));
@@ -605,7 +607,7 @@ void InspectorUI::AddScript(DWORD_PTR _param)
 
 	// UI 갱신 
 	const vector<CScript*>& vecScripts = m_pTargetObject->GetScripts();
-	ScriptUI* pScriptUI = nullptr;
+	ScriptUI*               pScriptUI  = nullptr;
 
 	for (size_t i = 0; i < vecScripts.size(); ++i)
 	{
@@ -648,13 +650,13 @@ void InspectorUI::DeleteComponent(DWORD_PTR _param)
 }
 
 // _param : CSCript*
-void InspectorUI::DeleteScript(DWORD_PTR _param) 
+void InspectorUI::DeleteScript(DWORD_PTR _param)
 {
 	CScript* pScript = (CScript*)_param;
 
 	// 해당 Script 삭제 
 	wstring wstrScriptName = CScriptMgr::GetScriptName(pScript);
-	string strScriptName = string(wstrScriptName.begin(), wstrScriptName.end());
+	string  strScriptName  = string(wstrScriptName.begin(), wstrScriptName.end());
 	m_pTargetObject->DeleteScript(pScript->GetID());
 
 	// UI 갱신 
@@ -667,5 +669,4 @@ void InspectorUI::DeleteScript(DWORD_PTR _param)
 			break;
 		}
 	}
-
 }

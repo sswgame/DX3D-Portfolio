@@ -1,6 +1,6 @@
 CameraMoveScript
-CCameraMoveScript
-CMissileScript
-CPlayerScript
 MissileScript
+MonsterGunScript
+MonsterShieldScript
+MonsterSwordScript
 PlayerScript

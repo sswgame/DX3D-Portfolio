@@ -17,7 +17,7 @@ CCollider3D::CCollider3D()
 	m_pDebugObj->AddComponent(new CTransform);
 	m_pDebugObj->AddComponent(new CMeshRender);
 
-	m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
+	m_pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
 	m_pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Collider3D.mtrl");
 
 	m_pDebugObj->MeshRender()->SetMesh(m_pMesh);
@@ -44,12 +44,12 @@ void CCollider3D::SetCollider3DType(COLLIDER3D_TYPE _type)
 	if (COLLIDER3D_TYPE::CUBE == _type)
 	{
 		m_eCollider3DType = _type;
-		m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
+		m_pMesh           = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
 	}
 	else
 	{
 		m_eCollider3DType = _type;
-		m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
+		m_pMesh           = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
 	}
 }
 
@@ -86,6 +86,16 @@ Vec3 CCollider3D::GetWorldScale() const
 Matrix CCollider3D::GetWorldMatrix() const
 {
 	return m_matWorld;
+}
+
+Vec3 CCollider3D::GetOffsetPos() const
+{
+	return m_vOffsetPos;
+}
+
+Vec3 CCollider3D::GetOffsetScale() const
+{
+	return m_vOffsetScale;
 }
 
 void CCollider3D::OnCollisionEnter(CCollider3D* _pOther)
@@ -207,8 +217,8 @@ void CCollider3D::Serialize(YAML::Emitter& emitter)
 void CCollider3D::Deserialize(const YAML::Node& node)
 {
 	m_eCollider3DType = (COLLIDER3D_TYPE)node[NAME_OF(m_eCollider3DType)].as<int>();
-	m_vOffsetPos    = node[NAME_OF(m_vOffsetPos)].as<Vec3>();
-	m_vOffsetScale  = node[NAME_OF(m_vOffsetScale)].as<Vec3>();
+	m_vOffsetPos      = node[NAME_OF(m_vOffsetPos)].as<Vec3>();
+	m_vOffsetScale    = node[NAME_OF(m_vOffsetScale)].as<Vec3>();
 
 	SetCollider3DType(m_eCollider3DType);
 }

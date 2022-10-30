@@ -122,6 +122,9 @@
     <ClCompile Include="ImGuizmo\ImSequencer.cpp">
       <Filter>ImGui\ImGuizmo</Filter>
     </ClCompile>
+    <ClCompile Include="Collider3DUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\04. Collider3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -264,6 +267,9 @@
     </ClInclude>
     <ClInclude Include="ImGuizmo\ImZoomSlider.h">
       <Filter>ImGui\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider3DUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\04. Collider3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

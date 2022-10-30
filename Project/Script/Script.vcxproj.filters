@@ -4,14 +4,12 @@
     <ClInclude Include="pch.h">
       <Filter>Default</Filter>
     </ClInclude>
-    <ClInclude Include="CScriptMgr.h" />
     <ClInclude Include="CameraMoveScript.h">
       <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="MissileScript.h">
       <Filter>Script</Filter>
     </ClInclude>
-    <ClInclude Include="CSceneSaveLoad.h" />
     <ClInclude Include="CStateMgr.h">
       <Filter>Script\PlayerScript\StateMgr</Filter>
     </ClInclude>
@@ -39,19 +37,53 @@
     <ClInclude Include="CPlayerMoveState.h">
       <Filter>Script\PlayerScript\State\Move</Filter>
     </ClInclude>
+    <ClInclude Include="MonsterGunScript.h">
+      <Filter>Script\deuxiemie\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterShieldScript.h">
+      <Filter>Script\deuxiemie\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterSwordScript.h">
+      <Filter>Script\deuxiemie\Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="CAttack_deuxiemie.h">
+      <Filter>Script\deuxiemie\State\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="CDeath_deuxiemie.h">
+      <Filter>Script\deuxiemie\State\Death</Filter>
+    </ClInclude>
+    <ClInclude Include="CIdle_deuxiemie.h">
+      <Filter>Script\deuxiemie\State\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="CRun_deuxiemie.h">
+      <Filter>Script\deuxiemie\State\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="CSceneSaveLoad.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="CScriptMgr.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="CStun_deuxiemie.h">
+      <Filter>Script\deuxiemie\State\Stun</Filter>
+    </ClInclude>
+    <ClInclude Include="CShield_deuxiemie.h">
+      <Filter>Script\deuxiemie\State\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="CWalk_deuxiemie.h">
+      <Filter>Script\deuxiemie\State\Walk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Default</Filter>
     </ClCompile>
-    <ClCompile Include="CScriptMgr.cpp" />
     <ClCompile Include="CameraMoveScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="MissileScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
-    <ClCompile Include="CSceneSaveLoad.cpp" />
     <ClCompile Include="CStateMgr.cpp">
       <Filter>Script\PlayerScript\StateMgr</Filter>
     </ClCompile>
@@ -75,9 +107,6 @@
     </ClCompile>
     <ClCompile Include="CObjKeyMgr.cpp">
       <Filter>Script\PlayerScript\Key</Filter>
-    </ClCompile>
-    <ClCompile Include="CPlayerMoveState.cpp">
-      <Filter>Script\PlayerScript\State\Move</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,9 +142,6 @@
     </Filter>
     <Filter Include="Script\PlayerScript\Key">
       <UniqueIdentifier>{8c570a7e-35af-46ae-990a-74a631b0f457}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\Move">
-      <UniqueIdentifier>{c892f3fc-15c3-41ad-9456-03a160c4509c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
