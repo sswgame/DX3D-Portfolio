@@ -1,4 +1,10 @@
+BossJugCombatMgrScript
+BossJugHandScript
+BossJugScript
 CameraMoveScript
+CCameraMoveScript
+CMissileScript
+CPlayerScript
 MissileScript
 MonsterGunScript
 MonsterShieldScript

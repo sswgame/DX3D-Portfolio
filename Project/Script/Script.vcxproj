@@ -182,6 +182,9 @@ call CodeGen.exe</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BossJugCombatMgrScript.h" />
+    <ClInclude Include="BossJugHandScript.h" />
+    <ClInclude Include="BossJugScript.h" />
     <ClInclude Include="CAttackState.h" />
     <ClInclude Include="CameraMoveScript.h" />
     <ClInclude Include="CAttack_deuxiemie.h" />
@@ -195,6 +198,27 @@ call CodeGen.exe</Command>
     <ClInclude Include="CShield_deuxiemie.h" />
     <ClInclude Include="CStun_deuxiemie.h" />
     <ClInclude Include="CWalk_deuxiemie.h" />
+    <ClInclude Include="JugHand_Attack.h" />
+    <ClInclude Include="JugHand_Gen.h" />
+    <ClInclude Include="JugHand_Idle.h" />
+    <ClInclude Include="JugHand_None.h" />
+    <ClInclude Include="JugHand_Vanish.h" />
+    <ClInclude Include="JugPhase_1.h" />
+    <ClInclude Include="JugPhase_2.h" />
+    <ClInclude Include="JugPhase_Dead.h" />
+    <ClInclude Include="JugPhase_Intro.h" />
+    <ClInclude Include="JugPhase_None.h" />
+    <ClInclude Include="Jug_Attack_0.h" />
+    <ClInclude Include="Jug_Attack_1.h" />
+    <ClInclude Include="Jug_Dead.h" />
+    <ClInclude Include="Jug_Hammer_Hit.h" />
+    <ClInclude Include="Jug_Hammer_Idle.h" />
+    <ClInclude Include="Jug_Intro.h" />
+    <ClInclude Include="Jug_None.h" />
+    <ClInclude Include="Jug_Norm_Hit.h" />
+    <ClInclude Include="Jug_Norm_Idle.h" />
+    <ClInclude Include="Jug_SpawnHammer.h" />
+    <ClInclude Include="Jug_WalkGround.h" />
     <ClInclude Include="MissileScript.h" />
     <ClInclude Include="CObjKeyMgr.h" />
     <ClInclude Include="MonsterGunScript.h" />
@@ -208,6 +232,9 @@ call CodeGen.exe</Command>
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BossJugCombatMgrScript.cpp" />
+    <ClCompile Include="BossJugHandScript.cpp" />
+    <ClCompile Include="BossJugScript.cpp" />
     <ClCompile Include="CAttackState.cpp" />
     <ClCompile Include="CameraMoveScript.cpp" />
     <ClCompile Include="CAttack_deuxiemie.cpp" />
@@ -221,6 +248,27 @@ call CodeGen.exe</Command>
     <ClCompile Include="CShield_deuxiemie.cpp" />
     <ClCompile Include="CStun_deuxiemie.cpp" />
     <ClCompile Include="CWalk_deuxiemie.cpp" />
+    <ClCompile Include="JugHand_Attack.cpp" />
+    <ClCompile Include="JugHand_Gen.cpp" />
+    <ClCompile Include="JugHand_Idle.cpp" />
+    <ClCompile Include="JugHand_None.cpp" />
+    <ClCompile Include="JugHand_Vanish.cpp" />
+    <ClCompile Include="JugPhase_1.cpp" />
+    <ClCompile Include="JugPhase_2.cpp" />
+    <ClCompile Include="JugPhase_Dead.cpp" />
+    <ClCompile Include="JugPhase_Intro.cpp" />
+    <ClCompile Include="JugPhase_None.cpp" />
+    <ClCompile Include="Jug_Attack_0.cpp" />
+    <ClCompile Include="Jug_Attack_1.cpp" />
+    <ClCompile Include="Jug_Dead.cpp" />
+    <ClCompile Include="Jug_Hammer_Hit.cpp" />
+    <ClCompile Include="Jug_Hammer_Idle.cpp" />
+    <ClCompile Include="Jug_Intro.cpp" />
+    <ClCompile Include="Jug_None.cpp" />
+    <ClCompile Include="Jug_Norm_Hit.cpp" />
+    <ClCompile Include="Jug_Norm_Idle.cpp" />
+    <ClCompile Include="Jug_SpawnHammer.cpp" />
+    <ClCompile Include="Jug_WalkGround.cpp" />
     <ClCompile Include="MissileScript.cpp" />
     <ClCompile Include="CObjKeyMgr.cpp" />
     <ClCompile Include="MonsterGunScript.cpp" />
