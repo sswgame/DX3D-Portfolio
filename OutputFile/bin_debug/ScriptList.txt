@@ -4,9 +4,10 @@ BossJugScript
 CameraMoveScript
 CCameraMoveScript
 CMissileScript
-CPlayerScript
+GravityScript
 MissileScript
 MonsterGunScript
 MonsterShieldScript
 MonsterSwordScript
+PlayerCamScript
 PlayerScript

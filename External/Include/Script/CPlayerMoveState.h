@@ -2,15 +2,62 @@
 #include <Engine/CState.h>
 #include "CObjKeyMgr.h"
 
-// player 위칙 관련 함수 정의 
+// player 위치 관련 함수 정의 
+class CTransform;
+
+struct tMoveAxis
+{
+    /*
+    * ( x / z ) 
+    * [QuadNum] / Direction / Angle
+     
+     [4]        Front 0       [1]
+                  ↑
+       -90 Left ←  → Right 90
+                  ↓
+     [3]        Back 180      [2]
+
+    */
+    Vec3    vFrontAxis;
+    Vec3    vRightAxis;
+    Vec3    vLeftAxis;
+    Vec3    vBackAxis;
+};
+
+
+enum class MOVE_MODE
+{
+    RUN,
+    WALK,
+
+};
+
 class CPlayerMoveState :
     public CState
 {
-    class CTransform*   m_pTransform;
-    tKey_Zip            m_tCurKeyInfo;
+private:
 
-    float               m_fMoveForwardDT;
-    float               m_fMoveSideDT;
+    CScript*            m_pScript;              // PlayerScript 를 저장한다. 
+    CTransform*         m_pTransform;           // Player 의 Transform Component Pointer
+
+    tKey_Zip            m_tCurKeyInfo;          // 눌린 키 정보
+    bool                m_bKeyUpdateFinish;     // 키 처리가 중복 되지 않기 위해 키 처리가 끝남을 알린다. 
+
+    
+    tMoveAxis           m_vCamAxis;             // 카메라       모든 방향 벡터  
+    Vec3                m_vObjForwardAxis;      // 플레이어     앞   방향 벡터
+
+
+private:
+    float               m_fRotSpeed;            // 플레이어의 회전 속도 
+    float               m_fRotRadian;           // 현재 카메라와 플레이어 사이 각 (Radian)
+    float               m_fRotAngle;            // 현재 카메라와 플레이어 사이 각 (Angle)
+
+    float               m_fMoveAccRot;          // 목표 각도까지 움직여야할 남은 각도 
+
+    float               m_fDefaultAngle;        // 정면이 등을 보이게 하는데 필요한 초기 각도
+
+
 
 public:
     virtual void Enter();
@@ -21,19 +68,32 @@ public:
 
 public:
     // APPLY TO PLAYER OBJ
-    void LookAt(const Vec3& target, const Vec3& up = { 0.0f, 1.0f, 0.0f });         //포인트 관찰
-    void LookTo(const Vec3& direction, const Vec3& up = { 0.0f, 1.0f, 0.0f });      //특정 방향을 본다
-    void Translate(const Vec3& direction, float magnitude);                         //특정 방향으로 이동
+    void Translate(const Vec3& direction, float magnitude);  //특정 방향으로 이동
 
     void Strafe(float distance);            //  [ Strafing ] 현재 앞 방향 기준 좌/우 이동
-    void Walk(float distance);              //  수평 지면에서 전방/후방 이동(1인칭 시점)
-    void MoveForward(float distance);       //  카메라 바로 앞쪽으로 전진/후진 이동(자유 시야각)
+    Vec3 Walk(float distance);              //  수평 지면에서 전방/후방 이동(1인칭 시점)
 
-    // 이 두 함수는 Player 전용 Camera 로 옮길 것 같음.. 
-    void Pitch(float radian);               //  [ 상/하 보기 ]  -> radian (+) : 상 / radian (-) : 하
-    void Yaw(float radian);                 //  [ 좌/우 보기 ]  -> radian (+) : 좌 / radian (-) : 우
+    void RotateBody();
+    void RotatePlayerFront(Vec3 vDir);              // Player 가 매개변수로 들어온 방향을 앞으로 하여 회전한다. 
+    bool CheckRotateFinish(float _fRot_DT = 0.f);   // 플레이어의 회전이 목표 회전각에 도달했는지 확인한다. 
 
 
+    void UpdateMovePlayer();
+    void UpdateCameraAxis();                // 카메라의 축벡터를 갱신한다. 
+    void UpdateCameraPlayerAngle();         // 카메라기준으로 플레이어 각을 갱신한다. 
+    int  GetQuadrantNum(float _fRad);       // 현재 각도에 따른 면 번호를 반환한다. - 위 tMoveAxis 그림 참고 
+    
+
+    float GetAngleBetweenVector(Vec3 _vStandard, Vec3 _vTarget);  // 두 벡터 사이각을 구한다. ( Angle )
+    float GetRadianBetweenVector(Vec3 _vStandard, Vec3 _vTarget); // 두 벡터 사이각을 구한다. ( Radian )
+    Vec3  GetDiagnosisBetweenVector(Vec3 _vA, Vec3 _vB);           // 두 벡터 사이 중간 벡터 ( 대각선 벡터 )를 구한다.
+
+    
+    // 각 키에 따라 회전한다.
+    void CheckForwardKey();
+    void CheckBackwardKey();
+    void CheckRightKey();
+    void CheckLeftKey();
 
 
     // CALCULATE POSITION
@@ -56,6 +116,7 @@ public:
     void SetPosition(float x, float y, float z);
     
     void SetCurKeyInfo(tKey_Zip _keyInfo);
+    void SetDefaultAngle(float _fAngle) { m_fDefaultAngle = _fAngle; }
 
 
 
@@ -71,11 +132,17 @@ public:
     // [ Axis ]
     Vec3 GetRightAxis() const;       // 오른쪽 축 
     Vec3 GetUpAxis() const;          // 위쪽 축 
-    Vec3 GetForwardAxis() const;     // 앞 축 
+    Vec3 GetForwardAxis(Vec3 vOffSetRot = Vec3(0.f, 0.f, 0.f)) const;     // 앞 축 
 
     // [ Matrix ]
     Matrix GetLocalToWorldMatrix() const;    // 세계 변환 행렬을 가져옵니다.
     Matrix GetWorldToLocalMatrix() const;    // 역 세계 변환 행렬을 가져옵니다.
+
+    float GetDefaultAngle() { return m_fDefaultAngle; }
+
+
+    // 돌아야할 각이 음수 양수 인지 구한다. 
+    int GetRotateDirection(int _iQuadNum, float fAngle_Final);
 
 
 private:

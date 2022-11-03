@@ -6,15 +6,21 @@
 #include <Engine/CTimeMgr.h>
 #include "PlayerScript.h"
 #include "CScriptMgr.h"
+#include <Engine/Ccamera.h>
 
+
+#include "CPlayerStat.h"
 
 
 CPlayerMoveState::CPlayerMoveState()
 	:CState(L"MOVE")
-	, m_fMoveForwardDT(0.f)
-	, m_fMoveSideDT(0.f)
-
+	, m_fDefaultAngle(180.f)
+	, m_vObjForwardAxis(Vec3(0.f, 0.f, 1.f))
+	, m_fRotSpeed(10.f)
+	, m_fMoveAccRot(0.f)
+	, m_bKeyUpdateFinish(false)
 {
+
 }
 
 CPlayerMoveState::CPlayerMoveState(const CPlayerMoveState& _origin)
@@ -32,10 +38,7 @@ void CPlayerMoveState::Enter()
 {
 	CState::ResetTimer();
 	m_pTransform		= CState::GetOwner()->Transform();
-
-
-
-
+	m_pScript			= CState::GetOwner()->GetScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT);
 
 }
 
@@ -48,29 +51,33 @@ void CPlayerMoveState::Update()
 {
 	CState::Update();
 	CGameObject* pGameObj = CState::GetOwner();
-	PlayerScript* pPlayerScript = nullptr;
-	if (pGameObj != nullptr)
-		pPlayerScript = (PlayerScript*)CScriptMgr::GetScript(L"PlayerScript");
+	if (m_pScript == nullptr)
+		return;
+	
+	// 1.  180도 회전시켜놓은걸 빼서 -180 ~ 0 ~ 180 로 계산되게 세팅한다.  [ -180 ~ 180 ]
+	Vec3 vRot = pGameObj->Transform()->GetRelativeRotation();
+	vRot.y -= XM_PI;
+	pGameObj->Transform()->SetRelativeRotation(vRot);
 
-	if (pPlayerScript != nullptr)
-		 m_tCurKeyInfo = pPlayerScript->GetObjKeyMgr()->GetCurKeyInfo();
+	
+	// 2. 현재 카메라 축을 갱신한다.
+	UpdateCameraAxis();
+	// 3. 플레이어를 움직인다. 
+	UpdateMovePlayer();
+	// 4. 카메라와 플레이어 사이의 각도를 갱신한다.
+	UpdateCameraPlayerAngle();
+	// 5. 플레이어를 회전시킨다.
+	RotateBody();
 
 
-
-	m_fMoveForwardDT = 0.f;
-	m_fMoveSideDT = 0.f;
-
-	if (m_tCurKeyInfo.iKeyFlags & PLAYER_KEY_OPTION::FORWARD
-		&& m_tCurKeyInfo.iKeyFlags & PLAYER_KEY_OPTION::PRESSED)
-	{
-		m_fMoveForwardDT += DT;
-	}
-
-
-	Walk(m_fMoveForwardDT);
-	Strafe(m_fMoveSideDT);
+	// 6. 기본적으로 캐릭터는 등을 앞으로 바라보고 있기에 180도 돌린다.    [ 0 ~ 360 ]
+	vRot = pGameObj->Transform()->GetRelativeRotation();
+	vRot.y += XM_PI;
+	pGameObj->Transform()->SetRelativeRotation(vRot);
 
 }
+
+
 
 void CPlayerMoveState::LateUpdate()
 {
@@ -78,60 +85,328 @@ void CPlayerMoveState::LateUpdate()
 
 }
 
+void CPlayerMoveState::RotateBody()
+{
+	m_bKeyUpdateFinish = false;
+
+	// 키에 따른 세팅 
+	CheckForwardKey();
+	CheckBackwardKey();
+	CheckRightKey();
+	CheckLeftKey();
+
+
+}
+void CPlayerMoveState::RotatePlayerFront(Vec3 vDir)
+{
+	if (m_fMoveAccRot == 0.f)
+		return;
+
+	// 1. 플레이어의 현재 앞 방향 과 Dir 방향 과의 각도를 구한다. 
+	m_vObjForwardAxis		= GetForwardAxis();
+	float fRad_Rest			= GetRadianBetweenVector(vDir, m_vObjForwardAxis);		// 플레이어가 돌아야할 남은 각도 
+
+	// 플레이어를 돌린다. 
+	int iDir_Rot = (fRad_Rest <= 0.f) ? -1 : 1;
+	Vec3 vRot = m_pTransform->GetRelativeRotation();
+	
+	float fRotateDT = DT * m_fRotSpeed * iDir_Rot;
+	bool bFinishRotate = CheckRotateFinish(fRotateDT);
+
+	if (bFinishRotate == false)
+	{
+		vRot.y += fRotateDT;
+
+		if (vRot.y <= -XM_PI)
+			vRot.y = XM_PI;
+		else if (vRot.y >= XM_PI)
+			vRot.y = -XM_PI + 0.00001f;
+	}
+
+	m_pTransform->SetRelativeRotation(vRot);
+	return;
+
+}
+
+bool CPlayerMoveState::CheckRotateFinish(float _fRot_DT)
+{
+	float fDT = (_fRot_DT > 0.f) ? -1 * _fRot_DT : 1  * _fRot_DT;
+	m_fMoveAccRot += fDT;
+	if (m_fMoveAccRot <= 0.f)
+	{
+		m_fMoveAccRot = 0.f;
+		return true;
+	}
+	else
+		return false;
+
+	
+}
+
+void CPlayerMoveState::UpdateMovePlayer()
+{
+	
+	PlayerScript* pPlayerScript = (PlayerScript*)m_pScript;
+	m_tCurKeyInfo = pPlayerScript->GetObjKeyMgr()->GetCurKeyInfo();
+
+	float fMoveForwardDT = 0.f;
+	float fMoveSideDT = 0.f;
+
+	// 앞
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::FORWARD
+		&& m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED)
+	{
+		fMoveForwardDT += DT * pPlayerScript->GetPlayerStat()->GetStat().fSpeed;
+	}
+
+	// 뒤
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::BACKWARD
+		&& m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED)
+	{
+		fMoveForwardDT -= DT * pPlayerScript->GetPlayerStat()->GetStat().fSpeed;
+	}
+
+	// 오른쪽 
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::RIGHT
+		&& m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED)
+	{
+		fMoveSideDT += DT * pPlayerScript->GetPlayerStat()->GetStat().fSpeed;
+	}
+
+	// 왼쪽 
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::LEFT
+		&& m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED)
+	{
+		fMoveSideDT -= DT * pPlayerScript->GetPlayerStat()->GetStat().fSpeed;
+	}
+
+
+	Walk(fMoveForwardDT); // 앞 뒤 
+	Strafe(fMoveSideDT);  // 좌 우 
+
+}
+
+void CPlayerMoveState::UpdateCameraAxis()
+{
+	PlayerScript* pPlayerScript = (PlayerScript*)m_pScript;
+	CGameObject*  pPlayerCamera = pPlayerScript->GetCamera();
+
+	// 1. Camera Right Axis 
+	const Vec3		vCameraRot	 = pPlayerCamera->Transform()->GetRelativeRotation();
+	const Matrix	matCameraRot = DirectX::XMMatrixRotationRollPitchYawFromVector(vCameraRot);
+	Vec3			vCameraRight = { matCameraRot._11, matCameraRot._12, matCameraRot._13 };
+
+	// 카메라 축이 움직이지 않았다면
+	if (vCameraRight.Normalize() == m_vCamAxis.vRightAxis)
+		return;
+
+	// Dx11 - 왼손 좌표계 / 외적을 통해서 각 축 벡터를 구한다.  
+	m_vCamAxis.vFrontAxis = XMVector3Normalize(XMVector3Cross(vCameraRight, g_XMIdentityR1));
+	m_vCamAxis.vRightAxis = XMVector3Normalize(vCameraRight);
+	m_vCamAxis.vBackAxis  = XMVector3Normalize(XMVector3Cross(vCameraRight, (g_XMIdentityR1 * -1.f)));
+	m_vCamAxis.vLeftAxis  = XMVector3Normalize(XMVector3Cross(m_vCamAxis.vFrontAxis, g_XMIdentityR1));
+
+}
+void CPlayerMoveState::UpdateCameraPlayerAngle()
+{
+	// [ -180 ~ 180 ] - 시계 방향이 양수
+
+	// 카메라가		앞을 보는 벡터와
+	// 플레이어가	앞을 보는 벡터 사이의 각을 갱신한다. 
+	m_vObjForwardAxis = GetForwardAxis();
+
+	// 두 벡터 사이의 내적값은 0 ~ 180 도 사이 값이 나온다. 
+	float fCos = m_vCamAxis.vFrontAxis.Dot(m_vObjForwardAxis);
+	
+	if (fCos <= -1.f) 
+		fCos = -1.f;
+	if (fCos >= 1.f ) 
+		fCos = 1.f;
+
+	m_fRotRadian = acos(fCos);
+	m_fRotAngle = m_fRotRadian * (180.f / XM_PI);
+	if (m_fRotAngle == 180.f)
+		return;
+
+	// 외적 -> ( + ) : 축 기준 오른쪽 / ( - ) : 축 기준 왼쪽 
+	Vec3 vCorss = XMVector3Cross(m_vObjForwardAxis, m_vCamAxis.vFrontAxis); 
+	// 두 벡터 사이의 각이 180 도를 넘는 경우 -> 왼쪽 ( 음수각 )
+	if (vCorss.y > 0.f)
+	{
+		// 음수 각
+		//m_fRotRadian = acos(m_vCamAxis.vBackAxis.Dot(m_vObjForwardAxis)) + XM_PI;
+		m_fRotRadian = acos(m_vCamAxis.vBackAxis.Dot(m_vObjForwardAxis)) * -1;
+		m_fRotAngle  = m_fRotRadian * (180.f / XM_PI);
+	}
+
+	if (m_fRotAngle == -180.f)
+	{
+		m_fRotRadian = XM_PI;
+		m_fRotAngle = m_fRotRadian * (180.f / XM_PI);
+	}
+	return;
+
+}
+
+int CPlayerMoveState::GetQuadrantNum(float _fRad)
+{
+	float fAngle = _fRad * (180.f / XM_PI);
+
+	if (0.f  <= fAngle && fAngle < 90.f)		return 1;
+	if (90.f <= fAngle && fAngle < 180.f)		return 2;
+	if (-90.f <= fAngle && fAngle < -180.f)		return 3;
+	if (0.f <= fAngle && fAngle < -90.f)		return 4;
+
+	return 0;
+
+
+}
 void CPlayerMoveState::Strafe(float distance)
 {
-}
-
-void CPlayerMoveState::Walk(float distance)
-{
-	XMVECTOR rightVec = GetRightAxis();
-	XMVECTOR frontVec = XMVector3Normalize(XMVector3Cross(rightVec, g_XMIdentityR1));
-	Vector3  front = frontVec;
-	XMStoreFloat3(&front, frontVec);
-
-	Translate(front, distance);
-}
-
-void CPlayerMoveState::MoveForward(float distance)
-{
-}
-
-void CPlayerMoveState::Pitch(float radian)
-{
-}
-
-void CPlayerMoveState::Yaw(float radian)
-{    
-	//시야의 위/아래 회전(카메라의 오른쪽 축 주위)과 회전 각도가 너무 커지는 것을 방지하기 위해 회전 각도를 제한합니다
-
-}
-
-void CPlayerMoveState::LookAt(const Vec3& target, const Vec3& up)
-{
-	Vec3 vCurPos = m_pTransform->GetRelativePos();
-
-	const XMMATRIX matView = XMMatrixLookAtLH(vCurPos, target, up);
-	const XMMATRIX matViewInverse = XMMatrixInverse(nullptr, matView);
-	Matrix         rotMatrix;
-	XMStoreFloat4x4(&rotMatrix, matViewInverse);
+	// 플레이어는 카메라가 바라보는 방향을 기준으로
+	// 앞뒤좌우 가 결정된다.
 	
-	Vec3 vNewRot = GetEulerAnglesFromRotationMatrix(rotMatrix);
-	m_pTransform->SetRelativeRotation(vNewRot);
+	// 플레이어 카메라를 가져온다.
+	PlayerScript* pPlayerScript = (PlayerScript*)m_pScript;
+	CGameObject* pPlayerCamera = pPlayerScript->GetCamera();
 
+
+	if (pPlayerCamera != nullptr)
+	{
+		Translate(m_vCamAxis.vRightAxis, distance);
+
+	}
+	else
+	{
+		Translate(GetRightAxis(), distance);
+
+	}
 }
 
-void CPlayerMoveState::LookTo(const Vec3& direction, const Vec3& up)
+Vec3 CPlayerMoveState::Walk(float distance)
 {
-	Vec3 vCurPos = m_pTransform->GetRelativePos();
+	// 플레이어는 카메라가 바라보는 방향을 기준으로
+	// 앞뒤좌우 가 결정된다.
 
-	const XMMATRIX matView = XMMatrixLookToLH(vCurPos, direction, up);
-	const XMMATRIX matViewInverse = XMMatrixInverse(nullptr, matView);
-	Matrix         rotMatrix{};
-	XMStoreFloat4x4(&rotMatrix, matViewInverse);
+	// 플레이어 카메라를 가져온다.
+	PlayerScript* pPlayerScript = (PlayerScript*)m_pScript;
+	CGameObject* pPlayerCamera = pPlayerScript->GetCamera();
 
-	Vec3 vNewRot = GetEulerAnglesFromRotationMatrix(rotMatrix);
-	m_pTransform->SetRelativeRotation(vNewRot);
+	if (pPlayerCamera != nullptr)
+	{
+		// 플레이어는 카메라가 바라보는 앞방향을 기준으로 움직인다. 
+		Translate(m_vCamAxis.vFrontAxis, distance);
+		return m_vCamAxis.vFrontAxis;
+
+	}
+	else
+	{
+		Vec3 rightVec = GetRightAxis();
+		Vec3 frontVec = XMVector3Normalize(XMVector3Cross(rightVec, g_XMIdentityR1));
+		Vec3  front = frontVec;
+		XMStoreFloat3(&front, frontVec);
+
+		Translate(front, distance);
+		return front;
+
+	}
+	
 }
+
+
+
+
+
+
+
+float CPlayerMoveState::GetAngleBetweenVector(Vec3 _vStandard, Vec3 _vTarget)
+{
+	if (_vStandard == _vTarget)
+		return 0.f;
+	if (_vStandard == -_vTarget)
+		return XM_PI;
+
+	// [ -180 ~ 180 Degree ]
+
+		// 카메라가		앞을 보는 벡터와
+		// 플레이어가	앞을 보는 벡터 사이의 각을 갱신한다. 
+	Vec3 _vA = _vStandard;
+	Vec3 _vB = _vTarget;
+
+	_vA.Normalize();
+	_vB.Normalize();
+
+	// 두 벡터 사이의 내적값은 0 ~ 180 도 사이 값이 나온다. -> 외적값을 이용해 CW/CCW 이동방향인지 확인한다. 
+	float fCos = _vA.Dot(_vB);
+	if (fCos >= 1.f) fCos = 1.f;
+	if (fCos <= -1.f) fCos = -1.f;
+
+	float fRotRadian = acos(fCos);
+	float fRotAngle = fRotRadian * (180.f / XM_PI);
+
+	Vec3 vCorss = XMVector3Cross(_vA, _vB);
+	// _vTarget 기준으로 음수 방향으로 돌아야 하는 경우 ( 왼쪽 ) 
+	if (vCorss.y > 0.f)
+	{
+		//fRotRadian = acos(_vC.Dot(_vB)) + XM_PI;
+		fRotRadian *= -1.f;
+		fRotAngle *= -1.f;
+	}
+	return fRotAngle;
+}
+
+float CPlayerMoveState::GetRadianBetweenVector(Vec3 _vStandard, Vec3 _vTarget)
+{
+	if (_vStandard == _vTarget)
+		return 0.f;
+	if (_vStandard == -_vTarget)
+		return XM_PI;
+
+	// [ -180 ~ 180 Degree ]
+
+		// 카메라가		앞을 보는 벡터와
+		// 플레이어가	앞을 보는 벡터 사이의 각을 갱신한다. 
+	Vec3 _vA = _vStandard;
+	Vec3 _vB = _vTarget;
+
+	_vA.Normalize();
+	_vB.Normalize();
+
+	// 두 벡터 사이의 내적값은 0 ~ 180 도 사이 값이 나온다. -> 외적값을 이용해 CW/CCW 이동방향인지 확인한다. 
+	float fCos = _vA.Dot(_vB);
+	if (fCos >= 1.f) fCos = 1.f;
+	if (fCos <= -1.f) fCos = -1.f;
+
+	float fRotRadian = acos(fCos);
+	float fRotAngle = fRotRadian * (180.f / XM_PI);
+
+	Vec3 vCorss = XMVector3Cross(_vA, _vB);
+	// _vTarget 기준으로 음수 방향으로 돌아야 하는 경우 ( 왼쪽 ) 
+	if (vCorss.y > 0.f)
+	{
+		//fRotRadian = acos(_vC.Dot(_vB)) + XM_PI;
+		fRotRadian *= -1.f;
+		fRotAngle  *= -1.f;
+	}
+
+	return fRotRadian;
+}
+
+Vec3 CPlayerMoveState::GetDiagnosisBetweenVector(Vec3 _vA, Vec3 _vB)
+{
+	// 두 벡터의 중간(사이) 벡터를 계산한다. ( 대각선 )
+	Vec3 vDiag = Vec3(
+		(_vA.x + _vB.x) * 0.5f,
+		(_vA.y + _vB.y) * 0.5f,
+		(_vA.z + _vB.z) * 0.5f
+	);
+
+	vDiag.Normalize();
+	return vDiag;
+}
+
+
+
 
 void CPlayerMoveState::SetScale(const Vec3& scale)
 {
@@ -244,7 +519,9 @@ Vec3 CPlayerMoveState::GetRightAxis() const
 	const Vec3 vRotation = m_pTransform->GetRelativeRotation();
 	 
 	const Matrix  matRotation = DirectX::XMMatrixRotationRollPitchYawFromVector(vRotation);
-	const Vector3 right = { matRotation._11, matRotation._12, matRotation._13 };
+	 Vec3 right = { matRotation._11, matRotation._12, matRotation._13 };
+
+	right.Normalize();
 
 	return right;
 }
@@ -254,18 +531,23 @@ Vec3 CPlayerMoveState::GetUpAxis() const
 	const Vec3 vRotation = m_pTransform->GetRelativeRotation();
 
 	const Matrix  matRotation = DirectX::XMMatrixRotationRollPitchYawFromVector(vRotation);
-	const Vector3 up = { matRotation._21, matRotation._22, matRotation._23 };
-
-	return up;
+	Vector3 up = { matRotation._21, matRotation._22, matRotation._23 };
+	up.Normalize();
+	 
+	 return up;
 }
 
-Vec3 CPlayerMoveState::GetForwardAxis() const
+Vec3 CPlayerMoveState::GetForwardAxis(Vec3 vOffSetRot) const
 {
 	const Vec3 vRotation = m_pTransform->GetRelativeRotation();
+	Vec3 vRot = vRotation + vOffSetRot;
 
-	const XMMATRIX matRotation = DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&vRotation));
+
+	const XMMATRIX matRotation = DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&vRot));
 	Vector3        forward{};
 	XMStoreFloat3(&forward, matRotation.r[2]);
+	forward.Normalize();
+
 	return forward;
 }
 
@@ -286,6 +568,8 @@ Matrix CPlayerMoveState::GetWorldToLocalMatrix() const
 	const XMMATRIX matWorldInverse = DirectX::XMMatrixInverse(nullptr, GetLocalToWorldMatrix());
 	return matWorldInverse;
 }
+
+
 
 Vec3 CPlayerMoveState::GetEulerAnglesFromRotationMatrix(const Matrix& rotationMatrix)
 {
@@ -312,4 +596,351 @@ Vec3 CPlayerMoveState::GetEulerAnglesFromRotationMatrix(const Matrix& rotationMa
 void CPlayerMoveState::SetCurKeyInfo(tKey_Zip _keyInfo)
 {
 	m_tCurKeyInfo = _keyInfo;
+}
+
+
+int CPlayerMoveState::GetRotateDirection(int _iQuadNum, float fAngle_Final)
+{
+	int iDir_Rot = 1;
+
+	// 내 앞 방향이 지금 어느 각도?
+	switch (_iQuadNum)
+	{
+	case 1:  // 0< ~ <=90
+	{
+		if (fAngle_Final == 0.f)
+			iDir_Rot = -1;
+		else if (fAngle_Final == 90.f)
+			iDir_Rot = 1;
+		else if (fAngle_Final == 180.f)
+			iDir_Rot = 1;
+		else if (fAngle_Final == -90.f)
+			iDir_Rot = -1;
+
+	}
+	break;
+	case 2: // 90< ~ <=180
+	{
+		if (fAngle_Final == 0.f)
+			iDir_Rot = -1;
+		else if (fAngle_Final == 90.f)
+			iDir_Rot = -1;
+		else if (fAngle_Final == 180.f)
+			iDir_Rot = 1;
+		else if (fAngle_Final == -90.f)
+			iDir_Rot = 1; 
+	}
+	break;
+	case 3: // 180< ~ <=270
+	{
+		if (fAngle_Final == 0.f)
+			iDir_Rot = 1;
+		else if (fAngle_Final == 90.f)
+			iDir_Rot = -1;
+		else if (fAngle_Final == 180.f)
+			iDir_Rot = -1;
+		else if (fAngle_Final == -90.f)
+			iDir_Rot = 1;
+	}
+	break;
+	case 4: // 270< ~ <= 360 (0)
+	{
+		if (fAngle_Final == 0.f)
+			iDir_Rot = 1;
+		else if (fAngle_Final == 90.f)
+			iDir_Rot = 1;
+		else if (fAngle_Final == 180.f)
+			iDir_Rot = -1;
+		else if (fAngle_Final == -90.f)
+			iDir_Rot = -1;
+	}
+	break;
+	}
+	return iDir_Rot;
+
+}
+
+
+void CPlayerMoveState::CheckForwardKey()
+{
+	if (true == m_bKeyUpdateFinish)
+		return;
+
+	/*
+				정리하자..
+
+				1. 회전해야할 각도 크기를 갱신한다.
+					- 현재 카메라가 바라보는 벡터 축 과 캐릭터가 바라보는 벡터 축
+					- 사이 각도를 갱신한다.
+					- 이때 카메라가 바라보는 벡터 축이 기준이 되기때문에
+					- 카메라 벡터축이 바뀔때마다 캐릭터와의 각도는 달라진다.
+					( 캐릭터축은 가만히 있는데 카메라 축이 움직이면
+					  기준에 의해 해당 각도가 상대적으로 바뀐다는 점 )
+
+				2. 캐릭터를 회전한다.
+					- RotatePlayerFront(Vec3 Axis)
+					- 캐릭터가 바라보는 축이 RotatePlayerFront 매개변수로 들어간 축 방향으로 회전한다.
+					- 이때 이전에 구한 m_fMoveAccRot 에 들어간 각도 크기를 이용한다.
+			*/
+
+
+	// FORWARD / TAP
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::TAP &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::FORWARD)
+	{
+
+	}
+
+
+	// FORWARD / PRESSED 
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::FORWARD)
+	{
+
+		if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::RIGHT)
+		{
+
+			// Front / Right 사이 대각선 벡터를 구한다. 
+			Vec3 vDiagAxis = GetDiagnosisBetweenVector(m_vCamAxis.vFrontAxis, m_vCamAxis.vRightAxis);
+			// 회전해야할 각도 크기를 구한다.
+			m_fMoveAccRot = GetRadianBetweenVector(vDiagAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+
+			// 회전한다. 
+			RotatePlayerFront(vDiagAxis);
+
+		}
+		else if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::LEFT)
+		{
+
+			Vec3 vDiagAxis = GetDiagnosisBetweenVector(m_vCamAxis.vFrontAxis, m_vCamAxis.vLeftAxis);
+			m_fMoveAccRot = GetRadianBetweenVector(vDiagAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+			RotatePlayerFront(vDiagAxis);
+
+		}
+		else
+		{
+			m_fMoveAccRot = GetRadianBetweenVector(m_vCamAxis.vFrontAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+			RotatePlayerFront(m_vCamAxis.vFrontAxis);
+
+		}
+
+		m_bKeyUpdateFinish = true;
+
+	}
+
+	// FORWARD / AWAY
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::AWAY &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::FORWARD)
+	{
+
+
+
+	}
+}
+
+void CPlayerMoveState::CheckBackwardKey()
+{
+	if (true == m_bKeyUpdateFinish)
+		return;
+
+	// BACKWARD / TAP
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::TAP &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::BACKWARD)
+	{
+
+	}
+
+
+	// BACKWARD / PRESSED 
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::BACKWARD)
+	{
+
+		// RIGHT / PRESSED 
+		if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::RIGHT)
+		{
+
+			// Front / Right 사이 대각선 벡터를 구한다. 
+			Vec3 vDiagAxis = GetDiagnosisBetweenVector(m_vCamAxis.vBackAxis, m_vCamAxis.vRightAxis);
+
+			m_fMoveAccRot = GetRadianBetweenVector(vDiagAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+
+			RotatePlayerFront(vDiagAxis);
+
+		}
+		// LEFT / PRESSED 
+		else if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::LEFT)
+		{
+
+			Vec3 vDiagAxis = GetDiagnosisBetweenVector(m_vCamAxis.vBackAxis, m_vCamAxis.vLeftAxis);
+			m_fMoveAccRot = GetRadianBetweenVector(vDiagAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+			RotatePlayerFront(vDiagAxis);
+
+		}
+		else
+		{
+			m_fMoveAccRot = GetRadianBetweenVector(m_vCamAxis.vBackAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+			RotatePlayerFront(m_vCamAxis.vBackAxis);
+
+		}
+
+		m_bKeyUpdateFinish = true;
+
+	}
+
+	// BACKWARD / AWAY
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::AWAY &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::BACKWARD)
+	{
+
+	}
+
+}
+
+
+void CPlayerMoveState::CheckRightKey()
+{
+	if (true == m_bKeyUpdateFinish)
+		return;
+
+
+	// RIGHT / TAP
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::TAP &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::RIGHT)
+	{
+
+	}
+
+
+	// RIGHT / PRESSED 
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::RIGHT)
+	{
+
+		// FORWARD / PRESSED 
+		if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::FORWARD)
+		{
+
+			Vec3 vDiagAxis = GetDiagnosisBetweenVector(m_vCamAxis.vFrontAxis, m_vCamAxis.vRightAxis);
+			m_fMoveAccRot = GetRadianBetweenVector(vDiagAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+			RotatePlayerFront(vDiagAxis);
+
+		}
+		// BACKWARD / PRESSED 
+		else if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::BACKWARD)
+		{
+
+			Vec3 vDiagAxis = GetDiagnosisBetweenVector(m_vCamAxis.vFrontAxis, m_vCamAxis.vLeftAxis);
+			m_fMoveAccRot = GetRadianBetweenVector(vDiagAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+
+			RotatePlayerFront(vDiagAxis);
+
+		}
+		else
+		{
+			m_fMoveAccRot = GetRadianBetweenVector(m_vCamAxis.vRightAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+
+			RotatePlayerFront(m_vCamAxis.vRightAxis);
+
+		}
+
+		m_bKeyUpdateFinish = true;
+
+	}
+
+	// RIGHT / AWAY
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::AWAY &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::RIGHT)
+	{
+
+	}
+
+	
+}
+
+void CPlayerMoveState::CheckLeftKey()
+{
+	if (true == m_bKeyUpdateFinish)
+		return;
+
+	// LEFT / TAP
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::TAP &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::LEFT)
+	{
+
+	}
+
+
+	// LEFT / PRESSED 
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::LEFT)
+	{
+
+		// FORWARD / PRESSED 
+		if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::FORWARD)
+		{
+
+			Vec3 vDiagAxis = GetDiagnosisBetweenVector(m_vCamAxis.vFrontAxis, m_vCamAxis.vRightAxis);
+			m_fMoveAccRot = GetRadianBetweenVector(vDiagAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+			RotatePlayerFront(vDiagAxis);
+
+		}
+		// BACKWARD / PRESSED 
+		else if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::PRESSED &&
+			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::BACKWARD)
+		{
+
+			Vec3 vDiagAxis = GetDiagnosisBetweenVector(m_vCamAxis.vFrontAxis, m_vCamAxis.vLeftAxis);
+			m_fMoveAccRot = GetRadianBetweenVector(vDiagAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+			RotatePlayerFront(vDiagAxis);
+
+		}
+		else
+		{
+			m_fMoveAccRot = GetRadianBetweenVector(m_vCamAxis.vLeftAxis, m_vObjForwardAxis);
+			if (m_fMoveAccRot <= 0.f)
+				m_fMoveAccRot *= -1;
+			RotatePlayerFront(m_vCamAxis.vLeftAxis);
+
+		}
+
+		m_bKeyUpdateFinish = true;
+
+	}
+
+	// RIGHT / AWAY
+	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::AWAY &&
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::LEFT)
+	{
+
+	}
 }

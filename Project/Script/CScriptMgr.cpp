@@ -6,10 +6,13 @@
 #include "BossJugHandScript.h"
 #include "BossJugScript.h"
 #include "CameraMoveScript.h"
+
+#include "GravityScript.h"
 #include "MissileScript.h"
 #include "MonsterGunScript.h"
 #include "MonsterShieldScript.h"
 #include "MonsterSwordScript.h"
+#include "PlayerCamScript.h"
 #include "PlayerScript.h"
 
 void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
@@ -18,10 +21,13 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"BossJugHandScript");
 	_vec.push_back(L"BossJugScript");
 	_vec.push_back(L"CameraMoveScript");
+
+	_vec.push_back(L"GravityScript");
 	_vec.push_back(L"MissileScript");
 	_vec.push_back(L"MonsterGunScript");
 	_vec.push_back(L"MonsterShieldScript");
 	_vec.push_back(L"MonsterSwordScript");
+	_vec.push_back(L"PlayerCamScript");
 	_vec.push_back(L"PlayerScript");
 }
 
@@ -36,6 +42,9 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new BossJugScript;
 	if (L"CameraMoveScript"== _strScriptName)
 		return new CameraMoveScript;
+	if (L"GravityScript"== _strScriptName)
+		return new GravityScript;
+	if (L"MissileScript"== _strScriptName)
 		return new MissileScript;
 	if (L"MonsterGunScript"== _strScriptName)
 		return new MonsterGunScript;
@@ -43,6 +52,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new MonsterShieldScript;
 	if (L"MonsterSwordScript"== _strScriptName)
 		return new MonsterSwordScript;
+	if (L"PlayerCamScript"== _strScriptName)
+		return new PlayerCamScript;
 	if (L"PlayerScript"== _strScriptName)
 		return new PlayerScript;
 	return nullptr;
@@ -61,12 +72,19 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new BossJugScript;
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return new CameraMoveScript;
+	case SCRIPT_TYPE::CCAMERAMOVESCRIPT:
+
+		return new GravityScript;
+	case SCRIPT_TYPE::MISSILESCRIPT:
+		return new MissileScript;
 	case SCRIPT_TYPE::MONSTERGUNSCRIPT:
 		return new MonsterGunScript;
 	case SCRIPT_TYPE::MONSTERSHIELDSCRIPT:
 		return new MonsterShieldScript;
 	case SCRIPT_TYPE::MONSTERSWORDSCRIPT:
 		return new MonsterSwordScript;
+	case SCRIPT_TYPE::PLAYERCAMSCRIPT:
+		return new PlayerCamScript;
 	case SCRIPT_TYPE::PLAYERSCRIPT:
 		return new PlayerScript;
 	}
@@ -86,6 +104,12 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"BossJugScript";
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return L"CameraMoveScript";
+	case SCRIPT_TYPE::CCAMERAMOVESCRIPT:
+		return L"CCameraMoveScript";
+	case SCRIPT_TYPE::CMISSILESCRIPT:
+		return L"CMissileScript";
+	case SCRIPT_TYPE::GRAVITYSCRIPT:
+		return L"GravityScript";
 	case SCRIPT_TYPE::MISSILESCRIPT:
 		return L"MissileScript";
 	case SCRIPT_TYPE::MONSTERGUNSCRIPT:
@@ -94,6 +118,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"MonsterShieldScript";
 	case SCRIPT_TYPE::MONSTERSWORDSCRIPT:
 		return L"MonsterSwordScript";
+	case SCRIPT_TYPE::PLAYERCAMSCRIPT:
+		return L"PlayerCamScript";
 	case SCRIPT_TYPE::PLAYERSCRIPT:
 		return L"PlayerScript";
 		}

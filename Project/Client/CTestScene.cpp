@@ -30,6 +30,8 @@
 #include <Script/PlayerScript.h>
 #include <Script/CameraMoveScript.h>
 #include <Script/MissileScript.h>
+#include <Script/PlayerCamScript.h>
+
 
 #include <Script\CSceneSaveLoad.h>
 
@@ -46,11 +48,9 @@ void CTestScene::CreateTestScene()
 
 	// Texture 한장 로딩해보기
 	//CResMgr::GetInst()->Load<CTexture>(L"texture\\Player.bmp", L"texture\\Player.bmp");
-	Ptr<CTexture> pMagicCircle = CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png",
-	                                                                L"texture\\MagicCircle.png");
+	Ptr<CTexture> pMagicCircle = CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png", L"texture\\MagicCircle.png");
 
-	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
-	                                                            L"texture\\tile\\TILE_01.tga");
+	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga", L"texture\\tile\\TILE_01.tga");
 	//Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga",
 	//                                                             L"texture\\tile\\TILE_01_N.tga");
 
@@ -59,7 +59,7 @@ void CTestScene::CreateTestScene()
 	//Ptr<CTexture> pSkyTex_02 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky02.jpg",
 	//                                                              L"texture\\skybox\\Sky02.jpg");
 	Ptr<CTexture> pSkyTex_03 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyDawn.dds",
-	                                                              L"texture\\skybox\\SkyDawn.dds");
+		L"texture\\skybox\\SkyDawn.dds");
 	//Ptr<CTexture> pSkyTex_04 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyWater.dds",
 	//                                                              L"texture\\skybox\\SkyWater.dds");
 
@@ -69,9 +69,10 @@ void CTestScene::CreateTestScene()
 	pCamObj->SetName(L"MainCamera");
 	pCamObj->AddComponent(new CTransform);
 	pCamObj->AddComponent(new CCamera);
-	pCamObj->AddComponent(new CameraMoveScript);
+	//pCamObj->AddComponent(new CameraMoveScript);
+	pCamObj->AddComponent(new PlayerCamScript);
 
-	pCamObj->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
+	pCamObj->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
 	pCamObj->Camera()->SetCameraAsMain();
 	pCamObj->Camera()->CheckLayerMaskAll();
 	pCamObj->Camera()->SetShowFrustum(true);
@@ -234,11 +235,12 @@ void CTestScene::CreateTestScene()
 		//pObj->SetName(L"Monster");
 		//pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 		//pCurScene->AddObject(pObj, 0);
+
 	}
 
 	// ANIMATION TEST 
 	Ptr<CMeshData> pMeshData = nullptr;
-	CGameObject*   pObj      = nullptr;
+	CGameObject* pObj = nullptr;
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
@@ -248,21 +250,24 @@ void CTestScene::CreateTestScene()
 	pObj->SetName(L"player");
 	pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 	pObj->Animator3D()->Play(L"test", true);
+	pObj->Animator3D()->GetCurAnim()->SetPlay(false);
 
 	pObj->AddComponent(new CFSM);
-	pObj->AddComponent(new PlayerScript);
+
+	PlayerScript* pPlayerScript = new PlayerScript;
+	pPlayerScript->SetCamera(pCamObj);
+	pObj->AddComponent(pPlayerScript);
 
 
 	pCurScene->AddObject(pObj, 0);
 
 
 	Ptr<CMeshData> pMeshDataWeapon = nullptr;
-	CGameObject*   pObjWeapon      = nullptr;
+	CGameObject* pObjWeapon = nullptr;
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat",
-	                                                      L"meshdata\\player_sword1.mdat");
+	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
 
 	pObjWeapon = pMeshDataWeapon->Instantiate();
 	pObjWeapon->SetName(L"player_sword1");

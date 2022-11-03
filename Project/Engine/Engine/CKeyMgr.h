@@ -119,4 +119,11 @@ public:
 	{
 		return m_vMouseDir;
 	}
+
+	Vec2 GetMouseDelta()
+	{
+		Vec2 vDelta = Vec2(m_vMousePos.x - m_vMousePrevPos.x, m_vMousePos.y - m_vMousePrevPos.y);
+		return vDelta;
+	}
+
 };

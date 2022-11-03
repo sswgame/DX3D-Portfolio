@@ -28,9 +28,9 @@ public:
 
 public:
 	// [ GET PART ]
-	wstring GetStateType()	{ return m_sStateType; }
-	float	GetTimer()		{ return m_fTimer; }
-	CGameObject* GetOwner() { return m_pOwner; }
+	wstring		 GetStateType()	{ return m_sStateType; }
+	float		 GetTimer()		{ return m_fTimer; }
+	CGameObject* GetOwner()		{ return m_pOwner; }
 
 	// [ SET PART ]
 	void SetStateType(wstring _sState) { m_sStateType = _sState; }
@@ -39,7 +39,7 @@ public:
 
 public:
 	// [ TIMER INFO ]
-	void StartTimer();
+	void PlayTimer();
 	void StopTimer();
 	void ResetTimer();
 

@@ -23,6 +23,7 @@ CPlayerStat::~CPlayerStat()
 
 void CPlayerStat::start()
 {
+	m_tCurStat.fSpeed = 100.f;
 
 }
 

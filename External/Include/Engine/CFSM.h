@@ -26,6 +26,7 @@ public:
 	wstring GetPrevStateType()	{ return m_sPrevStateType; }
 	wstring GetCurStateType()	{ return m_sCurStateType; }
 	wstring GetNextStateType()	{ return m_sNextStateType; }
+	CState* GetState(wstring _stateTypeName);
 
 	// [ SET PART ]
 	void SetCurState(CState* _pCurState) { m_pCurState = _pCurState; }

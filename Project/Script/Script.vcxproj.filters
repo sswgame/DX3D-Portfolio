@@ -13,21 +13,6 @@
     <ClInclude Include="CStateMgr.h">
       <Filter>Script\PlayerScript\StateMgr</Filter>
     </ClInclude>
-    <ClInclude Include="CDieState.h">
-      <Filter>Script\PlayerScript\State\Die</Filter>
-    </ClInclude>
-    <ClInclude Include="CIdleState.h">
-      <Filter>Script\PlayerScript\State\Idle</Filter>
-    </ClInclude>
-    <ClInclude Include="CHitState.h">
-      <Filter>Script\PlayerScript\State\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="CAttackState.h">
-      <Filter>Script\PlayerScript\State\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="CPlayerStat.h">
-      <Filter>Script\PlayerScript\Stat</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerScript.h">
       <Filter>Script\PlayerScript</Filter>
     </ClInclude>
@@ -43,7 +28,6 @@
     <ClInclude Include="CAttack_deuxiemie.h" />
     <ClInclude Include="CDeath_deuxiemie.h" />
     <ClInclude Include="CIdle_deuxiemie.h" />
-    <ClInclude Include="CPlayerMoveState.h" />
     <ClInclude Include="CRun_deuxiemie.h" />
     <ClInclude Include="CShield_deuxiemie.h" />
     <ClInclude Include="CStun_deuxiemie.h" />
@@ -123,6 +107,42 @@
     <ClInclude Include="Jug_SpawnHammer.h">
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerCamScript.h">
+      <Filter>Script\PlayerScript</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerStat.h">
+      <Filter>Script\PlayerScript\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerDieState.h">
+      <Filter>Script\PlayerScript\State\Die</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerHitState.h">
+      <Filter>Script\PlayerScript\State\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerHeavyAttackState.h">
+      <Filter>Script\PlayerScript\State\HeavyAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerLightAttackState.h">
+      <Filter>Script\PlayerScript\State\LightAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerJumpState.h">
+      <Filter>Script\PlayerScript\State\Jump</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerParryState.h">
+      <Filter>Script\PlayerScript\State\Parry</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerSprintState.h">
+      <Filter>Script\PlayerScript\State\Sprint</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerIdleState.h">
+      <Filter>Script\PlayerScript\State\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerMoveState.h">
+      <Filter>Script\PlayerScript\State\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="GravityScript.h">
+      <Filter>Script\GravityScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -137,21 +157,6 @@
     <ClCompile Include="CStateMgr.cpp">
       <Filter>Script\PlayerScript\StateMgr</Filter>
     </ClCompile>
-    <ClCompile Include="CDieState.cpp">
-      <Filter>Script\PlayerScript\State\Die</Filter>
-    </ClCompile>
-    <ClCompile Include="CIdleState.cpp">
-      <Filter>Script\PlayerScript\State\Idle</Filter>
-    </ClCompile>
-    <ClCompile Include="CHitState.cpp">
-      <Filter>Script\PlayerScript\State\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="CAttackState.cpp">
-      <Filter>Script\PlayerScript\State\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="CPlayerStat.cpp">
-      <Filter>Script\PlayerScript\Stat</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerScript.cpp">
       <Filter>Script\PlayerScript</Filter>
     </ClCompile>
@@ -161,7 +166,6 @@
     <ClCompile Include="CAttack_deuxiemie.cpp" />
     <ClCompile Include="CDeath_deuxiemie.cpp" />
     <ClCompile Include="CIdle_deuxiemie.cpp" />
-    <ClCompile Include="CPlayerMoveState.cpp" />
     <ClCompile Include="CRun_deuxiemie.cpp" />
     <ClCompile Include="CShield_deuxiemie.cpp" />
     <ClCompile Include="CStun_deuxiemie.cpp" />
@@ -243,6 +247,42 @@
     <ClCompile Include="Jug_WalkGround.cpp">
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerCamScript.cpp">
+      <Filter>Script\PlayerScript</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerStat.cpp">
+      <Filter>Script\PlayerScript\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerDieState.cpp">
+      <Filter>Script\PlayerScript\State\Die</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerHitState.cpp">
+      <Filter>Script\PlayerScript\State\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerHeavyAttackState.cpp">
+      <Filter>Script\PlayerScript\State\HeavyAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerLightAttackState.cpp">
+      <Filter>Script\PlayerScript\State\LightAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerJumpState.cpp">
+      <Filter>Script\PlayerScript\State\Jump</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerParryState.cpp">
+      <Filter>Script\PlayerScript\State\Parry</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerSprintState.cpp">
+      <Filter>Script\PlayerScript\State\Sprint</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerIdleState.cpp">
+      <Filter>Script\PlayerScript\State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerMoveState.cpp">
+      <Filter>Script\PlayerScript\State\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="GravityScript.cpp">
+      <Filter>Script\GravityScript</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -265,9 +305,6 @@
     </Filter>
     <Filter Include="Script\PlayerScript\State\Idle">
       <UniqueIdentifier>{289e8701-98ce-4190-947b-08f90258bfb7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\Attack">
-      <UniqueIdentifier>{1bc12486-cc07-4f53-a9b5-a0d710a1bb16}</UniqueIdentifier>
     </Filter>
     <Filter Include="Script\PlayerScript\State\Die">
       <UniqueIdentifier>{74dd7de0-25d9-4df1-ae10-b7562a7f65c7}</UniqueIdentifier>
@@ -301,6 +338,27 @@
     </Filter>
     <Filter Include="Script\Boss\Jug\Jug\state">
       <UniqueIdentifier>{1fefd57c-2ad6-4a89-a999-02b1e3c1b696}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\Jump">
+      <UniqueIdentifier>{b5250e9b-8760-423f-9f13-424c1ed9aeab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\LightAttack">
+      <UniqueIdentifier>{4f14e09f-51bc-482d-90ec-a0e77e5741ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\HeavyAttack">
+      <UniqueIdentifier>{8a5fe6ea-a8c2-4fe3-affa-977731c52a1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\Move">
+      <UniqueIdentifier>{042860cf-ee06-4054-a5d9-8e66c3c13022}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\Parry">
+      <UniqueIdentifier>{4dc25546-9bc2-48c1-9f83-d056abd9ff85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PlayerScript\State\Sprint">
+      <UniqueIdentifier>{db1ba327-3a4e-4732-9d5a-a7cd7b7f38c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\GravityScript">
+      <UniqueIdentifier>{5d06dcbb-b6ff-4476-9f5d-4b915c6e1068}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

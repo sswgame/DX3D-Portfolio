@@ -30,6 +30,10 @@ public:
 	Vec3            GetWorldScale() const;
 	Matrix          GetWorldMatrix() const;
 
+	//Editor¿ë
+	Vec3 GetOffsetPos() const;
+	Vec3 GetOffsetScale() const;
+
 public:
 	void OnCollisionEnter(CCollider3D* _pOther);
 	void OnCollision(CCollider3D* _pOther);

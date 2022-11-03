@@ -7,12 +7,17 @@
 #include "CPlayerStat.h"
 #include "CObjKeyMgr.h"
 
+#include "PlayerCamScript.h"
+
+
 PlayerScript::PlayerScript() :
 	CScript((int)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_pKeyMgr(nullptr)
 	, m_pStateMgr(nullptr)
 	, m_pStat(nullptr)
 {
+	SetName(L"PlayerScript");
+
 }
 
 PlayerScript::~PlayerScript() 
@@ -50,33 +55,46 @@ void PlayerScript::start()
 	}
 
 
-	// 플레이어 방향 정보 초기화 
-	m_vDirection = Vec3(0.f, 0.f, 1.f);
+	// 카메라 초기화 - 기본적으로 외부에서 초기화한다. 
+	if (nullptr == m_pCamera)
+	{
+		// 외부에서 초기화를 안해줬다면
+		// Default 레이어 / MainCamera 라는 Obj 를 찾는다. ( 지정되어야함 )
+		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"Default");
+		if (pLayer != nullptr) 
+		{
+			vector<CGameObject*> vecObjs = pLayer->GetObjects();
+			for (int i = 0; i < vecObjs.size(); ++i)
+			{
+				if (vecObjs[i]->GetName() == L"MainCamera")
+				{
+					m_pCamera = vecObjs[i];
+					break;
+				}
+			}
+		}
+	
+	}
 
 }
 
 void PlayerScript::update()
-{
+{	
+	// 0. 카메라 상태 업데이트 
+	UpdateCamera();
 
 	// 1. 키 상태 업데이트 
 	m_pKeyMgr->update();
 	tKey_Zip tCurKeyInfo = m_pKeyMgr->GetCurKeyInfo();
 	tKey_Zip tPrevKeyInfo = m_pKeyMgr->GetPrevKeyInfo();
 
-	// 2. 플레이어 방향 정보 업데이트 
-	
-	
-	//UpdateDirection(tCurKeyInfo);
-
-
-	// 3. 플레이어 상태 업데이트 
+	// 2. 플레이어 상태 업데이트 
 	m_pStateMgr->SetCurKeyInfo(tCurKeyInfo);
 	m_pStateMgr->SetPrevKeyInfo(tPrevKeyInfo);
 	m_pStateMgr->Update();
 
-	// 4. 플레이어 스탯 업데이트 
+	// 3. 플레이어 스탯 업데이트 
 	m_pStat->update();
-
 }
 
 void PlayerScript::lateupdate() 
@@ -90,52 +108,18 @@ void PlayerScript::lateupdate()
 
 }
 
-
-void PlayerScript::UpdateDirection(tKey_Zip _keyInfo)
+void PlayerScript::UpdateCamera()
 {
-	// 방향 체크 
-	// 여기서 PLAYER_KEY_OPTION 은 키에 반응한 방향을 의미한다.
-	// NONE 은 움직이지 않음을 의미
-	PLAYER_KEY_OPTION eDir;
-	KEY eKey = KEY::KEY_END;
-	(_keyInfo.iKeyFlags & PLAYER_KEY_OPTION::FORWARD) ?  eDir = PLAYER_KEY_OPTION::FORWARD	: eDir = PLAYER_KEY_OPTION::NONE;
-	(_keyInfo.iKeyFlags & PLAYER_KEY_OPTION::BACKWARD) ? eDir = PLAYER_KEY_OPTION::BACKWARD : eDir = PLAYER_KEY_OPTION::NONE;
-	(_keyInfo.iKeyFlags & PLAYER_KEY_OPTION::LEFT) ?	 eDir = PLAYER_KEY_OPTION::LEFT		: eDir = PLAYER_KEY_OPTION::NONE;
-	(_keyInfo.iKeyFlags & PLAYER_KEY_OPTION::RIGHT) ?	 eDir = PLAYER_KEY_OPTION::RIGHT	: eDir = PLAYER_KEY_OPTION::NONE;
-	(_keyInfo.iKeyFlags & PLAYER_KEY_OPTION::JUMP) ?	 eDir = PLAYER_KEY_OPTION::JUMP		: eDir = PLAYER_KEY_OPTION::NONE;
+	if (m_pCamera == nullptr)
+		return;
 
-	switch (eDir)
+	static PlayerCamScript* pCamScript = (PlayerCamScript*)m_pCamera->GetScriptByName(L"PlayerCamScript");
+	if (pCamScript != nullptr)
 	{
-	case FORWARD:
-	{
-		
-	}
-		break;
-	case BACKWARD:
-	{
-	
-	}
-		break;
-	case LEFT:
-	{
-		
-	}
-		break;
-	case RIGHT:
-	{
-		
-	}
-		break;
-	case JUMP:
-	{
+		// 카메라 스크립트에 플레이어의 위치 정보를 넘긴다 .  
+		pCamScript->SetTargetPos(GetOwner()->Transform()->GetRelativePos());
 
 	}
-		break;
-	}
-
-	// 단위 행렬로 업데이트
-	m_vDirection.Normalize();
-
 }
 
 void PlayerScript::OnCollisionEnter(CGameObject* _OtherObject)

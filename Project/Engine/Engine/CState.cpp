@@ -29,7 +29,7 @@ void CState::LateUpdate()
 }
 
 
-void CState::StartTimer()
+void CState::PlayTimer()
 {
 	m_bTimePlay = true;
 }

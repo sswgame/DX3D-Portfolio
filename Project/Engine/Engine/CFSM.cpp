@@ -33,6 +33,15 @@ void CFSM::finalupdate()
 {
 }
 
+CState* CFSM::GetState(wstring _stateTypeName)
+{
+	map<wstring, CState*>::iterator iter = m_mapState.find(_stateTypeName);
+	if (iter != m_mapState.end())
+		return nullptr;
+
+	return iter->second;
+}
+
 void CFSM::AddState(wstring _sStateType, CState* _pState)
 {
 	map<wstring, CState*>::iterator iter = m_mapState.find(_sStateType);

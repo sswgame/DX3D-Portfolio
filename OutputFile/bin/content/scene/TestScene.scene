@@ -99,7 +99,7 @@ LAYERS:
               m_vRelativeRot: [0, 0, 0]
               m_bIgnoreParentScale: false
           - CAMERA:
-              m_eProjType: 0
+              m_eProjType: 1
               m_fWidth: 1600
               m_fAspectRatio: 1.77777779
               m_fFOV: 0.785398185
@@ -107,7 +107,7 @@ LAYERS:
               m_iLayerMask: 4294967295
               m_iCamIdx: -1
         SCRIPTS:
-          - CameraMoveScript:
+          - PlayerCamScript:
               {}
         CHILDREN:
           []

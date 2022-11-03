@@ -54,9 +54,6 @@ public:
 	void AddAttack(float _fAttack);
 	void AddArmor(float _fArmor);
 
-
-
-
 public:
 	// [ SET PART ]
 	void InitCurStat(float _fHp = 0.f, float _fStamina = 0.f, float _fEther = 0.f,

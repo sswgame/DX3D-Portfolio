@@ -4,6 +4,8 @@
 class CStateMgr;
 class CObjKeyMgr;
 class CPlayerStat;
+class CCamera;
+
 
 class PlayerScript
 	: public CScript
@@ -12,8 +14,7 @@ private:
 	CObjKeyMgr*		m_pKeyMgr;			//  키	정보 관리 
 	CStateMgr*		m_pStateMgr;		// 상태 정보 관리
 	CPlayerStat*	m_pStat;			// 스탯 정보 관리 
-
-	Vec3			m_vDirection;		// 현재 플레이어가 움직이고 있는 방향 ( 단위벡터로 정의할 것)
+	CGameObject*	m_pCamera;			// 카메라 관리 
 
 
 public:
@@ -33,11 +34,14 @@ public:
 	CObjKeyMgr* GetObjKeyMgr() { return m_pKeyMgr; }
 	CStateMgr* GetStateMgr() { return m_pStateMgr; }
 	CPlayerStat* GetPlayerStat() { return m_pStat; }
+	CGameObject* GetCamera() { return m_pCamera; }
 
-	Vec3 GetDirection() { return m_vDirection; }
+
+	void SetCamera(CGameObject* _pCameraObj) { m_pCamera = _pCameraObj; }
 
 public:
-	void UpdateDirection(tKey_Zip _keyInfo);
+	void UpdateCamera();
+
 
 	CLONE(PlayerScript)
 

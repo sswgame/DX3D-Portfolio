@@ -2,9 +2,6 @@
 #include <Engine/CEntity.h>
 #include <Engine/CKeyMgr.h>
 
-// 1. 엔진으롷 스테이트 옮기고
-// 2. 스테이트 재확인 
-
 /*
 * PLAYER 
 * 
@@ -16,7 +13,7 @@ Move Right              - D
 
 Jump                    - Space
 Interact                - E
-Sprint                  - Left Shift
+Sprint                  - Left Ctrl
 Walk                    - Left Alt
 
     [ Combat ]
@@ -92,11 +89,37 @@ struct tCombatKey
     KEY eCameraLock;
 };
 
+struct tKeyOptionFlags_Zip
+{
+    KeyOptionFlags      iKeyFlags_Tap;
+    KeyOptionFlags      iKeyFlags_Pressed;
+    KeyOptionFlags      iKeyFlags_Away;
+
+    void Clear() 
+    {
+        iKeyFlags_Tap = 0;
+        iKeyFlags_Pressed = 0;
+        iKeyFlags_Away = 0;
+    }
+};
+
+
 struct tKey_Zip
 {
     KEY_STATE           eKeyState;
     KEY                 eKey;    
-    KeyOptionFlags      iKeyFlags;
+    //KeyOptionFlags      iKeyFlags;
+    tKeyOptionFlags_Zip tKeyFlags_Zip;
+
+
+    tKey_Zip() {}
+    tKey_Zip(KEY_STATE _eKeyState, KEY _eKey)
+    {
+        eKeyState = _eKeyState;
+        eKey = _eKey;
+        //iKeyFlags = _iKeyFlags;
+    }
+    ~tKey_Zip() {}
 
 };
 
@@ -112,6 +135,8 @@ private:
  
     tKey_Zip            m_tPrevKeyInfo;     // 이전에 누른 키보드 정보
     tKey_Zip            m_tCurKeyInfo;      // 현재   누른 키보드 정보 
+    vector<tKey_Zip>    m_vecCurKeyZipInfo; // 현재 프레임에 눌린 전체 LEY_STATE / KEY / KeyFlags = 0 ( 안씀 )
+    
 
 
 public:
@@ -125,6 +150,7 @@ public:
     void CheckKeyAway();
 
 public:
+    // [ SET PART ]
     // MOVING KEY SETTING
     void SetMovingForwardKey(KEY _eKey)          { m_tMovingKey.eForward     = _eKey; }
     void SetMovingBackwardKey(KEY _eKey)         { m_tMovingKey.eBackWard    = _eKey; }
@@ -141,22 +167,24 @@ public:
     void SetCombatParryKey(KEY _eKey)            { m_tCombatKey.eParry       = _eKey; }
     void SetCombatCameraLockKey(KEY _eKey)       { m_tCombatKey.eCameraLock  = _eKey; }
 
-    void SetOwnerScript(CScript* _pOwner) { m_pOwnerScript = _pOwner; }
+    void SetOwnerScript(CScript* _pOwner)        { m_pOwnerScript = _pOwner; }
 
 
 public:
-    tMovingKey GetMovingKey()                   { return m_tMovingKey; }
-    tCombatKey GetCombatKey()                   { return m_tCombatKey; }
-    KeyOptionFlags  GetKeyOptionFlags()          { return m_tCurKeyInfo.iKeyFlags; }
-    KEY_STATE       GetCurKeyState()                { return m_tCurKeyInfo.eKeyState; }
-    KEY             GetCurKey()                     { return m_tCurKeyInfo.eKey; }
+    // [ GET PART ]
+    tMovingKey          GetMovingKey()               { return m_tMovingKey; }
+    tCombatKey          GetCombatKey()               { return m_tCombatKey; }
+    tKeyOptionFlags_Zip GetKeyOptionFlags_Zip()      { return m_tCurKeyInfo.tKeyFlags_Zip; }
+    KEY_STATE           GetCurKeyState()             { return m_tCurKeyInfo.eKeyState; }
+    KEY                 GetCurKey()                  { return m_tCurKeyInfo.eKey; }
 
 
-    tKey_Zip GetCurKeyInfo() { return m_tCurKeyInfo; }
-    tKey_Zip GetPrevKeyInfo() { return m_tPrevKeyInfo; }
+    tKey_Zip            GetCurKeyInfo()              { return m_tCurKeyInfo; }
+    tKey_Zip            GetPrevKeyInfo()             { return m_tPrevKeyInfo; }
+    vector<tKey_Zip>    GetCurKeyZipInfo()           { return m_vecCurKeyZipInfo; }
 
-    KEY_STATE GetCurKeyStateByFlags();
-    KEY GetCurKeyByFlags();
+    KEY_STATE           GetKeyStateByFlags(KeyOptionFlags _Flags);
+    KEY                 GetKeyByFlags(KeyOptionFlags _Flags);
 
 
     
