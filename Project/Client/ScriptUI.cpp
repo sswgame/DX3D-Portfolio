@@ -10,16 +10,21 @@
 #include "CImGuiMgr.h"
 
 ScriptUI::ScriptUI()
-	:
-	UI("Script")
-  , m_pTargetObject(nullptr)
-  , m_pTargetScript(nullptr)
-  , m_eComType(COMPONENT_TYPE::SCRIPT)
-  , m_bActive(false) { }
+	: UI("Script")
+	, m_pTargetObject(nullptr)
+	, m_pTargetScript(nullptr)
+	, m_eComType(COMPONENT_TYPE::SCRIPT)
+	, m_bActive(false)
+{
+}
 
-ScriptUI::~ScriptUI() {}
+ScriptUI::~ScriptUI()
+{
+}
 
-void ScriptUI::update() {}
+void ScriptUI::update()
+{
+}
 
 void ScriptUI::render_update()
 {
@@ -30,11 +35,11 @@ void ScriptUI::render_update()
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(50.f / 255.f, 120.f / 255.f, 50.f / 255.f, 1.f));
 
 	wstring wstrScriptName = CScriptMgr::GetScriptName(m_pTargetScript);
-	string strScriptName(wstrScriptName.begin(), wstrScriptName.end());
+	string  strScriptName  = ToString(wstrScriptName);
 
 	string ButtonName;;
 	if (m_bFold == false) ButtonName = ICON_FA_CARET_DOWN;
-	else ButtonName = ICON_FA_CARET_RIGHT;
+	else ButtonName                  = ICON_FA_CARET_RIGHT;
 	ButtonName += strScriptName;
 	if (ImGui::Button(ButtonName.c_str())) { m_bFold = !m_bFold; }
 
@@ -60,43 +65,41 @@ void ScriptUI::render_update()
 			else
 				m_pTargetScript->Deactivate();
 		}
-
 	}
-	
 
 
 	// [ SCRIPT DELETE BUTTON ]
-		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_TRASH))
-			ImGui::OpenPopup(u8"SCRIPT 삭제 경고창");
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_TRASH))
+		ImGui::OpenPopup(u8"SCRIPT 삭제 경고창");
 
-		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-		if (ImGui::BeginPopupModal(u8"SCRIPT 삭제 경고창", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal(u8"SCRIPT 삭제 경고창", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		string TargetObjName = ToString(m_pTargetObject->GetName());
+		string text          = TargetObjName + " / " + strScriptName;
+		ImGui::Text(text.c_str());
+		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f)
+		                   , u8"해당 SCRIPT를 정말로 삭제하시겠습니까?\n\n");
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0)))
 		{
-			string TargetObjName = ToString(m_pTargetObject->GetName());
-			string text = TargetObjName + " / " + strScriptName;
-			ImGui::Text(text.c_str());
-			ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f)
-				, u8"해당 SCRIPT를 정말로 삭제하시겠습니까?\n\n");
-			ImGui::Separator();
+			tUIDelegate tDeleteCom;
+			tDeleteCom.dwParam = (DWORD_PTR)m_pTargetScript;
+			tDeleteCom.pFunc   = (PARAM_1)&InspectorUI::DeleteScript;
+			tDeleteCom.pInst   = CImGuiMgr::GetInst()->FindUI("Inspector");
 
-			if (ImGui::Button("OK", ImVec2(120, 0)))
-			{
-				tUIDelegate tDeleteCom;
-				tDeleteCom.dwParam = (DWORD_PTR)m_pTargetScript;
-				tDeleteCom.pFunc = (PARAM_1)&InspectorUI::DeleteScript;
-				tDeleteCom.pInst = CImGuiMgr::GetInst()->FindUI("Inspector");
-
-				CImGuiMgr::GetInst()->AddDelegate(tDeleteCom);
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::SetItemDefaultFocus();
-			ImGui::SameLine();
-			if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-			ImGui::EndPopup();
+			CImGuiMgr::GetInst()->AddDelegate(tDeleteCom);
+			ImGui::CloseCurrentPopup();
 		}
+		ImGui::SetItemDefaultFocus();
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+		ImGui::EndPopup();
+	}
 
 
 	const vector<tScriptParamInfo>& vecParam = m_pTargetScript->GetScriptParam();

@@ -40,6 +40,8 @@ private:
 	double         m_dCurTime;				// 현재 시간 
 	float          m_fLerpTime;			// 보간 시간 
 
+	float m_temp    = 0;
+	float m_accTime = 0;
 
 public:
 	void         finalupdate();

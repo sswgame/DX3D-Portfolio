@@ -1,0 +1,896 @@
+NAME: DEUXIEME_SHIELD
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 0, 0]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+  - ANIMATOR3D:
+      MESH: [mesh\deuxiemie_SphereShield0.mesh, mesh\deuxiemie_SphereShield0.mesh]
+      m_pPrevAnim: STRIKE_5_PREPARE
+      m_pCurAnim: STRIKE_5_PREPARE
+      m_pNextAnim: ""
+      ANIMATION LIST:
+        ATTACK_FLOOR:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 365
+            iEndFrame: 407
+            iFrameLength: 43
+            dStartTime: 12.166666666666666
+            dEndTime: 13.566666666666666
+            dTimeLength: 0
+            eMode: 0
+        DEATH:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 306
+            iEndFrame: 364
+            iFrameLength: 59
+            dStartTime: 10.199999999999999
+            dEndTime: 12.133333333333333
+            dTimeLength: 0
+            eMode: 0
+        IDLE:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 0
+            iEndFrame: 45
+            iFrameLength: 46
+            dStartTime: 0
+            dEndTime: 1.5
+            dTimeLength: 0
+            eMode: 0
+        IDLE_FIGHT:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 46
+            iEndFrame: 89
+            iFrameLength: 44
+            dStartTime: 1.5333333333333334
+            dEndTime: 2.9666666666666668
+            dTimeLength: 0
+            eMode: 0
+        IDLE_SPEAR:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 408
+            iEndFrame: 453
+            iFrameLength: 46
+            dStartTime: 13.6
+            dEndTime: 15.1
+            dTimeLength: 0
+            eMode: 0
+        IDLE_SPEAR_FIGHT:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 454
+            iEndFrame: 493
+            iFrameLength: 45
+            dStartTime: 15.133333333333333
+            dEndTime: 16.433333333333334
+            dTimeLength: 0
+            eMode: 0
+        RUN:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 289
+            iEndFrame: 305
+            iFrameLength: 17
+            dStartTime: 9.6333333333333329
+            dEndTime: 10.166666666666666
+            dTimeLength: 0
+            eMode: 0
+        SPEAR_SHOT:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 493
+            iEndFrame: 499
+            iFrameLength: 6
+            dStartTime: 16.433333333333334
+            dEndTime: 16.633333333333333
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_1:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 493
+            iEndFrame: 563
+            iFrameLength: 26
+            dStartTime: 16.433333333333334
+            dEndTime: 18.766666666666666
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_1_PREPARE:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 564
+            iEndFrame: 612
+            iFrameLength: 49
+            dStartTime: 18.800000000000001
+            dEndTime: 20.399999999999999
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_2:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 613
+            iEndFrame: 655
+            iFrameLength: 12
+            dStartTime: 20.433333333333334
+            dEndTime: 22.600000000000001
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_3:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 679
+            iEndFrame: 718
+            iFrameLength: 40
+            dStartTime: 22.633333333333333
+            dEndTime: 23.933333333333334
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_3_PREPARE:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 719
+            iEndFrame: 732
+            iFrameLength: 14
+            dStartTime: 23.966666666666665
+            dEndTime: 24.399999999999999
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_4:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 733
+            iEndFrame: 769
+            iFrameLength: 37
+            dStartTime: 24.433333333333334
+            dEndTime: 25.633333333333333
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_4_PREPRARE:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 770
+            iEndFrame: 788
+            iFrameLength: 19
+            dStartTime: 25.666666666666668
+            dEndTime: 26.266666666666666
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_5:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 789
+            iEndFrame: 820
+            iFrameLength: 32
+            dStartTime: 26.300000000000001
+            dEndTime: 27.333333333333332
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_5_PREPARE:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 821
+            iEndFrame: 881
+            iFrameLength: 62
+            dStartTime: 27.366666666666667
+            dEndTime: 29.366666666666667
+            dTimeLength: 0
+            eMode: 0
+        WALK_BACK:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 129
+            iEndFrame: 169
+            iFrameLength: 41
+            dStartTime: 4.2999999999999998
+            dEndTime: 5.6333333333333337
+            dTimeLength: 0
+            eMode: 0
+        WALK_FORWARD:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 90
+            iEndFrame: 128
+            iFrameLength: 39
+            dStartTime: 3
+            dEndTime: 4.2666666666666666
+            dTimeLength: 0
+            eMode: 0
+        WALK_LEFT:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 170
+            iEndFrame: 209
+            iFrameLength: 41
+            dStartTime: 5.666666666666667
+            dEndTime: 6.9666666666666668
+            dTimeLength: 0
+            eMode: 0
+        WALK_RIGHT:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 210
+            iEndFrame: 249
+            iFrameLength: 40
+            dStartTime: 7
+            dEndTime: 8.3000000000000007
+            dTimeLength: 0
+            eMode: 0
+  - MESHRENDER:
+      MESH: [mesh\deuxiemie_SphereShield0.mesh, mesh\deuxiemie_SphereShield0.mesh]
+      MATERIAL COUNT: 1
+      0: [material\deuxieme_SphereShield.mtrl, material\deuxieme_SphereShield.mtrl]
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  []
+CHILDREN:
+  - NAME: DEUXIEME_SHIELD_WEAPON_0
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 0, 0]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - ANIMATOR3D:
+          MESH: [mesh\deuxiemie_SphereShield1.mesh, mesh\deuxiemie_SphereShield1.mesh]
+          m_pPrevAnim: ""
+          m_pCurAnim: ""
+          m_pNextAnim: ""
+          ANIMATION LIST:
+            ATTACK_FLOOR:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 365
+                iEndFrame: 407
+                iFrameLength: 43
+                dStartTime: 12.166666666666666
+                dEndTime: 13.566666666666666
+                dTimeLength: 0
+                eMode: 0
+            DEATH:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 306
+                iEndFrame: 364
+                iFrameLength: 59
+                dStartTime: 10.199999999999999
+                dEndTime: 12.133333333333333
+                dTimeLength: 0
+                eMode: 0
+            IDLE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 0
+                iEndFrame: 45
+                iFrameLength: 46
+                dStartTime: 0
+                dEndTime: 1.5
+                dTimeLength: 0
+                eMode: 0
+            IDLE_FIGHT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 46
+                iEndFrame: 89
+                iFrameLength: 44
+                dStartTime: 1.5333333333333334
+                dEndTime: 2.9666666666666668
+                dTimeLength: 0
+                eMode: 0
+            IDLE_SPEAR:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 408
+                iEndFrame: 453
+                iFrameLength: 46
+                dStartTime: 13.6
+                dEndTime: 15.1
+                dTimeLength: 0
+                eMode: 0
+            IDLE_SPEAR_FIGHT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 454
+                iEndFrame: 493
+                iFrameLength: 40
+                dStartTime: 15.133333333333333
+                dEndTime: 16.433333333333334
+                dTimeLength: 0
+                eMode: 0
+            RUN:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 289
+                iEndFrame: 305
+                iFrameLength: 17
+                dStartTime: 9.6333333333333329
+                dEndTime: 10.166666666666666
+                dTimeLength: 0
+                eMode: 0
+            SPEAR_SHOT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 493
+                iEndFrame: 499
+                iFrameLength: 7
+                dStartTime: 16.433333333333334
+                dEndTime: 16.633333333333333
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_1:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 493
+                iEndFrame: 563
+                iFrameLength: 71
+                dStartTime: 16.433333333333334
+                dEndTime: 18.766666666666666
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_1_PREPARE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 564
+                iEndFrame: 612
+                iFrameLength: 49
+                dStartTime: 18.800000000000001
+                dEndTime: 20.399999999999999
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_2:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 613
+                iEndFrame: 655
+                iFrameLength: 66
+                dStartTime: 20.433333333333334
+                dEndTime: 22.600000000000001
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_3:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 679
+                iEndFrame: 718
+                iFrameLength: 40
+                dStartTime: 22.633333333333333
+                dEndTime: 23.933333333333334
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_3_PREPARE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 719
+                iEndFrame: 732
+                iFrameLength: 14
+                dStartTime: 23.966666666666665
+                dEndTime: 24.399999999999999
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_4:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 733
+                iEndFrame: 769
+                iFrameLength: 37
+                dStartTime: 24.433333333333334
+                dEndTime: 25.633333333333333
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_4_PREPRARE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 770
+                iEndFrame: 788
+                iFrameLength: 19
+                dStartTime: 25.666666666666668
+                dEndTime: 26.266666666666666
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_5:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 789
+                iEndFrame: 820
+                iFrameLength: 32
+                dStartTime: 26.300000000000001
+                dEndTime: 27.333333333333332
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_5_PREPARE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 821
+                iEndFrame: 881
+                iFrameLength: 61
+                dStartTime: 27.366666666666667
+                dEndTime: 29.366666666666667
+                dTimeLength: 0
+                eMode: 0
+            WALK_BACK:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 129
+                iEndFrame: 169
+                iFrameLength: 41
+                dStartTime: 4.2999999999999998
+                dEndTime: 5.6333333333333337
+                dTimeLength: 0
+                eMode: 0
+            WALK_FORWARD:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 90
+                iEndFrame: 128
+                iFrameLength: 39
+                dStartTime: 3
+                dEndTime: 4.2666666666666666
+                dTimeLength: 0
+                eMode: 0
+            WALK_LEFT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 170
+                iEndFrame: 209
+                iFrameLength: 40
+                dStartTime: 5.666666666666667
+                dEndTime: 6.9666666666666668
+                dTimeLength: 0
+                eMode: 0
+            WALK_RIGHT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 210
+                iEndFrame: 249
+                iFrameLength: 40
+                dStartTime: 7
+                dEndTime: 8.3000000000000007
+                dTimeLength: 0
+                eMode: 0
+      - MESHRENDER:
+          MESH: [mesh\deuxiemie_SphereShield1.mesh, mesh\deuxiemie_SphereShield1.mesh]
+          MATERIAL COUNT: 1
+          0: [material\armes.mtrl, material\armes.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: DEUXIEME_SHIELD_WEAPON_1
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 0, 0]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - ANIMATOR3D:
+          MESH: [mesh\deuxiemie_SphereShield2.mesh, mesh\deuxiemie_SphereShield2.mesh]
+          m_pPrevAnim: ""
+          m_pCurAnim: ""
+          m_pNextAnim: ""
+          ANIMATION LIST:
+            ATTACK_FLOOR:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 365
+                iEndFrame: 407
+                iFrameLength: 43
+                dStartTime: 12.166666666666666
+                dEndTime: 13.566666666666666
+                dTimeLength: 0
+                eMode: 0
+            DEATH:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 306
+                iEndFrame: 364
+                iFrameLength: 59
+                dStartTime: 10.199999999999999
+                dEndTime: 12.133333333333333
+                dTimeLength: 0
+                eMode: 0
+            IDLE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 0
+                iEndFrame: 45
+                iFrameLength: 46
+                dStartTime: 0
+                dEndTime: 1.5
+                dTimeLength: 0
+                eMode: 0
+            IDLE_FIGHT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 46
+                iEndFrame: 89
+                iFrameLength: 44
+                dStartTime: 1.5333333333333334
+                dEndTime: 2.9666666666666668
+                dTimeLength: 0
+                eMode: 0
+            IDLE_SPEAR:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 408
+                iEndFrame: 453
+                iFrameLength: 46
+                dStartTime: 13.6
+                dEndTime: 15.1
+                dTimeLength: 0
+                eMode: 0
+            IDLE_SPEAR_FIGHT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 454
+                iEndFrame: 493
+                iFrameLength: 40
+                dStartTime: 15.133333333333333
+                dEndTime: 16.433333333333334
+                dTimeLength: 0
+                eMode: 0
+            RUN:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 289
+                iEndFrame: 305
+                iFrameLength: 17
+                dStartTime: 9.6333333333333329
+                dEndTime: 10.166666666666666
+                dTimeLength: 0
+                eMode: 0
+            SPEAR_SHOT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 493
+                iEndFrame: 499
+                iFrameLength: 7
+                dStartTime: 16.433333333333334
+                dEndTime: 16.633333333333333
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_1:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 493
+                iEndFrame: 563
+                iFrameLength: 71
+                dStartTime: 16.433333333333334
+                dEndTime: 18.766666666666666
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_1_PREPARE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 564
+                iEndFrame: 612
+                iFrameLength: 49
+                dStartTime: 18.800000000000001
+                dEndTime: 20.399999999999999
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_2:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 613
+                iEndFrame: 655
+                iFrameLength: 66
+                dStartTime: 20.433333333333334
+                dEndTime: 22.600000000000001
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_3:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 679
+                iEndFrame: 718
+                iFrameLength: 40
+                dStartTime: 22.633333333333333
+                dEndTime: 23.933333333333334
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_3_PREPARE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 719
+                iEndFrame: 732
+                iFrameLength: 14
+                dStartTime: 23.966666666666665
+                dEndTime: 24.399999999999999
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_4:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 733
+                iEndFrame: 769
+                iFrameLength: 37
+                dStartTime: 24.433333333333334
+                dEndTime: 25.633333333333333
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_4_PREPRARE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 770
+                iEndFrame: 788
+                iFrameLength: 19
+                dStartTime: 25.666666666666668
+                dEndTime: 26.266666666666666
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_5:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 789
+                iEndFrame: 820
+                iFrameLength: 32
+                dStartTime: 26.300000000000001
+                dEndTime: 27.333333333333332
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_5_PREPARE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 821
+                iEndFrame: 881
+                iFrameLength: 61
+                dStartTime: 27.366666666666667
+                dEndTime: 29.366666666666667
+                dTimeLength: 0
+                eMode: 0
+            WALK_BACK:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 129
+                iEndFrame: 169
+                iFrameLength: 41
+                dStartTime: 4.2999999999999998
+                dEndTime: 5.6333333333333337
+                dTimeLength: 0
+                eMode: 0
+            WALK_FORWARD:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 90
+                iEndFrame: 128
+                iFrameLength: 39
+                dStartTime: 3
+                dEndTime: 4.2666666666666666
+                dTimeLength: 0
+                eMode: 0
+            WALK_LEFT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 170
+                iEndFrame: 209
+                iFrameLength: 40
+                dStartTime: 5.666666666666667
+                dEndTime: 6.9666666666666668
+                dTimeLength: 0
+                eMode: 0
+            WALK_RIGHT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 210
+                iEndFrame: 249
+                iFrameLength: 40
+                dStartTime: 7
+                dEndTime: 8.3000000000000007
+                dTimeLength: 0
+                eMode: 0
+      - MESHRENDER:
+          MESH: [mesh\deuxiemie_SphereShield2.mesh, mesh\deuxiemie_SphereShield2.mesh]
+          MATERIAL COUNT: 1
+          0: [material\deuxiemie_sphere.mtrl, material\deuxiemie_sphere.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []

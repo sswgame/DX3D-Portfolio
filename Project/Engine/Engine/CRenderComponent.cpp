@@ -9,20 +9,22 @@
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	: CComponent(_type)
 	, m_pMesh(nullptr)
+	, m_vecMtrls{}
 	, m_bDynamicShadow(false)
 	, m_bFrustumCulling(false)
-	, m_vecMtrls{}
-	{}
+{
+	m_vecMtrls.resize(1);
+}
 
 CRenderComponent::CRenderComponent(const CRenderComponent& _origin)
-	:
-	CComponent(_origin)
-  , m_pMesh(_origin.m_pMesh)
-  , m_bDynamicShadow(_origin.m_bDynamicShadow)
-  , m_bFrustumCulling(_origin.m_bFrustumCulling)
+	: CComponent(_origin)
+	, m_pMesh(_origin.m_pMesh)
+	, m_bDynamicShadow(_origin.m_bDynamicShadow)
+	, m_bFrustumCulling(_origin.m_bFrustumCulling)
 {
-	if (false != _origin.m_vecMtrls.empty())
+	if (false == _origin.m_vecMtrls.empty())
 	{
+		m_vecMtrls.resize(_origin.m_vecMtrls.size());
 		for (size_t i = 0; i < _origin.m_vecMtrls.size(); ++i)
 		{
 			SetSharedMaterial(_origin.m_vecMtrls[i].pSharedMtrl, static_cast<UINT>(i));
@@ -170,6 +172,7 @@ void CRenderComponent::Deserialize(const YAML::Node& node)
 	int materialCount = node["MATERIAL COUNT"].as<int>();
 
 	m_vecMtrls.resize(materialCount);
+
 	for (int i = 0; i < materialCount; ++i)
 	{
 		Ptr<CMaterial> pMaterial = LoadAs<CMaterial>(node[i]);

@@ -14,7 +14,6 @@
 #include "IconsFontAwesome5.h"
 
 
-
 Animator3DUI::Animator3DUI()
 	: ComponentUI("Animator3D", COMPONENT_TYPE::ANIMATOR3D)
 	, m_bPlay(false)
@@ -33,30 +32,32 @@ Animator3DUI::~Animator3DUI()
 void Animator3DUI::update()
 {
 	ComponentUI::update();
-
 }
 
 void Animator3DUI::render_update()
 {
 	ComponentUI::render_update();
-	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
+	if (ComponentUI::IsFold())
+	{
+		SetSize(Vec2(0.f, 25.f));
+		return;
+	}
 	else { SetSize(Vec2(0.f, 150.f)); }
 
 	if (m_FrameTimeLine.GetOwner() == nullptr)
 		m_FrameTimeLine.SetOwner(this);
 
 	CGameObject* pTargetObject = GetTargetObject();
-	CAnimator3D* pAnimator3D = pTargetObject->Animator3D();
+	CAnimator3D* pAnimator3D   = pTargetObject->Animator3D();
 	// 애니메이션3D 를 보유한 객체를  처음 선택했을 때 갱신 
 	if (pAnimator3D != m_pAnimator3D)
 	{
-		m_pAnimator3D = pAnimator3D;
+		m_pAnimator3D                    = pAnimator3D;
 		m_FrameTimeLine.m_pCurAnimator3D = m_pAnimator3D;
 		m_FrameTimeLine.Reset();
 		Reset((DWORD_PTR)nullptr);
-
 	}
-	m_pCurAnim3D = m_pAnimator3D->GetCurAnim();
+	m_pCurAnim3D                              = m_pAnimator3D->GetCurAnim();
 	const map<wstring, CAnimation3D*> MapAnim = m_pAnimator3D->GetAllAnim();
 
 	if (MapAnim.size() != m_FrameTimeLine.m_vecAnimItem.size())
@@ -66,14 +67,13 @@ void Animator3DUI::render_update()
 
 	RenderAnim3DClipWindow();
 	RenderComponentWindow();
-
 }
+
 void Animator3DUI::RenderComponentWindow()
 {
-
 	// 1. All Animation Same Lerp Time 
-	const map<wstring, CAnimation3D*> MapAnim = m_pAnimator3D->GetAllAnim();
-	string ButtonName = ICON_FA_CIRCLE_DOWN;
+	const map<wstring, CAnimation3D*> MapAnim    = m_pAnimator3D->GetAllAnim();
+	string                            ButtonName = ICON_FA_CIRCLE_DOWN;
 	//ButtonName += " LerpTime";
 	if (ImGui::Button(ButtonName.c_str(), ImVec2(20.f, 20.f)))
 		ImGui::OpenPopup("Apply All LerpTime");
@@ -81,7 +81,7 @@ void Animator3DUI::RenderComponentWindow()
 	if (ImGui::BeginPopupModal("Apply All LerpTime", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::TextColored(ImVec4(1.f, 1.f, 1.f, 1.f)
-			, u8"모든 애니메이션에 [ %.3f ] 보간시간이 적용됩니다. \n\n", m_fCommonLerpTime);
+		                   , u8"모든 애니메이션에 [ %.3f ] 보간시간이 적용됩니다. \n\n", m_fCommonLerpTime);
 
 		if (ImGui::Button("OK", ImVec2(100, 0)))
 		{
@@ -119,7 +119,7 @@ void Animator3DUI::RenderComponentWindow()
 	if (ImGui::BeginPopupModal("Clear All Animation", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f)
-			, u8"모든 애니메이션을 삭제하시겠습니까?\n\n");
+		                   , u8"모든 애니메이션을 삭제하시겠습니까?\n\n");
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
 		{
@@ -174,11 +174,11 @@ void Animator3DUI::RenderComponentWindow()
 	if (ImGui::BeginPopupModal("Apply To Child Object", NULL, ImGuiWindowFlags_Modal))
 	{
 		wstring wstrName = GetTargetObject()->GetName();
-		string name = ToString(wstrName);
+		string  name     = ToString(wstrName);
 		ImGui::TextWrapped(
-			u8"하위 객체에 동일한 애니메이션을 적용합니다.\n\n"
-			u8"하위 객체의 개별 애니메이션은 사라지며\n\n"
-			u8"%s 객체의 애니메이션과 동일한 애니메이션을 갖게됩니다.", name.c_str());
+		                   u8"하위 객체에 동일한 애니메이션을 적용합니다.\n\n"
+		                   u8"하위 객체의 개별 애니메이션은 사라지며\n\n"
+		                   u8"%s 객체의 애니메이션과 동일한 애니메이션을 갖게됩니다.", name.c_str());
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
 		{
@@ -198,11 +198,10 @@ void Animator3DUI::RenderComponentWindow()
 
 	// 4. Play With Child Animator3D
 	bool bPlayWithChild = m_pAnimator3D->GetPlayWithChild();
-	ButtonName = ICON_FA_CHILD;
+	ButtonName          = ICON_FA_CHILD;
 	ButtonName += " Play With Child";
 	ImGui::Checkbox(ButtonName.c_str(), &bPlayWithChild);
 	m_pAnimator3D->SetPlayWithChild(bPlayWithChild);
-
 }
 
 
@@ -211,8 +210,8 @@ void Animator3DUI::RenderAnim3DClipWindow()
 	const map<wstring, CAnimation3D*> MapAnim = m_pAnimator3D->GetAllAnim();
 
 	// [ TIME LINE 변수들 ] 
-	static int firstFrame = 0;
-	static bool expanded = true;
+	static int  firstFrame = 0;
+	static bool expanded   = true;
 
 
 	ImGui::Begin("ANIMATION_3D CLIP");
@@ -228,7 +227,6 @@ void Animator3DUI::RenderAnim3DClipWindow()
 				fSpeed = 0.f;
 			//m_pCurAnim3D->SetSpeed(fSpeed);
 			m_pAnimator3D->SetSpeed(fSpeed);
-
 		}
 
 		ImGui::SameLine();
@@ -243,7 +241,6 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			{
 				//m_pCurAnim3D->Play(false);
 				m_pAnimator3D->SetAnimState(m_pCurAnim3D->GetName(), ANIMATION_STATE::STOP);
-
 			}
 		}
 		else
@@ -256,7 +253,6 @@ void Animator3DUI::RenderAnim3DClipWindow()
 				m_pAnimator3D->SetAnimState(m_pCurAnim3D->GetName(), ANIMATION_STATE::PLAY);
 				//m_pCurAnim3D->Play(true);
 				//m_pCurAnim3D->SetFinish(false);
-
 			}
 		}
 		ImGui::PopItemWidth();
@@ -269,7 +265,6 @@ void Animator3DUI::RenderAnim3DClipWindow()
 				fSpeed = 3.f;
 			//m_pCurAnim3D->SetSpeed(fSpeed);
 			m_pAnimator3D->SetSpeed(fSpeed);
-
 		}
 
 		ImGui::SameLine();
@@ -289,9 +284,8 @@ void Animator3DUI::RenderAnim3DClipWindow()
 
 	if (ImGui::BeginPopupModal("Create Animation", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-
 		CREATE_ANIMATION_MODE eMode = m_pAnimator3D->GetCreateMode();
-		string ButtonName;
+		string                ButtonName;
 		if (eMode == CREATE_ANIMATION_MODE::FRAME)
 		{
 			ButtonName = "FRAME";
@@ -310,10 +304,10 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		m_pAnimator3D->SetCreateMode(eMode);
 
 		static int FrameStartIdx = 0;
-		static int FrameEndIdx = 0;
+		static int FrameEndIdx   = 0;
 
 		static double FrameStartTime = 0.0;
-		static double FrameEndTime = 0.0;
+		static double FrameEndTime   = 0.0;
 		if (eMode == CREATE_ANIMATION_MODE::FRAME)
 		{
 			ImGui::Text("Frame");
@@ -338,7 +332,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			ImGui::InputDouble("##End", &FrameEndTime);
 			ImGui::PopItemWidth();
 		}
-		
+
 		static char buf[512];
 		ImGui::InputText("Name", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_None);
 
@@ -351,29 +345,29 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			{
 				// 타임라인에 적용
 				m_FrameTimeLine.AddAnimName(strName);
-				int idx = (int)(m_FrameTimeLine.m_vecAnimName.size() - 1);
+				int idx      = (int)(m_FrameTimeLine.m_vecAnimName.size() - 1);
 				int frameCnt = m_pAnimator3D->GetFrameCount();
 				if (eMode == CREATE_ANIMATION_MODE::FRAME)
 				{
-					m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ strName, idx, FrameStartIdx, FrameEndIdx });
+					m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{strName, idx, FrameStartIdx, FrameEndIdx});
 					m_pAnimator3D->CreateAnimByFrame(wstrName, 0, FrameStartIdx, FrameEndIdx);
 				}
 				else if (eMode == CREATE_ANIMATION_MODE::TIME)
 				{
-					int sIdx = FrameStartTime * (double)frameCnt;
-					int eIdx = FrameEndTime * (double)frameCnt;
-					m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ strName, idx, FrameStartIdx, FrameEndIdx });
+					int sIdx = (int)(FrameStartTime * frameCnt);
+					int eIdx = (int)(FrameEndTime * frameCnt);
+					m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{strName, idx, FrameStartIdx, FrameEndIdx});
 					m_pAnimator3D->CreateAnimByTime(wstrName, 0, FrameStartTime, FrameEndTime);
 				}
-				
+
 				m_pAnimator3D->Play(wstrName, false);
-				m_pCurAnim3D = m_pAnimator3D->GetCurAnim();
+				m_pCurAnim3D   = m_pAnimator3D->GetCurAnim();
 				m_iSelectedIdx = idx;
 			}
-			FrameStartIdx = 0;
-			FrameEndIdx = 0;
+			FrameStartIdx  = 0;
+			FrameEndIdx    = 0;
 			FrameStartTime = 0.0;
-			FrameEndTime = 0.0;
+			FrameEndTime   = 0.0;
 
 			buf[0] = NULL;
 			ImGui::CloseCurrentPopup();
@@ -382,10 +376,10 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel", ImVec2(120, 0)))
 		{
-			FrameStartIdx = 0;
-			FrameEndIdx = 0;
+			FrameStartIdx  = 0;
+			FrameEndIdx    = 0;
 			FrameStartTime = 0.0;
-			FrameEndTime = 0.0;
+			FrameEndTime   = 0.0;
 
 			buf[0] = NULL;
 			ImGui::CloseCurrentPopup();
@@ -409,7 +403,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			string FileName = "AnimationInfo\\";
 			FileName += buf;
 			wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
-			string strPath = ToString(ContentPath);
+			string  strPath     = ToString(ContentPath);
 			strPath += FileName;
 
 			// 파일 입출력 
@@ -419,16 +413,16 @@ void Animator3DUI::RenderAnim3DClipWindow()
 				string strLine;
 				while (std::getline(FileStream, strLine))
 				{
-					vector<string> vecWords;
-					string strWord;
+					vector<string>    vecWords;
+					string            strWord;
 					std::stringstream SStream(strLine);
 					while (std::getline(SStream, strWord, ' '))			// 공백에 따라 단어 분리 
 					{
 						vecWords.push_back(strWord);
 					}
-					string	AnimName = vecWords[0];						// 1. 애니메이션 이름 
-					int		FrameStartIdx = std::stoi(vecWords[1]);		// 2. 시작 프레임 인덱스 
-					int		FrameEndIdx = std::stoi(vecWords[2]);		// 3. 끝   프레임 인덱스 
+					string AnimName      = vecWords[0];						// 1. 애니메이션 이름 
+					int    FrameStartIdx = std::stoi(vecWords[1]);		// 2. 시작 프레임 인덱스 
+					int    FrameEndIdx   = std::stoi(vecWords[2]);		// 3. 끝   프레임 인덱스 
 
 
 					wstring wstrName = wstring(AnimName.begin(), AnimName.end());
@@ -437,18 +431,17 @@ void Animator3DUI::RenderAnim3DClipWindow()
 						// 타임라인에 적용
 						m_FrameTimeLine.AddAnimName(AnimName);
 						int idx = (int)(m_FrameTimeLine.m_vecAnimName.size() - 1);
-						m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ AnimName, idx, FrameStartIdx, FrameEndIdx });
+						m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{AnimName, idx, FrameStartIdx, FrameEndIdx});
 
 						// 컴포넌트에 적용 
-						int	   FrameCnt = m_pAnimator3D->GetFrameCount();
+						int    FrameCnt       = m_pAnimator3D->GetFrameCount();
 						double FrameStartTime = (double)FrameStartIdx / (double)FrameCnt;
-						double FrameEndTime = (double)FrameEndIdx / (double)FrameCnt;
+						double FrameEndTime   = (double)FrameEndIdx / (double)FrameCnt;
 
 						m_pAnimator3D->CreateAnimByFrame(wstrName, 0, FrameStartIdx, FrameEndIdx);
 						m_pAnimator3D->Play(wstrName, false);
-						m_pCurAnim3D = m_pAnimator3D->GetCurAnim();
+						m_pCurAnim3D   = m_pAnimator3D->GetCurAnim();
 						m_iSelectedIdx = idx;
-
 					}
 				}
 
@@ -477,15 +470,15 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		if (ImGui::BeginPopupModal("Delete Animation", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			wstring wstrName = m_pCurAnim3D->GetName();
-			string strName = ToString(wstrName);
+			string  strName  = ToString(wstrName);
 
 			ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f)
-				, u8"[ %s ]\n 애니메이션을 삭제하시겠습니까?\n\n", strName.c_str());
+			                   , u8"[ %s ]\n 애니메이션을 삭제하시겠습니까?\n\n", strName.c_str());
 
 			if (ImGui::Button("OK", ImVec2(120, 0)))
 			{
 				wstring wstrName = m_pCurAnim3D->GetName();
-				string strName = ToString(wstrName);
+				string  strName  = ToString(wstrName);
 
 				// 1. 타임라인 정리 
 				m_FrameTimeLine.SubAnimName(strName);
@@ -493,9 +486,9 @@ void Animator3DUI::RenderAnim3DClipWindow()
 
 				// 2. 컴포넌트에서 정리 
 				m_pAnimator3D->DeleteAnim(wstrName);
-				m_iSelectedIdx = -1;
+				m_iSelectedIdx     = -1;
 				m_iSelectedPrevIdx = -1;
-				m_pCurAnim3D = nullptr;
+				m_pCurAnim3D       = nullptr;
 
 				// 3. 타임라인 리셋
 				m_FrameTimeLine.Reset();
@@ -506,7 +499,6 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			ImGui::SameLine();
 			if (ImGui::Button("Cancel", ImVec2(120, 0)))
 			{
-
 				ImGui::CloseCurrentPopup();
 			}
 
@@ -516,12 +508,13 @@ void Animator3DUI::RenderAnim3DClipWindow()
 
 
 	// [ CHANGE TIME / FRAME ]
-	ImGui::Text("TImeLine (s)"); ImGui::SameLine(100.f);
+	ImGui::Text("TImeLine (s)");
+	ImGui::SameLine(100.f);
 
 	if (m_pCurAnim3D != nullptr)
 	{
-		double StartTime = m_pCurAnim3D->GetStartTime(); // double 인데 float 으로 받아서 값이 조금 달라짐 
-		float StartDiffTime = (float)StartTime;
+		double StartTime     = m_pCurAnim3D->GetStartTime(); // double 인데 float 으로 받아서 값이 조금 달라짐 
+		float  StartDiffTime = (float)StartTime;
 		ImGui::PushItemWidth(60);
 		ImGui::DragFloat("##START_drag", &StartDiffTime, 0.01f);
 		ImGui::PopItemWidth();
@@ -530,10 +523,11 @@ void Animator3DUI::RenderAnim3DClipWindow()
 
 
 		ImGui::SameLine();
-		ImGui::Text("  ~  "); ImGui::SameLine();
+		ImGui::Text("  ~  ");
+		ImGui::SameLine();
 
-		double EndTime = m_pCurAnim3D->GetEndTime();
-		float EndDiffTime = (float)EndTime;
+		double EndTime     = m_pCurAnim3D->GetEndTime();
+		float  EndDiffTime = (float)EndTime;
 		ImGui::PushItemWidth(60);
 		ImGui::DragFloat("##END_drag", &EndDiffTime, 0.01f);
 		ImGui::PopItemWidth();
@@ -541,7 +535,8 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		m_pCurAnim3D->SetEndTime(EndTime);
 
 		ImGui::SameLine(270.f);
-		ImGui::Text("Frame Range "); ImGui::SameLine(350.f);
+		ImGui::Text("Frame Range ");
+		ImGui::SameLine(350.f);
 
 		int StartFrameIdx = m_pCurAnim3D->GetStartFrameIdx();
 		ImGui::PushItemWidth(60);
@@ -551,7 +546,8 @@ void Animator3DUI::RenderAnim3DClipWindow()
 
 
 		ImGui::SameLine();
-		ImGui::Text("  ~  "); ImGui::SameLine();
+		ImGui::Text("  ~  ");
+		ImGui::SameLine();
 
 		int EndFrameIdx = m_pCurAnim3D->GetEndFrameIdx();
 		ImGui::PushItemWidth(60);
@@ -568,8 +564,11 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		m_iCurFrameUI = m_pCurAnim3D->GetCurFrameIdx();
 	else
 		m_iCurFrameUI = 0;
-	ImGui::Text("Frame"); ImGui::SameLine(100.f); ImGui::SameLine();
-	ImGui::Text("Min : %d - ", m_FrameTimeLine.m_FrameMin); ImGui::SameLine();
+	ImGui::Text("Frame");
+	ImGui::SameLine(100.f);
+	ImGui::SameLine();
+	ImGui::Text("Min : %d - ", m_FrameTimeLine.m_FrameMin);
+	ImGui::SameLine();
 
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_LEFT_LONG))
@@ -616,8 +615,6 @@ void Animator3DUI::RenderAnim3DClipWindow()
 
 			ImGui::PopStyleColor();
 		}
-
-
 	}
 
 
@@ -625,17 +622,17 @@ void Animator3DUI::RenderAnim3DClipWindow()
 	ImGui::BeginChild("Timeline", ImVec2(0, 200), false);
 
 	Sequencer(&m_FrameTimeLine, &m_iCurFrameUI, &expanded, &m_iSelectedIdx, &firstFrame
-		, ImSequencer::SEQUENCER_EDIT_STARTEND |
-		ImSequencer::SEQUENCER_CHANGE_FRAME);
+	          , ImSequencer::SEQUENCER_EDIT_STARTEND |
+	            ImSequencer::SEQUENCER_CHANGE_FRAME);
 	// ImSequencer::SEQUENCER_DEL | ImSequencer::SEQUENCER_COPYPASTE |ImSequencer::SEQUENCER_ADD |
 
 
 	// [ EDIT SELECT ENTRY ]
 	if (m_iSelectedIdx != -1)
 	{
-		const AnimItem& item = m_FrameTimeLine.m_vecAnimItem[m_iSelectedIdx];
-		string SelectedEntryName = m_FrameTimeLine.m_vecAnimName[m_iSelectedIdx].c_str();
-		wstring wstrSelEntryName = wstring(SelectedEntryName.begin(), SelectedEntryName.end());
+		const AnimItem& item              = m_FrameTimeLine.m_vecAnimItem[m_iSelectedIdx];
+		string          SelectedEntryName = m_FrameTimeLine.m_vecAnimName[m_iSelectedIdx].c_str();
+		wstring         wstrSelEntryName  = wstring(SelectedEntryName.begin(), SelectedEntryName.end());
 
 		// 처음 선택 했을 때 
 		if (m_iSelectedIdx != m_iSelectedPrevIdx)
@@ -647,11 +644,9 @@ void Animator3DUI::RenderAnim3DClipWindow()
 			if (pAnim != nullptr)
 			{
 				m_FrameTimeLine.m_vecAnimItem[m_iSelectedIdx].mFrameStart = pAnim->GetStartFrameIdx();
-				m_FrameTimeLine.m_vecAnimItem[m_iSelectedIdx].mFrameEnd = pAnim->GetEndFrameIdx();
+				m_FrameTimeLine.m_vecAnimItem[m_iSelectedIdx].mFrameEnd   = pAnim->GetEndFrameIdx();
 			}
 		}
-
-
 	}
 
 	// 실시간 변경점을 적용한다.
@@ -660,7 +655,7 @@ void Animator3DUI::RenderAnim3DClipWindow()
 		if (m_pCurAnim3D != nullptr)
 		{
 			m_FrameTimeLine.m_vecAnimItem[m_iSelectedIdx].mFrameStart = m_pCurAnim3D->GetStartFrameIdx();
-			m_FrameTimeLine.m_vecAnimItem[m_iSelectedIdx].mFrameEnd = m_pCurAnim3D->GetEndFrameIdx();
+			m_FrameTimeLine.m_vecAnimItem[m_iSelectedIdx].mFrameEnd   = m_pCurAnim3D->GetEndFrameIdx();
 		}
 
 		//pCurAnim->SetStartFrameIdx(m_FrameTimeLine.m_vecAnimItem[selectedEntry].mFrameStart);
@@ -676,10 +671,10 @@ void Animator3DUI::Clear()
 	m_pAnimator3D->Clear();
 	m_FrameTimeLine.ClearAnimItem();
 	m_FrameTimeLine.ClearAnimName();
-	m_pCurAnim3D = nullptr;
-	m_iSelectedIdx = -1;
+	m_pCurAnim3D       = nullptr;
+	m_iSelectedIdx     = -1;
 	m_iSelectedPrevIdx = -1;
-	m_iCurFrameUI = -1;
+	m_iCurFrameUI      = -1;
 }
 
 void Animator3DUI::Reset(DWORD_PTR _ptr)
@@ -687,29 +682,28 @@ void Animator3DUI::Reset(DWORD_PTR _ptr)
 	m_FrameTimeLine.m_vecAnimName.clear();
 	m_FrameTimeLine.m_vecAnimItem.clear();
 
-	CGameObject* pTargetObject = GetTargetObject();
-	CAnimator3D* pAnimator3D = pTargetObject->Animator3D();
-	const map<wstring, CAnimation3D*> MapAnim = pAnimator3D->GetAllAnim();
+	CGameObject*                      pTargetObject = GetTargetObject();
+	CAnimator3D*                      pAnimator3D   = pTargetObject->Animator3D();
+	const map<wstring, CAnimation3D*> MapAnim       = pAnimator3D->GetAllAnim();
 
-	int idx = 0;
+	int                                         idx  = 0;
 	map<wstring, CAnimation3D*>::const_iterator iter = MapAnim.begin();
 	for (; iter != MapAnim.end(); ++iter)
 	{
-		wstring AnimName = iter->first;
-		CAnimation3D* pAnim = iter->second;
+		wstring       AnimName = iter->first;
+		CAnimation3D* pAnim    = iter->second;
 
-		string name =ToString(AnimName);
-		int StartFrameIdx = pAnim->GetStartFrameIdx();
-		int EndFrameIdx = pAnim->GetEndFrameIdx();
+		string name          = ToString(AnimName);
+		int    StartFrameIdx = pAnim->GetStartFrameIdx();
+		int    EndFrameIdx   = pAnim->GetEndFrameIdx();
 
 		m_FrameTimeLine.m_vecAnimName.push_back(name);
-		m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{ name,idx++, StartFrameIdx, EndFrameIdx });
-
+		m_FrameTimeLine.m_vecAnimItem.push_back(AnimItem{name, idx++, StartFrameIdx, EndFrameIdx});
 	}
 
-	m_iSelectedIdx = -1;
+	m_iSelectedIdx     = -1;
 	m_iSelectedPrevIdx = -1;
-	m_iCurFrameUI = 0;
+	m_iCurFrameUI      = 0;
 
 	return;
 }
@@ -717,8 +711,8 @@ void Animator3DUI::Reset(DWORD_PTR _ptr)
 
 CAnimation3D* Animator3DUI::GetNextAnim()
 {
-	CAnimation3D* pNextAnim = nullptr;
-	const map<wstring, CAnimation3D*> MapAnim = m_pAnimator3D->GetAllAnim();
+	CAnimation3D*                     pNextAnim = nullptr;
+	const map<wstring, CAnimation3D*> MapAnim   = m_pAnimator3D->GetAllAnim();
 	if (m_pCurAnim3D == nullptr && MapAnim.size() != 0)
 		return MapAnim.begin()->second;
 
@@ -744,21 +738,17 @@ CAnimation3D* Animator3DUI::GetNextAnim()
 					pNextAnim = MapAnim.begin()->second;
 					break;
 				}
-
 			}
 		}
-
 	}
 
 	if (pNextAnim != nullptr)
 	{
 		wstring wstrName = pNextAnim->GetName();
-		string strName = ToString(wstrName);
+		string  strName  = ToString(wstrName);
 
-		m_iSelectedIdx = m_FrameTimeLine.GetAnimNameIndex(strName);
+		m_iSelectedIdx     = m_FrameTimeLine.GetAnimNameIndex(strName);
 		m_iSelectedPrevIdx = m_iSelectedIdx;
-
-
 	}
 	return pNextAnim;
 }
@@ -782,7 +772,4 @@ void Animator3DUI::ApplyAnim3DToChild(CGameObject* pObj)
 		pA3D->CopyAllAnim(MapAnim);
 		ApplyAnim3DToChild(vecChild[i]);
 	}
-
-
 }
-

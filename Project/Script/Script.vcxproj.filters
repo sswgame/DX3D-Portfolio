@@ -25,16 +25,6 @@
     <ClInclude Include="CScriptMgr.h">
       <Filter>Script</Filter>
     </ClInclude>
-    <ClInclude Include="CAttack_deuxiemie.h" />
-    <ClInclude Include="CDeath_deuxiemie.h" />
-    <ClInclude Include="CIdle_deuxiemie.h" />
-    <ClInclude Include="CRun_deuxiemie.h" />
-    <ClInclude Include="CShield_deuxiemie.h" />
-    <ClInclude Include="CStun_deuxiemie.h" />
-    <ClInclude Include="CWalk_deuxiemie.h" />
-    <ClInclude Include="MonsterGunScript.h" />
-    <ClInclude Include="MonsterShieldScript.h" />
-    <ClInclude Include="MonsterSwordScript.h" />
     <ClInclude Include="BossJugCombatMgrScript.h">
       <Filter>Script\Boss\Jug\CombatMgr</Filter>
     </ClInclude>
@@ -143,6 +133,36 @@
     <ClInclude Include="GravityScript.h">
       <Filter>Script\GravityScript</Filter>
     </ClInclude>
+    <ClInclude Include="MonsterGunScript.h">
+      <Filter>Script\Monster\Deuxiemie\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterSwordScript.h">
+      <Filter>Script\Monster\Deuxiemie\Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="CShield_deuxiemie.h">
+      <Filter>Script\Monster\Deuxiemie\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterShieldScript.h">
+      <Filter>Script\Monster\Deuxiemie\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="CAttack_deuxiemie.h">
+      <Filter>Script\Monster\Deuxiemie\Common\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="CDeath_deuxiemie.h">
+      <Filter>Script\Monster\Deuxiemie\Common\Death</Filter>
+    </ClInclude>
+    <ClInclude Include="CIdle_deuxiemie.h">
+      <Filter>Script\Monster\Deuxiemie\Common\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="CRun_deuxiemie.h">
+      <Filter>Script\Monster\Deuxiemie\Common\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="CStun_deuxiemie.h">
+      <Filter>Script\Monster\Deuxiemie\Common\Stun</Filter>
+    </ClInclude>
+    <ClInclude Include="CWalk_deuxiemie.h">
+      <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -163,16 +183,6 @@
     <ClCompile Include="CObjKeyMgr.cpp">
       <Filter>Script\PlayerScript\Key</Filter>
     </ClCompile>
-    <ClCompile Include="CAttack_deuxiemie.cpp" />
-    <ClCompile Include="CDeath_deuxiemie.cpp" />
-    <ClCompile Include="CIdle_deuxiemie.cpp" />
-    <ClCompile Include="CRun_deuxiemie.cpp" />
-    <ClCompile Include="CShield_deuxiemie.cpp" />
-    <ClCompile Include="CStun_deuxiemie.cpp" />
-    <ClCompile Include="CWalk_deuxiemie.cpp" />
-    <ClCompile Include="MonsterGunScript.cpp" />
-    <ClCompile Include="MonsterShieldScript.cpp" />
-    <ClCompile Include="MonsterSwordScript.cpp" />
     <ClCompile Include="CSceneSaveLoad.cpp" />
     <ClCompile Include="CScriptMgr.cpp" />
     <ClCompile Include="BossJugCombatMgrScript.cpp">
@@ -283,6 +293,36 @@
     <ClCompile Include="GravityScript.cpp">
       <Filter>Script\GravityScript</Filter>
     </ClCompile>
+    <ClCompile Include="MonsterGunScript.cpp">
+      <Filter>Script\Monster\Deuxiemie\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterSwordScript.cpp">
+      <Filter>Script\Monster\Deuxiemie\Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="CShield_deuxiemie.cpp">
+      <Filter>Script\Monster\Deuxiemie\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterShieldScript.cpp">
+      <Filter>Script\Monster\Deuxiemie\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="CAttack_deuxiemie.cpp">
+      <Filter>Script\Monster\Deuxiemie\Common\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="CDeath_deuxiemie.cpp">
+      <Filter>Script\Monster\Deuxiemie\Common\Death</Filter>
+    </ClCompile>
+    <ClCompile Include="CIdle_deuxiemie.cpp">
+      <Filter>Script\Monster\Deuxiemie\Common\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="CRun_deuxiemie.cpp">
+      <Filter>Script\Monster\Deuxiemie\Common\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="CStun_deuxiemie.cpp">
+      <Filter>Script\Monster\Deuxiemie\Common\Stun</Filter>
+    </ClCompile>
+    <ClCompile Include="CWalk_deuxiemie.cpp">
+      <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -359,6 +399,42 @@
     </Filter>
     <Filter Include="Script\GravityScript">
       <UniqueIdentifier>{5d06dcbb-b6ff-4476-9f5d-4b915c6e1068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster">
+      <UniqueIdentifier>{2a67a331-13fc-4eba-8f3c-5cfe045c0eef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie">
+      <UniqueIdentifier>{2594bd1e-e7e1-4a89-bf1f-c1d64231aec8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Gun">
+      <UniqueIdentifier>{8d60192d-238a-4378-84db-d882897fd676}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Sword">
+      <UniqueIdentifier>{529e812c-aa10-4d2d-9c50-80c46db3008c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Shield">
+      <UniqueIdentifier>{02761fa1-6189-48a1-b180-3a46327ce433}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Common">
+      <UniqueIdentifier>{35aa1204-09fe-476c-a0a8-f5bfa919c33a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Common\Attack">
+      <UniqueIdentifier>{91e791ca-e796-476e-a7fd-741207ed41c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Common\Death">
+      <UniqueIdentifier>{320c8701-d0f4-4c77-a232-ee3a504a1e22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Common\Idle">
+      <UniqueIdentifier>{c2220874-e7ef-4b45-a928-b83803729af8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Common\Run">
+      <UniqueIdentifier>{9c5c0580-1cd4-45a5-bd0c-65992185a479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Common\Stun">
+      <UniqueIdentifier>{5ef45509-4e29-4f88-a6fb-aae1a10fe121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Deuxiemie\Common\Walk">
+      <UniqueIdentifier>{67ec2341-3767-4994-ac6b-364904f4afd9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

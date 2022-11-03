@@ -1,0 +1,415 @@
+NAME: DEUXIEME_SWORD
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 0, 0]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+  - ANIMATOR3D:
+      MESH: [mesh\deuxiemie_SmallSword0.mesh, mesh\deuxiemie_SmallSword0.mesh]
+      m_pPrevAnim: IDLE_FIGHT
+      m_pCurAnim: DEATH
+      m_pNextAnim: ""
+      ANIMATION LIST:
+        ATTACK_FLOOR:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 365
+            iEndFrame: 407
+            iFrameLength: 43
+            dStartTime: 12.166666666666666
+            dEndTime: 13.566666666666666
+            dTimeLength: 0
+            eMode: 0
+        DEATH:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 306
+            iEndFrame: 364
+            iFrameLength: 59
+            dStartTime: 10.199999999999999
+            dEndTime: 12.133333333333333
+            dTimeLength: 0
+            eMode: 0
+        IDLE:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 0
+            iEndFrame: 45
+            iFrameLength: 46
+            dStartTime: 0
+            dEndTime: 1.5
+            dTimeLength: 0
+            eMode: 0
+        IDLE_FIGHT:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 45
+            iEndFrame: 89
+            iFrameLength: 45
+            dStartTime: 1.5
+            dEndTime: 2.9666666666666668
+            dTimeLength: 0
+            eMode: 0
+        RUN:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 289
+            iEndFrame: 305
+            iFrameLength: 17
+            dStartTime: 9.6333333333333329
+            dEndTime: 10.166666666666666
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_1:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 408
+            iEndFrame: 437
+            iFrameLength: 30
+            dStartTime: 13.6
+            dEndTime: 14.566666666666666
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_1_TO_IDLE:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 408
+            iEndFrame: 459
+            iFrameLength: 22
+            dStartTime: 13.6
+            dEndTime: 15.300000000000001
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_2:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 460
+            iEndFrame: 514
+            iFrameLength: 55
+            dStartTime: 15.333333333333334
+            dEndTime: 17.133333333333333
+            dTimeLength: 0
+            eMode: 0
+        STRIKE_2_RUN_ATTACK:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 515
+            iEndFrame: 605
+            iFrameLength: 91
+            dStartTime: 17.166666666666668
+            dEndTime: 20.166666666666668
+            dTimeLength: 0
+            eMode: 0
+        STUN:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 819
+            iEndFrame: 851
+            iFrameLength: 45
+            dStartTime: 27.300000000000001
+            dEndTime: 28.366666666666667
+            dTimeLength: 0
+            eMode: 0
+        WALK_BACK:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 129
+            iEndFrame: 169
+            iFrameLength: 41
+            dStartTime: 4.2999999999999998
+            dEndTime: 5.6333333333333337
+            dTimeLength: 0
+            eMode: 0
+        WALK_FORWARD:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 90
+            iEndFrame: 128
+            iFrameLength: 39
+            dStartTime: 3
+            dEndTime: 4.2666666666666666
+            dTimeLength: 0
+            eMode: 0
+        WALK_LEFT:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 170
+            iEndFrame: 209
+            iFrameLength: 40
+            dStartTime: 5.666666666666667
+            dEndTime: 6.9666666666666668
+            dTimeLength: 0
+            eMode: 0
+        WALK_RIGHT:
+          m_iCurClip: 0
+          m_fLerpTime: 0.5
+          m_fSpeed: 1
+          m_tClip:
+            strAnimName: ""
+            iStartFrame: 210
+            iEndFrame: 249
+            iFrameLength: 40
+            dStartTime: 7
+            dEndTime: 8.3000000000000007
+            dTimeLength: 0
+            eMode: 0
+  - MESHRENDER:
+      MESH: [mesh\deuxiemie_SmallSword0.mesh, mesh\deuxiemie_SmallSword0.mesh]
+      MATERIAL COUNT: 1
+      0: [material\deuxieme-body.mtrl, material\deuxieme-body.mtrl]
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  []
+CHILDREN:
+  - NAME: DEUXIEME_SWORD_WEAPON_0
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 0, 0]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - ANIMATOR3D:
+          MESH: [mesh\deuxiemie_SmallSword1.mesh, mesh\deuxiemie_SmallSword1.mesh]
+          m_pPrevAnim: ""
+          m_pCurAnim: IDLE
+          m_pNextAnim: ""
+          ANIMATION LIST:
+            ATTACK_FLOOR:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 365
+                iEndFrame: 407
+                iFrameLength: 43
+                dStartTime: 12.166666666666666
+                dEndTime: 13.566666666666666
+                dTimeLength: 0
+                eMode: 0
+            DEATH:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 306
+                iEndFrame: 364
+                iFrameLength: 59
+                dStartTime: 10.199999999999999
+                dEndTime: 12.133333333333333
+                dTimeLength: 0
+                eMode: 0
+            IDLE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 0
+                iEndFrame: 45
+                iFrameLength: 46
+                dStartTime: 0
+                dEndTime: 1.5
+                dTimeLength: 0
+                eMode: 0
+            IDLE_FIGHT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 45
+                iEndFrame: 89
+                iFrameLength: 45
+                dStartTime: 1.5
+                dEndTime: 2.9666666666666668
+                dTimeLength: 0
+                eMode: 0
+            RUN:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 289
+                iEndFrame: 305
+                iFrameLength: 17
+                dStartTime: 9.6333333333333329
+                dEndTime: 10.166666666666666
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_1:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 408
+                iEndFrame: 437
+                iFrameLength: 30
+                dStartTime: 13.6
+                dEndTime: 14.566666666666666
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_1_TO_IDLE:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 408
+                iEndFrame: 459
+                iFrameLength: 52
+                dStartTime: 13.6
+                dEndTime: 15.300000000000001
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_2:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 460
+                iEndFrame: 514
+                iFrameLength: 55
+                dStartTime: 15.333333333333334
+                dEndTime: 17.133333333333333
+                dTimeLength: 0
+                eMode: 0
+            STRIKE_2_RUN_ATTACK:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 515
+                iEndFrame: 605
+                iFrameLength: 91
+                dStartTime: 17.166666666666668
+                dEndTime: 20.166666666666668
+                dTimeLength: 0
+                eMode: 0
+            STUN:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 819
+                iEndFrame: 851
+                iFrameLength: 33
+                dStartTime: 27.300000000000001
+                dEndTime: 28.366666666666667
+                dTimeLength: 0
+                eMode: 0
+            WALK_BACK:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 129
+                iEndFrame: 169
+                iFrameLength: 41
+                dStartTime: 4.2999999999999998
+                dEndTime: 5.6333333333333337
+                dTimeLength: 0
+                eMode: 0
+            WALK_FORWARD:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 90
+                iEndFrame: 128
+                iFrameLength: 39
+                dStartTime: 3
+                dEndTime: 4.2666666666666666
+                dTimeLength: 0
+                eMode: 0
+            WALK_LEFT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 170
+                iEndFrame: 209
+                iFrameLength: 40
+                dStartTime: 5.666666666666667
+                dEndTime: 6.9666666666666668
+                dTimeLength: 0
+                eMode: 0
+            WALK_RIGHT:
+              m_iCurClip: 0
+              m_fLerpTime: 0.5
+              m_fSpeed: 1
+              m_tClip:
+                strAnimName: ""
+                iStartFrame: 210
+                iEndFrame: 249
+                iFrameLength: 40
+                dStartTime: 7
+                dEndTime: 8.3000000000000007
+                dTimeLength: 0
+                eMode: 0
+      - MESHRENDER:
+          MESH: [mesh\deuxiemie_SmallSword1.mesh, mesh\deuxiemie_SmallSword1.mesh]
+          MATERIAL COUNT: 1
+          0: [material\deuxiemie_Sword.mtrl, material\deuxiemie_Sword.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []

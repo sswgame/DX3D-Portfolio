@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CPrefab.h"
 
+#include <Script/CSceneSaveLoad.h>
+
 #include "CGameObject.h"
 
 CPrefab::SaveFunc CPrefab::m_pSaveFunc = nullptr;
@@ -8,14 +10,16 @@ CPrefab::LoadFunc CPrefab::m_pLoadFunc = nullptr;
 
 
 CPrefab::CPrefab()
-	:
-	CRes(RES_TYPE::PREFAB)
-  , m_pProtoObj(nullptr) {}
+	: CRes(RES_TYPE::PREFAB)
+	, m_pProtoObj(nullptr)
+{
+}
 
 CPrefab::CPrefab(CGameObject* _pProtoObj)
-	:
-	CRes(RES_TYPE::PREFAB)
-  , m_pProtoObj(_pProtoObj) {}
+	: CRes(RES_TYPE::PREFAB)
+	, m_pProtoObj(_pProtoObj)
+{
+}
 
 CPrefab::~CPrefab()
 {
@@ -29,7 +33,7 @@ CGameObject* CPrefab::Instantiate()
 
 int CPrefab::Save(const wstring& _strFilePath)
 {
-	m_pSaveFunc(this, _strFilePath);
+	m_pSaveFunc(this, _strFilePath, CSceneSaveLoad::IsBinary());
 
 	CRes::Save(_strFilePath);
 
@@ -38,5 +42,5 @@ int CPrefab::Save(const wstring& _strFilePath)
 
 int CPrefab::Load(const wstring& _strFilePath)
 {
-	return m_pLoadFunc(this, _strFilePath);
+	return m_pLoadFunc(this, _strFilePath, CSceneSaveLoad::IsBinary());
 }

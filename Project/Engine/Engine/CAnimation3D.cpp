@@ -32,21 +32,22 @@ CAnimation3D::CAnimation3D()
 
 CAnimation3D::CAnimation3D(const CAnimation3D& _origin)
 	: m_pOwner(nullptr)
-	, m_tClip{}
+	, m_tClip{_origin.m_tClip}
 	, m_eCurState{}
-	, m_iFrameCnt{0}
+	, m_iFrameCnt{_origin.m_iFrameCnt}
 	, m_bFinalMatUpdate(false)
 	, m_bFinish(false)
-	, m_bPlay(_origin.m_bPlay)
+	, m_bPlay{false}
 	, m_iCurClip(_origin.m_iCurClip)
 	, m_iPrevAnimEndFrameIdx{0}
-	, m_iCurFrameIdx(_origin.m_iCurFrameIdx)
-	, m_iNextFrameIdx(_origin.m_iNextFrameIdx)
+	, m_iCurFrameIdx{0}
+	, m_iNextFrameIdx{0}
 	, m_fSpeed(_origin.m_fSpeed)
-	, m_fRatio(_origin.m_fRatio)
-	, m_dCurTime(_origin.m_dCurTime)
+	, m_fRatio{0.f}
+	, m_dCurTime{0.f}
 	, m_fLerpTime(_origin.m_fLerpTime)
 {
+	m_vecClipUpdateTime.resize(1);
 }
 
 CAnimation3D::~CAnimation3D()
@@ -71,19 +72,22 @@ void CAnimation3D::finalupdate()
 			*/
 
 			// 현재 재생중인 Clip 의 시간을 진행한다.
+
 			m_vecClipUpdateTime[m_iCurClip] += DT * m_fSpeed;
 
 			m_iCurFrameIdx  = m_iPrevAnimEndFrameIdx;
-			m_iNextFrameIdx = m_tClip.iStartFrame;
+			m_iNextFrameIdx = m_tClip.iStartFrame + m_accTime * m_iFrameCnt;
+			++m_temp;
 
-			float TimeWeight = 1.f / m_fLerpTime;
-			m_fRatio         = (float)(m_vecClipUpdateTime[m_iCurClip] * TimeWeight);
+			m_accTime += DT;
+			m_fRatio = ClampData(m_accTime / m_fLerpTime, 0.f, 1.f);
 
 			// 보간 끝! -> 메인 애니메이션을 출력하라. 
-			if (m_vecClipUpdateTime[m_iCurClip] >= m_fLerpTime)
+			if (m_accTime >= m_fLerpTime)
 			{
-				m_eCurState                     = ANIMATION_STATE::PLAY;
-				m_vecClipUpdateTime[m_iCurClip] = 0.f;
+				m_accTime   = 0.f;
+				m_temp      = 0;
+				m_eCurState = ANIMATION_STATE::PLAY;
 			}
 		}
 		break;
@@ -260,6 +264,7 @@ void CAnimation3D::SetFrameInfoByFrame(int   _ClipNum
 
 	SetStartFrameIdx(_startFrameIdx);
 	SetEndFrameIdx(_EndFrameIdx);
+	m_tClip.iFrameLength = _EndFrameIdx - _startFrameIdx + 1;
 }
 
 void CAnimation3D::SetFrameInfoByTime(int _ClipNum, double _StartTime, double _EndTime)
@@ -268,6 +273,7 @@ void CAnimation3D::SetFrameInfoByTime(int _ClipNum, double _StartTime, double _E
 
 	SetStartTime(_StartTime);
 	SetEndTime(_EndTime);
+	m_tClip.iFrameLength = m_tClip.iEndFrame - m_tClip.iStartFrame + 1;
 }
 
 void CAnimation3D::SetClipUpdateTime(int _vecClipSize)
@@ -407,4 +413,6 @@ void CAnimation3D::Deserialize(const YAML::Node& node)
 	m_tClip.dEndTime     = clipNode[NAME_OF(dEndTime)].as<double>();
 	m_tClip.dTimeLength  = clipNode[NAME_OF(dTimeLength)].as<double>();
 	m_tClip.eMode        = (FbxTime::EMode)clipNode[NAME_OF(eMode)].as<int>();
+	m_tClip.iFrameLength = m_tClip.iEndFrame - m_tClip.iStartFrame + 1;
+	m_vecClipUpdateTime.resize(1);
 }

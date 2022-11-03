@@ -170,7 +170,7 @@ void InspectorUI::SetTargetObject(CGameObject* _pTarget)
 
 			// 삭제시키기 위해서 title로 이름 저장 
 			wstring ScriptName = CScriptMgr::GetScriptName(vecScripts[i]);
-			pScriptUI->SetTitle(string(ScriptName.begin(), ScriptName.end()));
+			pScriptUI->SetTitle(ToString(ScriptName));
 
 			pScriptUI->SetTargetObject(m_pTargetObject);
 			pScriptUI->SetTargetScript(vecScripts[i]);
@@ -290,7 +290,7 @@ void InspectorUI::RenderButton()
 				m_pTargetObject->SetName(wstrName);
 
 				// CImGuiMgr 에 Delegate 등록 
-				tUIDelegate tDeleteCom;
+				tUIDelegate tDeleteCom{};
 				tDeleteCom.dwParam = (DWORD_PTR)nullptr;
 				tDeleteCom.pFunc   = (PARAM_1)&SceneOutliner::ResetTreeUI;
 				tDeleteCom.pInst   = CImGuiMgr::GetInst()->FindUI("SceneOutliner");
@@ -336,7 +336,7 @@ void InspectorUI::RenderButton()
 			CSceneMgr::GetInst()->DeleteObject(m_pTargetObject);
 
 			// [ CLIENT ]
-			tUIDelegate tInfo;
+			tUIDelegate tInfo{};
 			tInfo.dwParam = (DWORD_PTR)nullptr;
 			tInfo.pFunc   = (PARAM_1)&InspectorUI::SetTargetObject;
 			tInfo.pInst   = CImGuiMgr::GetInst()->FindUI("Inspector");
@@ -396,7 +396,7 @@ void InspectorUI::RenderButton()
 		for (int i = 0; i < vecScriptInfo.size(); ++i)
 		{
 			if (nullptr == m_pTargetObject->GetScriptByName(vecScriptInfo[i]))
-				pListUI->AddList(string(vecScriptInfo[i].begin(), vecScriptInfo[i].end()));
+				pListUI->AddList(ToString(vecScriptInfo[i]));
 		}
 
 		pListUI->Activate();
@@ -619,7 +619,7 @@ void InspectorUI::AddScript(DWORD_PTR _param)
 		// == todo ==
 		// 삭제시키기 위해서 title로 이름 저장 
 		wstring ScriptName = CScriptMgr::GetScriptName(vecScripts[i]);
-		pScriptUI->SetTitle(string(ScriptName.begin(), ScriptName.end()));
+		pScriptUI->SetTitle(ToString(ScriptName));
 
 		pScriptUI->SetTargetObject(m_pTargetObject);
 		pScriptUI->SetTargetScript(vecScripts[i]);
@@ -630,7 +630,7 @@ void InspectorUI::AddScript(DWORD_PTR _param)
 	if (vecScripts.size() < m_vecScriptUI.size())
 	{
 		// 대응하는 UI 를 제외한 나머지 ScriptUI 들을 비활성화 한다.ㄴ
-		for (int i = vecScripts.size(); i < m_vecScriptUI.size(); ++i)
+		for (size_t i = vecScripts.size(); i < m_vecScriptUI.size(); ++i)
 		{
 			m_vecScriptUI[i]->Deactivate();
 		}
@@ -656,7 +656,7 @@ void InspectorUI::DeleteScript(DWORD_PTR _param)
 
 	// 해당 Script 삭제 
 	wstring wstrScriptName = CScriptMgr::GetScriptName(pScript);
-	string  strScriptName  = string(wstrScriptName.begin(), wstrScriptName.end());
+	string  strScriptName  = ToString(wstrScriptName);
 	m_pTargetObject->DeleteScript(pScript->GetID());
 
 	// UI 갱신 

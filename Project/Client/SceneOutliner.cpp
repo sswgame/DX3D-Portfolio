@@ -5,6 +5,7 @@
 #include <Engine/CScene.h>
 #include <Engine/CLayer.h>
 #include <Engine/CGameObject.h>
+#include <Engine/CPrefab.h>
 
 #include <Engine/CEventMgr.h>
 
@@ -14,8 +15,7 @@
 
 
 SceneOutliner::SceneOutliner()
-	:
-	UI("SceneOutliner")
+	: UI("SceneOutliner")
 {
 	m_TreeUI = new TreeUI(true);
 	m_TreeUI->SetTitle("SceneOutliner");
@@ -40,7 +40,9 @@ SceneOutliner::SceneOutliner()
 	Reset();
 }
 
-SceneOutliner::~SceneOutliner() {}
+SceneOutliner::~SceneOutliner()
+{
+}
 
 void SceneOutliner::update()
 {
@@ -81,7 +83,13 @@ void SceneOutliner::render_update()
 		{
 			for (int i = 0; i < std::size(menus); ++i)
 			{
-				if (ImGui::Selectable(menus[i].c_str())) { }
+				if (ImGui::Selectable(menus[i].c_str()))
+				{
+					if (menus[i] == L"Make as Prefab")
+					{
+						MakePrefab();
+					}
+				}
 			}
 			ImGui::EndPopup();
 		}
@@ -176,6 +184,20 @@ void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 		}
 		break;
 	}
+}
+
+void SceneOutliner::MakePrefab()
+{
+	if (nullptr == m_pSelectedGameObject)
+	{
+		return;
+	}
+	const std::wstring contentPath = CPathMgr::GetInst()->GetContentPath();
+	const std::wstring prefabPath  = L"prefab\\" + m_pSelectedGameObject->GetName() + L".pref";
+
+	Ptr<CPrefab> pPrefab = new CPrefab{};
+	pPrefab->SetProto(m_pSelectedGameObject->Clone());
+	CResMgr::GetInst()->AddRes<CPrefab>(prefabPath, pPrefab.Get(), false);
 }
 
 TreeNode* SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestNode)

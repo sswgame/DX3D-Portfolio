@@ -11,12 +11,21 @@
 
 #include <fstream>
 
+bool CSceneSaveLoad::s_isBinary = false;
+
+bool CSceneSaveLoad::IsBinary()
+{
+	return s_isBinary;
+}
+
 void CSceneSaveLoad::SaveScene(CScene* _pScene, const wstring& _strSceneFilePath, bool binary)
 {
 	// 리소스 변경상태 저장
 	CResMgr::GetInst()->SaveChangedRes();
 
-	if (binary)
+	s_isBinary = binary;
+
+	if (s_isBinary)
 	{
 		SaveFILE(_pScene, _strSceneFilePath);
 	}
@@ -28,7 +37,9 @@ void CSceneSaveLoad::SaveScene(CScene* _pScene, const wstring& _strSceneFilePath
 
 CScene* CSceneSaveLoad::LoadScene(const wstring& _strSceneFilePath, bool binary)
 {
-	if (binary)
+	s_isBinary = binary;
+
+	if (s_isBinary)
 	{
 		return LoadFILE(_strSceneFilePath);
 	}
@@ -41,7 +52,9 @@ CScene* CSceneSaveLoad::LoadScene(const wstring& _strSceneFilePath, bool binary)
 // ======
 void CSceneSaveLoad::SavePrefab(CPrefab* _Prefab, const wstring& _strFilePath, bool binary)
 {
-	if (binary)
+	s_isBinary = binary;
+
+	if (s_isBinary)
 	{
 		FILE* pFile = nullptr;
 		_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
@@ -61,6 +74,8 @@ void CSceneSaveLoad::SavePrefab(CPrefab* _Prefab, const wstring& _strFilePath, b
 
 int CSceneSaveLoad::LoadPrefab(CPrefab* _Prefab, const wstring& _strFilePath, bool binary)
 {
+	s_isBinary = binary;
+
 	if (binary)
 	{
 		FILE* pFile = nullptr;
@@ -108,9 +123,7 @@ void CSceneSaveLoad::SaveYAML(CScene* _pScene, const wstring& _strSceneFilePath)
 		emitter << YAML::Value << YAML::BeginSeq;
 		for (auto& pGameObject : pLayer->GetRootObjects())
 		{
-			emitter << YAML::BeginMap;
 			SaveGameObject(pGameObject, emitter);
-			emitter << YAML::EndMap; //GAME OBJECT INFO
 		}
 		emitter << YAML::EndSeq; //GAME OBJECTS
 
@@ -150,6 +163,7 @@ CScene* CSceneSaveLoad::LoadYAML(const std::wstring& _strSceneFilePath)
 
 void CSceneSaveLoad::SaveGameObject(CGameObject* pGameObject, YAML::Emitter& emitter)
 {
+	emitter << YAML::BeginMap;
 	//GameObject
 	pGameObject->Serialize(emitter);
 
@@ -173,11 +187,11 @@ void CSceneSaveLoad::SaveGameObject(CGameObject* pGameObject, YAML::Emitter& emi
 	const std::vector<CGameObject*> vecChild = pGameObject->GetChild();
 	for (auto& pChild : vecChild)
 	{
-		emitter << YAML::BeginMap;
 		SaveGameObject(pChild, emitter);
-		emitter << YAML::EndMap;
 	}
 	emitter << YAML::EndSeq;
+
+	emitter << YAML::EndMap; //GAME OBJECT INFO
 }
 
 CGameObject* CSceneSaveLoad::LoadGameObject(const YAML::Node& node)

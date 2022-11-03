@@ -4,31 +4,28 @@
 class CGameObject;
 
 
-
-class CPrefab :
-    public CRes
+class CPrefab : public CRes
 {
 private:
-    CGameObject*    m_pProtoObj;
+	CGameObject* m_pProtoObj;
 
 public:
-    typedef void (*SaveFunc) (CPrefab*, const wstring&);
-    typedef int (*LoadFunc) (CPrefab*, const wstring&);
-    static SaveFunc        m_pSaveFunc;
-    static LoadFunc        m_pLoadFunc;
+	typedef void (* SaveFunc)(CPrefab*, const wstring&, bool isBinary);
+	typedef int (*  LoadFunc)(CPrefab*, const wstring&, bool isBinary);
+	static SaveFunc m_pSaveFunc;
+	static LoadFunc m_pLoadFunc;
 
 public:
-    CGameObject* Instantiate();    
-    CGameObject* GetProto() { return m_pProtoObj; }
-    void SetProto(CGameObject* _pProto){m_pProtoObj = _pProto;}
+	CGameObject* Instantiate();
+	CGameObject* GetProto() { return m_pProtoObj; }
+	void         SetProto(CGameObject* _pProto) { m_pProtoObj = _pProto; }
 
 public:
-    virtual int Save(const wstring& _strFilePath);
-    virtual int Load(const wstring& _strFilePath);
+	virtual int Save(const wstring& _strFilePath);
+	virtual int Load(const wstring& _strFilePath);
 
 public:
-    CPrefab();
-    CPrefab(CGameObject* _pProtoObj);
-    virtual ~CPrefab();
+	CPrefab();
+	CPrefab(CGameObject* _pProtoObj);
+	virtual ~CPrefab();
 };
-

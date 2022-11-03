@@ -7,6 +7,8 @@ class CPrefab;
 class CSceneSaveLoad
 {
 public:
+	static bool IsBinary();
+public:
 	// Save
 	static void SaveScene(CScene* _pScene, const wstring& _strSceneFilePath, bool binary = false);
 	static void SavePrefab(CPrefab* _Prefab, const wstring& _strFilePath, bool binary = false);
@@ -27,4 +29,7 @@ public:
 
 	static CGameObject* LoadGameObject(const YAML::Node& node);
 	static void         SaveGameObject(CGameObject* _pObj, YAML::Emitter& emitter);
+
+private:
+	static bool s_isBinary;
 };

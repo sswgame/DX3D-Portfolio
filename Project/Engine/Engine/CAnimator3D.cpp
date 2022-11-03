@@ -32,14 +32,22 @@ CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
 	, m_pVecClip(_origin.m_pVecClip)
 	, m_iFrameCount(_origin.m_iFrameCount)
 	, m_pBoneFinalMatBuffer(nullptr)
-	, m_pPrevAnim(_origin.m_pPrevAnim)
-	, m_pCurAnim(_origin.m_pCurAnim)
-	, m_pNextAnim(_origin.m_pNextAnim)
 	, m_bRepeat(_origin.m_bRepeat)
 	, m_bPlayWithChild{_origin.m_bPlayWithChild}
-	, m_eCreateMode{}
+	, m_eCreateMode{_origin.m_eCreateMode}
 {
 	m_pBoneFinalMatBuffer = new CStructuredBuffer;
+
+	for (const auto& pairData : _origin.m_mapAnim)
+	{
+		CAnimation3D* pAnimation = pairData.second->Clone();
+		pAnimation->SetName(pairData.first);
+		pAnimation->SetOwner(this);
+		m_mapAnim.insert({pairData.first, pAnimation});
+	}
+	m_pPrevAnim = _origin.m_pPrevAnim ? m_mapAnim.find(_origin.m_pPrevAnim->GetName())->second : nullptr;
+	m_pCurAnim  = _origin.m_pCurAnim ? m_mapAnim.find(_origin.m_pCurAnim->GetName())->second : nullptr;
+	m_pNextAnim = _origin.m_pNextAnim ? m_mapAnim.find(_origin.m_pNextAnim->GetName())->second : nullptr;
 }
 
 CAnimator3D::~CAnimator3D()
@@ -152,7 +160,7 @@ void CAnimator3D::MakeAnimationFromTXT(string _txtName)
 	string FileName = "AnimationInfo\\";
 	FileName += _txtName;
 	wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
-	string strPath = ToString(ContentPath);
+	string  strPath     = ToString(ContentPath);
 	strPath += FileName;
 
 	// 파일 입출력
@@ -162,25 +170,25 @@ void CAnimator3D::MakeAnimationFromTXT(string _txtName)
 		string strLine;
 		while (std::getline(FileStream, strLine))
 		{
-			vector<string> vecWords;
-			string strWord;
+			vector<string>    vecWords;
+			string            strWord;
 			std::stringstream SStream(strLine);
 			while (std::getline(SStream, strWord, ' '))			// 공백에 따라 단어 분리 
 			{
 				vecWords.push_back(strWord);
 			}
-			string	AnimName = vecWords[0];						// 1. 애니메이션 이름 
-			int		FrameStartIdx = std::stoi(vecWords[1]);		// 2. 시작 프레임 인덱스 
-			int		FrameEndIdx = std::stoi(vecWords[2]);		// 3. 끝   프레임 인덱스 
+			string AnimName      = vecWords[0];						// 1. 애니메이션 이름 
+			int    FrameStartIdx = std::stoi(vecWords[1]);		// 2. 시작 프레임 인덱스 
+			int    FrameEndIdx   = std::stoi(vecWords[2]);		// 3. 끝   프레임 인덱스 
 
 
 			wstring wstrName = wstring(AnimName.begin(), AnimName.end());
 			if (m_mapAnim.find(wstrName) == m_mapAnim.end())
 			{
 				// 컴포넌트에 적용 
-				int	   FrameCnt = GetFrameCount();
+				int    FrameCnt       = GetFrameCount();
 				double FrameStartTime = (double)FrameStartIdx / (double)FrameCnt;
-				double FrameEndTime = (double)FrameEndIdx / (double)FrameCnt;
+				double FrameEndTime   = (double)FrameEndIdx / (double)FrameCnt;
 
 				CreateAnimByFrame(wstrName, 0, FrameStartIdx, FrameEndIdx);
 			}
@@ -581,6 +589,7 @@ void CAnimator3D::Deserialize(const YAML::Node& node)
 		pAnimation->SetOwner(this);
 		pAnimation->SetClipUpdateTime((int)m_pVecClip->size());
 		const std::wstring animName = ToWString(animNode.first.as<std::string>());
+		pAnimation->SetName(animName);
 		pAnimation->Deserialize(animNode.second);
 
 		m_mapAnim.insert({animName, pAnimation});
@@ -590,4 +599,6 @@ void CAnimator3D::Deserialize(const YAML::Node& node)
 	m_pPrevAnim = FindAnim(ToWString(node[NAME_OF(m_pPrevAnim)].as<std::string>()));
 	m_pCurAnim  = FindAnim(ToWString(node[NAME_OF(m_pCurAnim)].as<std::string>()));
 	m_pNextAnim = FindAnim(ToWString(node[NAME_OF(m_pNextAnim)].as<std::string>()));
+
+	SetPlayWithChild(true);
 }

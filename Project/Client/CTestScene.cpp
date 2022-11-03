@@ -25,7 +25,7 @@
 #include <Engine/CAnimator3D.h>
 #include <Engine/CFSM.h>
 
-#include <Engine\CMeshData.h>
+#include <Engine/CMeshData.h>
 
 #include <Script/PlayerScript.h>
 #include <Script/CameraMoveScript.h>
@@ -33,12 +33,15 @@
 #include <Script/PlayerCamScript.h>
 
 
-#include <Script\CSceneSaveLoad.h>
+#include <Script/CSceneSaveLoad.h>
 
+#define TEST_SAVE 1
 
 void CTestScene::CreateTestScene()
 {
-	CScene* pCurScene = new CScene;
+#pragma region SAVE
+#if TEST_SAVE == 1
+	auto pCurScene = new CScene;
 	CSceneMgr::GetInst()->ChangeScene(pCurScene);
 
 	pCurScene->SetLayerName(0, L"Tile");
@@ -48,9 +51,11 @@ void CTestScene::CreateTestScene()
 
 	// Texture 한장 로딩해보기
 	//CResMgr::GetInst()->Load<CTexture>(L"texture\\Player.bmp", L"texture\\Player.bmp");
-	Ptr<CTexture> pMagicCircle = CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png", L"texture\\MagicCircle.png");
+	Ptr<CTexture> pMagicCircle = CResMgr::GetInst()->Load<CTexture>(L"texture\\MagicCircle.png",
+	                                                                L"texture\\MagicCircle.png");
 
-	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga", L"texture\\tile\\TILE_01.tga");
+	Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
+	                                                            L"texture\\tile\\TILE_01.tga");
 	//Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga",
 	//                                                             L"texture\\tile\\TILE_01_N.tga");
 
@@ -59,13 +64,13 @@ void CTestScene::CreateTestScene()
 	//Ptr<CTexture> pSkyTex_02 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky02.jpg",
 	//                                                              L"texture\\skybox\\Sky02.jpg");
 	Ptr<CTexture> pSkyTex_03 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyDawn.dds",
-		L"texture\\skybox\\SkyDawn.dds");
+	                                                              L"texture\\skybox\\SkyDawn.dds");
 	//Ptr<CTexture> pSkyTex_04 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyWater.dds",
 	//                                                              L"texture\\skybox\\SkyWater.dds");
 
 
 	// Camera Object 추가
-	CGameObject* pCamObj = new CGameObject;
+	auto pCamObj = new CGameObject;
 	pCamObj->SetName(L"MainCamera");
 	pCamObj->AddComponent(new CTransform);
 	pCamObj->AddComponent(new CCamera);
@@ -80,7 +85,7 @@ void CTestScene::CreateTestScene()
 	pCurScene->AddObject(pCamObj, L"Default");
 
 	// Directional Light
-	CGameObject* pLight3D = new CGameObject;
+	auto pLight3D = new CGameObject;
 	pLight3D->SetName(L"Directional Light");
 
 	pLight3D->AddComponent(new CTransform);
@@ -129,7 +134,7 @@ void CTestScene::CreateTestScene()
 
 
 	// SkyBox 추가
-	CGameObject* pSkyBox = new CGameObject;
+	auto pSkyBox = new CGameObject;
 
 	pSkyBox->SetName(L"SkyBox");
 	pSkyBox->AddComponent(new CTransform);
@@ -235,79 +240,68 @@ void CTestScene::CreateTestScene()
 		//pObj->SetName(L"Monster");
 		//pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 		//pCurScene->AddObject(pObj, 0);
-
 	}
 
 	// ANIMATION TEST 
-	Ptr<CMeshData> pMeshData = nullptr;
-	CGameObject* pObj = nullptr;
 
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
-	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat", L"meshdata\\player_sword0.mdat");
+	//CGameObject* pBody{};
+	////0
+	//{
+	//	const std::wstring path      = L"meshdata\\Deuxiemie\\deuxiemie_SphereShield0.mdat";
+	//	Ptr<CMeshData>     pMeshData = CResMgr::GetInst()->Load<CMeshData>(path.c_str(), path.c_str());
 
-	pObj = pMeshData->Instantiate();
-	pObj->SetName(L"player");
-	pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	pObj->Animator3D()->Play(L"test", true);
-	pObj->Animator3D()->GetCurAnim()->SetPlay(false);
+	//	CGameObject* pObj = pMeshData->Instantiate();
+	//	pObj->SetName(L"DEUXIEME_SHIELD");
+	//	pObj->Animator3D()->Play(L"test", true);
+	//	pObj->Animator3D()->GetCurAnim()->SetPlay(false);
+	//	//pObj->AddComponent(new CFSM);
+	//	pCurScene->AddObject(pObj, 0);
 
-	pObj->AddComponent(new CFSM);
+	//	pBody = pObj;
+	//}
+	////1
+	//{
+	//	const std::wstring path      = L"meshdata\\Deuxiemie\\deuxiemie_SphereShield1.mdat";
+	//	Ptr<CMeshData>     pMeshData = CResMgr::GetInst()->Load<CMeshData>(path.c_str(), path.c_str());
 
-	PlayerScript* pPlayerScript = new PlayerScript;
-	pPlayerScript->SetCamera(pCamObj);
-	pObj->AddComponent(pPlayerScript);
+	//	CGameObject* pObj = pMeshData->Instantiate();
+	//	pObj->SetName(L"DEUXIEME_SHIELD_WEAPON_0");
+	//	pObj->Animator3D()->Play(L"test", true);
+	//	pObj->Animator3D()->GetCurAnim()->SetPlay(false);
+	//	//pObj->AddComponent(new CFSM);
+	//	CSceneMgr::GetInst()->AddChild(pBody, pObj);
+	//}
+	////2
+	//{
+	//	const std::wstring path      = L"meshdata\\Deuxiemie\\deuxiemie_SphereShield2.mdat";
+	//	Ptr<CMeshData>     pMeshData = CResMgr::GetInst()->Load<CMeshData>(path.c_str(), path.c_str());
 
-
-	pCurScene->AddObject(pObj, 0);
-
-
-	Ptr<CMeshData> pMeshDataWeapon = nullptr;
-	CGameObject* pObjWeapon = nullptr;
-
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
-	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
-
-	pObjWeapon = pMeshDataWeapon->Instantiate();
-	pObjWeapon->SetName(L"player_sword1");
-	pObjWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	pObjWeapon->Animator3D()->Play(L"test", true);
-
-	pCurScene->AddObject(pObjWeapon, 0);
-
-	// collision test
-	CGameObject* pCol = new CGameObject;
-	pCol->SetName(L"collision1");
-	pCol->AddComponent(new CTransform);
-	pCol->AddComponent(new CCollider3D);
-
-	pCol->Transform()->SetRelativePos(Vec3(0.f, 30.f, 0.f));
-	pCol->Transform()->SetRelativeScale(Vec3(30.f, 30.f, 30.f));
-
-	pCol->Collider3D()->SetOffseetScale(Vec3(30.f, 30.f, 30.f));
-
-	pCurScene->AddObject(pCol, L"Default");
-
-
-	pCol = new CGameObject;
-	pCol->SetName(L"collision2");
-	pCol->AddComponent(new CTransform);
-	pCol->AddComponent(new CCollider3D);
-
-	pCol->Transform()->SetRelativePos(Vec3(-36.f, 30.f, 0.f));
-	pCol->Transform()->SetRelativeScale(Vec3(30.f, 30.f, 30.f));
-
-	pCol->Collider3D()->SetOffseetScale(Vec3(30.f, 30.f, 30.f));
-
-	pCurScene->AddObject(pCol, L"Default");
-
-	CCollisionMgr::GetInst()->CollisionCheck(1, 1);
-
+	//	CGameObject* pObj = pMeshData->Instantiate();
+	//	pObj->SetName(L"DEUXIEME_SHIELD_WEAPON_1");
+	//	pObj->Animator3D()->Play(L"test", true);
+	//	pObj->Animator3D()->GetCurAnim()->SetPlay(false);
+	//	//pObj->AddComponent(new CFSM);
+	//	CSceneMgr::GetInst()->AddChild(pBody, pObj);
+	//}
+	CGameObject* pGameObject = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\DEUXIEME_SHIELD.pref",
+	                                                             L"prefab\\DEUXIEME_SHIELD.pref")->Instantiate();
+	pCurScene->AddObject(pGameObject, 0);
 	// 충돌 레이어 설정
 	pCurScene->SetResKey(L"scene\\TestScene.scene");
 	wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
 	CSceneSaveLoad::SaveScene(pCurScene, strSceneFilePath + L"scene\\TestScene.scene");
+#endif // TEST_SAVE
+
+#pragma endregion
+
+#pragma region LOAD
+#if TEST_SAVE==0
+	wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
+	CScene* pCurScene        = CSceneSaveLoad::LoadScene(strSceneFilePath + L"scene\\GUN.scene");
+	CSceneMgr::GetInst()->ChangeScene(pCurScene);
+#endif // !TEST_SAVE==0
+
+#pragma endregion
 
 	pCurScene->start();
 	pCurScene->SetSceneState(SCENE_STATE::STOP);
