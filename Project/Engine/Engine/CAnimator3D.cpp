@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <fstream>
 
 #include "CAnimator3D.h"
 #include "CAnimation3D.h"
@@ -141,6 +142,47 @@ void CAnimator3D::CreateAnimByFrame(const wstring& _strName, int    _clipNum
 			if (pChildAnimator3D != nullptr)
 			{
 				pChildAnimator3D->CreateAnimByFrame(_strName, _clipNum, _startFrame, _EndFrame);
+			}
+		}
+	}
+}
+
+void CAnimator3D::MakeAnimationFromTXT(string _txtName)
+{
+	string FileName = "AnimationInfo\\";
+	FileName += _txtName;
+	wstring ContentPath = CPathMgr::GetInst()->GetContentPath();
+	string strPath = ToString(ContentPath);
+	strPath += FileName;
+
+	// 파일 입출력
+	std::ifstream FileStream(strPath);
+	if (FileStream.is_open())
+	{
+		string strLine;
+		while (std::getline(FileStream, strLine))
+		{
+			vector<string> vecWords;
+			string strWord;
+			std::stringstream SStream(strLine);
+			while (std::getline(SStream, strWord, ' '))			// 공백에 따라 단어 분리 
+			{
+				vecWords.push_back(strWord);
+			}
+			string	AnimName = vecWords[0];						// 1. 애니메이션 이름 
+			int		FrameStartIdx = std::stoi(vecWords[1]);		// 2. 시작 프레임 인덱스 
+			int		FrameEndIdx = std::stoi(vecWords[2]);		// 3. 끝   프레임 인덱스 
+
+
+			wstring wstrName = wstring(AnimName.begin(), AnimName.end());
+			if (m_mapAnim.find(wstrName) == m_mapAnim.end())
+			{
+				// 컴포넌트에 적용 
+				int	   FrameCnt = GetFrameCount();
+				double FrameStartTime = (double)FrameStartIdx / (double)FrameCnt;
+				double FrameEndTime = (double)FrameEndIdx / (double)FrameCnt;
+
+				CreateAnimByFrame(wstrName, 0, FrameStartIdx, FrameEndIdx);
 			}
 		}
 	}

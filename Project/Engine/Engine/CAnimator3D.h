@@ -49,6 +49,7 @@ public:
 	                                int            _clipNum    = 0,
 	                                int            _startFrame = 0,
 	                                int            _EndFrame   = 0);
+	void MakeAnimationFromTXT(string _txtName);
 	void CreateAnimByTime(const wstring& _strName,
 	                      int            _clipNum   = 0,
 	                      double         _StartTime = 0.0,
