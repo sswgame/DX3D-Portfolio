@@ -27,9 +27,22 @@ public:
 	wstring GetCurStateType()	{ return m_sCurStateType; }
 	wstring GetNextStateType()	{ return m_sNextStateType; }
 	CState* GetState(wstring _stateTypeName);
+	int		GetStateCount()		{ return m_mapState.size(); }
+	const map<wstring, CState*>& GetAllStates() { return m_mapState; }
 
 	// [ SET PART ]
 	void SetCurState(CState* _pCurState) { m_pCurState = _pCurState; }
+	void SetCurState(wstring _wstrName)
+	{
+		for (auto state : m_mapState)
+		{
+			if (_wstrName == state.first)
+			{
+				m_pCurState = state.second;
+				return;
+			}
+		}
+	}
 
 public:
 	virtual void finalupdate() override;

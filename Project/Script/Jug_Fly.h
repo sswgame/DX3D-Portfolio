@@ -3,7 +3,7 @@
 
 class CAnimation3D;
 
-class Jug_Dead :
+class Jug_Fly :
     public CState
 {
 private:
@@ -17,11 +17,11 @@ public:
     virtual void Update();
     virtual void LateUpdate();
 
-    CLONE(Jug_Dead)
+    CLONE(Jug_Fly)
 
 public:
-    Jug_Dead();
-    Jug_Dead(const Jug_Dead& _origin);
-    virtual ~Jug_Dead();
+    Jug_Fly();
+    Jug_Fly(const Jug_Fly& _origin);
+    virtual ~Jug_Fly();
 };
 

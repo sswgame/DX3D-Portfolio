@@ -27,12 +27,13 @@
 
 #include <Engine/CMeshData.h>
 
+
+// [SCRIPT TYPE]
 #include <Script/PlayerScript.h>
 #include <Script/CameraMoveScript.h>
 #include <Script/MissileScript.h>
 #include <Script/PlayerCamScript.h>
-
-
+#include <Script/BossJugCombatMgrScript.h>
 #include <Script/CSceneSaveLoad.h>
 
 #define TEST_SAVE 1
@@ -276,17 +277,16 @@ void CTestScene::CreateTestScene()
 	//	const std::wstring path      = L"meshdata\\Deuxiemie\\deuxiemie_SphereShield2.mdat";
 	//	Ptr<CMeshData>     pMeshData = CResMgr::GetInst()->Load<CMeshData>(path.c_str(), path.c_str());
 
-	//	CGameObject* pObj = pMeshData->Instantiate();
-	//	pObj->SetName(L"DEUXIEME_SHIELD_WEAPON_1");
-	//	pObj->Animator3D()->Play(L"test", true);
-	//	pObj->Animator3D()->GetCurAnim()->SetPlay(false);
-	//	//pObj->AddComponent(new CFSM);
-	//	CSceneMgr::GetInst()->AddChild(pBody, pObj);
-	//}
-	CGameObject* pGameObject = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\DEUXIEME_SHIELD.pref",
-	                                                             L"prefab\\DEUXIEME_SHIELD.pref")->Instantiate();
-	pCurScene->AddObject(pGameObject, 0);
+	CGameObject* pBoss = new CGameObject;
+	pBoss->SetName(L"BOSS_COMBAT");
+	pBoss->AddComponent(new CTransform);
+	pBoss->AddComponent(new BossJugCombatMgrScript);
+	CSceneMgr::GetInst()->SpawnObject(pBoss, 1);
+	//pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
+	
 	// 충돌 레이어 설정
+	CCollisionMgr::GetInst()->CollisionCheck(1, 1);
+
 	pCurScene->SetResKey(L"scene\\TestScene.scene");
 	wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
 	CSceneSaveLoad::SaveScene(pCurScene, strSceneFilePath + L"scene\\TestScene.scene");

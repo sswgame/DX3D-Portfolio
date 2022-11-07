@@ -20,6 +20,7 @@ protected:
 	bool			m_bTimePlay;	// 타이머 토글 
 
 public:
+	virtual void Init() {};
 	virtual void Enter()	= 0;
 	virtual void Exit()		= 0;
 

@@ -71,7 +71,6 @@ public:
 	void SetLerpTimeOnAllAnim(float _fLerpTime);
 	void SetCreateMode(CREATE_ANIMATION_MODE _eMode) { m_eCreateMode = _eMode; }
 
-
 public:
 	// [ GET PART ]
 	const map<wstring, CAnimation3D*> GetAllAnim() { return m_mapAnim; }  // 전체 애니메이션을 받는다. 

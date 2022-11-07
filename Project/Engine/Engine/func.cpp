@@ -116,7 +116,7 @@ std::wstring ToWString(COMPONENT_TYPE _type)
 	{
 		L"TRANSFORM",
 		L"CAMERA",
-		L"COLLIDER2D",
+		L"COLLIDER2D", 
 		L"COLLIDER3D",
 		L"ANIMATOR2D",
 		L"ANIMATOR3D",
@@ -129,7 +129,7 @@ std::wstring ToWString(COMPONENT_TYPE _type)
 		L"LANDSCAPE",
 		L"DECAL",
 		L"SKYBOX",
-		L"FINITE_STATE_MACHINE",
+		L"FSM",
 	};
 
 	return szWString[(UINT)_type];

@@ -163,6 +163,7 @@
     <ClInclude Include="CWalk_deuxiemie.h">
       <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
     </ClInclude>
+    <ClInclude Include="Jug_Fly.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -323,6 +324,7 @@
     <ClCompile Include="CWalk_deuxiemie.cpp">
       <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
     </ClCompile>
+    <ClCompile Include="Jug_Fly.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">

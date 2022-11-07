@@ -13,7 +13,7 @@
 ////TODO::TEST
 //#include <Script/MonsterGunScript.h>
 //#include <Engine/CFSM.h>
-//
+#include <Script/BossJugCombatMgrScript.h>
 
 CToolObjMgr::CToolObjMgr()
 {
@@ -60,12 +60,6 @@ void CToolObjMgr::init()
 
 	m_vecObj.push_back(pGridObj);
 
-	////TEST
-	//CGameObject* pMonster = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\DEUXIEME_GUN.pref",
-	//                                                          L"prefab\\DEUXIEME_GUN.pref")->Instantiate();
-	//pMonster->AddComponent(new MonsterGunScript{});
-	//pMonster->AddComponent(new CFSM{});
-	//CSceneMgr::GetInst()->SpawnObject(pMonster, 0);
 }
 
 void CToolObjMgr::progress()

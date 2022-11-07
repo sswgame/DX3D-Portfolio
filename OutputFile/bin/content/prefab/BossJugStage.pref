@@ -1,0 +1,273 @@
+NAME: BossJugStage
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 0, 0]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+SCRIPTS:
+  []
+CHILDREN:
+  - NAME: BossFloor
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, -500, 0]
+          m_vRelativeScale: [0.800000012, 0.800000012, 0.800000012]
+          m_vRelativeRot: [0, 1.39626348, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage0.mesh, mesh\jug_stage0.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_02.mtrl, material\jugmap_02.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: Platform_top
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 0, -200]
+          m_vRelativeScale: [0.200000003, 0.200000003, 0.200000003]
+          m_vRelativeRot: [0, -1.57079637, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage1.mesh, mesh\jug_stage1.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: Platform_bot
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, -50, -200]
+          m_vRelativeScale: [0.200000003, 0.200000003, 0.200000003]
+          m_vRelativeRot: [0, 3.26376581, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage2.mesh, mesh\jug_stage2.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_03.mtrl, material\jugmap_03.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: BossStage3
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 0, 0]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage3.mesh, mesh\jug_stage3.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_01.mtrl, material\jugmap_01.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: Load0
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 0, -2844]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage4.mesh, mesh\jug_stage4.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: Load1
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 247, -4180]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0.34906587, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage5.mesh, mesh\jug_stage5.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: Load2
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 495, -5567]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage6.mesh, mesh\jug_stage6.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: Load3
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-943, -307, -200]
+          m_vRelativeScale: [0.699999988, 0.699999988, 0.699999988]
+          m_vRelativeRot: [0, 1.57079637, -0.628318548]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage7.mesh, mesh\jug_stage7.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: Load4
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [955, -305, -200]
+          m_vRelativeScale: [0.699999988, 0.699999988, 0.699999988]
+          m_vRelativeRot: [0, -1.57079637, 0.628318548]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage8.mesh, mesh\jug_stage8.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: Load5
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, -262, -1100]
+          m_vRelativeScale: [0.699999988, 0.699999988, 0.699999988]
+          m_vRelativeRot: [0.52359879, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage9.mesh, mesh\jug_stage9.mesh]
+          MATERIAL COUNT: 1
+          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: BossStage11
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-405, 66, 0]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage11.mesh, mesh\jug_stage11.mesh]
+          MATERIAL COUNT: 1
+          0: [material\Jugmap_07.mtrl, material\Jugmap_07.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: BossStage12
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 0, 0]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage12.mesh, mesh\jug_stage12.mesh]
+          MATERIAL COUNT: 1
+          0: [material\Jugmap_07.mtrl, material\Jugmap_07.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: BossStage10
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-133, 0, 0]
+          m_vRelativeScale: [1, 1, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [mesh\jug_stage10.mesh, mesh\jug_stage10.mesh]
+          MATERIAL COUNT: 1
+          0: [material\Jugmap_08.mtrl, material\Jugmap_08.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []

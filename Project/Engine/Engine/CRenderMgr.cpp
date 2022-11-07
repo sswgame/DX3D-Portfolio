@@ -91,6 +91,9 @@ void CRenderMgr::render_play()
 	// Camera 가 찍는 Layer 의 오브젝트들을 Shader Domain 에 따라 분류해둠
 	pMainCam->SortGameObject();
 
+	// Directional Light ShadowMap 만들기
+	render_shadowmap();
+
 	g_transform.matView = pMainCam->GetViewMat();
 	g_transform.matProj = pMainCam->GetProjMat();
 
@@ -99,6 +102,8 @@ void CRenderMgr::render_play()
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
 	m_pEditorCam->render_deferred();
 
+	// 광원 렌더링
+	render_lights();
 
 	// Merge
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
@@ -143,6 +148,9 @@ void CRenderMgr::render_play()
 		// Masked 물체 렌더링
 		m_vecCam[i]->render_masked();
 
+		// Foward Decal 렌더링
+		m_pEditorCam->render_forward_decal();
+
 		// Alpha 물체 렌더링
 		m_vecCam[i]->render_translucent();
 
@@ -165,10 +173,8 @@ void CRenderMgr::render_editor()
 	// Camera 가 찍는 Layer 의 오브젝트들을 Shader Domain 에 따라 분류해둠
 	m_pEditorCam->SortGameObject();
 
-
 	// Directional Light ShadowMap 만들기
 	render_shadowmap();
-
 
 	g_transform.matView = m_pEditorCam->GetViewMat();
 	g_transform.matViewInv = m_pEditorCam->GetViewInvMat();
