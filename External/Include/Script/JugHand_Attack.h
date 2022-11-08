@@ -4,23 +4,37 @@
 class CAnimation3D;
 
 class JugHand_Attack :
-    public CState
+	public CState
 {
-private:
-    CAnimation3D* m_pAnim;
+public:
+	CAnimation3D* m_pAnimation;
+	float			m_fLerfTime;
+
+	bool			m_bFirstAttackDone;
+	bool			m_bSecondAttackDone;
+	bool			m_bThirdAttackDone;
+
 
 public:
-    virtual void Init();
-    virtual void Enter();
-    virtual void Exit();
+	void Hand01Attack();
+	void Hand02Attack();
+	void Hand03Attack();
 
-    virtual void Update();
-    virtual void LateUpdate();
+	void AllAttackDone();
+	void SetAttackFinsh(int _attackNum);
 
-    CLONE(JugHand_Attack)
 public:
-    JugHand_Attack();
-    JugHand_Attack(const JugHand_Attack& _origin);
-    virtual ~JugHand_Attack();
+	void Enter() override;
+	void Exit() override;
+
+public:
+	void Update() override;
+
+
+public:
+	CLONE(JugHand_Attack);
+	JugHand_Attack();
+	virtual ~JugHand_Attack();
+
 };
 

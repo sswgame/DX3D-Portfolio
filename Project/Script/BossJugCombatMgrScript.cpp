@@ -64,7 +64,7 @@ void BossJugCombatMgrScript::InitState()
 void BossJugCombatMgrScript::SpawnStage()
 {
 	/* 스테이지 생성 */
-	Ptr<CPrefab> pStagePref = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\BossJugStage.pref", L"prefab\\BOSS_STAGE.pref");
+	Ptr<CPrefab> pStagePref = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\BOSS_STAGE.pref", L"prefab\\BOSS_STAGE.pref");
 	CGameObject* pStageObj = pStagePref->Instantiate();
 	CSceneMgr::GetInst()->GetCurScene()->AddObject(pStageObj, GetOwner()->GetLayerIndex());
 	GetOwner()->AddChild(pStageObj);

@@ -190,6 +190,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="CameraMoveScript.h" />
     <ClInclude Include="CAttack_deuxiemie.h" />
     <ClInclude Include="CDeath_deuxiemie.h" />
+    <ClInclude Include="CHand_StateMgr.h" />
     <ClInclude Include="CIdle_deuxiemie.h" />
     <ClInclude Include="CPlayerDieState.h" />
     <ClInclude Include="CPlayerHeavyAttackState.h" />
@@ -247,6 +248,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="CameraMoveScript.cpp" />
     <ClCompile Include="CAttack_deuxiemie.cpp" />
     <ClCompile Include="CDeath_deuxiemie.cpp" />
+    <ClCompile Include="CHand_StateMgr.cpp" />
     <ClCompile Include="CIdle_deuxiemie.cpp" />
     <ClCompile Include="CPlayerDieState.cpp" />
     <ClCompile Include="CPlayerHeavyAttackState.cpp" />

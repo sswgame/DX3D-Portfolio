@@ -164,6 +164,9 @@
       <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
     </ClInclude>
     <ClInclude Include="Jug_Fly.h" />
+    <ClInclude Include="CHand_StateMgr.h">
+      <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -325,6 +328,9 @@
       <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
     </ClCompile>
     <ClCompile Include="Jug_Fly.cpp" />
+    <ClCompile Include="CHand_StateMgr.cpp">
+      <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -437,6 +443,9 @@
     </Filter>
     <Filter Include="Script\Monster\Deuxiemie\Common\Walk">
       <UniqueIdentifier>{67ec2341-3767-4994-ac6b-364904f4afd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Boss\Jug\Hand\HandStateMgr">
+      <UniqueIdentifier>{93ad1de1-922e-4937-b2a1-309b864ec508}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
