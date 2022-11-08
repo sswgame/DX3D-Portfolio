@@ -64,9 +64,12 @@ void JugHand_Attack::Hand01Attack()
 	}
 	else if (false == m_bSecondAttackDone)
 	{
-		if (117 == m_pAnimation->GetCurFrameIdx())
+		// 두번쨰 공격부터 중간에 저장된 frm이 있는지 본다.
+		// SavedFrm 이 -1 이 아니라면 저장된 frm 이 있는것.
+		int iSavedFrm = GetOwner()->GetScript<Hand_StateMgr>()->GetSavedMidFrame();
+		if (-1 != iSavedFrm)
 		{
-			m_pAnimation->SetCurFrameIdx(117);
+			m_pAnimation->SetCurFrameIdx(iSavedFrm);
 			vPos.x = vPlayerPos.x;
 			vPos.z = vPlayerPos.z;
 		}
@@ -83,7 +86,11 @@ void JugHand_Attack::Hand01Attack()
 	}
 	else if (false == m_bThirdAttackDone)
 	{
-		if (117 == m_pAnimation->GetCurFrameIdx())
+		// 두번쨰 공격부터 중간에 저장된 frm이 있는지 본다.
+		// SavedFrm 이 -1 이 아니라면 저장된 frm 이 있는것.
+		int iSavedFrm = GetOwner()->GetScript<Hand_StateMgr>()->GetSavedMidFrame();
+
+		if (-1 != iSavedFrm)
 		{
 			m_pAnimation->SetCurFrameIdx(117);
 			vPos.x = vPlayerPos.x;
@@ -143,9 +150,7 @@ void JugHand_Attack::Hand02Attack()
 void JugHand_Attack::Hand03Attack()
 {
 	// [ Hand03 Attack routine ]
-	// 1. runningTime 만큼 상태 진행
-	// 2. 애니메이션 진행중 투사체 발사 + Dir 회전
-	// 3. 애니메이션 끝나면 사라짐
+	// DONE
 
 	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
 
@@ -184,7 +189,6 @@ void JugHand_Attack::Hand03Attack()
 			else if (false == m_bThirdAttackDone)
 			{
 				m_bThirdAttackDone = true;
-				((BossJugHandScript*)pScript)->SetCurAnimationPlayDone(true);
 			}
 		}
 		else if (120 == m_pAnimation->GetCurFrameIdx())
@@ -224,8 +228,7 @@ void JugHand_Attack::SetAttackFinsh(int _attackNum)
 		m_bFirstAttackDone = true;
 		((BossJugHandScript*)pScript)->SetCurAnimationPlayDone(true);
 		((BossJugHandScript*)pScript)->Set1stAttackDone(m_bFirstAttackDone);
-		((BossJugHandScript*)pScript)->SaveCurFrm(m_pAnimation->GetCurFrameIdx());
-
+		((BossJugHandScript*)pScript)->SetSaveMidFrm(m_pAnimation->GetCurFrameIdx());
 		break;
 	}
 	case 2:
@@ -233,17 +236,15 @@ void JugHand_Attack::SetAttackFinsh(int _attackNum)
 		m_bSecondAttackDone = true;
 		((BossJugHandScript*)pScript)->SetCurAnimationPlayDone(true);
 		((BossJugHandScript*)pScript)->Set2ndAttackDone(m_bSecondAttackDone);
-		((BossJugHandScript*)pScript)->SaveCurFrm(m_pAnimation->GetCurFrameIdx());
-
+		((BossJugHandScript*)pScript)->SetSaveMidFrm(m_pAnimation->GetCurFrameIdx());
 		break;
 	}
 	case 3:
 	{
 		m_bThirdAttackDone = true;
 		((BossJugHandScript*)pScript)->SetCurAnimationPlayDone(true);
-		((BossJugHandScript*)pScript)->Set2ndAttackDone(m_bThirdAttackDone);
-		((BossJugHandScript*)pScript)->SaveCurFrm(m_pAnimation->GetCurFrameIdx());
-
+		((BossJugHandScript*)pScript)->Set3rdAttackDone(m_bThirdAttackDone);
+		((BossJugHandScript*)pScript)->SetAllAttackDone(true);
 		break;
 	}
 	}
@@ -253,12 +254,16 @@ void JugHand_Attack::Enter()
 {
 	CState::ResetTimer();
 
-	// ((BossJugHandScript*)pScript)->StartAttack();
+	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
+
+	m_bFirstAttackDone = ((BossJugHandScript*)pScript)->Get1stAttackDone();
+	m_bSecondAttackDone = ((BossJugHandScript*)pScript)->Get2ndAttackDone();
+	m_bThirdAttackDone = ((BossJugHandScript*)pScript)->Get3rdAttackDone();
 
 	m_fLerfTime = 2.f;
 
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
 	int iIndex = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
+	int iCurAttackIdx = ((BossJugHandScript*)pScript)->GetCurAttackHandIdx();
 	wstring sAnimName = L"";
 
 	if (nullptr == m_pAnimation)
@@ -308,11 +313,6 @@ void JugHand_Attack::Enter()
 	}
 
 
-	//m_bFirstAttackDone = ((BossJugHandScript*)pScript)->Get1stAttackDone();
-	//m_bSecondAttackDone = ((BossJugHandScript*)pScript)->Get2ndAttackDone();
-	//m_bThirdAttackDone = ((BossJugHandScript*)pScript)->Get3rdAttackDone();
-
-
 }
 
 void JugHand_Attack::Update()
@@ -323,6 +323,8 @@ void JugHand_Attack::Update()
 	float iAppearanceTime = 1.f;
 
 	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
+
+	
 	int iIndex = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
 
 	Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
@@ -356,9 +358,5 @@ void JugHand_Attack::Exit()
 		return;
 
 	((BossJugHandScript*)pScript)->SetRunningTime(0);
-
-	m_bFirstAttackDone = false;
-	m_bSecondAttackDone = false;
-	m_bThirdAttackDone = false;
 
 }

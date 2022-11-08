@@ -1,16 +1,14 @@
 #pragma once
 #include <Engine\CScript.h>
-#include "CHand_StateMgr.h"
+#include "Hand_StateMgr.h"
 
 class BossJugHandScript :
 	public CScript
 {
 private:
-	CHand_StateMgr* m_pStateMgr;		// 상태 정보 관리
 	Vec3					m_vDirection;
 	Vec3					m_vPrevDirection;
 
-	CGameObject* m_pBossObj;
 
 	float					m_fRunningTime;
 	float					m_fSpeed;
@@ -23,15 +21,16 @@ private:
 public:
 	// [ GET ]
 	int GetHandIndexNumber() { return m_iOwnerHandIdx; }
-	int GetSavedCurFrm() {/*return m_pBossObj->GetSavedCurFrm();*/ }
+	int GetCurAttackHandIdx() { return m_iCurAttackHandIdx; }
 	float GetRunningTime() { return m_fRunningTime; }
 	float GetSpeed() { return m_fSpeed; }
-	Vec3 GetPlayerPosition();
 	Vec3 GetCurDir() { return m_vDirection; }
+	Vec3 GetPlayerPosition();
 
-	//bool Get1stAttackDone() { /*return m_pBossObj->Get1stAttackDone(); */ }
-	//bool Get2ndAttackDone() { /*return m_pBossObj->Get2ndAttackDone(); */ }
-	//bool Get3rdAttackDone() { /*return m_pBossObj->Get3rdAttackDone(); */ }
+	int GetSavedMidFrm() {return GetOwner()->GetScript<Hand_StateMgr>()->GetSavedMidFrame(); }
+	bool Get1stAttackDone() { return GetOwner()->GetScript<Hand_StateMgr>()->Get1stAttackDone(); }
+	bool Get2ndAttackDone() { return GetOwner()->GetScript<Hand_StateMgr>()->Get2ndAttackDone(); }
+	bool Get3rdAttackDone() { return GetOwner()->GetScript<Hand_StateMgr>()->Get3rdAttackDone(); }
 
 
 	// [ SET ]
@@ -40,15 +39,15 @@ public:
 	void SetMonsterDir(Vec3 _dir) { m_vDirection = _dir; }
 	void SetMonsterSpeed(float _speed) { m_fSpeed = _speed; }
 
-	void Set1stAttackDone(bool _TorF) { /*m_pBossObj->Set1stAttackDone(_TorF); */ }
-	void Set2ndAttackDone(bool _TorF) { /*m_pBossObj->Set2ndAttackDone(_TorF); */ }
-	void Set3rdAttackDone(bool _TorF) { /*m_pBossObj->Set3rdAttackDone(_TorF); */ }
+	void SetAllAttackDone(bool _TorF) { GetOwner()->GetScript<Hand_StateMgr>()->SetAllAttackDone(_TorF); }
+	void Set1stAttackDone(bool _TorF) { GetOwner()->GetScript<Hand_StateMgr>()->Set1stAttackDone(_TorF); }
+	void Set2ndAttackDone(bool _TorF) { GetOwner()->GetScript<Hand_StateMgr>()->Set2ndAttackDone(_TorF); }
+	void Set3rdAttackDone(bool _TorF) { GetOwner()->GetScript<Hand_StateMgr>()->Set3rdAttackDone(_TorF); }
+	void SetSaveMidFrm(int _frame) { GetOwner()->GetScript<Hand_StateMgr>()->SetSaveMidFrame(_frame); }
 
 public:
 	void InitMonsterStat();
-	void SaveCurFrm(int _frame) {/*m_pBossObj->SaveCurFrame(_frame);*/ }
 
-	// void StartAttack() { m_pBossObj->StartAttack(); }
 
 public:
 	virtual void start();

@@ -106,4 +106,11 @@ void JugHand_Vanish::Update()
 
 void JugHand_Vanish::Exit()
 {
+	// vanish 는 attack 이 완전히 끝나야 true 가 된다.
+	if (true == GetOwner()->GetScript<Hand_StateMgr>()->GetAllAttackDone())
+	{
+		GetOwner()->GetScript<Hand_StateMgr>()->SetCurAttackNumber(-1);
+		GetOwner()->GetScript<Hand_StateMgr>()->SetVanishDone(true);
+	}
+
 }

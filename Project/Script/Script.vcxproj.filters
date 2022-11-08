@@ -164,7 +164,7 @@
       <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
     </ClInclude>
     <ClInclude Include="Jug_Fly.h" />
-    <ClInclude Include="CHand_StateMgr.h">
+    <ClInclude Include="Hand_StateMgr.h">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClInclude>
   </ItemGroup>
@@ -328,7 +328,7 @@
       <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
     </ClCompile>
     <ClCompile Include="Jug_Fly.cpp" />
-    <ClCompile Include="CHand_StateMgr.cpp">
+    <ClCompile Include="Hand_StateMgr.cpp">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClCompile>
   </ItemGroup>

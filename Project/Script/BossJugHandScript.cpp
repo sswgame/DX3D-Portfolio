@@ -1,20 +1,23 @@
 #include "pch.h"
 #include "BossJugHandScript.h"
 
-#include "CHand_StateMgr.h"
+#include "Hand_StateMgr.h"
 #include <random>
 
 #include <Engine/CAnimation3D.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CGameObject.h>
 
 BossJugHandScript::BossJugHandScript()
 	: CScript{ (int)SCRIPT_TYPE::BOSSJUGHANDSCRIPT }
 	, m_iOwnerHandIdx(-1)
 	, m_vDirection(Vec3(0.f, 0.f, -1.f))
 	, m_vPrevDirection(Vec3(0.f, 0.f, 0.f))
-	, m_pStateMgr(nullptr)
-	, m_pBossObj(nullptr)
-	, m_bAnimDone(true){
+	, m_bAnimDone(true)
+	, m_fRunningTime(0.f)
+	, m_fSpeed(0.f)
+	, m_iCurAttackHandIdx(-1)
+{
 }
 
 BossJugHandScript::BossJugHandScript(const BossJugHandScript* _origin)
@@ -22,15 +25,15 @@ BossJugHandScript::BossJugHandScript(const BossJugHandScript* _origin)
 	, m_iOwnerHandIdx(_origin->m_iOwnerHandIdx)
 	, m_vDirection(_origin->m_vDirection)
 	, m_vPrevDirection(_origin->m_vPrevDirection)
-	, m_pStateMgr(_origin->m_pStateMgr)
-	, m_pBossObj(_origin->m_pBossObj)
 	, m_bAnimDone(_origin->m_bAnimDone)
+	, m_fRunningTime(_origin->m_fRunningTime)
+	, m_fSpeed(_origin->m_fSpeed)
+	, m_iCurAttackHandIdx(_origin->m_iCurAttackHandIdx)
 {
 }
 
 BossJugHandScript::~BossJugHandScript()
 {
-	SAFE_DELETE(m_pStateMgr);
 }
 
 Vec3 BossJugHandScript::GetPlayerPosition()
@@ -59,15 +62,21 @@ void BossJugHandScript::InitMonsterStat()
 
 void BossJugHandScript::start()
 {
-	if (nullptr == m_pStateMgr)
+	wstring wOwnerName = GetOwner()->GetName();
+
+	if (L"Hand01" == wOwnerName)
 	{
-		m_pStateMgr = new CHand_StateMgr;
-		m_pStateMgr->InitState(GetOwner());
+		m_iOwnerHandIdx = 1;
+	}
+	else if (L"Hand02" == wOwnerName)
+	{
+		m_iOwnerHandIdx = 2;
+	}
+	else if (L"Hand03" == wOwnerName)
+	{
+		m_iOwnerHandIdx = 3;
 	}
 
-	InitMonsterStat();
-
-	m_iOwnerHandIdx = 3;
 
 	// 애니메이션 클립 정보가 없을시 직접 로드.
 	map<wstring, CAnimation3D*> mapAnim = GetOwner()->Animator3D()->GetAllAnim();
@@ -87,39 +96,55 @@ void BossJugHandScript::start()
 		}
 	}
 
-	m_pStateMgr->SetNextState(L"GEN");
+	// stateMgr에서 현재 공격중인 손의 num을 가져온다.
+	m_iCurAttackHandIdx = GetOwner()->GetScript<Hand_StateMgr>()->GetCurAttackHandNUM();
 
-
-	// Hand는 특별히 보스 몬스터 오브젝트를 알고 있는다.
-	// Hand 는 1개만 공격상태여야 하기 때문에 보스에서 
-	// 현재 공격상태인 Hand Num을 가져온다.
-	if (nullptr == m_pBossObj)
-	{
-		vector<CGameObject*> pVecObjs = CSceneMgr::GetInst()->GetCurScene()->GetLayer(5)->GetObjects();
-
-		for (size_t i = 0; i < pVecObjs.size(); i++)
-		{
-			if (nullptr != pVecObjs[i]->GetScriptByName(L"BossJugScript"))
-			{
-				m_pBossObj = pVecObjs[i];
-			}
-			else
-				assert(L"Boss_Jug is not Exist");
-		}
-
-	}
-
-	if (-1 == m_iOwnerHandIdx)
-		assert(L"Please Set Hand Index.");
-
+	// 모든 손의 현재 상태는 Gen 으로 두고 시작한다.
+	// 모든 상태는 같지만 공격 idx 와 같은 손만 update 된다.
+	GetOwner()->GetScript<Hand_StateMgr>()->SetNextState(L"GEN");
 }
 
 void BossJugHandScript::update()
 {
-	// 현재 애니메이션이 재생중이라면 Mgr만 update
-	if (false == m_bAnimDone)
+	if (-1 == GetOwner()->GetScript<Hand_StateMgr>()->GetCurAttackHandNUM())
+		return;
+
+	CScript* pMgrScript = GetOwner()->GetScript<Hand_StateMgr>();
+
+	// 애니메이션이 끝났다는 알림> bool 값이 오면 상태전환
+	if (m_iOwnerHandIdx == m_iCurAttackHandIdx)
 	{
-		m_pStateMgr->Update();
+		if (m_bAnimDone)
+		{
+			wstring sCurStateName = ((Hand_StateMgr*)pMgrScript)->GetCurState();
+
+			if (L"GEN" == sCurStateName)
+			{
+				((Hand_StateMgr*)pMgrScript)->SetNextState(L"ATTACK");
+			}
+			else if (L"ATTACK" == sCurStateName)
+			{
+				((Hand_StateMgr*)pMgrScript)->SetNextState(L"VANISH");
+
+			}
+			else if (L"VANISH" == sCurStateName)
+			{
+				// vanish 까지 왔지만 모든 공격이 끝난게 아니라면 다시 Gen 부터 공격
+				if (false == GetOwner()->GetScript<Hand_StateMgr>()->GetAllAttackDone())
+				{
+					((Hand_StateMgr*)pMgrScript)->SetNextState(L"GEN");
+				}
+				else
+					((Hand_StateMgr*)pMgrScript)->SetNextState(L"IDLE");
+
+			}
+
+		}
+	}
+	else
+	{
+		// 현재 진행중인 Hand의 idx가 owner 의 index와 다를경우
+		// 진행하지 않음.
 		return;
 	}
 }

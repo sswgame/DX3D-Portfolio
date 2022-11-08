@@ -32,6 +32,8 @@ void JugHand_Gen::Enter()
 {
 	CState::ResetTimer();
 
+	CScript* pMgrScript = GetOwner()->GetScript<Hand_StateMgr>();
+
 	m_fLerfTime = 1.f;
 
 	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
@@ -79,5 +81,6 @@ void JugHand_Gen::Update()
 
 void JugHand_Gen::Exit()
 {
+	GetOwner()->GetScript<Hand_StateMgr>()->SetGenDone(true);
 }
 
