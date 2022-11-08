@@ -9,7 +9,12 @@ class JugPhase_1 :
 private:
     BossJugCombatMgrScript* m_pCombatMgr;
 
+    UINT m_iAttackPattern;
+
 public:
+    // [ GET / SET]
+    UINT GetAttackPattern() { return m_iAttackPattern; }
+
     virtual void Init();
     virtual void Enter();
     virtual void Exit();

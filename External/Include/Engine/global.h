@@ -42,7 +42,6 @@ using std::make_pair;
 
 #include <assert.h>
 
-
 // FileSystem
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>

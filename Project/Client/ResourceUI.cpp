@@ -157,7 +157,7 @@ void ResourceUI::Reload()
 				continue;
 
 			// File Exist 체크
-			if (!filesystem::exists(strContentPath + pair.second->GetRelativePath()))
+			if (!exists(strContentPath + pair.second->GetRelativePath()))
 			{
 				// 4. 없으면 리소스매니저에서 메모리 해제
 				MessageBox(nullptr, L"원본파일 삭제 됨", L"파일변경 감지", MB_OK);
@@ -246,16 +246,16 @@ RES_TYPE ResourceUI::GetResTypeFromExt(const wstring& _strExt)
 
 	if (L".mtrl" == strExt)
 		return RES_TYPE::MATERIAL;
-	else if (L".png" == strExt || L".jpeg" == strExt || L".bmp" == strExt
-	         || L".jpg" == strExt || L".tga" == strExt || L".dds" == strExt)
+	if (L".png" == strExt || L".jpeg" == strExt || L".bmp" == strExt
+	    || L".jpg" == strExt || L".tga" == strExt || L".dds" == strExt)
 		return RES_TYPE::TEXTURE;
-	else if (L".mp3" == strExt || L".wav" == strExt || L".ogg" == strExt)
+	if (L".mp3" == strExt || L".wav" == strExt || L".ogg" == strExt)
 		return RES_TYPE::SOUND;
-	else if (L".pref" == strExt)
+	if (L".pref" == strExt)
 		return RES_TYPE::PREFAB;
-	else if (L".mesh" == strExt)
+	if (L".mesh" == strExt)
 		return RES_TYPE::MESH;
-	else if (L".scene" == strExt)
+	if (L".scene" == strExt)
 		return RES_TYPE::SCENEFILE;
 
 	return RES_TYPE::END;

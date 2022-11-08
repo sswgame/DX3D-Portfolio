@@ -21,6 +21,7 @@
 #include "Jug_Fly.h"
 #include "Jug_Dead.h"
 
+
 BossJugScript::BossJugScript()
 	: CScript((int)SCRIPT_TYPE::BOSSJUGSCRIPT)
 {
