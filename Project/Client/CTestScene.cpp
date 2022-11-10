@@ -281,7 +281,7 @@ void CTestScene::CreateTestScene()
 	pBoss->SetName(L"BOSS_COMBAT");
 	pBoss->AddComponent(new CTransform);
 	pBoss->AddComponent(new BossJugCombatMgrScript);
-	CSceneMgr::GetInst()->SpawnObject(pBoss, 1);
+	pCurScene->AddObject(pBoss, 1);
 	//pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
 	
 	// 충돌 레이어 설정
@@ -303,6 +303,6 @@ void CTestScene::CreateTestScene()
 
 #pragma endregion
 
-	pCurScene->start();
+	//pCurScene->start();
 	pCurScene->SetSceneState(SCENE_STATE::STOP);
 }

@@ -28,7 +28,7 @@ void Jug_Intro::Init()
 		map<wstring, CAnimation3D*> mapAnim = GetOwner()->Animator3D()->GetAllAnim();
 
 		if (mapAnim.find(L"JUG_NORM_IDLE") == mapAnim.end())
-			assert(nullptr, L"애니메이션 클립을 찾을 수 없습니다. \n Monster State Script error");
+			assert(nullptr && L"애니메이션 클립을 찾을 수 없습니다. \n Monster State Script error");
 
 		m_pAnim = mapAnim.find(L"JUG_NORM_IDLE")->second;
 	}
@@ -37,7 +37,7 @@ void Jug_Intro::Init()
 void Jug_Intro::Enter()
 {
 	// IDLE 애니메이션 플레이
-	GetOwner()->Animator3D()->Play(m_pAnim->GetName(),false);
+	GetOwner()->Animator3D()->Play(m_pAnim->GetName(), true);
 
 	// paper burn shader 설정
 }
@@ -48,7 +48,7 @@ void Jug_Intro::Exit()
 
 void Jug_Intro::Update()
 {
-	CState::Update();
+	GetOwner()->Animator3D()->Play(m_pAnim->GetName(), true);
 
 	// paper burn 강도
 }

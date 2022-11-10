@@ -6,8 +6,8 @@ class BossJugHandScript :
 	public CScript
 {
 private:
-	Vec3					m_vDirection;
-	Vec3					m_vPrevDirection;
+	Vec3            m_vDirection;
+	Vec3            m_vPrevDirection;
 
 
 	float					m_fRunningTime;
@@ -65,7 +65,7 @@ public:
 public:
 	CLONE(BossJugHandScript);
 	BossJugHandScript();
-	BossJugHandScript(const BossJugHandScript* _origin);
+	BossJugHandScript(const BossJugHandScript& _origin);
 	virtual ~BossJugHandScript();
 
 

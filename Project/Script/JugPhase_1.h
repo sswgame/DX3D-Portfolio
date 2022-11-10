@@ -11,6 +11,10 @@ private:
 
     UINT m_iAttackPattern;
 
+    bool m_bFirstAttackDone;
+    bool m_bSecondAttackDone;
+    bool m_bThirdAttackDone;
+
 public:
     // [ GET / SET]
     UINT GetAttackPattern() { return m_iAttackPattern; }

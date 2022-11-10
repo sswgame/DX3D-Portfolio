@@ -5,8 +5,8 @@ class CHand_StateMgr :
 	public CEntity
 {
 private:
-	wstring					m_sPrevState;
-	wstring					m_sCurstate;
+	wstring      m_sPrevState;
+	wstring      m_sCurstate;
 	CGameObject* m_pOwnerObj;
 
 	wstring					m_sNextState;

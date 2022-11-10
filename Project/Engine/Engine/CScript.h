@@ -20,7 +20,7 @@ enum class SCRIPTPARAM_TYPE
 	FLOAT,
 	VEC2,
 	VEC4,
-
+	TEXT,
 	TEX,
 	PREFAB,
 };

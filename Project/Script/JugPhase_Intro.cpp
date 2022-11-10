@@ -31,13 +31,12 @@ void JugPhase_Intro::Init()
 
 void JugPhase_Intro::Enter()
 {
-	// Jug 상태 초기화
-	CGameObject* pBoss = m_pCombatMgr->GetJug();
-	pBoss->GetScript< BossJugScript>()->Init();
-
 	// Jug 상태를 Intro로 바꾼다.
-	CFSM* pFSM = pBoss->GetScript<BossJugScript>()->GetBossFSM();
+	CGameObject* pBoss = m_pCombatMgr->GetJug();
+	CFSM*        pFSM  = pBoss->GetScript<BossJugScript>()->GetBossFSM();
 	pFSM->ChangeState(L"JUG_INTRO");
+
+	// Jug Hand 상태를 gen으로 바꾼다.
 }
 
 void JugPhase_Intro::Exit()

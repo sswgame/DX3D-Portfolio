@@ -70,6 +70,19 @@ Vec4 ParamUI::Param_Vec4(const string& _strName, const Vec4* _pInOut)
 	return data;
 }
 
+void ParamUI::Param_String(const string& _strName, const string* _pIn)
+{
+	// 파라미터 이름
+	ImGui::Text(_strName.c_str());
+	ImGui::SameLine(100);
+
+	// 문자열 표시
+	ImGui::InputText(string("##ParamString" + _strName).c_str(),
+	                 (char*)_pIn->c_str(),
+	                 255,
+	                 ImGuiInputTextFlags_ReadOnly);
+}
+
 bool ParamUI::Param_Tex(const string& _strName, CTexture* _pCurTex, UI* _pInst, DBCLKED _pFunc)
 {
 	ImGui::Text(_strName.c_str());

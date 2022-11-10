@@ -20,6 +20,8 @@ CRenderMgr::CRenderMgr()
 	, m_pLight2DBuffer(nullptr)
 	, m_pLight3DBuffer(nullptr)
 	, m_arrMRT{}
+	, m_pMergeShader(nullptr)
+	, m_pMergeMtrl(nullptr)
 {
 	m_pLight2DBuffer = new CStructuredBuffer;
 	m_pLight2DBuffer->Create(sizeof(tLightInfo), 2, SB_TYPE::READ_ONLY, true, nullptr);
@@ -100,7 +102,7 @@ void CRenderMgr::render_play()
 
 	// Deferred ¹°Ã¼ ·»´õ¸µ	
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
-	m_pEditorCam->render_deferred();
+	pMainCam->render_deferred();
 
 	// ±¤¿ø ·»´õ¸µ
 	render_lights();
@@ -149,7 +151,7 @@ void CRenderMgr::render_play()
 		m_vecCam[i]->render_masked();
 
 		// Foward Decal ·»´õ¸µ
-		m_pEditorCam->render_forward_decal();
+		pMainCam->render_forward_decal();
 
 		// Alpha ¹°Ã¼ ·»´õ¸µ
 		m_vecCam[i]->render_translucent();

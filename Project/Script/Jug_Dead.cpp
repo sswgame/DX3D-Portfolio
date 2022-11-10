@@ -26,7 +26,7 @@ void Jug_Dead::Init()
 		map<wstring, CAnimation3D*> mapAnim = GetOwner()->Animator3D()->GetAllAnim();
 
 		if (mapAnim.find(L"JUG_DEAD") == mapAnim.end())
-			assert(nullptr, L"애니메이션 클립을 찾을 수 없습니다. \n Boss State Script error");
+			assert(nullptr && L"애니메이션 클립을 찾을 수 없습니다. \n Boss State Script error");
 
 		m_pAnim = mapAnim.find(L"JUG_DEAD")->second;
 	}

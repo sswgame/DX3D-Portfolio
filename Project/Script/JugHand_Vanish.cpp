@@ -8,7 +8,7 @@
 #include <Engine/CAnimator3D.h>
 
 JugHand_Vanish::JugHand_Vanish()
-	: CState{ L"VANISH" }
+	: CState{L"VANISH"}
 {
 }
 
@@ -34,9 +34,9 @@ void JugHand_Vanish::Enter()
 
 	m_fLerfTime = 2.f;
 
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
-	int iIndex = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
-	wstring sAnimName = L"";
+	CScript* pScript   = pScript = GetOwner()->GetScript<BossJugHandScript>();
+	int      iIndex    = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
+	wstring  sAnimName = L"";
 
 	if (nullptr == m_pAnimation)
 	{
@@ -56,7 +56,7 @@ void JugHand_Vanish::Enter()
 		}
 
 		if (mapAnim.find(sAnimName) == mapAnim.end())
-			assert(nullptr, L"애니메이션 클립을 찾을 수 없습니다. \n Hand State Script error");
+			assert(nullptr && L"애니메이션 클립을 찾을 수 없습니다. \n Hand State Script error");
 
 		m_pAnimation = mapAnim.find(sAnimName)->second;
 	}
@@ -67,7 +67,6 @@ void JugHand_Vanish::Enter()
 	GetOwner()->Animator3D()->Play(sAnimName, false);
 	m_pAnimation->SetCurFrameIdx(m_pAnimation->GetEndFrameIdx());
 	//m_pAnimation->SetCurFrameIdx(m_pAnimation->GetSavedFrameIdx());
-
 }
 
 void JugHand_Vanish::Update()
@@ -75,7 +74,7 @@ void JugHand_Vanish::Update()
 	CState::Update();
 
 	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
-	int iIndex = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
+	int      iIndex  = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
 
 	Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
 

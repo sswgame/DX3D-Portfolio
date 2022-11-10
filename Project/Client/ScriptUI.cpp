@@ -133,7 +133,11 @@ void ScriptUI::render_update()
 				*(Vec4*)vecParam[i].pParam = data;
 			}
 			break;
-
+		case SCRIPTPARAM_TYPE::TEXT:
+			{
+				ParamUI::Param_String(vecParam[i].strParamName, (const string*)vecParam[i].pParam);
+			}
+			break;
 		case SCRIPTPARAM_TYPE::TEX:
 			break;
 		case SCRIPTPARAM_TYPE::PREFAB:

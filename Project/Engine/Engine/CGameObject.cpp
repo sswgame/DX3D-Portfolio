@@ -64,6 +64,18 @@ CGameObject::~CGameObject()
 	Safe_Del_Vec(m_vecChild);
 }
 
+void CGameObject::CheckLayerRecursive(const CGameObject* _pInnerChild)
+{
+	for (const auto& pInner : _pInnerChild->m_vecChild)
+	{
+		if (pInner->m_iLayerIdx == -1)
+		{
+			pInner->m_iLayerIdx = _pInnerChild->m_iLayerIdx;
+		}
+		CheckLayerRecursive(pInner);
+	}
+}
+
 void CGameObject::start()
 {
 	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
@@ -342,9 +354,12 @@ void CGameObject::AddChild(CGameObject* _pChild)
 	if (-1 == _pChild->m_iLayerIdx)
 	{
 		_pChild->m_iLayerIdx = m_iLayerIdx;
+		
+		
 	}
 	m_vecChild.push_back(_pChild);
 	_pChild->m_pParent = this;
+	CheckLayerRecursive(_pChild);
 }
 
 void CGameObject::AddComponent(CComponent* _component)

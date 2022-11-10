@@ -27,7 +27,7 @@ void Jug_SpawnHammer::Init()
 		map<wstring, CAnimation3D*> mapAnim = GetOwner()->Animator3D()->GetAllAnim();
 
 		if (mapAnim.find(L"JUG_SPAWNHAMMER") == mapAnim.end())
-			assert(nullptr, L"애니메이션 클립을 찾을 수 없습니다. \n Boss State Script error");
+			assert(nullptr && L"애니메이션 클립을 찾을 수 없습니다. \n Boss State Script error");
 
 		m_pAnim = mapAnim.find(L"JUG_SPAWNHAMMER")->second;
 	}
@@ -36,7 +36,7 @@ void Jug_SpawnHammer::Init()
 void Jug_SpawnHammer::Enter()
 {
 	// IDLE 애니메이션 플레이
-	GetOwner()->Animator3D()->Play(L"JUG_SPAWNHAMMER", true);
+	GetOwner()->Animator3D()->Play(L"JUG_SPAWNHAMMER", false);
 }
 
 void Jug_SpawnHammer::Exit()

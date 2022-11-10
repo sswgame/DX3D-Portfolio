@@ -25,12 +25,16 @@ void CHand_StateMgr::Update()
 {
 	m_sPrevState = L"";
 	m_sPrevState = m_sCurstate;
+
+	// 다음 상태가 있으면 다음 상태로 전환한다.
 	if (L"" != m_sNextState)
 	{
 		m_sCurstate = m_sNextState;
 		m_sNextState = L"";
 		ChangeState(m_sCurstate);
 	}
+
+	// 다음 상태가 없고, 현재 상태와 이전 상태가 없으면
 	else
 	{
 		if (m_sPrevState == m_sCurstate)

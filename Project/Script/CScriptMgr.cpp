@@ -22,7 +22,6 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"BossJugHandScript");
 	_vec.push_back(L"BossJugScript");
 	_vec.push_back(L"CameraMoveScript");
-
 	_vec.push_back(L"GravityScript");
 	_vec.push_back(L"MissileScript");
 	_vec.push_back(L"MonsterGunScript");
@@ -109,10 +108,6 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"BossJugScript";
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return L"CameraMoveScript";
-	case SCRIPT_TYPE::CCAMERAMOVESCRIPT:
-		return L"CCameraMoveScript";
-	case SCRIPT_TYPE::CMISSILESCRIPT:
-		return L"CMissileScript";
 	case SCRIPT_TYPE::GRAVITYSCRIPT:
 		return L"GravityScript";
 	case SCRIPT_TYPE::MISSILESCRIPT:

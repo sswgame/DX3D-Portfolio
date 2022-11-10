@@ -22,7 +22,7 @@
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
 	, m_ray{}
-	, m_eProjType(PROJ_TYPE::ORTHOGRAPHIC)
+	, m_eProjType(PROJ_TYPE::PERSPECTIVE)
 	, m_fWidth(0.f)
 	, m_fAspectRatio(1.f)
 	, m_fFOV(XM_PI / 4.f)
@@ -157,6 +157,7 @@ void CCamera::SortGameObject()
 			}
 
 			// 오브젝트가 카메라 시야 밖에 있으면 제외
+			// TODO:바운딩 박스로 전환
 			if (pRenderCom->IsFrustumCulling()
 				&& !m_Frustum.SphereCheck(vecObj[j]->Transform()->GetWorldPos(),
 					vecObj[j]->Transform()->GetWorldScale().x / 2.f))

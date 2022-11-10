@@ -284,7 +284,7 @@ void JugHand_Attack::Enter()
 		}
 
 		if (mapAnim.find(sAnimName) == mapAnim.end())
-			assert(nullptr, L"애니메이션 클립을 찾을 수 없습니다. \n Hand State Script error");
+			assert(nullptr && L"애니메이션 클립을 찾을 수 없습니다. \n Hand State Script error");
 
 		m_pAnimation = mapAnim.find(sAnimName)->second;
 	}

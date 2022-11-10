@@ -2,820 +2,7 @@ SCENE NAME: ""
 LAYERS:
   - LAYER NAME: Tile
     GAME OBJECTS:
-      - NAME: player
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [-179, -175, 221]
-              m_vRelativeScale: [1.29999995, 1.29999995, 1.29999995]
-              m_vRelativeRot: [0, 0, 0]
-              m_bIgnoreParentScale: false
-          - ANIMATOR3D:
-              MESH: [mesh\boss_jugulus+hammer0.mesh, mesh\boss_jugulus+hammer0.mesh]
-              m_pPrevAnim: ""
-              m_pCurAnim: ""
-              m_pNextAnim: ""
-              ANIMATION LIST:
-                jug_hammer_attack_pattern0:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 85
-                    iFrameLength: 0
-                    dStartTime: 0
-                    dEndTime: 2.8333333333333335
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_attack_pattern1:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 86
-                    iEndFrame: 169
-                    iFrameLength: 0
-                    dStartTime: 2.8666666666666667
-                    dEndTime: 5.6333333333333337
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_dead:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 316
-                    iEndFrame: 429
-                    iFrameLength: 0
-                    dStartTime: 10.533333333333333
-                    dEndTime: 14.300000000000001
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_hitphase2:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 429
-                    iEndFrame: 429
-                    iFrameLength: 0
-                    dStartTime: 14.300000000000001
-                    dEndTime: 14.300000000000001
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_ideal:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 167
-                    iEndFrame: 241
-                    iFrameLength: 0
-                    dStartTime: 5.5666666666666664
-                    dEndTime: 8.0333333333333332
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_jugfly:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 429
-                    iEndFrame: 429
-                    iFrameLength: 0
-                    dStartTime: 14.300000000000001
-                    dEndTime: 14.300000000000001
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_spawnhammer:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 429
-                    iEndFrame: 429
-                    iFrameLength: 0
-                    dStartTime: 14.300000000000001
-                    dEndTime: 14.300000000000001
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_walkground:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 242
-                    iEndFrame: 315
-                    iFrameLength: 0
-                    dStartTime: 8.0666666666666664
-                    dEndTime: 10.5
-                    dTimeLength: 0
-                    eMode: 0
-                jug_normal_flyhit:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 42
-                    iFrameLength: 0
-                    dStartTime: 0
-                    dEndTime: 1.3999999999999999
-                    dTimeLength: 0
-                    eMode: 0
-                jug_normal_flyhit_1:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 17
-                    iFrameLength: 0
-                    dStartTime: 0
-                    dEndTime: 0.56666666666666665
-                    dTimeLength: 0
-                    eMode: 0
-                jug_normal_flyhit_2:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 18
-                    iEndFrame: 42
-                    iFrameLength: 0
-                    dStartTime: 0.59999999999999998
-                    dEndTime: 1.3999999999999999
-                    dTimeLength: 0
-                    eMode: 0
-                jug_normal_idle:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 209
-                    iEndFrame: 358
-                    iFrameLength: 0
-                    dStartTime: 6.9666666666666668
-                    dEndTime: 11.933333333333334
-                    dTimeLength: 0
-                    eMode: 0
-          - MESHRENDER:
-              MESH: [mesh\boss_jugulus+hammer0.mesh, mesh\boss_jugulus+hammer0.mesh]
-              MATERIAL COUNT: 2
-              0: [material\jug_cloth.mtrl, material\jug_cloth.mtrl]
-              1: [material\jug_head.mtrl, material\jug_head.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-          - FSM:
-              {}
-        SCRIPTS:
-          - MissileScript:
-              {}
-        CHILDREN:
-          - NAME: player_sword1
-            m_bActive: true
-            m_bDynamicShadow: false
-            m_bFrustumCulling: false
-            COMPONENTS:
-              - TRANSFORM:
-                  m_vRelativePos: [0, 0, 0]
-                  m_vRelativeScale: [1, 1, 1]
-                  m_vRelativeRot: [0, 0, 0]
-                  m_bIgnoreParentScale: false
-              - ANIMATOR3D:
-                  MESH: [mesh\boss_jugulus+hammer1.mesh, mesh\boss_jugulus+hammer1.mesh]
-                  m_pPrevAnim: ""
-                  m_pCurAnim: ""
-                  m_pNextAnim: ""
-                  ANIMATION LIST:
-                    jug_hammer_attack_pattern0:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 0
-                        iEndFrame: 85
-                        iFrameLength: 0
-                        dStartTime: 0
-                        dEndTime: 2.8333333333333335
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_hammer_attack_pattern1:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 86
-                        iEndFrame: 169
-                        iFrameLength: 0
-                        dStartTime: 2.8666666666666667
-                        dEndTime: 5.6333333333333337
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_hammer_dead:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 316
-                        iEndFrame: 429
-                        iFrameLength: 0
-                        dStartTime: 10.533333333333333
-                        dEndTime: 14.300000000000001
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_hammer_hitphase2:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 429
-                        iEndFrame: 429
-                        iFrameLength: 0
-                        dStartTime: 14.300000000000001
-                        dEndTime: 14.300000000000001
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_hammer_ideal:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 167
-                        iEndFrame: 241
-                        iFrameLength: 0
-                        dStartTime: 5.5666666666666664
-                        dEndTime: 8.0333333333333332
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_hammer_jugfly:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 429
-                        iEndFrame: 429
-                        iFrameLength: 0
-                        dStartTime: 14.300000000000001
-                        dEndTime: 14.300000000000001
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_hammer_spawnhammer:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 429
-                        iEndFrame: 429
-                        iFrameLength: 0
-                        dStartTime: 14.300000000000001
-                        dEndTime: 14.300000000000001
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_hammer_walkground:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 242
-                        iEndFrame: 315
-                        iFrameLength: 0
-                        dStartTime: 8.0666666666666664
-                        dEndTime: 10.5
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_normal_flyhit:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 0
-                        iEndFrame: 42
-                        iFrameLength: 0
-                        dStartTime: 0
-                        dEndTime: 1.3999999999999999
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_normal_flyhit_1:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 0
-                        iEndFrame: 17
-                        iFrameLength: 0
-                        dStartTime: 0
-                        dEndTime: 0.56666666666666665
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_normal_flyhit_2:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 18
-                        iEndFrame: 42
-                        iFrameLength: 0
-                        dStartTime: 0.59999999999999998
-                        dEndTime: 1.3999999999999999
-                        dTimeLength: 0
-                        eMode: 0
-                    jug_normal_idle:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 209
-                        iEndFrame: 358
-                        iFrameLength: 0
-                        dStartTime: 6.9666666666666668
-                        dEndTime: 11.933333333333334
-                        dTimeLength: 0
-                        eMode: 0
-                    test:
-                      m_iCurClip: 0
-                      m_fLerpTime: 0.5
-                      m_fSpeed: 1
-                      m_tClip:
-                        strAnimName: ""
-                        iStartFrame: 0
-                        iEndFrame: 429
-                        iFrameLength: 0
-                        dStartTime: 0
-                        dEndTime: 14.300000000000001
-                        dTimeLength: 0
-                        eMode: 0
-              - MESHRENDER:
-                  MESH: [mesh\boss_jugulus+hammer1.mesh, mesh\boss_jugulus+hammer1.mesh]
-                  MATERIAL COUNT: 1
-                  0: [material\jug_hammer.mtrl, material\jug_hammer.mtrl]
-                  m_bDynamicShadow: false
-                  m_bFrustumCulling: false
-            SCRIPTS:
-              []
-            CHILDREN:
-              []
-      - NAME: BossFloor
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, -500, 0]
-              m_vRelativeScale: [0.800000012, 0.800000012, 0.800000012]
-              m_vRelativeRot: [0, 1.39626348, 0]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage0.mesh, mesh\jug_stage0.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_02.mtrl, material\jugmap_02.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Platform_top
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, 0, -200]
-              m_vRelativeScale: [0.200000003, 0.200000003, 0.200000003]
-              m_vRelativeRot: [0, -1.57079637, 0]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage1.mesh, mesh\jug_stage1.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Platform_bot
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, -50, -200]
-              m_vRelativeScale: [0.200000003, 0.200000003, 0.200000003]
-              m_vRelativeRot: [0, 3.26376581, 0]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage2.mesh, mesh\jug_stage2.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_03.mtrl, material\jugmap_03.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Pot
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, -2644, 0]
-              m_vRelativeScale: [0.5, 0.5, 0.5]
-              m_vRelativeRot: [0, 0, 0]
-              m_bIgnoreParentScale: false
-          - ANIMATOR3D:
-              MESH: [mesh\jug_stage3.mesh, mesh\jug_stage3.mesh]
-              m_pPrevAnim: ""
-              m_pCurAnim: ""
-              m_pNextAnim: ""
-              ANIMATION LIST:
-                jug_hammer_attack_pattern0:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 85
-                    iFrameLength: 0
-                    dStartTime: 0
-                    dEndTime: 2.8333333333333335
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_attack_pattern1:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 86
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 2.8666666666666667
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_dead:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 99
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 3.2999999999999998
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_hitphase2:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 99
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 3.2999999999999998
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_ideal:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 99
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 3.2999999999999998
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_jugfly:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 99
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 3.2999999999999998
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_spawnhammer:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 99
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 3.2999999999999998
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-                jug_hammer_walkground:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 99
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 3.2999999999999998
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-                jug_normal_flyhit:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 42
-                    iFrameLength: 0
-                    dStartTime: 0
-                    dEndTime: 1.3999999999999999
-                    dTimeLength: 0
-                    eMode: 0
-                jug_normal_flyhit_1:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 17
-                    iFrameLength: 0
-                    dStartTime: 0
-                    dEndTime: 0.56666666666666665
-                    dTimeLength: 0
-                    eMode: 0
-                jug_normal_flyhit_2:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 18
-                    iEndFrame: 42
-                    iFrameLength: 0
-                    dStartTime: 0.59999999999999998
-                    dEndTime: 1.3999999999999999
-                    dTimeLength: 0
-                    eMode: 0
-                jug_normal_idle:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 99
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 3.2999999999999998
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-                test:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 0
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-          - MESHRENDER:
-              MESH: [mesh\jug_stage3.mesh, mesh\jug_stage3.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_04.mtrl, material\jugmap_04.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Chain
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [1, -793, 0]
-              m_vRelativeScale: [0.5, 0.5, 0.5]
-              m_vRelativeRot: [0, 0, 0]
-              m_bIgnoreParentScale: false
-          - ANIMATOR3D:
-              MESH: [mesh\jug_stage4.mesh, mesh\jug_stage4.mesh]
-              m_pPrevAnim: ""
-              m_pCurAnim: ""
-              m_pNextAnim: ""
-              ANIMATION LIST:
-                test:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 99
-                    iFrameLength: 0
-                    dStartTime: 0
-                    dEndTime: 3.2999999999999998
-                    dTimeLength: 0
-                    eMode: 0
-          - MESHRENDER:
-              MESH: [mesh\jug_stage4.mesh, mesh\jug_stage4.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_05.mtrl, material\jugmap_05.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Cross
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [280, 439, -5379]
-              m_vRelativeScale: [1, 1, 1]
-              m_vRelativeRot: [0, -1.57079637, 0]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage5.mesh, mesh\jug_stage5.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_01.mtrl, material\jugmap_01.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Load0
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, 0, -2844]
-              m_vRelativeScale: [1, 1, 1]
-              m_vRelativeRot: [0, 0, 0]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage6.mesh, mesh\jug_stage6.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Load1
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, 247, -4180]
-              m_vRelativeScale: [1, 1, 1]
-              m_vRelativeRot: [0.34906587, 0, 0]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage7.mesh, mesh\jug_stage7.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Load2
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, 495, -5567]
-              m_vRelativeScale: [1, 1, 1]
-              m_vRelativeRot: [0, 0, 0]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage8.mesh, mesh\jug_stage8.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Load3
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [-943, -307, -200]
-              m_vRelativeScale: [0.699999988, 0.699999988, 0.699999988]
-              m_vRelativeRot: [0, 1.57079637, -0.628318548]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage9.mesh, mesh\jug_stage9.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Load4
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [955, -305, -200]
-              m_vRelativeScale: [0.699999988, 0.699999988, 0.699999988]
-              m_vRelativeRot: [0, -1.57079637, 0.628318548]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage10.mesh, mesh\jug_stage10.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: Load5
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, -262, -1100]
-              m_vRelativeScale: [0.699999988, 0.699999988, 0.699999988]
-              m_vRelativeRot: [0.52359879, 0, 0]
-              m_bIgnoreParentScale: false
-          - MESHRENDER:
-              MESH: [mesh\jug_stage11.mesh, mesh\jug_stage11.mesh]
-              MATERIAL COUNT: 1
-              0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
+      []
   - LAYER NAME: Default
     GAME OBJECTS:
       - NAME: MainCamera
@@ -829,7 +16,7 @@ LAYERS:
               m_vRelativeRot: [0, 0, 0]
               m_bIgnoreParentScale: false
           - CAMERA:
-              m_eProjType: 0
+              m_eProjType: 1
               m_fWidth: 1600
               m_fAspectRatio: 1.77777779
               m_fFOV: 0.785398185
@@ -837,7 +24,7 @@ LAYERS:
               m_iLayerMask: 4294967295
               m_iCamIdx: 0
         SCRIPTS:
-          - CameraMoveScript:
+          - PlayerCamScript:
               {}
         CHILDREN:
           []
@@ -878,6 +65,824 @@ LAYERS:
           []
         CHILDREN:
           []
+      - NAME: BOSS_COMBAT
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [1, 1, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+          - FSM:
+              {}
+        SCRIPTS:
+          - BossJugCombatMgrScript:
+              {}
+        CHILDREN:
+          - NAME: BOSS_STAGE
+            m_bActive: true
+            m_bDynamicShadow: false
+            m_bFrustumCulling: false
+            COMPONENTS:
+              - TRANSFORM:
+                  m_vRelativePos: [0, 0, 0]
+                  m_vRelativeScale: [1, 1, 1]
+                  m_vRelativeRot: [0, 0, 0]
+                  m_bIgnoreParentScale: false
+            SCRIPTS:
+              []
+            CHILDREN:
+              - NAME: PARTS
+                m_bActive: true
+                m_bDynamicShadow: false
+                m_bFrustumCulling: false
+                COMPONENTS:
+                  - TRANSFORM:
+                      m_vRelativePos: [0, 0, 0]
+                      m_vRelativeScale: [1, 1, 1]
+                      m_vRelativeRot: [0, 0, 0]
+                      m_bIgnoreParentScale: false
+                SCRIPTS:
+                  []
+                CHILDREN:
+                  - NAME: BossFloor
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [0, -500, 0]
+                          m_vRelativeScale: [0.800000012, 0.800000012, 0.800000012]
+                          m_vRelativeRot: [0, 1.39626348, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage0.mesh, mesh\jug_stage0.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_02.mtrl, material\jugmap_02.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: Platform_top
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [0, 0, -200]
+                          m_vRelativeScale: [0.200000003, 0.200000003, 0.200000003]
+                          m_vRelativeRot: [0, -1.57079637, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage1.mesh, mesh\jug_stage1.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: Platform_bot
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [0, -50, -200]
+                          m_vRelativeScale: [0.200000003, 0.200000003, 0.200000003]
+                          m_vRelativeRot: [0, 3.26376581, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage2.mesh, mesh\jug_stage2.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_03.mtrl, material\jugmap_03.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: Cross
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [280, 439, -5379]
+                          m_vRelativeScale: [1, 1, 1]
+                          m_vRelativeRot: [0, -1.57079637, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage3.mesh, mesh\jug_stage3.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_01.mtrl, material\jugmap_01.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: Load0
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [0, 0, -2844]
+                          m_vRelativeScale: [1, 1, 1]
+                          m_vRelativeRot: [0, 0, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage4.mesh, mesh\jug_stage4.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: Load1
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [0, 247, -4180]
+                          m_vRelativeScale: [1, 1, 1]
+                          m_vRelativeRot: [0.34906587, 0, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage5.mesh, mesh\jug_stage5.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: Load2
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [0, 495, -5567]
+                          m_vRelativeScale: [1, 1, 1]
+                          m_vRelativeRot: [0, 0, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage6.mesh, mesh\jug_stage6.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: Load3
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [-943, -307, -200]
+                          m_vRelativeScale: [0.699999988, 0.699999988, 0.699999988]
+                          m_vRelativeRot: [0, 1.57079637, -0.628318548]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage7.mesh, mesh\jug_stage7.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: Load4
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [955, -305, -200]
+                          m_vRelativeScale: [0.699999988, 0.699999988, 0.699999988]
+                          m_vRelativeRot: [0, -1.57079637, 0.628318548]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage8.mesh, mesh\jug_stage8.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: Load5
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [0, -262, -1100]
+                          m_vRelativeScale: [0.699999988, 0.699999988, 0.699999988]
+                          m_vRelativeRot: [0.52359879, 0, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage9.mesh, mesh\jug_stage9.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\jugmap_06.mtrl, material\jugmap_06.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: BossStage11
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [-405, 66, 0]
+                          m_vRelativeScale: [1, 1, 1]
+                          m_vRelativeRot: [0, 0, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage11.mesh, mesh\jug_stage11.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\Jugmap_07.mtrl, material\Jugmap_07.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: BossStage12
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [0, 0, 0]
+                          m_vRelativeScale: [1, 1, 1]
+                          m_vRelativeRot: [0, 0, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage12.mesh, mesh\jug_stage12.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\Jugmap_07.mtrl, material\Jugmap_07.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+                  - NAME: BossStage10
+                    m_bActive: true
+                    m_bDynamicShadow: false
+                    m_bFrustumCulling: false
+                    COMPONENTS:
+                      - TRANSFORM:
+                          m_vRelativePos: [-133, 0, 0]
+                          m_vRelativeScale: [1, 1, 1]
+                          m_vRelativeRot: [0, 0, 0]
+                          m_bIgnoreParentScale: false
+                      - MESHRENDER:
+                          MESH: [mesh\jug_stage10.mesh, mesh\jug_stage10.mesh]
+                          MATERIAL COUNT: 1
+                          0: [material\Jugmap_08.mtrl, material\Jugmap_08.mtrl]
+                          m_bDynamicShadow: false
+                          m_bFrustumCulling: false
+                    SCRIPTS:
+                      []
+                    CHILDREN:
+                      []
+              - NAME: Pot
+                m_bActive: true
+                m_bDynamicShadow: false
+                m_bFrustumCulling: false
+                COMPONENTS:
+                  - TRANSFORM:
+                      m_vRelativePos: [0, -758, 0]
+                      m_vRelativeScale: [0.5, 0.5, 0.5]
+                      m_vRelativeRot: [0, 0, 0]
+                      m_bIgnoreParentScale: false
+                  - ANIMATOR3D:
+                      MESH: [mesh\jug_stage_bottle0.mesh, mesh\jug_stage_bottle0.mesh]
+                      m_pPrevAnim: ""
+                      m_pCurAnim: test
+                      m_pNextAnim: ""
+                      ANIMATION LIST:
+                        test:
+                          m_iCurClip: 0
+                          m_fLerpTime: 0.5
+                          m_fSpeed: 1
+                          m_tClip:
+                            strAnimName: ""
+                            iStartFrame: 0
+                            iEndFrame: 449
+                            iFrameLength: 450
+                            dStartTime: 0
+                            dEndTime: 14.966666666666667
+                            dTimeLength: 0
+                            eMode: 0
+                  - MESHRENDER:
+                      MESH: [mesh\jug_stage_bottle0.mesh, mesh\jug_stage_bottle0.mesh]
+                      MATERIAL COUNT: 1
+                      0: [material\Jugmap_Bottle.mtrl, material\Jugmap_Bottle.mtrl]
+                      m_bDynamicShadow: false
+                      m_bFrustumCulling: false
+                SCRIPTS:
+                  []
+                CHILDREN:
+                  []
+              - NAME: Chain
+                m_bActive: true
+                m_bDynamicShadow: false
+                m_bFrustumCulling: false
+                COMPONENTS:
+                  - TRANSFORM:
+                      m_vRelativePos: [0, -748, 0]
+                      m_vRelativeScale: [0.5, 0.5, 1]
+                      m_vRelativeRot: [0, 0, 0]
+                      m_bIgnoreParentScale: false
+                  - ANIMATOR3D:
+                      MESH: [mesh\jug_stage_chain0.mesh, mesh\jug_stage_chain0.mesh]
+                      m_pPrevAnim: ""
+                      m_pCurAnim: test
+                      m_pNextAnim: ""
+                      ANIMATION LIST:
+                        test:
+                          m_iCurClip: 0
+                          m_fLerpTime: 0.5
+                          m_fSpeed: 1
+                          m_tClip:
+                            strAnimName: ""
+                            iStartFrame: 0
+                            iEndFrame: 449
+                            iFrameLength: 450
+                            dStartTime: 0
+                            dEndTime: 14.966666666666667
+                            dTimeLength: 0
+                            eMode: 0
+                  - MESHRENDER:
+                      MESH: [mesh\jug_stage_chain0.mesh, mesh\jug_stage_chain0.mesh]
+                      MATERIAL COUNT: 1
+                      0: [material\Jugmap_chain.mtrl, material\Jugmap_chain.mtrl]
+                      m_bDynamicShadow: false
+                      m_bFrustumCulling: false
+                SCRIPTS:
+                  []
+                CHILDREN:
+                  []
+          - NAME: JUG_1
+            m_bActive: true
+            m_bDynamicShadow: false
+            m_bFrustumCulling: false
+            COMPONENTS:
+              - TRANSFORM:
+                  m_vRelativePos: [0, 0, 0]
+                  m_vRelativeScale: [1, 1, 1]
+                  m_vRelativeRot: [0, 0, 0]
+                  m_bIgnoreParentScale: false
+              - ANIMATOR3D:
+                  MESH: [mesh\jug_010.mesh, mesh\jug_010.mesh]
+                  m_pPrevAnim: ""
+                  m_pCurAnim: JUG_NORM_IDLE
+                  m_pNextAnim: ""
+                  ANIMATION LIST:
+                    JUG_ATTACK_0:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 0
+                        iEndFrame: 85
+                        iFrameLength: 86
+                        dStartTime: 0
+                        dEndTime: 2.8333333333333335
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_ATTACK_1:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 86
+                        iEndFrame: 169
+                        iFrameLength: 84
+                        dStartTime: 2.8666666666666667
+                        dEndTime: 5.6333333333333337
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_DEAD:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 316
+                        iEndFrame: 358
+                        iFrameLength: 166
+                        dStartTime: 10.533333333333333
+                        dEndTime: 11.933333333333334
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_FLY:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 358
+                        iEndFrame: 358
+                        iFrameLength: 103
+                        dStartTime: 11.933333333333334
+                        dEndTime: 11.933333333333334
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_HAMMER_HIT:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 358
+                        iEndFrame: 358
+                        iFrameLength: 37
+                        dStartTime: 11.933333333333334
+                        dEndTime: 11.933333333333334
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_HAMMER_IDLE:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 167
+                        iEndFrame: 241
+                        iFrameLength: 75
+                        dStartTime: 5.5666666666666664
+                        dEndTime: 8.0333333333333332
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_NORM_HIT:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 0
+                        iEndFrame: 42
+                        iFrameLength: 43
+                        dStartTime: 0
+                        dEndTime: 1.3999999999999999
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_NORM_HIT_1:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 0
+                        iEndFrame: 17
+                        iFrameLength: 18
+                        dStartTime: 0
+                        dEndTime: 0.56666666666666665
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_NORM_HIT_2:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 18
+                        iEndFrame: 42
+                        iFrameLength: 25
+                        dStartTime: 0.59999999999999998
+                        dEndTime: 1.3999999999999999
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_NORM_IDLE:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 209
+                        iEndFrame: 358
+                        iFrameLength: 150
+                        dStartTime: 6.9666666666666668
+                        dEndTime: 11.933333333333334
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_SPAWNHAMMER:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 358
+                        iEndFrame: 358
+                        iFrameLength: 70
+                        dStartTime: 11.933333333333334
+                        dEndTime: 11.933333333333334
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_WALKGROUND:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 242
+                        iEndFrame: 315
+                        iFrameLength: 74
+                        dStartTime: 8.0666666666666664
+                        dEndTime: 10.5
+                        dTimeLength: 0
+                        eMode: 0
+                    test:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 0
+                        iEndFrame: 358
+                        iFrameLength: 359
+                        dStartTime: 0
+                        dEndTime: 11.933333333333334
+                        dTimeLength: 0
+                        eMode: 0
+              - MESHRENDER:
+                  MESH: [mesh\jug_010.mesh, mesh\jug_010.mesh]
+                  MATERIAL COUNT: 2
+                  0: [material\jug_cloth.mtrl, material\jug_cloth.mtrl]
+                  1: [material\jug_body.mtrl, material\jug_body.mtrl]
+                  m_bDynamicShadow: false
+                  m_bFrustumCulling: false
+              - FSM:
+                  {}
+            SCRIPTS:
+              - BossJugScript:
+                  m_fHP: 400
+                  m_fMaxHP: 1000
+            CHILDREN:
+              []
+          - NAME: JUG_2
+            m_bActive: false
+            m_bDynamicShadow: false
+            m_bFrustumCulling: false
+            COMPONENTS:
+              - TRANSFORM:
+                  m_vRelativePos: [0, 0, 0]
+                  m_vRelativeScale: [1, 1, 1]
+                  m_vRelativeRot: [0, 0, 0]
+                  m_bIgnoreParentScale: false
+              - ANIMATOR3D:
+                  MESH: [mesh\boss_jugulus+hammer0.mesh, mesh\boss_jugulus+hammer0.mesh]
+                  m_pPrevAnim: ""
+                  m_pCurAnim: ""
+                  m_pNextAnim: ""
+                  ANIMATION LIST:
+                    JUG_ATTACK_0:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 0
+                        iEndFrame: 85
+                        iFrameLength: 86
+                        dStartTime: 0
+                        dEndTime: 2.8333333333333335
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_ATTACK_1:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 86
+                        iEndFrame: 169
+                        iFrameLength: 84
+                        dStartTime: 2.8666666666666667
+                        dEndTime: 5.6333333333333337
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_DEAD:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 316
+                        iEndFrame: 429
+                        iFrameLength: 166
+                        dStartTime: 10.533333333333333
+                        dEndTime: 14.300000000000001
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_FLY:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 429
+                        iEndFrame: 429
+                        iFrameLength: 103
+                        dStartTime: 14.300000000000001
+                        dEndTime: 14.300000000000001
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_HAMMER_HIT:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 429
+                        iEndFrame: 429
+                        iFrameLength: 37
+                        dStartTime: 14.300000000000001
+                        dEndTime: 14.300000000000001
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_HAMMER_IDLE:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 167
+                        iEndFrame: 241
+                        iFrameLength: 75
+                        dStartTime: 5.5666666666666664
+                        dEndTime: 8.0333333333333332
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_NORM_HIT:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 0
+                        iEndFrame: 42
+                        iFrameLength: 43
+                        dStartTime: 0
+                        dEndTime: 1.3999999999999999
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_NORM_HIT_1:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 0
+                        iEndFrame: 17
+                        iFrameLength: 18
+                        dStartTime: 0
+                        dEndTime: 0.56666666666666665
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_NORM_HIT_2:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 18
+                        iEndFrame: 42
+                        iFrameLength: 25
+                        dStartTime: 0.59999999999999998
+                        dEndTime: 1.3999999999999999
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_NORM_IDLE:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 209
+                        iEndFrame: 358
+                        iFrameLength: 150
+                        dStartTime: 6.9666666666666668
+                        dEndTime: 11.933333333333334
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_SPAWNHAMMER:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 429
+                        iEndFrame: 429
+                        iFrameLength: 70
+                        dStartTime: 14.300000000000001
+                        dEndTime: 14.300000000000001
+                        dTimeLength: 0
+                        eMode: 0
+                    JUG_WALKGROUND:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 242
+                        iEndFrame: 315
+                        iFrameLength: 74
+                        dStartTime: 8.0666666666666664
+                        dEndTime: 10.5
+                        dTimeLength: 0
+                        eMode: 0
+                    test:
+                      m_iCurClip: 0
+                      m_fLerpTime: 0.5
+                      m_fSpeed: 1
+                      m_tClip:
+                        strAnimName: ""
+                        iStartFrame: 0
+                        iEndFrame: 429
+                        iFrameLength: 430
+                        dStartTime: 0
+                        dEndTime: 14.300000000000001
+                        dTimeLength: 0
+                        eMode: 0
+              - MESHRENDER:
+                  MESH: [mesh\boss_jugulus+hammer0.mesh, mesh\boss_jugulus+hammer0.mesh]
+                  MATERIAL COUNT: 2
+                  0: [material\jug_cloth.mtrl, material\jug_cloth.mtrl]
+                  1: [material\jug_head.mtrl, material\jug_head.mtrl]
+                  m_bDynamicShadow: false
+                  m_bFrustumCulling: false
+              - FSM:
+                  {}
+            SCRIPTS:
+              - BossJugScript:
+                  m_fHP: 400
+                  m_fMaxHP: 1000
+            CHILDREN:
+              - NAME: JUG_Hammer
+                m_bActive: true
+                m_bDynamicShadow: false
+                m_bFrustumCulling: false
+                COMPONENTS:
+                  - TRANSFORM:
+                      m_vRelativePos: [0, 0, 0]
+                      m_vRelativeScale: [1, 1, 1]
+                      m_vRelativeRot: [0, 0, 0]
+                      m_bIgnoreParentScale: false
+                  - ANIMATOR3D:
+                      MESH: [mesh\boss_jugulus+hammer1.mesh, mesh\boss_jugulus+hammer1.mesh]
+                      m_pPrevAnim: ""
+                      m_pCurAnim: ""
+                      m_pNextAnim: ""
+                      ANIMATION LIST:
+                        test:
+                          m_iCurClip: 0
+                          m_fLerpTime: 0.5
+                          m_fSpeed: 1
+                          m_tClip:
+                            strAnimName: ""
+                            iStartFrame: 0
+                            iEndFrame: 429
+                            iFrameLength: 430
+                            dStartTime: 0
+                            dEndTime: 14.300000000000001
+                            dTimeLength: 0
+                            eMode: 0
+                  - MESHRENDER:
+                      MESH: [mesh\boss_jugulus+hammer1.mesh, mesh\boss_jugulus+hammer1.mesh]
+                      MATERIAL COUNT: 1
+                      0: [material\jug_hammer.mtrl, material\jug_hammer.mtrl]
+                      m_bDynamicShadow: false
+                      m_bFrustumCulling: false
+                SCRIPTS:
+                  []
+                CHILDREN:
+                  []
   - LAYER NAME: Player
     GAME OBJECTS:
       []
