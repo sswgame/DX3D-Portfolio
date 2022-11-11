@@ -13,6 +13,7 @@ private:
 	CGameObject* m_pJug;
 	CGameObject* m_pHammer;
 	CGameObject* m_pJugHandMgr;
+	CGameObject* m_pPlayer;
 
 	CGameObject* m_pStageInnerCollider;
 	CGameObject* m_pStageOuterCollider;
@@ -29,6 +30,7 @@ public:
 	CGameObject* GetJug() { return m_pJug; }
 	CGameObject* GetHammer() { return m_pHammer; }
 	CGameObject* GetJugHand() { return m_pJugHandMgr; }
+	CGameObject* GetPlayer() { return m_pPlayer; }
 
 	void start() override;
 	void update() override;

@@ -7,15 +7,17 @@
 #include <Engine/CAnimator3D.h>
 #include <Engine/CGameObject.h>
 
+#include "HandStateMgrScript.h"
+
 BossJugHandScript::BossJugHandScript()
 	: CScript{ (int)SCRIPT_TYPE::BOSSJUGHANDSCRIPT }
-	, m_iOwnerHandIdx(-1)
 	, m_vDirection(Vec3(0.f, 0.f, -1.f))
 	, m_vPrevDirection(Vec3(0.f, 0.f, 0.f))
-	, m_bAnimDone(true)
 	, m_fRunningTime(0.f)
 	, m_fSpeed(0.f)
+	, m_iOwnerHandIdx(-1)
 	, m_iCurAttackHandIdx(-1)
+	, m_bAnimDone(true)
 {
 }
 
@@ -96,34 +98,33 @@ void BossJugHandScript::start()
 	}
 
 	// stateMgr에서 현재 공격중인 손의 num을 가져온다.
-	m_iCurAttackHandIdx = GetOwner()->GetScript<HandStateMgrScript>()->GetCurAttackHandNUM();
+	assert(m_pHandStateMgr);
+	m_iCurAttackHandIdx = m_pHandStateMgr->GetCurAttackHandNUM();
 
 	// 모든 손의 현재 상태는 Gen 으로 두고 시작한다.
 	// 모든 상태는 같지만 공격 idx 와 같은 손만 update 된다.
-	GetOwner()->GetScript<HandStateMgrScript>()->SetNextState(L"GEN");
+	m_pHandStateMgr->SetNextState(L"GEN");
 }
 
 void BossJugHandScript::update()
 {
-	if (-1 == GetOwner()->GetScript<HandStateMgrScript>()->GetCurAttackHandNUM())
+	if (-1 == m_pHandStateMgr->GetCurAttackHandNUM())
 		return;
-
-	CScript* pMgrScript = GetOwner()->GetScript<HandStateMgrScript>();
 
 	// 애니메이션이 끝났다는 알림> bool 값이 오면 상태전환
 	if (m_iOwnerHandIdx == m_iCurAttackHandIdx)
 	{
 		if (m_bAnimDone)
 		{
-			wstring sCurStateName = ((HandStateMgrScript*)pMgrScript)->GetCurState();
+			wstring sCurStateName = ((HandStateMgrScript*)m_pHandStateMgr)->GetCurState();
 
 			if (L"GEN" == sCurStateName)
 			{
-				((HandStateMgrScript*)pMgrScript)->SetNextState(L"ATTACK");
+				((HandStateMgrScript*)m_pHandStateMgr)->SetNextState(L"ATTACK");
 			}
 			else if (L"ATTACK" == sCurStateName)
 			{
-				((HandStateMgrScript*)pMgrScript)->SetNextState(L"VANISH");
+				((HandStateMgrScript*)m_pHandStateMgr)->SetNextState(L"VANISH");
 
 			}
 			else if (L"VANISH" == sCurStateName)
@@ -131,10 +132,10 @@ void BossJugHandScript::update()
 				// vanish 까지 왔지만 모든 공격이 끝난게 아니라면 다시 Gen 부터 공격
 				if (false == GetOwner()->GetScript<HandStateMgrScript>()->GetAllAttackDone())
 				{
-					((HandStateMgrScript*)pMgrScript)->SetNextState(L"GEN");
+					((HandStateMgrScript*)m_pHandStateMgr)->SetNextState(L"GEN");
 				}
 				else
-					((HandStateMgrScript*)pMgrScript)->SetNextState(L"IDLE");
+					((HandStateMgrScript*)m_pHandStateMgr)->SetNextState(L"IDLE");
 
 			}
 

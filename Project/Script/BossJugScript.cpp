@@ -64,6 +64,7 @@ void BossJugScript::Init()
 	}
 
 	// 자식 오브젝트와 함께 플레이
+	m_pBossAnimator->CopyAllAnimToChild();
 	m_pBossAnimator->SetPlayWithChild(true);
 
 	// 상태 초기화

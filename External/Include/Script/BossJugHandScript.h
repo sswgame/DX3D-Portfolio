@@ -7,6 +7,8 @@ class BossJugHandScript :
 	public CScript
 {
 private:
+	HandStateMgrScript* m_pHandStateMgr;
+
 	Vec3            m_vDirection;
 	Vec3            m_vPrevDirection;
 
@@ -35,6 +37,7 @@ public:
 
 
 	// [ SET ]
+	void SetHandStateMgr(HandStateMgrScript* _pMgr) { m_pHandStateMgr = _pMgr; }
 	void SetRunningTime(float _time) { m_fRunningTime = _time; }
 	void SetCurAnimationPlayDone(bool _TorF) { m_bAnimDone = _TorF; }
 	void SetMonsterDir(Vec3 _dir) { m_vDirection = _dir; }

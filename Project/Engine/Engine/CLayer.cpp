@@ -3,6 +3,7 @@
 
 #include "CGameObject.h"
 
+
 CLayer::CLayer()
 	:
 	m_iLayerIdx(-1) {}
@@ -72,4 +73,17 @@ void CLayer::DeregisterObject(CGameObject* _pObj)
 			return;
 		}
 	}
+}
+
+CGameObject* CLayer::FindRootObject(wstring _wstrNames) const
+{
+	for (int i = 0; i < m_vecRoot.size(); ++i)
+	{
+		if (_wstrNames == m_vecRoot[i]->GetName())
+		{
+			return m_vecRoot[i];
+		}
+	}
+
+	return nullptr;
 }

@@ -11,7 +11,7 @@ private:
 	BossJugCombatMgrScript* m_pCombatMgr;
 	CFSM*                   m_pBossFSM;
 	CAnimator3D*            m_pBossAnimator;
-
+	
 	UINT m_iAttackPattern;
 	bool m_bCurAttackEnd;
 private:

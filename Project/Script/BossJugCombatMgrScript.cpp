@@ -57,11 +57,12 @@ void BossJugCombatMgrScript::SpawnStage()
 	{
 		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\jugulus+hammer_final0.mdat",
 		                                                               L"meshdata\\jugulus+hammer_final0.mdat");
-
 		m_pJug = pMeshData->Instantiate();
 		m_pJug->SetName(L"JUG");
 		m_pJug->AddComponent(new BossJugScript);
-		m_pJug->GetScript<BossJugScript>()->Init();
+
+		m_pJug->Transform()->SetRelativePos(-150.f, -130.f, 250.f);
+		m_pJug->Transform()->SetRelativeScale(1.5f, 1.5f, 1.5f);
 
 		CSceneMgr::GetInst()->SpawnObject(m_pJug, L"MONSTER");
 
@@ -73,24 +74,31 @@ void BossJugCombatMgrScript::SpawnStage()
 
 			m_pHammer = pMeshData->Instantiate();
 			m_pHammer->SetName(L"JUG_Hammer");
-
+			m_pHammer->Transform()->SetRelativePos(-320.f, 0.f, -40.f);
+			Vec3 Rot(-90.f, 0.f, 0.f);
+			Rot.ToRadian();
+			m_pHammer->Transform()->SetRelativeRotation(Rot);
 			//CSceneMgr::GetInst()->SpawnObject(m_pHammer, L"MONSTER");
 			m_pJug->AddChild(m_pHammer);
 		}
 
-		/* 보스 손 생성 */
-		if (nullptr == m_pJugHandMgr)
-		{
-			m_pJugHandMgr = new CGameObject;
-			m_pJugHandMgr->SetName(L"HANDS");
-			m_pJugHandMgr->AddComponent(new CTransform);
-			m_pJugHandMgr->AddComponent(new HandStateMgrScript);
 
-			//CSceneMgr::GetInst()->SpawnObject(m_pJugHandMgr, L"MONSTER");
-			m_pJug->AddChild(m_pJugHandMgr);
+		// 보스 초기화
+		m_pJug->GetScript<BossJugScript>()->Init();
+	}
 
-			//m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
-		}
+	/* 보스 손 생성 */
+	if (nullptr == m_pJugHandMgr)
+	{
+		m_pJugHandMgr = new CGameObject;
+		m_pJugHandMgr->SetName(L"HANDS");
+		m_pJugHandMgr->AddComponent(new CTransform);
+		m_pJugHandMgr->AddComponent(new HandStateMgrScript);
+
+		CSceneMgr::GetInst()->SpawnObject(m_pJugHandMgr, L"MONSTER");
+		//m_pJug->AddChild(m_pJugHandMgr);
+
+		//m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
 	}
 }
 
@@ -161,6 +169,17 @@ void BossJugCombatMgrScript::update()
 	// 배틀 시작
 	if (!m_bStartCombat)
 		m_bStartCombat = true;
+
+	if (nullptr == m_pPlayer)
+	{
+		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"PLAYER");
+		m_pPlayer      = pLayer->FindRootObject(L"player");
+	}
+	else
+	{
+		if (m_pPlayer->IsDead())
+			m_pPlayer = nullptr;
+	}
 
 	// 현재 타입 이름
 	m_strCurState = ToString(m_pPhaseFSM->GetCurState()->GetStateType());

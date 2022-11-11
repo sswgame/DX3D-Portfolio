@@ -32,6 +32,8 @@ public:
 	vector<CGameObject*>& GetRootObjects() { return m_vecRoot; }
 	vector<CGameObject*>& GetObjects() { return m_vecObj; }
 
+	CGameObject* FindRootObject(wstring _wstrNames) const;
+
 	CLONE_DISABLE(CLayer)
 
 public:

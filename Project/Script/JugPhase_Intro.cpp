@@ -40,7 +40,7 @@ void JugPhase_Intro::Enter()
 	pFSM->ChangeState(L"JUG_INTRO");
 
 	// Jug Hand Init È£Ãâ
-	//m_pCombatMgr->GetJugHand()->GetScript<HandStateMgrScript>()->init();
+	m_pCombatMgr->GetJugHand()->GetScript<HandStateMgrScript>()->init();
 }
 
 void JugPhase_Intro::Exit()

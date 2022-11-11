@@ -78,6 +78,7 @@ void HandStateMgrScript::init()
 	m_pHand1 = pMeshData->Instantiate();
 	m_pHand1->SetName(L"Hand01");
 	m_pHand1->AddComponent(new BossJugHandScript);
+	m_pHand1->GetScript<BossJugHandScript>()->SetHandStateMgr(this);
 	CSceneMgr::GetInst()->SpawnObject(m_pHand1, GetOwner()->GetLayerIndex());
 
 
@@ -88,6 +89,7 @@ void HandStateMgrScript::init()
 	m_pHand2 = pMeshData->Instantiate();
 	m_pHand2->SetName(L"Hand02");
 	m_pHand2->AddComponent(new BossJugHandScript);
+	m_pHand2->GetScript<BossJugHandScript>()->SetHandStateMgr(this);
 	CSceneMgr::GetInst()->SpawnObject(m_pHand2, GetOwner()->GetLayerIndex());
 
 
@@ -98,6 +100,7 @@ void HandStateMgrScript::init()
 	m_pHand3 = pMeshData->Instantiate();
 	m_pHand3->SetName(L"Hand03");
 	m_pHand3->AddComponent(new BossJugHandScript);
+	m_pHand3->GetScript<BossJugHandScript>()->SetHandStateMgr(this);
 	CSceneMgr::GetInst()->SpawnObject(m_pHand3, GetOwner()->GetLayerIndex());
 
 	InitState();
