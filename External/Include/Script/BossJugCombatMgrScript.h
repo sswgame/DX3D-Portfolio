@@ -3,18 +3,21 @@
 
 class CGameObject;
 
-class BossJugCombatMgrScript :
-    public CScript
+class BossJugCombatMgrScript : public CScript
 {
 private:
-	CFSM*				m_pPhaseFSM;
-	wstring				m_wstrCurState;
+	CFSM*  m_pPhaseFSM;
+	string m_strCurState;
 
-	CGameObject*		m_pJug;
-	CGameObject*		m_pJugHand;
+	CGameObject* m_pStage;
+	CGameObject* m_pJug;
+	CGameObject* m_pHammer;
+	CGameObject* m_pJugHandMgr;
 
-	CGameObject*		m_pStageInnerCollider;
-	CGameObject*		m_pStageOuterCollider;
+	CGameObject* m_pStageInnerCollider;
+	CGameObject* m_pStageOuterCollider;
+
+	bool m_bStartCombat;
 
 public:
 	void SpawnStage();
@@ -23,14 +26,18 @@ public:
 	void CheckPhase() const;
 
 	// [ GET / SET ]
-	CGameObject* GetJug() { return m_pJug;}
-	CGameObject* GetJugHand() { return m_pJugHand;}
+	CGameObject* GetJug() { return m_pJug; }
+	CGameObject* GetHammer() { return m_pHammer; }
+	CGameObject* GetJugHand() { return m_pJugHandMgr; }
 
 	void start() override;
 	void update() override;
 	void lateupdate() override;
 
 	CLONE(BossJugCombatMgrScript)
+
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 
 public:
 	BossJugCombatMgrScript();

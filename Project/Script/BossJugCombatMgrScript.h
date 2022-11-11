@@ -9,6 +9,7 @@ private:
 	CFSM*  m_pPhaseFSM;
 	string m_strCurState;
 
+	CGameObject* m_pStage;
 	CGameObject* m_pJug;
 	CGameObject* m_pHammer;
 	CGameObject* m_pJugHandMgr;

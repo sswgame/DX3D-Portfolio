@@ -1,6 +1,7 @@
 #pragma once
 #include <Engine\CScript.h>
-#include "Hand_StateMgr.h"
+
+#include "HandStateMgrScript.h"
 
 class BossJugHandScript :
 	public CScript
@@ -27,10 +28,10 @@ public:
 	Vec3 GetCurDir() { return m_vDirection; }
 	Vec3 GetPlayerPosition();
 
-	int GetSavedMidFrm() {return GetOwner()->GetScript<Hand_StateMgr>()->GetSavedMidFrame(); }
-	bool Get1stAttackDone() { return GetOwner()->GetScript<Hand_StateMgr>()->Get1stAttackDone(); }
-	bool Get2ndAttackDone() { return GetOwner()->GetScript<Hand_StateMgr>()->Get2ndAttackDone(); }
-	bool Get3rdAttackDone() { return GetOwner()->GetScript<Hand_StateMgr>()->Get3rdAttackDone(); }
+	int  GetSavedMidFrm() { return GetOwner()->GetScript<HandStateMgrScript>()->GetSavedMidFrame(); }
+	bool Get1stAttackDone() { return GetOwner()->GetScript<HandStateMgrScript>()->Get1stAttackDone(); }
+	bool Get2ndAttackDone() { return GetOwner()->GetScript<HandStateMgrScript>()->Get2ndAttackDone(); }
+	bool Get3rdAttackDone() { return GetOwner()->GetScript<HandStateMgrScript>()->Get3rdAttackDone(); }
 
 
 	// [ SET ]
@@ -39,11 +40,11 @@ public:
 	void SetMonsterDir(Vec3 _dir) { m_vDirection = _dir; }
 	void SetMonsterSpeed(float _speed) { m_fSpeed = _speed; }
 
-	void SetAllAttackDone(bool _TorF) { GetOwner()->GetScript<Hand_StateMgr>()->SetAllAttackDone(_TorF); }
-	void Set1stAttackDone(bool _TorF) { GetOwner()->GetScript<Hand_StateMgr>()->Set1stAttackDone(_TorF); }
-	void Set2ndAttackDone(bool _TorF) { GetOwner()->GetScript<Hand_StateMgr>()->Set2ndAttackDone(_TorF); }
-	void Set3rdAttackDone(bool _TorF) { GetOwner()->GetScript<Hand_StateMgr>()->Set3rdAttackDone(_TorF); }
-	void SetSaveMidFrm(int _frame) { GetOwner()->GetScript<Hand_StateMgr>()->SetSaveMidFrame(_frame); }
+	void SetAllAttackDone(bool _TorF) { GetOwner()->GetScript<HandStateMgrScript>()->SetAllAttackDone(_TorF); }
+	void Set1stAttackDone(bool _TorF) { GetOwner()->GetScript<HandStateMgrScript>()->Set1stAttackDone(_TorF); }
+	void Set2ndAttackDone(bool _TorF) { GetOwner()->GetScript<HandStateMgrScript>()->Set2ndAttackDone(_TorF); }
+	void Set3rdAttackDone(bool _TorF) { GetOwner()->GetScript<HandStateMgrScript>()->Set3rdAttackDone(_TorF); }
+	void SetSaveMidFrm(int _frame) { GetOwner()->GetScript<HandStateMgrScript>()->SetSaveMidFrame(_frame); }
 
 public:
 	void InitMonsterStat();

@@ -16,8 +16,7 @@
 
 // [ SCRIPT PART ]
 #include "BossJugScript.h"
-#include "CHand_StateMgr.h"
-#include "BossJugHandScript.h"
+#include "HandStateMgrScript.h"
 
 #include "JugPhase_None.h"
 #include "JugPhase_Intro.h"
@@ -28,6 +27,7 @@
 BossJugCombatMgrScript::BossJugCombatMgrScript()
 	: CScript((int)SCRIPT_TYPE::BOSSJUGCOMBATMGRSCRIPT)
 	, m_pPhaseFSM(nullptr)
+	, m_pStage(nullptr)
 	, m_pJug(nullptr)
 	, m_pHammer(nullptr)
 	, m_pJugHandMgr(nullptr)
@@ -44,39 +44,54 @@ BossJugCombatMgrScript::~BossJugCombatMgrScript()
 void BossJugCombatMgrScript::SpawnStage()
 {
 	/* 스테이지 생성 */
-	Ptr<CPrefab> pStagePref = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\BOSS_STAGE.pref", L"prefab\\BOSS_STAGE.pref");
-	CGameObject* pStageObj  = pStagePref->Instantiate();
-	CSceneMgr::GetInst()->AddChild(GetOwner(), pStageObj);
+	if (nullptr == m_pStage)
+	{
+		Ptr<CPrefab> pStagePref = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\BOSS_STAGE.pref",
+		                                                            L"prefab\\BOSS_STAGE.pref");
+		m_pStage = pStagePref->Instantiate();
+		CSceneMgr::GetInst()->SpawnObject(m_pStage, L"BG");
+	}
 
 	/* 보스 생성 */
-	// 1페이즈 보스
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\jugulus+hammer_final0.mdat",
-	                                                               L"meshdata\\jugulus+hammer_final0.mdat");
+	if (nullptr == m_pJug)
+	{
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\jugulus+hammer_final0.mdat",
+		                                                               L"meshdata\\jugulus+hammer_final0.mdat");
 
-	m_pJug = pMeshData->Instantiate();
-	m_pJug->SetName(L"JUG");
-	m_pJug->AddComponent(new BossJugScript);
-	m_pJug->GetScript<BossJugScript>()->Init();
+		m_pJug = pMeshData->Instantiate();
+		m_pJug->SetName(L"JUG");
+		m_pJug->AddComponent(new BossJugScript);
+		m_pJug->GetScript<BossJugScript>()->Init();
 
-	CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pJug, GetOwner()->GetLayerIndex());
-	GetOwner()->AddChild(m_pJug);
+		CSceneMgr::GetInst()->SpawnObject(m_pJug, L"MONSTER");
 
-	// 2페이즈 보스 무기
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\jugulus+hammer_final1.mdat",
-	                                                L"meshdata\\jugulus+hammer_final1.mdat");
+		/* 무기 생성*/
+		if (nullptr == m_pHammer)
+		{
+			pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\jugulus+hammer_final1.mdat",
+			                                                L"meshdata\\jugulus+hammer_final1.mdat");
 
-	CGameObject* pHammer = pMeshData->Instantiate();
-	pHammer->SetName(L"JUG_Hammer");
+			m_pHammer = pMeshData->Instantiate();
+			m_pHammer->SetName(L"JUG_Hammer");
 
-	CSceneMgr::GetInst()->GetCurScene()->AddObject(pHammer, GetOwner()->GetLayerIndex());
-	m_pJug->AddChild(pHammer);
+			//CSceneMgr::GetInst()->SpawnObject(m_pHammer, L"MONSTER");
+			m_pJug->AddChild(m_pHammer);
+		}
 
+		/* 보스 손 생성 */
+		if (nullptr == m_pJugHandMgr)
+		{
+			m_pJugHandMgr = new CGameObject;
+			m_pJugHandMgr->SetName(L"HANDS");
+			m_pJugHandMgr->AddComponent(new CTransform);
+			m_pJugHandMgr->AddComponent(new HandStateMgrScript);
 
-	/* 보스 손 생성 */
-	//m_pJugHandMgr = new CGameObject;
-	//m_pJugHandMgr->AddComponent(new CTransform);
-	//m_pJugHandMgr->AddComponent(new CHand_StateMgr);
-	//m_pJugHandMgr->Init();
+			//CSceneMgr::GetInst()->SpawnObject(m_pJugHandMgr, L"MONSTER");
+			m_pJug->AddChild(m_pJugHandMgr);
+
+			//m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
+		}
+	}
 }
 
 void BossJugCombatMgrScript::InitState()
@@ -89,11 +104,11 @@ void BossJugCombatMgrScript::InitState()
 		GetOwner()->AddComponent(m_pPhaseFSM);
 	}
 
-	m_pPhaseFSM->AddState(L"JUG_PHASE_NONE", new JugPhase_None);
-	m_pPhaseFSM->AddState(L"JUG_PHASE_INTRO", new JugPhase_Intro);
-	m_pPhaseFSM->AddState(L"JUG_PHASE_1", new JugPhase_1);
-	m_pPhaseFSM->AddState(L"JUG_PHASE_2", new JugPhase_2);
-	m_pPhaseFSM->AddState(L"JUG_PHASE_DEAD", new JugPhase_Dead);
+	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::NONE, new JugPhase_None);
+	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_INTRO, new JugPhase_Intro);
+	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_1, new JugPhase_1);
+	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_2, new JugPhase_2);
+	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_DEAD, new JugPhase_Dead);
 
 	for (auto pState : m_pPhaseFSM->GetAllStates())
 	{
@@ -107,11 +122,13 @@ void BossJugCombatMgrScript::CheckPhase() const
 {
 	// [ Phase Intro]
 	if (L"JUG_PHASE_NONE" == m_pPhaseFSM->GetCurState()->GetStateType() && m_bStartCombat)
+	{
 		m_pPhaseFSM->ChangeState(L"JUG_PHASE_INTRO");
-
+		return;
+	}
 	// [ Phase 1 ]
-	if(L"JUG_PHASE_INTRO" == m_pPhaseFSM->GetCurState()->GetStateType()
-	   && ANIMATION_STATE::FINISH == m_pJug->Animator3D()->GetCurAnim()->GetState())
+	if (L"JUG_PHASE_INTRO" == m_pPhaseFSM->GetCurState()->GetStateType()
+	    && ANIMATION_STATE::FINISH == m_pJug->Animator3D()->GetCurAnim()->GetState())
 	{
 		m_pPhaseFSM->ChangeState(L"JUG_PHASE_1");
 		return;
@@ -150,7 +167,6 @@ void BossJugCombatMgrScript::update()
 
 	/* Phase 전환 체크 */
 	CheckPhase();
-
 }
 
 void BossJugCombatMgrScript::lateupdate()

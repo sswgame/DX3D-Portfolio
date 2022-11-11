@@ -45,10 +45,19 @@ void CTestScene::CreateTestScene()
 	auto pCurScene = new CScene;
 	CSceneMgr::GetInst()->ChangeScene(pCurScene);
 
-	pCurScene->SetLayerName(0, L"Tile");
-	pCurScene->SetLayerName(1, L"Default");
-	pCurScene->SetLayerName(2, L"Player");
-	pCurScene->SetLayerName(3, L"Monster");
+	pCurScene->SetLayerName(0, L"BG");
+	pCurScene->SetLayerName(1, L"BG_OBJ");
+	pCurScene->SetLayerName(2, L"ITEM");
+	pCurScene->SetLayerName(3, L"PLAYER");
+	pCurScene->SetLayerName(4, L"PLAYER_ATTACK");
+	pCurScene->SetLayerName(5, L"MONSTER");
+	pCurScene->SetLayerName(6, L"MONSTER_NON-PARRING-ATTACK");
+	pCurScene->SetLayerName(7, L"MONSTER_PARRING-ATTACK");
+	pCurScene->SetLayerName(8, L"OBJECT-MGR");
+	pCurScene->SetLayerName(9, L"CAMERA");
+	pCurScene->SetLayerName(30, L"UI_STATIC");
+	pCurScene->SetLayerName(31, L"UI_INTERACTIVE");
+
 
 	// Texture 한장 로딩해보기
 	//CResMgr::GetInst()->Load<CTexture>(L"texture\\Player.bmp", L"texture\\Player.bmp");
@@ -83,7 +92,7 @@ void CTestScene::CreateTestScene()
 	pCamObj->Camera()->CheckLayerMaskAll();
 	pCamObj->Camera()->SetShowFrustum(true);
 
-	pCurScene->AddObject(pCamObj, L"Default");
+	pCurScene->AddObject(pCamObj, L"CAMERA");
 
 	// Directional Light
 	auto pLight3D = new CGameObject;
@@ -102,7 +111,7 @@ void CTestScene::CreateTestScene()
 	pLight3D->Light3D()->SetSpecular(Vec3(0.3f, 0.3f, 0.3f));
 	pLight3D->Light3D()->SetAmbient(Vec3(0.15f, 0.15f, 0.15f));
 
-	pCurScene->AddObject(pLight3D, L"Default");
+	pCurScene->AddObject(pLight3D, L"BG_OBJ");
 
 	// Point Light
 	//pLight3D = new CGameObject;
@@ -148,7 +157,7 @@ void CTestScene::CreateTestScene()
 	pSkyBox->SkyBox()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_CUBE_0, pSkyTex_03);
 	pSkyBox->SkyBox()->SetFrustumCulling(false);
 
-	pCurScene->AddObject(pSkyBox, L"Default");
+	pCurScene->AddObject(pSkyBox, L"BG");
 
 
 	// LandScape
@@ -281,7 +290,7 @@ void CTestScene::CreateTestScene()
 	pBoss->SetName(L"BOSS_COMBAT");
 	pBoss->AddComponent(new CTransform);
 	pBoss->AddComponent(new BossJugCombatMgrScript);
-	pCurScene->AddObject(pBoss, 1);
+	pCurScene->AddObject(pBoss, L"MONSTER");
 	//pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
 	
 	// 충돌 레이어 설정

@@ -1,29 +1,23 @@
 #pragma once
-#include <Engine/CScript.h>
+#include <Engine/CEntity.h>
 
 class CHand_StateMgr :
-	public CScript
+	public CEntity
 {
 private:
-	wstring					m_sPrevState;
-	wstring					m_sCurstate;
-	CGameObject*			m_pOwnerObj;
-
-	CGameObject*			m_pHand1;
-	CGameObject*			m_pHand2;
-	CGameObject*			m_pHand3;
-
+	wstring      m_sPrevState;
+	wstring      m_sCurstate;
+	CGameObject* m_pOwnerObj;
 
 	wstring					m_sNextState;
 
 public:
 	void	Update();
 	void	LateUpdate();
-	void	init();
 
 
 public:
-	void InitState();
+	void InitState(CGameObject* _pOwner);
 
 
 public:

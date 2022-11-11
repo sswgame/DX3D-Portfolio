@@ -8,3 +8,4 @@
 
 #include <Engine/global.h>
 #include "CScriptMgr.h"
+#include "GameDefine.h"

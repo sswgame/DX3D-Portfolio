@@ -32,7 +32,7 @@ void JugHand_Gen::Enter()
 {
 	CState::ResetTimer();
 
-	CScript* pMgrScript = GetOwner()->GetScript<Hand_StateMgr>();
+	CScript* pMgrScript = GetOwner()->GetScript<HandStateMgrScript>();
 
 	m_fLerfTime = 1.f;
 
@@ -58,7 +58,7 @@ void JugHand_Gen::Enter()
 		}
 
 		if (mapAnim.find(sAnimName) == mapAnim.end())
-			assert(nullptr && L"¾Ö´Ï¸ÞÀÌ¼Ç Å¬¸³À» Ã£À» ¼ö ¾ø½À´Ï´Ù. \n Hand State Script error");
+			assert(nullptr && L"ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. \n Hand State Script error");
 
 		m_pAnimation = mapAnim.find(sAnimName)->second;
 	}
@@ -81,6 +81,6 @@ void JugHand_Gen::Update()
 
 void JugHand_Gen::Exit()
 {
-	GetOwner()->GetScript<Hand_StateMgr>()->SetGenDone(true);
+	GetOwner()->GetScript<HandStateMgrScript>()->SetGenDone(true);
 }
 

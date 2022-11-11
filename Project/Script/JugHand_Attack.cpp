@@ -66,7 +66,7 @@ void JugHand_Attack::Hand01Attack()
 	{
 		// 두번쨰 공격부터 중간에 저장된 frm이 있는지 본다.
 		// SavedFrm 이 -1 이 아니라면 저장된 frm 이 있는것.
-		int iSavedFrm = GetOwner()->GetScript<Hand_StateMgr>()->GetSavedMidFrame();
+		int iSavedFrm = GetOwner()->GetScript<HandStateMgrScript>()->GetSavedMidFrame();
 		if (-1 != iSavedFrm)
 		{
 			m_pAnimation->SetCurFrameIdx(iSavedFrm);
@@ -88,7 +88,7 @@ void JugHand_Attack::Hand01Attack()
 	{
 		// 두번쨰 공격부터 중간에 저장된 frm이 있는지 본다.
 		// SavedFrm 이 -1 이 아니라면 저장된 frm 이 있는것.
-		int iSavedFrm = GetOwner()->GetScript<Hand_StateMgr>()->GetSavedMidFrame();
+		int iSavedFrm = GetOwner()->GetScript<HandStateMgrScript>()->GetSavedMidFrame();
 
 		if (-1 != iSavedFrm)
 		{

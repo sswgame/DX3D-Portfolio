@@ -84,6 +84,18 @@ void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, UINT _iLayerIdx)
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
+void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, wstring _strLayerName)
+{
+	UINT iLayerIdx = m_pCurScene->GetLayerIdxFromName(_strLayerName);
+
+	tEventInfo info = {};
+	info.eType      = EVENT_TYPE::CREATE_OBJ;
+	info.lParam     = (DWORD_PTR)_pSpawnObject;
+	info.wParam     = (DWORD_PTR)iLayerIdx;
+
+	CEventMgr::GetInst()->AddEvent(info);
+}
+
 void CSceneMgr::AddChild(CGameObject* _pParentObject, CGameObject* _pChildObject)
 {
 	tEventInfo info = {};

@@ -39,6 +39,12 @@ private:
 	bool m_bDynamicShadow;  // 동적 그림자 생성
 	bool m_bFrustumCulling; // 절두체 컬링 사용 유무
 
+private:
+	/**
+	 * \brief 계층관계가 깊게 형성된 게임오브젝트의 레이어를 모두 반영하기 위한 함수
+	 * \param _pInnerChild 자식의 자식
+	 */
+	void CheckLayerRecursive(const CGameObject* _pInnerChild);
 
 public:
 	void start();

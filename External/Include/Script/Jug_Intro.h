@@ -8,8 +8,8 @@ class Jug_Intro :
 {
 private:
     CAnimation3D*   m_pAnim;
-
-    float           m_fPaperBurnStrength;
+    
+    float m_fPaperBurnStrength;
 
 public:
     virtual void Init();

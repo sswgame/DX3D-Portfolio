@@ -37,7 +37,7 @@ void Jug_Intro::Init()
 void Jug_Intro::Enter()
 {
 	// IDLE 애니메이션 플레이
-	GetOwner()->Animator3D()->Play(m_pAnim->GetName(), true);
+	GetOwner()->Animator3D()->Play(m_pAnim->GetName(), false);
 
 	// paper burn shader 설정
 }
@@ -48,8 +48,6 @@ void Jug_Intro::Exit()
 
 void Jug_Intro::Update()
 {
-	GetOwner()->Animator3D()->Play(m_pAnim->GetName(), true);
-
 	// paper burn 강도
 }
 

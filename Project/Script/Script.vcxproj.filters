@@ -164,8 +164,14 @@
       <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
     </ClInclude>
     <ClInclude Include="Jug_Fly.h" />
-    <ClInclude Include="Hand_StateMgr.h">
+    <ClInclude Include="HandStateMgrScript.h">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDefine.h">
+      <Filter>Default</Filter>
+    </ClInclude>
+    <ClInclude Include="BossDefine.h">
+      <Filter>Script\Boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -328,7 +334,7 @@
       <Filter>Script\Monster\Deuxiemie\Common\Walk</Filter>
     </ClCompile>
     <ClCompile Include="Jug_Fly.cpp" />
-    <ClCompile Include="Hand_StateMgr.cpp">
+    <ClCompile Include="HandStateMgrScript.cpp">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClCompile>
   </ItemGroup>

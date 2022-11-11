@@ -8,14 +8,17 @@
 // [ SCRIPT PART ]
 #include "BossJugCombatMgrScript.h"
 #include "BossJugScript.h"
+#include "HandStateMgrScript.h"
 
 JugPhase_Intro::JugPhase_Intro()
 	: CState(L"JUG_PHASE_INTRO")
+	, m_pCombatMgr(nullptr)
 {
 }
 
 JugPhase_Intro::JugPhase_Intro(const JugPhase_Intro& _origin)
 	: CState(_origin.m_sStateType)
+	, m_pCombatMgr(nullptr)
 {
 }
 
@@ -36,7 +39,8 @@ void JugPhase_Intro::Enter()
 	CFSM*        pFSM  = pBoss->GetScript<BossJugScript>()->GetBossFSM();
 	pFSM->ChangeState(L"JUG_INTRO");
 
-	// Jug Hand 상태를 gen으로 바꾼다.
+	// Jug Hand Init 호출
+	//m_pCombatMgr->GetJugHand()->GetScript<HandStateMgrScript>()->init();
 }
 
 void JugPhase_Intro::Exit()
@@ -52,4 +56,3 @@ void JugPhase_Intro::LateUpdate()
 {
 	CState::LateUpdate();
 }
-

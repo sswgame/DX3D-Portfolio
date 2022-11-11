@@ -80,23 +80,23 @@ void BossJugScript::InitState()
 		GetOwner()->AddComponent(m_pBossFSM);
 	}
 
-	m_pBossFSM->AddState(L"JUG_NONE", new Jug_None);
-	m_pBossFSM->AddState(L"JUG_INTRO", new Jug_Intro);
-	m_pBossFSM->AddState(L"JUG_NORM_IDLE", new Jug_Norm_Idle);
-	m_pBossFSM->AddState(L"JUG_NORM_HIT", new Jug_Norm_Hit);
-	m_pBossFSM->AddState(L"JUG_HAMMER_IDLE", new Jug_Hammer_Idle);
-	m_pBossFSM->AddState(L"JUG_HAMMER_HIT", new Jug_Hammer_Hit);
-	m_pBossFSM->AddState(L"JUG_ATTACK_0", new Jug_Attack_0);
-	m_pBossFSM->AddState(L"JUG_ATTACK_1", new Jug_Attack_1);
-	m_pBossFSM->AddState(L"JUG_SPAWNHAMMER", new Jug_SpawnHammer);
-	m_pBossFSM->AddState(L"JUG_WALKGROUND", new Jug_WalkGround);
-	m_pBossFSM->AddState(L"JUG_FLY", new Jug_Fly);
-	m_pBossFSM->AddState(L"JUG_DEAD", new Jug_Dead);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_NONE, new Jug_None);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_INTRO, new Jug_Intro);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_NORM_IDLE, new Jug_Norm_Idle);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_NORM_HIT, new Jug_Norm_Hit);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_HAMMER_IDLE, new Jug_Hammer_Idle);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_HAMMER_HIT, new Jug_Hammer_Hit);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_ATTACK_0, new Jug_Attack_0);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_ATTACK_1, new Jug_Attack_1);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_SPAWNHAMMER, new Jug_SpawnHammer);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_WALKGROUND, new Jug_WalkGround);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_FLY, new Jug_Fly);
+	m_pBossFSM->AddState(GAME::BOSS::JUG_DEAD, new Jug_Dead);
 
-	for (const auto state : m_pBossFSM->GetAllStates())
+	for (const auto& [strName, pState] : m_pBossFSM->GetAllStates())
 	{
 		// 애니메이션 연결			
-		state.second->Init();
+		pState->Init();
 	}
 
 	m_pBossFSM->SetCurState(L"JUG_NONE");
@@ -115,7 +115,7 @@ void BossJugScript::update()
 	// 현재 애니메이션 이름
 	CAnimation3D* pCurAnim = m_pBossAnimator->GetCurAnim();
 	if (nullptr == pCurAnim)
-		m_strCurAnimName = "NULL";
+		m_strCurAnimName = GAME::BOSS::NO_ANIM;
 	else
 		m_strCurAnimName = ToString(m_pBossAnimator->GetCurAnim()->GetName());
 }

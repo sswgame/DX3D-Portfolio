@@ -39,8 +39,7 @@ public:
 
 	SCENE_STATE GetSceneState() { return m_eSceneState; }
 	void        SetSceneState(SCENE_STATE _eState);
-
-private:
+	
 	int GetLayerIdxFromName(const wstring& _strName);
 
 	CLONE(CScene)

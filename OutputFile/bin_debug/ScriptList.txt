@@ -2,9 +2,8 @@ BossJugCombatMgrScript
 BossJugHandScript
 BossJugScript
 CameraMoveScript
-CCameraMoveScript
-CMissileScript
 GravityScript
+HandStateMgrScript
 MissileScript
 MonsterGunScript
 MonsterShieldScript

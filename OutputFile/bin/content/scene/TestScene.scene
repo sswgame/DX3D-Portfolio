@@ -1,9 +1,82 @@
 SCENE NAME: ""
 LAYERS:
-  - LAYER NAME: Tile
+  - LAYER NAME: BG
+    GAME OBJECTS:
+      - NAME: SkyBox
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [100, 100, 100]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+          - SKYBOX:
+              MESH: [CubeMesh, CubeMesh]
+              MATERIAL COUNT: 1
+              0: [material\SkyBoxMtrl.mtrl, material\SkyBoxMtrl.mtrl]
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+              m_eType: 1
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+  - LAYER NAME: BG_OBJ
+    GAME OBJECTS:
+      - NAME: Directional Light
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [-1000, 1000, 0]
+              m_vRelativeScale: [2000, 2000, 2000]
+              m_vRelativeRot: [0.615479767, 0.785398126, 0]
+              m_bIgnoreParentScale: false
+          - LIGHT3D:
+              LIGHT INFO: {m_LightInfo.color.vDiff: [1, 1, 1, 0], m_LightInfo.color.vSpec: [0.300000012, 0.300000012, 0.300000012, 0], m_LightInfo.color.vAmb: [0.150000006, 0.150000006, 0.150000006, 0], m_LightInfo.vLightDir: [0.577350259, -0.577350259, 0.577350259], m_LightInfo.iLightType: 0, m_LightInfo.vWorldPos: [0, 0, 0], m_LightInfo.fAngle: 0, m_LightInfo.fRange: 1000}
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+  - LAYER NAME: ITEM
     GAME OBJECTS:
       []
-  - LAYER NAME: Default
+  - LAYER NAME: PLAYER
+    GAME OBJECTS:
+      []
+  - LAYER NAME: PLAYER_ATTACK
+    GAME OBJECTS:
+      []
+  - LAYER NAME: MONSTER
+    GAME OBJECTS:
+      - NAME: BOSS_COMBAT
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [1, 1, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+        SCRIPTS:
+          - BossJugCombatMgrScript:
+              {}
+        CHILDREN:
+          []
+  - LAYER NAME: MONSTER_NON-PARRING-ATTACK
+    GAME OBJECTS:
+      []
+  - LAYER NAME: MONSTER_PARRING-ATTACK
+    GAME OBJECTS:
+      []
+  - LAYER NAME: OBJECT-MGR
+    GAME OBJECTS:
+      []
+  - LAYER NAME: CAMERA
     GAME OBJECTS:
       - NAME: MainCamera
         m_bActive: true
@@ -28,49 +101,6 @@ LAYERS:
               {}
         CHILDREN:
           []
-      - NAME: Directional Light
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [-1000, 1000, 0]
-              m_vRelativeScale: [2000, 2000, 2000]
-              m_vRelativeRot: [0.615479767, 0.785398126, 0]
-              m_bIgnoreParentScale: false
-          - LIGHT3D:
-              LIGHT INFO: {m_LightInfo.color.vDiff: [1, 1, 1, 0], m_LightInfo.color.vSpec: [0.300000012, 0.300000012, 0.300000012, 0], m_LightInfo.color.vAmb: [0.150000006, 0.150000006, 0.150000006, 0], m_LightInfo.vLightDir: [0.577350259, -0.577350259, 0.577350259], m_LightInfo.iLightType: 0, m_LightInfo.vWorldPos: [0, 0, 0], m_LightInfo.fAngle: 0, m_LightInfo.fRange: 1000}
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-      - NAME: SkyBox
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, 0, 0]
-              m_vRelativeScale: [100, 100, 100]
-              m_vRelativeRot: [0, 0, 0]
-              m_bIgnoreParentScale: false
-          - SKYBOX:
-              MESH: [CubeMesh, CubeMesh]
-              MATERIAL COUNT: 1
-              0: [material\SkyBoxMtrl.mtrl, material\SkyBoxMtrl.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-              m_eType: 1
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
-  - LAYER NAME: Player
-    GAME OBJECTS:
-      []
-  - LAYER NAME: Monster
-    GAME OBJECTS:
-      []
   - LAYER NAME: ""
     GAME OBJECTS:
       []
@@ -131,27 +161,9 @@ LAYERS:
   - LAYER NAME: ""
     GAME OBJECTS:
       []
-  - LAYER NAME: ""
+  - LAYER NAME: UI_STATIC
     GAME OBJECTS:
       []
-  - LAYER NAME: ""
-    GAME OBJECTS:
-      []
-  - LAYER NAME: ""
-    GAME OBJECTS:
-      []
-  - LAYER NAME: ""
-    GAME OBJECTS:
-      []
-  - LAYER NAME: ""
-    GAME OBJECTS:
-      []
-  - LAYER NAME: ""
-    GAME OBJECTS:
-      []
-  - LAYER NAME: ""
-    GAME OBJECTS:
-      []
-  - LAYER NAME: ""
+  - LAYER NAME: UI_INTERACTIVE
     GAME OBJECTS:
       []
