@@ -23,21 +23,22 @@ void CObjKeyMgr::Init()
 {
 	// DEFAULT KEY SETTING
 
-	m_tMovingKey.eForward  = KEY::W;
-	m_tMovingKey.eBackWard = KEY::S;
-	m_tMovingKey.eLeft     = KEY::A;
-	m_tMovingKey.eRight    = KEY::D;
+	/// [ 이동 키 ]
+	m_tMovingKey.eForward		= KEY::W;
+	m_tMovingKey.eBackWard		= KEY::S;
+	m_tMovingKey.eLeft			= KEY::A;
+	m_tMovingKey.eRight			= KEY::D;
 
-	m_tMovingKey.eJump     = KEY::SPACE;
-	m_tMovingKey.eInteract = KEY::E;
-	m_tMovingKey.eSprint   = KEY::LCTRL;
-	m_tMovingKey.eWalk     = KEY::LALT;
+	m_tMovingKey.eJump			= KEY::SPACE;
+	m_tMovingKey.eInteract		= KEY::E;
+	m_tMovingKey.eSprint		= KEY::LCTRL;
+	m_tMovingKey.eWalk			= KEY::LALT;
 
-
-	m_tCombatKey.eLightAttack = KEY::LBTN;
-	m_tCombatKey.eHeavyAttack = KEY::RBTN;
-	m_tCombatKey.eParry       = KEY::Q;
-	m_tCombatKey.eCameraLock  = KEY::MBTN;
+	// [ 전투 키 ]
+	m_tCombatKey.eLightAttack	= KEY::LBTN;
+	m_tCombatKey.eHeavyAttack	= KEY::RBTN;
+	m_tCombatKey.eParry			= KEY::Q;
+	m_tCombatKey.eCameraLock	= KEY::MBTN;
 }
 
 
@@ -47,12 +48,17 @@ void CObjKeyMgr::update()
 
 	m_vecCurKeyZipInfo.clear();
 	m_tCurKeyInfo.tKeyFlags_Zip.Clear();
-	//m_tCurKeyInfo.iKeyFlags = 0;
 
+	// 이동 키
+	CheckMovingKeyTap();
+	CheckMovingKeyPressed();
+	CheckMovingKeyAway();
 
-	CheckKeyTap();
-	CheckKeyPressed();
-	CheckKeyAway();
+	// 전투 키
+	CheckCombatKeyTap();
+	CheckCombatKeyPressed();
+	checkCombatKeyAway();
+
 }
 
 void CObjKeyMgr::lateupdate()
@@ -60,7 +66,7 @@ void CObjKeyMgr::lateupdate()
 }
 
 
-void CObjKeyMgr::CheckKeyTap()
+void CObjKeyMgr::CheckMovingKeyTap()
 {
 	// KEY TAP
 	if (KEY_TAP(m_tMovingKey.eForward))
@@ -155,7 +161,7 @@ void CObjKeyMgr::CheckKeyTap()
 	}
 }
 
-void CObjKeyMgr::CheckKeyPressed()
+void CObjKeyMgr::CheckMovingKeyPressed()
 {
 	// KEY PRESSED
 	if (KEY_PRESSED(m_tMovingKey.eForward))
@@ -252,7 +258,7 @@ void CObjKeyMgr::CheckKeyPressed()
 	}
 }
 
-void CObjKeyMgr::CheckKeyAway()
+void CObjKeyMgr::CheckMovingKeyAway()
 {
 	// KEY AWAY
 	if (KEY_AWAY(m_tMovingKey.eForward))
@@ -341,6 +347,152 @@ void CObjKeyMgr::CheckKeyAway()
 
 		m_tCurKeyInfo.eKeyState = KEY_STATE::AWAY;
 		m_tCurKeyInfo.eKey      = m_tMovingKey.eWalk;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+}
+
+void CObjKeyMgr::CheckCombatKeyTap()
+{
+	if (KEY_TAP(m_tCombatKey.eLightAttack))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::LIGHT_ATTACK;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::TAP;
+
+		m_tCurKeyInfo.eKeyState = KEY_STATE::TAP;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eLightAttack;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+	if (KEY_TAP(m_tCombatKey.eHeavyAttack))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::HEAVY_ATTACK;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::TAP;
+		
+		m_tCurKeyInfo.eKeyState = KEY_STATE::TAP;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eHeavyAttack;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+	if (KEY_TAP(m_tCombatKey.eParry))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::PARRY;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::TAP;
+		
+		m_tCurKeyInfo.eKeyState = KEY_STATE::TAP;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eParry;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+	if (KEY_TAP(m_tCombatKey.eCameraLock))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::CAMERA_LOCK;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::TAP;
+		
+		m_tCurKeyInfo.eKeyState = KEY_STATE::TAP;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eCameraLock;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+
+}
+
+void CObjKeyMgr::CheckCombatKeyPressed()
+{
+	if (KEY_PRESSED(m_tCombatKey.eLightAttack))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::LIGHT_ATTACK;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::PRESSED;
+
+		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eLightAttack;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+	if (KEY_PRESSED(m_tCombatKey.eHeavyAttack))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::HEAVY_ATTACK;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::PRESSED;
+
+		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eHeavyAttack;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+	if (KEY_PRESSED(m_tCombatKey.eParry))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::PARRY;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::PRESSED;
+
+		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eParry;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+	if (KEY_PRESSED(m_tCombatKey.eCameraLock))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::CAMERA_LOCK;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::PRESSED;
+
+		m_tCurKeyInfo.eKeyState = KEY_STATE::PRESSED;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eCameraLock;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+}
+
+void CObjKeyMgr::checkCombatKeyAway()
+{
+	if (KEY_AWAY(m_tCombatKey.eLightAttack))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::LIGHT_ATTACK;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::AWAY;
+
+		m_tCurKeyInfo.eKeyState = KEY_STATE::AWAY;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eLightAttack;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+	if (KEY_AWAY(m_tCombatKey.eHeavyAttack))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::HEAVY_ATTACK;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::AWAY;
+
+		m_tCurKeyInfo.eKeyState = KEY_STATE::AWAY;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eHeavyAttack;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+
+	}
+	if (KEY_AWAY(m_tCombatKey.eParry))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::PARRY;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::AWAY;
+
+		m_tCurKeyInfo.eKeyState = KEY_STATE::AWAY;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eParry;
+
+		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
+		m_vecCurKeyZipInfo.push_back(tKeyZip);
+	}
+	if (KEY_AWAY(m_tCombatKey.eCameraLock))
+	{
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::CAMERA_LOCK;
+		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap |= PLAYER_KEY_OPTION::AWAY;
+
+		m_tCurKeyInfo.eKeyState = KEY_STATE::AWAY;
+		m_tCurKeyInfo.eKey = m_tCombatKey.eCameraLock;
 
 		tKey_Zip tKeyZip(m_tCurKeyInfo.eKeyState, m_tCurKeyInfo.eKey);
 		m_vecCurKeyZipInfo.push_back(tKeyZip);

@@ -2,6 +2,7 @@ BossJugCombatMgrScript
 BossJugHandScript
 BossJugScript
 CameraMoveScript
+DestroyScript
 GravityScript
 HandStateMgrScript
 MissileScript
@@ -10,3 +11,5 @@ MonsterShieldScript
 MonsterSwordScript
 PlayerCamScript
 PlayerScript
+RigidBodyScript
+TrailScript

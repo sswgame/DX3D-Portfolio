@@ -23,12 +23,12 @@ private:
     Vec3    m_vPos;                 // 카메라의 위치 
     Vec3    m_vTargetPos;           // 3인칭 ( 기준이 될 Target 위치 ) - [Player 위치] 
     Vec3    m_vPrevTargetPos;
-    Vec3    m_vTargetPosAcc;        // 현재 카메라가 위치와 타겟 위치와의 거리 차이 - 거리차이만큼 움직일 것 ( 시간에따라서 자연스럽게 )
-    
-    float   m_fCamHeight;           // 카메라 [높이] 설정 - Player 기준 상대 높이 
-    float   m_fDistance;            // 캐릭터와 카메라와의 고정 [거리] 
-    float   m_fMinDist;             // 캐릭터와 카메라와의 최소 [거리]   
-    float   m_fMaxDist;             // 캐릭터와 카메라와의 최대 [거리] 
+    Vec3    m_vTargetPosAcc;        // 현재 카메라 위치와 타겟 위치와의 거리 차이 - 거리차이만큼 움직일 것 ( 시간에따라서 자연스럽게 )
+
+    float   m_fCamHeight;           // 카메라 [높이] 설정 - Player 기준 상대 높이 ( Y )
+    float   m_fDistance;            // 캐릭터와 카메라와의 고정 [거리] ( X Z )
+    float   m_fMinDist;             // 캐릭터와 카메라와의 최소 [거리] ( X Z )  
+    float   m_fMaxDist;             // 캐릭터와 카메라와의 최대 [거리] ( X Z )
 
 private:
     Vec3 UpdateCameraRelativePos();
@@ -50,6 +50,8 @@ public:
 public:
     void UpdateFirstPersonMode();
     void UpdateThirdPersonMode();
+    void UpdateFreeMode();
+
 
     void LateUpdateFirstPersonMode();
     void LeteUpdateThirdPersonMode();
@@ -70,7 +72,7 @@ public:
 
     // [ THIRD PERSON ] ( 3인칭 전용 함수들 ) 
     // ------------------------------------------------ THIRD_PERSON start
-    
+
 public:
     // Rotate vertically around the object
     void RotateX(float rad);                // (note that the Euler angle radians around the x-axis are limited to [0, pi/3])
@@ -99,11 +101,12 @@ public:
 
 
 
-	CLONE(PlayerCamScript)
+    CLONE(PlayerCamScript)
 
 public:
-	PlayerCamScript();
-	virtual ~PlayerCamScript();
+    PlayerCamScript();
+    PlayerCamScript(const PlayerCamScript& _origin);
+    virtual ~PlayerCamScript();
 
 };
 

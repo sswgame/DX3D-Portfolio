@@ -683,4 +683,9 @@
       <Filter>Engine\ShaderCode\ComputeShader\LandScape\WeightMap</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="trail.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

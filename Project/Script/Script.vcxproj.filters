@@ -11,13 +11,13 @@
       <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="CStateMgr.h">
-      <Filter>Script\PlayerScript\StateMgr</Filter>
+      <Filter>Script\Player\StateMgr</Filter>
     </ClInclude>
     <ClInclude Include="PlayerScript.h">
-      <Filter>Script\PlayerScript</Filter>
+      <Filter>Script\Player</Filter>
     </ClInclude>
     <ClInclude Include="CObjKeyMgr.h">
-      <Filter>Script\PlayerScript\Key</Filter>
+      <Filter>Script\Player\Key</Filter>
     </ClInclude>
     <ClInclude Include="CSceneSaveLoad.h">
       <Filter>Script</Filter>
@@ -98,40 +98,40 @@
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClInclude>
     <ClInclude Include="PlayerCamScript.h">
-      <Filter>Script\PlayerScript</Filter>
+      <Filter>Script\Player</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerStat.h">
-      <Filter>Script\PlayerScript\Stat</Filter>
+      <Filter>Script\Player\Stat</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerDieState.h">
-      <Filter>Script\PlayerScript\State\Die</Filter>
+      <Filter>Script\Player\State\Die</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerHitState.h">
-      <Filter>Script\PlayerScript\State\Hit</Filter>
+      <Filter>Script\Player\State\Hit</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerHeavyAttackState.h">
-      <Filter>Script\PlayerScript\State\HeavyAttack</Filter>
+      <Filter>Script\Player\State\HeavyAttack</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerLightAttackState.h">
-      <Filter>Script\PlayerScript\State\LightAttack</Filter>
+      <Filter>Script\Player\State\LightAttack</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerJumpState.h">
-      <Filter>Script\PlayerScript\State\Jump</Filter>
+      <Filter>Script\Player\State\Jump</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerParryState.h">
-      <Filter>Script\PlayerScript\State\Parry</Filter>
+      <Filter>Script\Player\State\Parry</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerSprintState.h">
-      <Filter>Script\PlayerScript\State\Sprint</Filter>
+      <Filter>Script\Player\State\Sprint</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerIdleState.h">
-      <Filter>Script\PlayerScript\State\Idle</Filter>
+      <Filter>Script\Player\State\Idle</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerMoveState.h">
-      <Filter>Script\PlayerScript\State\Move</Filter>
+      <Filter>Script\Player\State\Move</Filter>
     </ClInclude>
     <ClInclude Include="GravityScript.h">
-      <Filter>Script\GravityScript</Filter>
+      <Filter>Script\Gravity</Filter>
     </ClInclude>
     <ClInclude Include="MonsterGunScript.h">
       <Filter>Script\Monster\Deuxiemie\Gun</Filter>
@@ -173,6 +173,18 @@
     <ClInclude Include="BossDefine.h">
       <Filter>Script\Boss</Filter>
     </ClInclude>
+    <ClInclude Include="CTranslateMgr.h">
+      <Filter>Script\Player\TranslateMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="TrailScript.h">
+      <Filter>Script\Effect\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="DestroyScript.h">
+      <Filter>Script\Effect\Destroy</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBodyScript.h">
+      <Filter>Script\RigidBody</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -185,13 +197,13 @@
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="CStateMgr.cpp">
-      <Filter>Script\PlayerScript\StateMgr</Filter>
+      <Filter>Script\Player\StateMgr</Filter>
     </ClCompile>
     <ClCompile Include="PlayerScript.cpp">
-      <Filter>Script\PlayerScript</Filter>
+      <Filter>Script\Player</Filter>
     </ClCompile>
     <ClCompile Include="CObjKeyMgr.cpp">
-      <Filter>Script\PlayerScript\Key</Filter>
+      <Filter>Script\Player\Key</Filter>
     </ClCompile>
     <ClCompile Include="CSceneSaveLoad.cpp" />
     <ClCompile Include="CScriptMgr.cpp" />
@@ -268,40 +280,40 @@
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClCompile>
     <ClCompile Include="PlayerCamScript.cpp">
-      <Filter>Script\PlayerScript</Filter>
+      <Filter>Script\Player</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerStat.cpp">
-      <Filter>Script\PlayerScript\Stat</Filter>
+      <Filter>Script\Player\Stat</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerDieState.cpp">
-      <Filter>Script\PlayerScript\State\Die</Filter>
+      <Filter>Script\Player\State\Die</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerHitState.cpp">
-      <Filter>Script\PlayerScript\State\Hit</Filter>
+      <Filter>Script\Player\State\Hit</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerHeavyAttackState.cpp">
-      <Filter>Script\PlayerScript\State\HeavyAttack</Filter>
+      <Filter>Script\Player\State\HeavyAttack</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerLightAttackState.cpp">
-      <Filter>Script\PlayerScript\State\LightAttack</Filter>
+      <Filter>Script\Player\State\LightAttack</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerJumpState.cpp">
-      <Filter>Script\PlayerScript\State\Jump</Filter>
+      <Filter>Script\Player\State\Jump</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerParryState.cpp">
-      <Filter>Script\PlayerScript\State\Parry</Filter>
+      <Filter>Script\Player\State\Parry</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerSprintState.cpp">
-      <Filter>Script\PlayerScript\State\Sprint</Filter>
+      <Filter>Script\Player\State\Sprint</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerIdleState.cpp">
-      <Filter>Script\PlayerScript\State\Idle</Filter>
+      <Filter>Script\Player\State\Idle</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerMoveState.cpp">
-      <Filter>Script\PlayerScript\State\Move</Filter>
+      <Filter>Script\Player\State\Move</Filter>
     </ClCompile>
     <ClCompile Include="GravityScript.cpp">
-      <Filter>Script\GravityScript</Filter>
+      <Filter>Script\Gravity</Filter>
     </ClCompile>
     <ClCompile Include="MonsterGunScript.cpp">
       <Filter>Script\Monster\Deuxiemie\Gun</Filter>
@@ -337,6 +349,18 @@
     <ClCompile Include="HandStateMgrScript.cpp">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClCompile>
+    <ClCompile Include="CTranslateMgr.cpp">
+      <Filter>Script\Player\TranslateMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="TrailScript.cpp">
+      <Filter>Script\Effect\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="DestroyScript.cpp">
+      <Filter>Script\Effect\Destroy</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBodyScript.cpp">
+      <Filter>Script\RigidBody</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -344,30 +368,6 @@
     </Filter>
     <Filter Include="Script">
       <UniqueIdentifier>{ac27a7a1-23b1-4a47-8b9b-231c2e57487d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript">
-      <UniqueIdentifier>{a23fde27-89ca-4bd4-a600-ab785e942220}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\StateMgr">
-      <UniqueIdentifier>{3fd3f55f-b709-475c-84ba-36f283eddc39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\Stat">
-      <UniqueIdentifier>{adbeabb8-ceb7-4ae3-a0f5-d145b3bd686e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State">
-      <UniqueIdentifier>{2b8526b3-0109-4729-af73-6a3dfb77008d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\Idle">
-      <UniqueIdentifier>{289e8701-98ce-4190-947b-08f90258bfb7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\Die">
-      <UniqueIdentifier>{74dd7de0-25d9-4df1-ae10-b7562a7f65c7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\Hit">
-      <UniqueIdentifier>{b6087e97-6558-4ae8-98a6-7b5b14724f8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\Key">
-      <UniqueIdentifier>{8c570a7e-35af-46ae-990a-74a631b0f457}</UniqueIdentifier>
     </Filter>
     <Filter Include="Script\Boss">
       <UniqueIdentifier>{53fc9460-4df9-4b1e-a285-37da32ebcda1}</UniqueIdentifier>
@@ -392,27 +392,6 @@
     </Filter>
     <Filter Include="Script\Boss\Jug\Jug\state">
       <UniqueIdentifier>{1fefd57c-2ad6-4a89-a999-02b1e3c1b696}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\Jump">
-      <UniqueIdentifier>{b5250e9b-8760-423f-9f13-424c1ed9aeab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\LightAttack">
-      <UniqueIdentifier>{4f14e09f-51bc-482d-90ec-a0e77e5741ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\HeavyAttack">
-      <UniqueIdentifier>{8a5fe6ea-a8c2-4fe3-affa-977731c52a1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\Move">
-      <UniqueIdentifier>{042860cf-ee06-4054-a5d9-8e66c3c13022}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\Parry">
-      <UniqueIdentifier>{4dc25546-9bc2-48c1-9f83-d056abd9ff85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\PlayerScript\State\Sprint">
-      <UniqueIdentifier>{db1ba327-3a4e-4732-9d5a-a7cd7b7f38c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\GravityScript">
-      <UniqueIdentifier>{5d06dcbb-b6ff-4476-9f5d-4b915c6e1068}</UniqueIdentifier>
     </Filter>
     <Filter Include="Script\Monster">
       <UniqueIdentifier>{2a67a331-13fc-4eba-8f3c-5cfe045c0eef}</UniqueIdentifier>
@@ -452,6 +431,66 @@
     </Filter>
     <Filter Include="Script\Boss\Jug\Hand\HandStateMgr">
       <UniqueIdentifier>{93ad1de1-922e-4937-b2a1-309b864ec508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Gravity">
+      <UniqueIdentifier>{5d06dcbb-b6ff-4476-9f5d-4b915c6e1068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Effect">
+      <UniqueIdentifier>{d725a876-d332-48b6-b9cd-faecfa201ca9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Effect\Trail">
+      <UniqueIdentifier>{8cf8b6c6-f1e1-4e56-87fb-c2cceb0191f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Effect\Destroy">
+      <UniqueIdentifier>{326752c6-43ac-4839-ad22-738ed0f8c96b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player">
+      <UniqueIdentifier>{a23fde27-89ca-4bd4-a600-ab785e942220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\StateMgr">
+      <UniqueIdentifier>{3fd3f55f-b709-475c-84ba-36f283eddc39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\Stat">
+      <UniqueIdentifier>{adbeabb8-ceb7-4ae3-a0f5-d145b3bd686e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State">
+      <UniqueIdentifier>{2b8526b3-0109-4729-af73-6a3dfb77008d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State\Idle">
+      <UniqueIdentifier>{289e8701-98ce-4190-947b-08f90258bfb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State\Die">
+      <UniqueIdentifier>{74dd7de0-25d9-4df1-ae10-b7562a7f65c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State\Hit">
+      <UniqueIdentifier>{b6087e97-6558-4ae8-98a6-7b5b14724f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State\Jump">
+      <UniqueIdentifier>{b5250e9b-8760-423f-9f13-424c1ed9aeab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State\LightAttack">
+      <UniqueIdentifier>{4f14e09f-51bc-482d-90ec-a0e77e5741ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State\HeavyAttack">
+      <UniqueIdentifier>{8a5fe6ea-a8c2-4fe3-affa-977731c52a1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State\Move">
+      <UniqueIdentifier>{042860cf-ee06-4054-a5d9-8e66c3c13022}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State\Parry">
+      <UniqueIdentifier>{4dc25546-9bc2-48c1-9f83-d056abd9ff85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\State\Sprint">
+      <UniqueIdentifier>{db1ba327-3a4e-4732-9d5a-a7cd7b7f38c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\Key">
+      <UniqueIdentifier>{8c570a7e-35af-46ae-990a-74a631b0f457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Player\TranslateMgr">
+      <UniqueIdentifier>{d15fcce5-a6b4-43fd-a810-0d52cb7930a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\RigidBody">
+      <UniqueIdentifier>{e2c46720-aeee-4ee1-8498-aa4c9819d72a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

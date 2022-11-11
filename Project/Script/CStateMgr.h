@@ -14,6 +14,8 @@ private:
 	tKey_Zip				m_tCurKeyInfo;
 	tKey_Zip				m_tPrevKeyInfo;
 
+
+	bool					m_bOnGround; // 땅위에 있는지 확인 
 public:
 	void	Update();
 	void	LateUpdate();
@@ -21,6 +23,8 @@ public:
 
 public:
 	void InitState(CGameObject* _pOwner);
+	void ChangeCurStateType(wstring _StateTypeName); 	// 외부에서 변경되었을 시 Curstate를 변경하기 위해서 생성된 함수
+
 
 
 public:
@@ -34,7 +38,8 @@ public:
 	// [ GET PART ]
 	wstring GetCurstate()							{ return m_sCurstate; }
 	wstring GetPrevState()							{ return m_sPrevState; }
-
+	tKey_Zip GetCurKeyInfo()						{ return m_tCurKeyInfo; }
+	tKey_Zip GetPrevKeyInfo()						{ return m_tPrevKeyInfo; }
 
 private:
 	wstring ChangeStateByKeyInfo();

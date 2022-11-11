@@ -17,6 +17,10 @@ private:
 	CGameObject*	m_pCamera;			// 카메라 관리 
 
 
+private:
+	Vec3			m_vObjForwardAxis;  // 앞 방향 
+	 
+
 public:
 	virtual void start();
 	virtual void update();
@@ -31,13 +35,15 @@ public:
 	virtual void LoadFromScene(FILE* _pFile) override;
 
 public:
-	CObjKeyMgr* GetObjKeyMgr() { return m_pKeyMgr; }
-	CStateMgr* GetStateMgr() { return m_pStateMgr; }
-	CPlayerStat* GetPlayerStat() { return m_pStat; }
-	CGameObject* GetCamera() { return m_pCamera; }
+	CObjKeyMgr*  GetObjKeyMgr()		{ return m_pKeyMgr; }
+	CStateMgr*	 GetStateMgr()		{ return m_pStateMgr; }
+	CPlayerStat* GetPlayerStat()	{ return m_pStat; }
+	CGameObject* GetCamera()		{ return m_pCamera; }
+	Vec3		 GetForwardAxis()	{ return m_vObjForwardAxis; }
 
 
-	void SetCamera(CGameObject* _pCameraObj) { m_pCamera = _pCameraObj; }
+	void SetCamera(CGameObject* _pCameraObj)	{ m_pCamera = _pCameraObj; }
+	void SetForwardAxis(Vec3 _vForwardAxis)		{ m_vObjForwardAxis = _vForwardAxis; }
 
 public:
 	void UpdateCamera();
@@ -46,6 +52,7 @@ public:
 	CLONE(PlayerScript)
 
 public:
+	PlayerScript(const PlayerScript& _origin);
 	PlayerScript();
 	virtual ~PlayerScript();
 };

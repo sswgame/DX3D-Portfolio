@@ -38,7 +38,9 @@ CStateMgr::~CStateMgr()
 void CStateMgr::Update()
 {
 	m_sPrevState = m_sCurstate;
-	m_sCurstate = ChangeStateByKeyInfo();
+	wstring sNewState = ChangeStateByKeyInfo();
+	if (sNewState != L"")
+		m_sCurstate = sNewState;
 	
 	// 현재 상태와 다음 상태가 동일하다면 바꾸지 않는다. 
 	if (m_sPrevState == m_sCurstate)
@@ -46,6 +48,17 @@ void CStateMgr::Update()
 
 	// 키 입력에 따른 ChangeState 
 	ChangeState(m_sCurstate);
+
+}
+
+// 외부에서 스테이트가 변경되었을 때 StateMgr에 변경점을 알리는 함수 
+void CStateMgr::ChangeCurStateType(wstring _StateTypeName)
+{
+	if (m_sCurstate == _StateTypeName)
+		return;
+
+	m_sPrevState = m_sCurstate;
+	m_sCurstate = _StateTypeName;
 
 }
 
@@ -131,12 +144,17 @@ wstring CStateMgr::Check_Tap()
 		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::LEFT ||
 		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::RIGHT)
 	{
-		StateByKey = L"MOVE";
+		// [ 점프 ]상태일 땐 MOVE 로 변환하지 않는다.
+		if (m_sCurstate != L"JUMP" && m_sCurstate != L"SPRINT")
+			StateByKey = L"MOVE";
+
 	}
 
 	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::JUMP)
 	{
-		StateByKey = L"JUMP";
+		// [ 스프린트 ] 상태일 땐 JUMP 로 변환하지 않는다. 
+		if(m_sCurstate != L"SPRINT")
+			StateByKey = L"JUMP";
 	}
 
 	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::SPRINT)
@@ -151,12 +169,18 @@ wstring CStateMgr::Check_Tap()
 
 	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::LIGHT_ATTACK)
 	{
-		StateByKey = L"LIGHT_ATTACK";
+		// [ 약공격, 점프, 스프린트 ]상태일 땐 약공격 로 변환하지 않는다.
+		if (m_sCurstate != L"HEAVY_ATTACK" && m_sCurstate != L"JUMP" &&
+			m_sCurstate != L"SPRINT")
+				StateByKey = L"LIGHT_ATTACK";
+		
 	}
 
 	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::HEAVY_ATTACK)
 	{
-		StateByKey = L"HEAVY_ATTACK";
+		if (m_sCurstate != L"LIGHT_ATTACK" && m_sCurstate != L"JUMP" &&
+			m_sCurstate != L"SPRINT")
+			StateByKey = L"HEAVY_ATTACK";
 	}
 
 	return StateByKey;
@@ -174,7 +198,21 @@ wstring CStateMgr::Check_Pressed()
 		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::LEFT ||
 		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::RIGHT)
 	{
-		StateByKey = L"MOVE";
+
+		// [ 점프, 스프린트 ]상태일 땐 MOVE 로 변환하지 않는다.
+		if (m_sCurstate != L"JUMP" && m_sCurstate != L"SPRINT")
+			StateByKey = L"MOVE";
+
+		// 방향키를 누르고 있다가 [ 점프 ]를 누른 경우 
+		if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::JUMP)
+			StateByKey = L"JUMP";
+
+		// 방향키를 누르고 있다가 [ 스프린트 ]를 누른 경우 
+		if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::SPRINT)
+			StateByKey = L"SPRINT";
+
+
+
 	}
 
 	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::JUMP)
@@ -219,8 +257,12 @@ wstring CStateMgr::Check_Away()
 		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::LEFT ||
 		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::RIGHT)
 	{
-		StateByKey = L"IDLE";
+		// [ 점프 , 스프린트 ]가 아닌 상태에서 방향키를 누르다가 뗸 경우 
+		if (m_sCurstate != L"JUMP" &&
+			m_sCurstate != L"SPRINT")
+			StateByKey = L"IDLE";
 
+		
 	}
 
 	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Away & PLAYER_KEY_OPTION::JUMP)

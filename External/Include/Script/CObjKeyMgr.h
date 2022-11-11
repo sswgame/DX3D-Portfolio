@@ -3,8 +3,8 @@
 #include <Engine/CKeyMgr.h>
 
 /*
-* PLAYER 
-* 
+* PLAYER
+*
     [ Moving ]
 Move Forward            - W
 Move Backward           - S
@@ -23,7 +23,7 @@ Parry                   - Q
 Camera lock             - Middle Mouse button
 
 * UI
-* 
+*
     [ Shortcuts ]
 Previous Quick Access   - 1
 Next Quick Access       - 2
@@ -39,30 +39,30 @@ Quick Access            - I
 enum PLAYER_KEY_OPTION
 {
     // Key State 
-    NONE            = 0,            // 0000 0000 0000 0000
-    TAP             = 1 << 0,       // 0000 0000 0000 0001
-    PRESSED         = 1 << 1,       // 0000 0000 0000 0010
-    AWAY            = 1 << 2,       // 0000 0000 0000 0100
+    NONE = 0,            // 0000 0000 0000 0000
+    TAP = 1 << 0,       // 0000 0000 0000 0001
+    PRESSED = 1 << 1,       // 0000 0000 0000 0010
+    AWAY = 1 << 2,       // 0000 0000 0000 0100
 
     // Moving  Key
-    FORWARD         = 1 << 4,       // 0000 0000 0001 0000
-    BACKWARD        = 1 << 5,       // 0000 0000 0010 0000
-    LEFT            = 1 << 6,       // 0000 0000 0100 0000
-    RIGHT           = 1 << 7,       // 0000 0000 1000 0000
+    FORWARD = 1 << 4,       // 0000 0000 0001 0000
+    BACKWARD = 1 << 5,       // 0000 0000 0010 0000
+    LEFT = 1 << 6,       // 0000 0000 0100 0000
+    RIGHT = 1 << 7,       // 0000 0000 1000 0000
 
-    JUMP            = 1 << 8,       // 0000 0001 0000 0000
-    DOUBLE_JUMP     = 1 << 9,       // 0000 0010 0000 0000
-    INTERACT        = 1 << 10,      // 0000 0100 0000 0000
-    SPRINT          = 1 << 11,      // 0000 1000 0000 0000
-    WALK            = 1 << 12,      // 0001 0000 0000 0000
+    JUMP = 1 << 8,       // 0000 0001 0000 0000
+    DOUBLE_JUMP = 1 << 9,       // 0000 0010 0000 0000
+    INTERACT = 1 << 10,      // 0000 0100 0000 0000
+    SPRINT = 1 << 11,      // 0000 1000 0000 0000
+    WALK = 1 << 12,      // 0001 0000 0000 0000
 
     // Combat Key 
-    LIGHT_ATTACK    = 1 << 13,       // 0010 0000 0000 0000
-    HEAVY_ATTACK    = 1 << 14,       // 0110 0000 0000 0000
-    PARRY           = 1 << 15,       // 1000 0000 0000 0000
-    CAMERA_LOCK     = 1 << 16,   //0001 0000 0000 0000 0000
+    LIGHT_ATTACK = 1 << 13,       // 0010 0000 0000 0000
+    HEAVY_ATTACK = 1 << 14,       // 0110 0000 0000 0000
+    PARRY = 1 << 15,       // 1000 0000 0000 0000
+    CAMERA_LOCK = 1 << 16,   //0001 0000 0000 0000 0000
 
-    END             = 1 << 16,
+    END = 1 << 16,
 };
 
 // unsigned short - 16 bit flags [ 0000 0000 0000 0000 ]
@@ -95,7 +95,7 @@ struct tKeyOptionFlags_Zip
     KeyOptionFlags      iKeyFlags_Pressed;
     KeyOptionFlags      iKeyFlags_Away;
 
-    void Clear() 
+    void Clear()
     {
         iKeyFlags_Tap = 0;
         iKeyFlags_Pressed = 0;
@@ -107,7 +107,7 @@ struct tKeyOptionFlags_Zip
 struct tKey_Zip
 {
     KEY_STATE           eKeyState;
-    KEY                 eKey;    
+    KEY                 eKey;
     //KeyOptionFlags      iKeyFlags;
     tKeyOptionFlags_Zip tKeyFlags_Zip;
 
@@ -128,15 +128,15 @@ class CObjKeyMgr
     : public CEntity
 {
 private:
-    CScript*            m_pOwnerScript;
+    CScript* m_pOwnerScript;
 
     tMovingKey          m_tMovingKey;       // 이동 관련 키 정보 
     tCombatKey          m_tCombatKey;       // 전투 관련 키 정보 
- 
+
     tKey_Zip            m_tPrevKeyInfo;     // 이전에 누른 키보드 정보
     tKey_Zip            m_tCurKeyInfo;      // 현재   누른 키보드 정보 
     vector<tKey_Zip>    m_vecCurKeyZipInfo; // 현재 프레임에 눌린 전체 LEY_STATE / KEY / KeyFlags = 0 ( 안씀 )
-    
+
 
 
 public:
@@ -145,49 +145,55 @@ public:
 
 public:
     void Init();
-    void CheckKeyTap();
-    void CheckKeyPressed();
-    void CheckKeyAway();
+
+    void CheckMovingKeyTap();
+    void CheckMovingKeyPressed();
+    void CheckMovingKeyAway();
+
+
+    void CheckCombatKeyTap();
+    void CheckCombatKeyPressed();
+    void checkCombatKeyAway();
 
 public:
     // [ SET PART ]
     // MOVING KEY SETTING
-    void SetMovingForwardKey(KEY _eKey)          { m_tMovingKey.eForward     = _eKey; }
-    void SetMovingBackwardKey(KEY _eKey)         { m_tMovingKey.eBackWard    = _eKey; }
-    void SetMovingLeftKey(KEY _eKey)             { m_tMovingKey.eLeft        = _eKey; }
-    void SetMovingRightKey(KEY _eKey)            { m_tMovingKey.eRight       = _eKey; }
-    void SetMovingJumpKey(KEY _eKey)             { m_tMovingKey.eJump        = _eKey; }
-    void SetMovingInteractKey(KEY _eKey)         { m_tMovingKey.eInteract    = _eKey; }
-    void SetMovingSprintKey(KEY _eKey)           { m_tMovingKey.eSprint      = _eKey; }
-    void SetMovingWalkKey(KEY _eKey)             { m_tMovingKey.eWalk        = _eKey; }
+    void SetMovingForwardKey(KEY _eKey) { m_tMovingKey.eForward = _eKey; }
+    void SetMovingBackwardKey(KEY _eKey) { m_tMovingKey.eBackWard = _eKey; }
+    void SetMovingLeftKey(KEY _eKey) { m_tMovingKey.eLeft = _eKey; }
+    void SetMovingRightKey(KEY _eKey) { m_tMovingKey.eRight = _eKey; }
+    void SetMovingJumpKey(KEY _eKey) { m_tMovingKey.eJump = _eKey; }
+    void SetMovingInteractKey(KEY _eKey) { m_tMovingKey.eInteract = _eKey; }
+    void SetMovingSprintKey(KEY _eKey) { m_tMovingKey.eSprint = _eKey; }
+    void SetMovingWalkKey(KEY _eKey) { m_tMovingKey.eWalk = _eKey; }
 
     // COMBAT KEY SETTING
-    void SetCombatLightAttackKey(KEY _eKey)      { m_tCombatKey.eLightAttack = _eKey; }
-    void SetCombatHeavyAttackKey(KEY _eKey)      { m_tCombatKey.eHeavyAttack = _eKey; }
-    void SetCombatParryKey(KEY _eKey)            { m_tCombatKey.eParry       = _eKey; }
-    void SetCombatCameraLockKey(KEY _eKey)       { m_tCombatKey.eCameraLock  = _eKey; }
+    void SetCombatLightAttackKey(KEY _eKey) { m_tCombatKey.eLightAttack = _eKey; }
+    void SetCombatHeavyAttackKey(KEY _eKey) { m_tCombatKey.eHeavyAttack = _eKey; }
+    void SetCombatParryKey(KEY _eKey) { m_tCombatKey.eParry = _eKey; }
+    void SetCombatCameraLockKey(KEY _eKey) { m_tCombatKey.eCameraLock = _eKey; }
 
-    void SetOwnerScript(CScript* _pOwner)        { m_pOwnerScript = _pOwner; }
+    void SetOwnerScript(CScript* _pOwner) { m_pOwnerScript = _pOwner; }
 
 
 public:
     // [ GET PART ]
-    tMovingKey          GetMovingKey()               { return m_tMovingKey; }
-    tCombatKey          GetCombatKey()               { return m_tCombatKey; }
-    tKeyOptionFlags_Zip GetKeyOptionFlags_Zip()      { return m_tCurKeyInfo.tKeyFlags_Zip; }
-    KEY_STATE           GetCurKeyState()             { return m_tCurKeyInfo.eKeyState; }
-    KEY                 GetCurKey()                  { return m_tCurKeyInfo.eKey; }
+    tMovingKey          GetMovingKey() { return m_tMovingKey; }
+    tCombatKey          GetCombatKey() { return m_tCombatKey; }
+    tKeyOptionFlags_Zip GetKeyOptionFlags_Zip() { return m_tCurKeyInfo.tKeyFlags_Zip; }
+    KEY_STATE           GetCurKeyState() { return m_tCurKeyInfo.eKeyState; }
+    KEY                 GetCurKey() { return m_tCurKeyInfo.eKey; }
 
 
-    tKey_Zip            GetCurKeyInfo()              { return m_tCurKeyInfo; }
-    tKey_Zip            GetPrevKeyInfo()             { return m_tPrevKeyInfo; }
-    vector<tKey_Zip>    GetCurKeyZipInfo()           { return m_vecCurKeyZipInfo; }
+    tKey_Zip            GetCurKeyInfo() { return m_tCurKeyInfo; }
+    tKey_Zip            GetPrevKeyInfo() { return m_tPrevKeyInfo; }
+    vector<tKey_Zip>    GetCurKeyZipInfo() { return m_vecCurKeyZipInfo; }
 
     KEY_STATE           GetKeyStateByFlags(KeyOptionFlags _Flags);
     KEY                 GetKeyByFlags(KeyOptionFlags _Flags);
 
 
-    
+
     CLONE(CObjKeyMgr)
 public:
     CObjKeyMgr();

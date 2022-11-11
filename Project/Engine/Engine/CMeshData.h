@@ -20,6 +20,7 @@ public:
 	virtual int Load(const wstring& _strFilePath);
 
 	CGameObject* Instantiate();
+	Ptr<CMesh> GetMesh() { return m_pMesh; }
 
 public:
 	CMeshData();

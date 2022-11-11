@@ -4,8 +4,21 @@
 #include <math.h>
 
 #include <Engine/CKeyMgr.h>
+#include <Engine/CCamera.h>
 
 PlayerCamScript::PlayerCamScript()
+	: CScript((int)SCRIPT_TYPE::PLAYERCAMSCRIPT)
+	, m_vTargetPos(Vec3(0.f, 0.f, 0.f))
+	, m_fDistance(0.f)
+	, m_fMinDist(0.f)
+	, m_fMaxDist(0.f)
+	, m_fCamHeight(180.f)
+{
+	SetName(L"PlayerCamScript");
+
+}
+
+PlayerCamScript::PlayerCamScript(const PlayerCamScript& _origin)
 	: CScript((int)SCRIPT_TYPE::PLAYERCAMSCRIPT)
 	, m_vTargetPos(Vec3(0.f, 0.f, 0.f))
 	, m_fDistance(0.f)
@@ -38,7 +51,18 @@ void PlayerCamScript::start()
 
 void PlayerCamScript::update()
 {
+	if (KEY_TAP(KEY::L))
+	{
+		/*
+			임의로 L 버튼을 누르면 FREE 모드로 전환됩니다. 
 
+		*/
+		if (m_eCamMode == CAMERA_MODE::THIRD_PERSON)
+			m_eCamMode = CAMERA_MODE::FREE;
+		else
+			m_eCamMode = CAMERA_MODE::THIRD_PERSON;
+
+	}
 
 	switch (m_eCamMode)
 	{
@@ -56,7 +80,7 @@ void PlayerCamScript::update()
 	break;
 	case CAMERA_MODE::FREE:			// 자유
 	{
-
+		UpdateFreeMode();
 	}
 	break;
 
@@ -90,6 +114,79 @@ void PlayerCamScript::lateupdate()
 
 }
 
+void PlayerCamScript::UpdateFreeMode()
+{
+	Vec3  vPos = Transform()->GetRelativePos();
+	float fSpeed = 750.f;
+
+	if (KEY_PRESSED(KEY::K))
+	{
+		fSpeed *= 2.f;
+	}
+
+	if (PROJ_TYPE::PERSPECTIVE == Camera()->GetProjType())
+	{
+		if (KEY_PRESSED(KEY::W))
+		{
+			Vec3 vFront = Transform()->GetWorldFrontDir();
+			vPos += DT * vFront * fSpeed;
+		}
+
+		if (KEY_PRESSED(KEY::S))
+		{
+			Vec3 vFront = Transform()->GetWorldFrontDir();
+			vPos -= DT * vFront * fSpeed;
+		}
+
+		if (KEY_PRESSED(KEY::A))
+		{
+			Vec3 vRight = Transform()->GetWorldRightDir();
+			vPos -= DT * vRight * fSpeed;
+		}
+
+		if (KEY_PRESSED(KEY::D))
+		{
+			Vec3 vRight = Transform()->GetWorldRightDir();
+			vPos += DT * vRight * fSpeed;
+		}
+	}
+
+	else
+	{
+		if (KEY_PRESSED(KEY::W))
+		{
+			vPos.y += DT * fSpeed;
+		}
+
+		if (KEY_PRESSED(KEY::S))
+		{
+			vPos.y -= DT * fSpeed;
+		}
+
+		if (KEY_PRESSED(KEY::A))
+		{
+			vPos.x -= DT * fSpeed;
+		}
+
+		if (KEY_PRESSED(KEY::D))
+		{
+			vPos.x += DT * fSpeed;
+		}
+	}
+
+	if (KEY_PRESSED(KEY::RBTN))
+	{
+		Vec3 vRot = Transform()->GetRelativeRotation();
+
+		Vec2 vMouseDir = CKeyMgr::GetInst()->GetMouseDir();
+		vRot.y += DT * vMouseDir.x * XM_PI;
+		vRot.x -= DT * vMouseDir.y * XM_PI;
+
+		Transform()->SetRelativeRotation(vRot);
+	}
+
+	Transform()->SetRelativePos(vPos);
+}
 
 void PlayerCamScript::UpdateFirstPersonMode()
 {
@@ -101,7 +198,7 @@ void PlayerCamScript::UpdateThirdPersonMode()
 	// 0. 외부에서 카메라가 찍을 중심 위치(TargetPos) 를 갱신해야한다.
 	//m_pCam->SetTarget(Traget Pos);
 
-	// 1. 카메라를 회전한다. 
+	// 1. 카메라가 회전한다. 
 	Vec3 vRot = m_pCam->Transform()->GetRelativeRotation();
 	Vec2 vMouseDir = CKeyMgr::GetInst()->GetMouseDir();
 
@@ -132,7 +229,7 @@ void PlayerCamScript::UpdateThirdPersonMode()
 			float fDiff = XM_2PI - vRot.x;
 			vRot.x = fDiff;
 		}
-		
+
 	}
 
 
@@ -143,22 +240,22 @@ void PlayerCamScript::UpdateThirdPersonMode()
 
 
 	/*
-	   3. 바뀐 위치를 기준으로 카메라 회전각을 조정한다. 
+	   3. 바뀐 위치를 기준으로 카메라 회전각을 조정한다.
 
-			*  회전각을 이때 넣은 이유는 회전각이 달라지면  Forward Axis 도 달라지기 때문에 
-				카메라를 원래위치로 이동시키는데 문제가 생겨서이다. 
+			*  회전각을 이때 넣은 이유는 회전각이 달라지면  Forward Axis 도 달라지기 때문에
+				카메라를 원래위치로 이동시키는데 문제가 생겨서이다.
 	*/
 	m_pCam->Transform()->SetRelativeRotation(vRot);		// 카메라 회전 
 
 	// 4. 카메라를 뒤로 이동 ( 3인칭 ) 
 	Translate(GetForwardAxis(), -m_fDistance);			// 카메라가 앞을 바라보는 기준으로 Distance 만큼 [뒤로] 이동
 
-	// 2. 카메라 높이 설정 
+	// 5. 카메라 높이 설정 
 	Vec3 vPos = m_pCam->Transform()->GetRelativePos();
 	vPos.y = m_pCam->Transform()->GetRelativePos().y + m_fCamHeight; // 카메라 높이를 올린다. (상대 - 캐릭터 기준) 
 	m_pCam->Transform()->SetRelativePos(vPos);
 
-	// 3. 카메라와 캐릭터와의 거리를 갱신 
+	// 6. 카메라와 캐릭터와의 거리를 갱신 
 	// m_fDistance 를 줄이면 캐릭터와 가까워진다. 
 	//pThirdPersonCamera->Approach(-io.MouseWheel * 1.0f);
 
@@ -292,20 +389,20 @@ Vec3 PlayerCamScript::UpdateCameraRelativePos()
 		return vCamCurPos;;
 
 	//Translate(GetForwardAxis(), m_fDistance);			// 카메라 원래 위치로 이동 
-	
-	// 1. 카메라의 원래 위치로 이동한다. 
+
+	// 1. 카메라의 원래 위치로 이동한다. ( 플레이어 위치 기준 m_fDistance 만큼 뒤로, m_fCamHeight 만큼 위로 움직였던걸 원래 위치로.. )
 	vCamCurPos += GetForwardAxis() * m_fDistance;
-	vCamCurPos.y -= m_fCamHeight; 
-	
+	vCamCurPos.y -= m_fCamHeight;
+
 	if (vCamCurPos == m_vTargetPos)
 		return vCamCurPos;;
 
-	
+
 	// 2. 카메라가 이동할 방향과 거리를 구한다. ( 의도 : 플레이어와의 거리차를 이용해 카메라가 플레이어를 따라가게 만든다. )
-	Vec3 vDist		= m_vTargetPos - vCamCurPos; 
-	Vec3 vLength	= vDist; 
-	vLength			= Vec3(abs(vLength.x), abs(vLength.y), abs(vLength.z)); // 이동 거리 길이
-	Vec3 vVector	= vDist.Normalize();									// 이동 방향 
+	Vec3 vDist = m_vTargetPos - vCamCurPos;
+	Vec3 vLength = vDist;
+	vLength = Vec3(abs(vLength.x), abs(vLength.y), abs(vLength.z)); // 이동 거리 길이
+	Vec3 vVector = vDist.Normalize();									// 이동 방향 
 
 	// 카메라가 플레이어 위치를 따라간다. 
 	// 흠.... Length 가 짧아질수록 시간단축이 굉장히 짧아지니까... 가까워 질수록 너무 느리게 다가간다.
@@ -317,7 +414,7 @@ Vec3 PlayerCamScript::UpdateCameraRelativePos()
 	float fXSpeed = 0.01f;
 	if (vDist.x <= 10.f)
 		fXSpeed = 2.f;
-	
+
 	float fYSpeed = 0.01f;
 	if (vDist.y <= 10.f)
 		fYSpeed = 2.f;

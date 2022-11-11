@@ -191,6 +191,8 @@ call CodeGen.exe</Command>
     <ClInclude Include="CameraMoveScript.h" />
     <ClInclude Include="CAttack_deuxiemie.h" />
     <ClInclude Include="CDeath_deuxiemie.h" />
+    <ClInclude Include="CTranslateMgr.h" />
+    <ClInclude Include="DestroyScript.h" />
     <ClInclude Include="GameDefine.h" />
     <ClInclude Include="HandStateMgrScript.h" />
     <ClInclude Include="CIdle_deuxiemie.h" />
@@ -242,6 +244,8 @@ call CodeGen.exe</Command>
     <ClInclude Include="CScriptMgr.h" />
     <ClInclude Include="CStateMgr.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RigidBodyScript.h" />
+    <ClInclude Include="TrailScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BossJugCombatMgrScript.cpp" />
@@ -250,6 +254,8 @@ call CodeGen.exe</Command>
     <ClCompile Include="CameraMoveScript.cpp" />
     <ClCompile Include="CAttack_deuxiemie.cpp" />
     <ClCompile Include="CDeath_deuxiemie.cpp" />
+    <ClCompile Include="CTranslateMgr.cpp" />
+    <ClCompile Include="DestroyScript.cpp" />
     <ClCompile Include="HandStateMgrScript.cpp" />
     <ClCompile Include="CIdle_deuxiemie.cpp" />
     <ClCompile Include="CPlayerDieState.cpp" />
@@ -303,6 +309,8 @@ call CodeGen.exe</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RigidBodyScript.cpp" />
+    <ClCompile Include="TrailScript.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

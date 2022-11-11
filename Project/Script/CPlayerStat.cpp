@@ -42,24 +42,24 @@ void CPlayerStat::InitCurStat(float _fHp, float _fStamina, float _fEther
 	, float _fAttack, float _fArmor, float _fSpeed)
 {
 
-	m_tCurStat.fHp		= _fHp;
+	m_tCurStat.fHp = _fHp;
 	m_tCurStat.fStamina = _fStamina;
-	m_tCurStat.fEther	= _fEther;
-	m_tCurStat.fAttack	= _fAttack;
-	m_tCurStat.fArmor	= _fArmor;
-	m_tCurStat.fSpeed	= _fSpeed;
+	m_tCurStat.fEther = _fEther;
+	m_tCurStat.fAttack = _fAttack;
+	m_tCurStat.fArmor = _fArmor;
+	m_tCurStat.fSpeed = _fSpeed;
 
 }
 
 void CPlayerStat::InitMaxStat(float _fHp, float _fStamina, float _fEther
 	, float _fAttack, float _fArmor, float _fSpeed)
 {
-	m_tMaxStat.fHp		= _fHp;
+	m_tMaxStat.fHp = _fHp;
 	m_tMaxStat.fStamina = _fStamina;
-	m_tMaxStat.fEther	= _fEther;
-	m_tMaxStat.fAttack	= _fAttack;
-	m_tMaxStat.fArmor	= _fArmor;
-	m_tMaxStat.fSpeed	= _fSpeed;
+	m_tMaxStat.fEther = _fEther;
+	m_tMaxStat.fAttack = _fAttack;
+	m_tMaxStat.fArmor = _fArmor;
+	m_tMaxStat.fSpeed = _fSpeed;
 }
 
 

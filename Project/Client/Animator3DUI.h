@@ -9,8 +9,8 @@ class Animator3DUI :
     public ComponentUI
 {
 private:
-    CAnimator3D* m_pAnimator3D;
-    CAnimation3D* m_pCurAnim3D;
+    CAnimator3D*        m_pAnimator3D;
+    CAnimation3D*       m_pCurAnim3D;
     Anim3DSequencer     m_FrameTimeLine;
 
 

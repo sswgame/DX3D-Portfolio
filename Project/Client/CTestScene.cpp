@@ -35,7 +35,9 @@
 #include <Script/PlayerCamScript.h>
 #include <Script/BossJugCombatMgrScript.h>
 #include <Script/CSceneSaveLoad.h>
-
+#include <Script/RigidBodyScript.h>
+#include <Script/GravityScript.h>
+#include <Script/TrailScript.h>
 #define TEST_SAVE 1
 
 void CTestScene::CreateTestScene()
@@ -285,6 +287,121 @@ void CTestScene::CreateTestScene()
 	//{
 	//	const std::wstring path      = L"meshdata\\Deuxiemie\\deuxiemie_SphereShield2.mdat";
 	//	Ptr<CMeshData>     pMeshData = CResMgr::GetInst()->Load<CMeshData>(path.c_str(), path.c_str());
+
+	Ptr<CMeshData> pMeshData = nullptr;
+	CGameObject* pObj = nullptr;
+
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
+	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat", L"meshdata\\player_sword0.mdat");
+
+	pObj = pMeshData->Instantiate();
+	pObj->SetName(L"player");
+	pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	pObj->Animator3D()->Play(L"test", true);
+	pObj->Animator3D()->GetCurAnim()->SetPlay(false);
+
+	pObj->Animator3D()->MakeAnimationFromTXT_Extended("PlayerAnimInfo2.txt");
+	pObj->Animator3D()->SetPlayWithChild(true);
+
+
+	pObj->AddComponent(new CFSM);
+	pObj->AddComponent(new RigidBodyScript);
+	pObj->AddComponent(new GravityScript);
+	pObj->AddComponent(new CCollider3D);
+
+	pObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObj->Collider3D()->SetOffsetPos(Vec3(0.f, 125.f, 0.f));
+	pObj->Collider3D()->SetOffseetScale(Vec3(200.f, 250.f, 200.f));
+
+	PlayerScript* pPlayerScript = new PlayerScript;
+	pPlayerScript->SetCamera(pCamObj);
+	pObj->AddComponent(pPlayerScript);
+
+	CGameObject* pPlayer = pObj;
+	pCurScene->AddObject(pObj, L"PLAYER");
+
+
+	Ptr<CMeshData> pMeshDataWeapon = nullptr;
+	CGameObject* pObjWeapon = nullptr;
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
+	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
+	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
+
+	pObjWeapon = pMeshDataWeapon->Instantiate();
+	pObjWeapon->SetName(L"player_sword1");
+	pObjWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+	pObjWeapon->Animator3D()->Play(L"test", true);
+
+	pObj->AddChild(pObjWeapon);
+	pObj->Animator3D()->CopyAllAnimToChild();
+
+	//CGameObject* pGameObject = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\DEUXIEME_SHIELD.pref",
+	//                                                             L"prefab\\DEUXIEME_SHIELD.pref")->Instantiate();
+	//pCurScene->AddObject(pGameObject, 0);
+
+
+	//pObj = new CGameObject;
+	//pObj->SetName(L"Particle");
+	//pObj->AddComponent(new CTransform);
+	//pObj->AddComponent(new CParticleSystem);
+	//pCurScene->AddObject(pObj, 0);
+
+	CGameObject* pObjFoot = new CGameObject;
+	pObjFoot->SetName(L"Foot");
+	pObjFoot->AddComponent(new CTransform);
+	pObjFoot->AddComponent(new CCollider3D);
+
+	pObjFoot->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+	pObjFoot->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
+	pObjFoot->Collider3D()->SetOffseetScale(Vec3(100.f, 100.f, 100.f));
+	pObj->AddChild(pObjFoot);
+
+	pObj = new CGameObject;
+	pObj->SetName(L"Trail");
+
+	pObj->AddComponent(new CTransform);
+	pObj->AddComponent(new CMeshRender);
+	auto pAnimator = new CAnimator3D;
+	pObj->AddComponent(pAnimator);
+
+	//TrailScript* pTrailScript = new TrailScript;
+	//pTrailScript->SetOriginObject(pPlayer);
+	//pObj->AddComponent(pTrailScript);
+
+
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat", L"meshdata\\player_sword0.mdat");
+	pObj->MeshRender()->SetMesh(pMeshData->GetMesh());
+	for (int i = 0; i < 4; ++i)
+	{
+		pObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\TrailMtrl.mtrl"), i);
+	}
+
+	pAnimator->SetBones(pMeshData->GetMesh()->GetBones());
+	pAnimator->SetAnimClip(pMeshData->GetMesh()->GetAnimClip());
+
+	// todo
+	//int MaxFrameIdx = pAnimator->GetAnimClip(0).iFrameLength - 1;
+	//pAnimator->CreateAnimByFrame(L"TrailMotion", 0, 100, 100);
+	//pAnimator->Play(L"TrailMotion", false);
+	//pAnimator->SetLerpTime(0.f);
+
+	pCurScene->AddObject(pObj, L"PLAYER");
+
+	pObj = new CGameObject;
+	pObj->SetName(L"Land");
+
+	pObj->AddComponent(new CTransform);
+	pObj->AddComponent(new CCollider3D);
+
+	pObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObj->Collider3D()->SetOffsetPos(Vec3(0.f, -150.f, 0.f));
+	pObj->Collider3D()->SetOffseetScale(Vec3(200.f, 250.f, 200.f));
+
+	pCurScene->AddObject(pObj, 1);
+
 
 	CGameObject* pBoss = new CGameObject;
 	pBoss->SetName(L"BOSS_COMBAT");

@@ -68,7 +68,7 @@ CComponent* CComponent::MakeComponent(const std::wstring& name)
 	if (L"LANDSCAPE" == name) return new CLandScape{};
 	if (L"DECAL" == name) return new CDecal{};
 	if (L"SKYBOX" == name) return new CSkyBox{};
-	if (L"FSM" == name) return new CFSM{};
+	if (L"FINITE_STATE_MACHINE" == name) return new CFSM{};
 
 	return nullptr;
 }

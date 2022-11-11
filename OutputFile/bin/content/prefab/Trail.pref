@@ -1,0 +1,30 @@
+NAME: Trail
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 0, 0]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+  - ANIMATOR3D:
+      MESH: [mesh\player_sword0.mesh, mesh\player_sword0.mesh]
+      m_pPrevAnim: ""
+      m_pCurAnim: ""
+      m_pNextAnim: ""
+      ANIMATION LIST:
+        {}
+  - MESHRENDER:
+      MESH: [mesh\player_sword0.mesh, mesh\player_sword0.mesh]
+      MATERIAL COUNT: 4
+      0: [material\TrailMtrl.mtrl, material\TrailMtrl.mtrl]
+      1: [material\TrailMtrl.mtrl, material\TrailMtrl.mtrl]
+      2: [material\TrailMtrl.mtrl, material\TrailMtrl.mtrl]
+      3: [material\TrailMtrl.mtrl, material\TrailMtrl.mtrl]
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  []
+CHILDREN:
+  []

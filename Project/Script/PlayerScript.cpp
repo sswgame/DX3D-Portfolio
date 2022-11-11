@@ -10,6 +10,8 @@
 #include "PlayerCamScript.h"
 
 
+
+
 PlayerScript::PlayerScript() :
 	CScript((int)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_pKeyMgr(nullptr)
@@ -20,7 +22,19 @@ PlayerScript::PlayerScript() :
 
 }
 
-PlayerScript::~PlayerScript() 
+PlayerScript::PlayerScript(const PlayerScript& _origin)
+	:CScript((int)SCRIPT_TYPE::PLAYERSCRIPT)
+	, m_pKeyMgr(nullptr)
+	, m_pCamera(nullptr)
+	, m_pStateMgr(nullptr)
+	, m_pStat(nullptr)
+{
+	SetName(L"PlayerScript");
+
+}
+
+
+PlayerScript::~PlayerScript()
 {
 	SAFE_DELETE(m_pKeyMgr);
 	SAFE_DELETE(m_pStateMgr);
@@ -60,8 +74,8 @@ void PlayerScript::start()
 	{
 		// 외부에서 초기화를 안해줬다면
 		// Default 레이어 / MainCamera 라는 Obj 를 찾는다. ( 지정되어야함 )
-		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"Default");
-		if (pLayer != nullptr) 
+		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"CAMERA");
+		if (pLayer != nullptr)
 		{
 			vector<CGameObject*> vecObjs = pLayer->GetObjects();
 			for (int i = 0; i < vecObjs.size(); ++i)
@@ -73,16 +87,11 @@ void PlayerScript::start()
 				}
 			}
 		}
-	
 	}
-
 }
 
 void PlayerScript::update()
-{	
-	// 0. 카메라 상태 업데이트 
-	UpdateCamera();
-
+{
 	// 1. 키 상태 업데이트 
 	m_pKeyMgr->update();
 	tKey_Zip tCurKeyInfo = m_pKeyMgr->GetCurKeyInfo();
@@ -95,9 +104,13 @@ void PlayerScript::update()
 
 	// 3. 플레이어 스탯 업데이트 
 	m_pStat->update();
+
+	// 4. 카메라 상태 업데이트 
+	UpdateCamera();
+
 }
 
-void PlayerScript::lateupdate() 
+void PlayerScript::lateupdate()
 {
 
 	m_pKeyMgr->lateupdate();
