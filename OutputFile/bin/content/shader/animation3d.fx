@@ -210,6 +210,9 @@ StructuredBuffer<tFrameTrans> g_arrFrameTrans : register(t16);
 StructuredBuffer<matrix> g_arrOffset : register(t17);
 RWStructuredBuffer<matrix> g_arrFinelMat : register(u0);
 
+//TODO:소켓 행렬 정보를 저장하기 위한 구조화 버퍼
+RWStructuredBuffer<matrix> g_arrSocketMatrix : register(u1);
+
 // ===========================
 // Animation3D Compute Shader
 #define BoneCount   g_int_0
@@ -220,12 +223,13 @@ RWStructuredBuffer<matrix> g_arrFinelMat : register(u0);
 [numthreads(256, 1, 1)]
 void CS_Animation3D(int3 _iThreadIdx : SV_DispatchThreadID)
 {
-
     if (BoneCount <= _iThreadIdx.x)
-        return;
+    {
+	    return;
+    }
 
     // 오프셋 행렬을 곱하여 최종 본행렬을 만들어낸다.		
-    float4 vQZero = float4(0.f, 0.f, 0.f, 1.f);
+    float4 zeroQuaternion = float4(0.f, 0.f, 0.f, 1.f);
     matrix matBone = (matrix) 0.f;
 
     // Frame Data Index == Bone Count * Frame Count + _iThreadIdx.x
@@ -237,13 +241,15 @@ void CS_Animation3D(int3 _iThreadIdx : SV_DispatchThreadID)
     float4 qRot = QuternionLerp(g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iNextFrameDataIdx].qRot, Ratio);
 
     // 최종 본행렬 연산
-    MatrixAffineTransformation(vScale, vQZero, qRot, vTrans, matBone);
+    MatrixAffineTransformation(vScale, zeroQuaternion, qRot, vTrans, matBone);
 
     // 최종 본행렬 연산    
     //MatrixAffineTransformation(g_arrFrameTrans[iFrameDataIndex].vScale, vQZero, g_arrFrameTrans[iFrameDataIndex].qRot, g_arrFrameTrans[iFrameDataIndex].vTranslate, matBone);
 
     matrix matOffset = transpose(g_arrOffset[_iThreadIdx.x]);
 
+    //TODO:소켓 행렬 정보 저장(transpose 이유는 열백터 계산 방식을 저장되어 있음)
+    g_arrSocketMatrix[_iThreadIdx.x] = transpose(matBone);
     // 구조화버퍼에 결과값 저장
     g_arrFinelMat[_iThreadIdx.x] = mul(matOffset, matBone);
 }

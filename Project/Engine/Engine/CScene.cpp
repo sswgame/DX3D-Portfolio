@@ -3,14 +3,15 @@
 
 #include "CLayer.h"
 #include "CGameObject.h"
+#include "CRenderMgr.h"
 #include "CResMgr.h"
 #include "CSceneFile.h"
+#include "CSceneMgr.h"
 
 
 CScene::CScene()
-	:
-	m_arrLayer{}
-  , m_eSceneState(SCENE_STATE::STOP)
+	: m_arrLayer{}
+	, m_eSceneState(SCENE_STATE::STOP)
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{

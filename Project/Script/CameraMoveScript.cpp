@@ -9,12 +9,15 @@
 
 
 CameraMoveScript::CameraMoveScript()
-	:
-	CScript((int)SCRIPT_TYPE::CAMERAMOVESCRIPT)
-  , m_Filter(nullptr)
-  , m_fCamSpeed(500.f) {}
+	: CScript((int)SCRIPT_TYPE::CAMERAMOVESCRIPT)
+	, m_Filter(nullptr)
+	, m_fCamSpeed(500.f)
+{
+}
 
-CameraMoveScript::~CameraMoveScript() {}
+CameraMoveScript::~CameraMoveScript()
+{
+}
 
 void CameraMoveScript::update()
 {
@@ -32,6 +35,7 @@ void CameraMoveScript::update()
 		{
 			Vec3 vFront = Transform()->GetWorldFrontDir();
 			vPos += DT * vFront * fSpeed;
+			int a = 5;
 		}
 
 		if (KEY_PRESSED(KEY::S))

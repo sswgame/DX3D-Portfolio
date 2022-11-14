@@ -19,14 +19,12 @@ void CFSM::update()
 {
 	if (m_pCurState != nullptr)
 		m_pCurState->Update();
-
 }
 
 void CFSM::lateupdate()
 {
 	if (m_pCurState != nullptr)
 		m_pCurState->LateUpdate();
-
 }
 
 void CFSM::finalupdate()
@@ -47,18 +45,18 @@ void CFSM::AddState(wstring _sStateType, CState* _pState)
 	map<wstring, CState*>::iterator iter = m_mapState.find(_sStateType);
 	if (iter != m_mapState.end())
 		return;
-
+	_pState->SetName(_sStateType);
 	_pState->SetOwner(GetOwner());
 	m_mapState.insert(make_pair(_sStateType, _pState));
 }
 
 void CFSM::ChangeState(wstring _sStateType)
 {
-	static wstring sStateTypeName; 
+	static wstring sStateTypeName;
 	sStateTypeName = _sStateType;
 	tEventInfo info{};
 
-	info.eType = EVENT_TYPE::CHANGE_FSM_STATE;
+	info.eType  = EVENT_TYPE::CHANGE_FSM_STATE;
 	info.lParam = (DWORD_PTR)this;
 	info.wParam = (DWORD_PTR)sStateTypeName.c_str();
 
@@ -80,4 +78,3 @@ void CFSM::DeleteState(wstring _sStateType)
 	}
 	m_mapState.erase(_sStateType);
 }
-

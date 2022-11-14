@@ -18,7 +18,7 @@ CAnimation3D::CAnimation3D()
 	, m_bFinish(false)
 	, m_bPlay(true)
 	, m_iCurClip(0)
-	, m_iPrevAnimEndFrameIdx{ 0 }
+	, m_iPrevAnimEndFrameIdx{0}
 	, m_iCurFrameIdx(0)
 	, m_iNextFrameIdx(0)
 	, m_fSpeed(1.f)
@@ -26,6 +26,7 @@ CAnimation3D::CAnimation3D()
 	, m_dCurTime(0.f)
 	, m_fLerpTime(0.5f)
 	, m_fLerpTimeAcc(0.f)
+	, m_iPlayCnt{0}
 
 {
 }
@@ -33,20 +34,22 @@ CAnimation3D::CAnimation3D()
 
 CAnimation3D::CAnimation3D(const CAnimation3D& _origin)
 	: m_pOwner(nullptr)
-	, m_tClip{ _origin.m_tClip }
+	, m_tClip{_origin.m_tClip}
 	, m_eCurState{}
-	, m_iFrameCnt{ _origin.m_iFrameCnt }
+	, m_iFrameCnt{_origin.m_iFrameCnt}
 	, m_bFinalMatUpdate(false)
 	, m_bFinish(false)
-	, m_bPlay{ false }
+	, m_bPlay{false}
 	, m_iCurClip(_origin.m_iCurClip)
-	, m_iPrevAnimEndFrameIdx{ 0 }
-	, m_iCurFrameIdx{ 0 }
-	, m_iNextFrameIdx{ 0 }
+	, m_iPrevAnimEndFrameIdx{0}
+	, m_iCurFrameIdx{0}
+	, m_iNextFrameIdx{0}
 	, m_fSpeed(_origin.m_fSpeed)
-	, m_fRatio{ 0.f }
-	, m_dCurTime{ 0.f }
+	, m_fRatio{0.f}
+	, m_dCurTime{0.f}
 	, m_fLerpTime(_origin.m_fLerpTime)
+	, m_fLerpTimeAcc{0}
+	, m_iPlayCnt{0}
 {
 	m_vecClipUpdateTime.resize(1);
 }
@@ -65,77 +68,77 @@ void CAnimation3D::finalupdate()
 	switch (m_eCurState)
 	{
 	case ANIMATION_STATE::BEFORE_PLAY:
-	{
-		/*
-		 [ (이전 애니메이션  끝	  프레임) ]
-											-> 보간
-		 [ (현재 애니메이션  시작 + alpha 프레임) ]
-		*/
-
-		// 현재 재생중인 Clip 의 시간을 진행한다.
-
-		m_vecClipUpdateTime[m_iCurClip] += DT * m_fSpeed;
-
-		m_iCurFrameIdx = m_iPrevAnimEndFrameIdx;
-		m_iNextFrameIdx = m_tClip.iStartFrame + m_fLerpTimeAcc * m_iFrameCnt;
-
-		m_fLerpTimeAcc += DT;
-		m_fRatio = ClampData(m_fLerpTimeAcc / m_fLerpTime, 0.f, 1.f);
-
-		// 보간 끝! -> 메인 애니메이션을 출력하라. 
-		if (m_fLerpTimeAcc >= m_fLerpTime)
 		{
-			m_iPlayCnt = 1;
-			m_fLerpTimeAcc = 0.f;
-			m_eCurState = ANIMATION_STATE::PLAY;
+			/*
+			 [ (이전 애니메이션  끝	  프레임) ]
+												-> 보간
+			 [ (현재 애니메이션  시작 + alpha 프레임) ]
+			*/
+
+			// 현재 재생중인 Clip 의 시간을 진행한다.
+
+			m_vecClipUpdateTime[m_iCurClip] += DT * m_fSpeed;
+
+			m_iCurFrameIdx  = m_iPrevAnimEndFrameIdx;
+			m_iNextFrameIdx = m_tClip.iStartFrame + m_fLerpTimeAcc * m_iFrameCnt;
+
+			m_fLerpTimeAcc += DT;
+			m_fRatio = ClampData(m_fLerpTimeAcc / m_fLerpTime, 0.f, 1.f);
+
+			// 보간 끝! -> 메인 애니메이션을 출력하라. 
+			if (m_fLerpTimeAcc >= m_fLerpTime)
+			{
+				m_iPlayCnt     = 1;
+				m_fLerpTimeAcc = 0.f;
+				m_eCurState    = ANIMATION_STATE::PLAY;
+			}
 		}
-	}
-	break;
+		break;
 	case ANIMATION_STATE::PLAY:
-	{
-		m_vecClipUpdateTime[m_iCurClip] += DT * m_fSpeed;
-
-		if (m_tClip.dStartTime + m_vecClipUpdateTime[m_iCurClip] >= m_tClip.dEndTime)
 		{
-			m_iPlayCnt++;
-			m_eCurState = ANIMATION_STATE::FINISH;
-			m_bFinish = true;
-			m_bPlay = false;
-			//m_vecClipUpdateTime[m_iCurClip] = 0.f;
+			m_vecClipUpdateTime[m_iCurClip] += DT * m_fSpeed;
+
+			if (m_tClip.dStartTime + m_vecClipUpdateTime[m_iCurClip] >= m_tClip.dEndTime)
+			{
+				m_iPlayCnt++;
+				m_eCurState = ANIMATION_STATE::FINISH;
+				m_bFinish   = true;
+				m_bPlay     = false;
+				//m_vecClipUpdateTime[m_iCurClip] = 0.f;
+			}
+
+			m_dCurTime = m_tClip.dStartTime + m_vecClipUpdateTime[m_iCurClip];
+
+			// 현재 프레임 인덱스 구하기
+			int    iFrameCount = m_pOwner->GetFrameCount();
+			double dFrameIdx   = m_dCurTime * (double)m_iFrameCnt;
+			m_iCurFrameIdx     = (int)(dFrameIdx);
+
+			// 다음 프레임 인덱스
+			if (m_iCurFrameIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
+				m_iNextFrameIdx = m_iCurFrameIdx;	// 끝이면 현재 인덱스를 유지
+			else
+				m_iNextFrameIdx = m_iCurFrameIdx + 1;
+
+			// 프레임간의 시간에 따른 비율을 구해준다.
+			m_fRatio = (float)(dFrameIdx - (double)m_iCurFrameIdx);
 		}
-
-		m_dCurTime = m_tClip.dStartTime + m_vecClipUpdateTime[m_iCurClip];
-
-		// 현재 프레임 인덱스 구하기
-		int    iFrameCount = m_pOwner->GetFrameCount();
-		double dFrameIdx = m_dCurTime * (double)m_iFrameCnt;
-		m_iCurFrameIdx = (int)(dFrameIdx);
-
-		// 다음 프레임 인덱스
-		if (m_iCurFrameIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
-			m_iNextFrameIdx = m_iCurFrameIdx;	// 끝이면 현재 인덱스를 유지
-		else
-			m_iNextFrameIdx = m_iCurFrameIdx + 1;
-
-		// 프레임간의 시간에 따른 비율을 구해준다.
-		m_fRatio = (float)(dFrameIdx - (double)m_iCurFrameIdx);
-	}
-	break;
+		break;
 	case ANIMATION_STATE::STOP:
-	{
-		m_dCurTime = m_tClip.dStartTime + m_vecClipUpdateTime[m_iCurClip];
+		{
+			m_dCurTime = m_tClip.dStartTime + m_vecClipUpdateTime[m_iCurClip];
 
-		double dFrameIdx = m_dCurTime * (double)m_iFrameCnt;
-		m_iCurFrameIdx = (int)(dFrameIdx);
+			double dFrameIdx = m_dCurTime * (double)m_iFrameCnt;
+			m_iCurFrameIdx   = (int)(dFrameIdx);
 
-		if (m_iCurFrameIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
-			m_iNextFrameIdx = m_iCurFrameIdx;
-		else
-			m_iNextFrameIdx = m_iCurFrameIdx + 1;
+			if (m_iCurFrameIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
+				m_iNextFrameIdx = m_iCurFrameIdx;
+			else
+				m_iNextFrameIdx = m_iCurFrameIdx + 1;
 
-		m_fRatio = (float)(dFrameIdx - (double)m_iCurFrameIdx);
-	}
-	break;
+			m_fRatio = (float)(dFrameIdx - (double)m_iCurFrameIdx);
+		}
+		break;
 	}
 
 	// 컴퓨트 쉐이더 연산여부
@@ -159,6 +162,7 @@ void CAnimation3D::UpdateData()
 		pUpdateShader->SetOffsetMatBuffer(pMesh->GetBoneOffsetBuffer());
 		pUpdateShader->SetOutputBuffer(m_pOwner->GetBoneFinalMatBuffer());
 
+		pUpdateShader->SetSokectBuffer(m_pOwner->GetSocketBuffer());
 		UINT iBoneCount = m_pOwner->GetBoneCount();
 		pUpdateShader->SetBoneCount(iBoneCount);
 		pUpdateShader->SetFrameIndex(m_iCurFrameIdx);
@@ -167,21 +171,20 @@ void CAnimation3D::UpdateData()
 
 		// Execute Update Shader 
 		pUpdateShader->Excute();
-
 		m_bFinalMatUpdate = true;
 	}
 	// t30 레지스터에 최종행렬 데이터(구조버퍼) 바인딩		
 	m_pOwner->GetBoneFinalMatBuffer()->UpdateData(PIPELINE_STAGE::VS, 30);
-
-
 }
 
 void CAnimation3D::ClearData()
 {
 	m_pOwner->GetBoneFinalMatBuffer()->Clear();
+	//TODO: 버퍼 클리어(계산 셰이더에서 사용 후 제거)
+	m_pOwner->GetSocketBuffer()->Clear();
 
 	UINT           iMtrlCount = m_pOwner->MeshRender()->GetMtrlCount();
-	Ptr<CMaterial> pMtrl = nullptr;
+	Ptr<CMaterial> pMtrl      = nullptr;
 	for (UINT i = 0; i < iMtrlCount; ++i)
 	{
 		pMtrl = m_pOwner->MeshRender()->GetSharedMaterial(i);
@@ -199,6 +202,7 @@ void CAnimation3D::check_mesh(Ptr<CMesh> _pMesh)
 	if (m_pOwner->GetBoneFinalMatBuffer()->GetElementCount() != iBoneCount)
 	{
 		m_pOwner->GetBoneFinalMatBuffer()->Create(sizeof(Matrix), iBoneCount, SB_TYPE::READ_WRITE, false, nullptr);
+		m_pOwner->ResizeSocketMatrix();
 	}
 }
 
@@ -213,12 +217,12 @@ void CAnimation3D::Play(bool _b)
 
 void CAnimation3D::Reset()
 {
-	m_eCurState = ANIMATION_STATE::BEFORE_PLAY;
+	m_eCurState            = ANIMATION_STATE::BEFORE_PLAY;
 	m_iPrevAnimEndFrameIdx = m_tClip.iEndFrame;
-	m_iCurFrameIdx = m_iPrevAnimEndFrameIdx;
+	m_iCurFrameIdx         = m_iPrevAnimEndFrameIdx;
 
-	m_bFinish = false;
-	m_bPlay = true;
+	m_bFinish                       = false;
+	m_bPlay                         = true;
 	m_vecClipUpdateTime[m_iCurClip] = 0.f;
 
 	ResetStartEndFrameTime();
@@ -229,10 +233,10 @@ void CAnimation3D::ResetStartEndFrameIdx()
 {
 	int iFrameCnt = m_pOwner->GetFrameCount();
 	// 시간 -> 인덱스 
-	double dFrameIdx = m_tClip.dStartTime * (double)m_iFrameCnt;
+	double dFrameIdx    = m_tClip.dStartTime * (double)m_iFrameCnt;
 	m_tClip.iStartFrame = (int)(dFrameIdx);
 
-	dFrameIdx = m_tClip.dEndTime * (double)m_iFrameCnt;
+	dFrameIdx         = m_tClip.dEndTime * (double)m_iFrameCnt;
 	m_tClip.iEndFrame = (int)(dFrameIdx);
 }
 
@@ -242,7 +246,7 @@ void CAnimation3D::ResetStartEndFrameTime()
 
 	// 인덱스 -> 시간 
 	m_tClip.dStartTime = (double)m_tClip.iStartFrame / (double)m_iFrameCnt;
-	m_tClip.dEndTime = (double)m_tClip.iEndFrame / (double)m_iFrameCnt;
+	m_tClip.dEndTime   = (double)m_tClip.iEndFrame / (double)m_iFrameCnt;
 }
 
 void CAnimation3D::CopyInfo(CAnimation3D** _pCopyAnim)
@@ -260,7 +264,8 @@ void CAnimation3D::CopyInfo(CAnimation3D** _pCopyAnim)
 }
 
 void CAnimation3D::SetFrameInfoByFrame(int   _ClipNum
-	, int _startFrameIdx, int _EndFrameIdx)
+                                       , int _startFrameIdx
+                                       , int _EndFrameIdx)
 {
 	m_iCurClip = _ClipNum;
 
@@ -356,8 +361,8 @@ void CAnimation3D::SetCurFrameIdx(int _curIdx)
 {
 	if (m_eCurState == ANIMATION_STATE::STOP)
 	{
-		m_iCurFrameIdx = _curIdx;
-		double FrameTime = (double)m_iCurFrameIdx / (double)m_iFrameCnt;
+		m_iCurFrameIdx                  = _curIdx;
+		double FrameTime                = (double)m_iCurFrameIdx / (double)m_iFrameCnt;
 		m_vecClipUpdateTime[m_iCurClip] = FrameTime - m_tClip.dStartTime;
 
 		// ex)  244.999999997 -> 이 될때가 있는데 이러면
@@ -401,20 +406,20 @@ void CAnimation3D::Serialize(YAML::Emitter& emitter)
 
 void CAnimation3D::Deserialize(const YAML::Node& node)
 {
-	m_iCurClip = node[NAME_OF(m_iCurClip)].as<int>();
+	m_iCurClip  = node[NAME_OF(m_iCurClip)].as<int>();
 	m_fLerpTime = node[NAME_OF(m_fLerpTime)].as<float>();
-	m_fSpeed = node[NAME_OF(m_fSpeed)].as<float>();
+	m_fSpeed    = node[NAME_OF(m_fSpeed)].as<float>();
 
 	YAML::Node clipNode = node[NAME_OF(m_tClip)];
 
-	m_tClip.strAnimName = ToWString(clipNode[NAME_OF(strAnimName)].as<std::string>());
-	m_tClip.iStartFrame = clipNode[NAME_OF(iStartFrame)].as<int>();
-	m_tClip.iEndFrame = clipNode[NAME_OF(iEndFrame)].as<int>();
+	m_tClip.strAnimName  = ToWString(clipNode[NAME_OF(strAnimName)].as<std::string>());
+	m_tClip.iStartFrame  = clipNode[NAME_OF(iStartFrame)].as<int>();
+	m_tClip.iEndFrame    = clipNode[NAME_OF(iEndFrame)].as<int>();
 	m_tClip.iFrameLength = clipNode[NAME_OF(iFrameLength)].as<int>();
-	m_tClip.dStartTime = clipNode[NAME_OF(dStartTime)].as<double>();
-	m_tClip.dEndTime = clipNode[NAME_OF(dEndTime)].as<double>();
-	m_tClip.dTimeLength = clipNode[NAME_OF(dTimeLength)].as<double>();
-	m_tClip.eMode = (FbxTime::EMode)clipNode[NAME_OF(eMode)].as<int>();
+	m_tClip.dStartTime   = clipNode[NAME_OF(dStartTime)].as<double>();
+	m_tClip.dEndTime     = clipNode[NAME_OF(dEndTime)].as<double>();
+	m_tClip.dTimeLength  = clipNode[NAME_OF(dTimeLength)].as<double>();
+	m_tClip.eMode        = (FbxTime::EMode)clipNode[NAME_OF(eMode)].as<int>();
 	m_tClip.iFrameLength = m_tClip.iEndFrame - m_tClip.iStartFrame + 1;
 	m_vecClipUpdateTime.resize(1);
 }

@@ -2,19 +2,30 @@
 #include "MonsterGunScript.h"
 
 #include <Engine/CAnimator3D.h>
+#include <Engine/CCollider3D.h>
 #include <Engine/CFSM.h>
 
-#include "CAttack_deuxiemie.h"
-#include "CDeath_deuxiemie.h"
-#include "CIdle_deuxiemie.h"
-#include "CRun_deuxiemie.h"
-#include "CStun_deuxiemie.h"
-#include "CWalk_deuxiemie.h"
-
+#include "CAttack_Gun.h"
+#include "CDeath_Gun.h"
+#include "CIdle_Gun.h"
+#include "CObjectManager.h"
+#include "CRun_Gun.h"
+#include "CStun_Gun.h"
+#include "CWalk_Gun.h"
+#include "MonsterSearchScript.h"
+#include "PlayerScript.h"
 
 MonsterGunScript::MonsterGunScript()
 	: CScript{(int)SCRIPT_TYPE::MONSTERGUNSCRIPT}
+	, m_hp{0}
+	, m_radius{400}
+	, m_pSearch{nullptr}
+
 {
+	SetName(L"MonsterGunScript");
+	AddScriptParam("HP", SCRIPTPARAM_TYPE::FLOAT, &m_hp);
+	AddScriptParam("SEARCH RADIUS", SCRIPTPARAM_TYPE::FLOAT, &m_radius);
+	AddScriptParam("PREPARE RADIUS", SCRIPTPARAM_TYPE::FLOAT, &m_prepareRange);
 }
 
 MonsterGunScript::~MonsterGunScript()
@@ -23,26 +34,93 @@ MonsterGunScript::~MonsterGunScript()
 
 void MonsterGunScript::start()
 {
-	InitAnim();
+	InitState();
+	MakeSearchObject();
+	CMgrScript<CObjectManager>::GetInst()->AddScriptEvent(this, &MonsterGunScript::TestCode, 5);
+	CMgrScript<CObjectManager>::GetInst()->AddScriptEvent(this, &MonsterGunScript::TestCode2, 5, 50.f);
 }
 
-const tDeuxiemieData& MonsterGunScript::GetMonsterData() const
+void MonsterGunScript::update()
 {
-	return m_monsterData;
+	/*if (m_pSearch->IsPlayerInRange())
+	{
+		if (FSM()->GetCurState()->GetName() == GAME::DEUXIEMIE::IDLE)
+		{
+			FSM()->ChangeState(GAME::DEUXIEMIE::RUN);
+		}
+	}*/
 }
 
-tDeuxiemieData& MonsterGunScript::GetMonsterData()
+void MonsterGunScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
-	return m_monsterData;
+	static CLayer* pPlayerLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"Player");
+	if (_OtherObject->GetLayerIndex() == pPlayerLayer->GetLayerIdx())
+	{
+		CState* pPlayerState = _OtherObject->FSM()->GetCurState();
+
+		if (pPlayerLayer->GetName() == "HEAVY_ATTACK" || pPlayerState->GetName() == "LIGHT_ATTACK")
+		{
+			//
+			m_hp -= 10;
+			if (m_hp <= 0)
+			{
+				FSM()->ChangeState(GAME::DEUXIEMIE::DEATH);
+			}
+			else
+			{
+				FSM()->ChangeState(GAME::DEUXIEMIE::RUN);
+			}
+		}
+	}
+	else
+	{
+	}
 }
 
-void MonsterGunScript::InitAnim()
+void MonsterGunScript::Serialize(YAML::Emitter& emitter)
 {
-	FSM()->AddState(L"IDLE", new CIdle_deuxiemie{});
-	FSM()->AddState(L"WALK", new CWalk_deuxiemie{});
-	FSM()->AddState(L"RUN", new CRun_deuxiemie{});
-	FSM()->AddState(L"DEATH", new CDeath_deuxiemie{});
-	FSM()->AddState(L"STUN", new CStun_deuxiemie{});
-	FSM()->AddState(L"ATTACK", new CAttack_deuxiemie{});
-	FSM()->ChangeState(L"IDLE");
+	emitter << NAME_OF(m_hp) << m_hp;
+	emitter << NAME_OF(m_radius) << m_radius;
+}
+
+void MonsterGunScript::Deserialize(const YAML::Node& node)
+{
+	m_hp     = node[NAME_OF(m_hp)].as<int>();
+	m_radius = node[NAME_OF(m_radius)].as<float>();
+}
+
+void MonsterGunScript::TestCode(int a)
+{
+	MessageBox(nullptr, std::to_wstring(a).c_str(), L"TEST",MB_OK);
+}
+
+void MonsterGunScript::TestCode2(int a, float b)
+{
+	float result = a * b;
+	MessageBox(nullptr, std::to_wstring(result).c_str(), L"TEST2",MB_OK);
+}
+
+void MonsterGunScript::InitState()
+{
+	FSM()->AddState(GAME::DEUXIEMIE::IDLE, new CIdle_Gun{this});
+	FSM()->AddState(GAME::DEUXIEMIE::STUN, new CStun_Gun{});
+	FSM()->AddState(GAME::DEUXIEMIE::ATTACK, new CAttack_Gun{});
+	FSM()->AddState(GAME::DEUXIEMIE::DEATH, new CDeath_Gun{});
+	FSM()->AddState(GAME::DEUXIEMIE::RUN, new CRun_Gun{this});
+	FSM()->AddState(GAME::DEUXIEMIE::WALK, new CWalk_Gun{});
+	FSM()->ChangeState(GAME::DEUXIEMIE::IDLE);
+}
+
+void MonsterGunScript::MakeSearchObject()
+{
+	CGameObject* pSearchObject = new CGameObject{};
+	pSearchObject->SetName(L"SEARCH_SPHERE");
+	pSearchObject->AddComponent(new CTransform{});
+	m_pSearch = new MonsterSearchScript{};
+	pSearchObject->AddComponent(m_pSearch);
+	pSearchObject->AddComponent(new CCollider3D{});
+	pSearchObject->Collider3D()->SetOffsetPos(Vec3{0.f, 150.f, 0.f});
+	pSearchObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+	pSearchObject->Collider3D()->SetOffsetScale(Vec3{m_radius * 2.f});
+	CSceneMgr::GetInst()->AddChild(GetOwner(), pSearchObject);
 }

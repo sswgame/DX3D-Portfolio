@@ -17,8 +17,8 @@ namespace GAME
 		inline constexpr const wchar_t* UI_STATIC                  = L"UI_STATIC";
 		inline constexpr const wchar_t* UI_INTERACTIVE             = L"UI_INTERACTIVE";
 	}
-	
 }
 
 
 #include "BossDefine.h"
+#include "DeuxiemieDefine.h"

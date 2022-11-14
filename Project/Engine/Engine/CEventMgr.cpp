@@ -9,6 +9,7 @@
 #include "CRenderMgr.h"
 #include "CComponent.h"
 #include "CFSM.h"
+#include "CMgrScript.h"
 
 CEventMgr::CEventMgr()
 	: m_bObjEvn(false)
@@ -179,12 +180,12 @@ void CEventMgr::update()
 			break;
 		case EVENT_TYPE::CHANGE_FSM_STATE:
 			{
-			// lParam : FSM Component
-			// wParam : Next State Type Name
+				// lParam : FSM Component
+				// wParam : Next State Type Name
 
-				CFSM*    pFSM			 = (CFSM*)	 m_vecEvent[i].lParam;
-				wstring sNextState		 = (const wchar_t*)m_vecEvent[i].wParam;
-	
+				CFSM*   pFSM       = (CFSM*)m_vecEvent[i].lParam;
+				wstring sNextState = (const wchar_t*)m_vecEvent[i].wParam;
+
 
 				const auto iter = pFSM->m_mapState.find(sNextState);
 				if (iter == pFSM->m_mapState.end())
@@ -194,12 +195,12 @@ void CEventMgr::update()
 				CState* pPrevState = pFSM->GetCurState();
 				if (pPrevState != nullptr)
 					pPrevState->Exit();
-				
+
 				// 현재 상태 Enter 
 				CState* pNextState = iter->second;
 				pNextState->Enter();
 				pFSM->SetCurState(pNextState);
-				
+
 				break;
 			}
 
@@ -213,4 +214,7 @@ void CEventMgr::update()
 	}
 
 	m_vecEvent.clear();
+
+	//Custom Event
+	CSingletonScript::FireScriptEvents();
 }

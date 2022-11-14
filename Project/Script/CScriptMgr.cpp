@@ -1,4 +1,3 @@
-
 #include "pch.h"
 
 #include "CScriptMgr.h"
@@ -11,6 +10,7 @@
 #include "HandStateMgrScript.h"
 #include "MissileScript.h"
 #include "MonsterGunScript.h"
+#include "MonsterSearchScript.h"
 #include "MonsterShieldScript.h"
 #include "MonsterSwordScript.h"
 #include "PlayerCamScript.h"
@@ -29,6 +29,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"HandStateMgrScript");
 	_vec.push_back(L"MissileScript");
 	_vec.push_back(L"MonsterGunScript");
+	_vec.push_back(L"MonsterSearchScript");
 	_vec.push_back(L"MonsterShieldScript");
 	_vec.push_back(L"MonsterSwordScript");
 	_vec.push_back(L"PlayerCamScript");
@@ -40,35 +41,37 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 
 CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 {
-	if (L"BossJugCombatMgrScript"== _strScriptName)
+	if (L"BossJugCombatMgrScript" == _strScriptName)
 		return new BossJugCombatMgrScript;
-	if (L"BossJugHandScript"== _strScriptName)
+	if (L"BossJugHandScript" == _strScriptName)
 		return new BossJugHandScript;
-	if (L"BossJugScript"== _strScriptName)
+	if (L"BossJugScript" == _strScriptName)
 		return new BossJugScript;
-	if (L"CameraMoveScript"== _strScriptName)
+	if (L"CameraMoveScript" == _strScriptName)
 		return new CameraMoveScript;
-	if (L"DestroyScript"== _strScriptName)
+	if (L"DestroyScript" == _strScriptName)
 		return new DestroyScript;
-	if (L"GravityScript"== _strScriptName)
+	if (L"GravityScript" == _strScriptName)
 		return new GravityScript;
-	if (L"HandStateMgrScript"== _strScriptName)
+	if (L"HandStateMgrScript" == _strScriptName)
 		return new HandStateMgrScript;
-	if (L"MissileScript"== _strScriptName)
+	if (L"MissileScript" == _strScriptName)
 		return new MissileScript;
-	if (L"MonsterGunScript"== _strScriptName)
+	if (L"MonsterGunScript" == _strScriptName)
 		return new MonsterGunScript;
-	if (L"MonsterShieldScript"== _strScriptName)
+	if (L"MonsterSearchScript" == _strScriptName)
+		return new MonsterSearchScript;
+	if (L"MonsterShieldScript" == _strScriptName)
 		return new MonsterShieldScript;
-	if (L"MonsterSwordScript"== _strScriptName)
+	if (L"MonsterSwordScript" == _strScriptName)
 		return new MonsterSwordScript;
-	if (L"PlayerCamScript"== _strScriptName)
+	if (L"PlayerCamScript" == _strScriptName)
 		return new PlayerCamScript;
-	if (L"PlayerScript"== _strScriptName)
+	if (L"PlayerScript" == _strScriptName)
 		return new PlayerScript;
-	if (L"RigidBodyScript"== _strScriptName)
+	if (L"RigidBodyScript" == _strScriptName)
 		return new RigidBodyScript;
-	if (L"TrailScript"== _strScriptName)
+	if (L"TrailScript" == _strScriptName)
 		return new TrailScript;
 	return nullptr;
 }
@@ -76,8 +79,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 
 CScript* CScriptMgr::GetScript(UINT _iScriptType)
 {
-    switch((SCRIPT_TYPE)_iScriptType)
-    {
+	switch ((SCRIPT_TYPE)_iScriptType)
+	{
 	case SCRIPT_TYPE::BOSSJUGCOMBATMGRSCRIPT:
 		return new BossJugCombatMgrScript;
 	case SCRIPT_TYPE::BOSSJUGHANDSCRIPT:
@@ -96,6 +99,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new MissileScript;
 	case SCRIPT_TYPE::MONSTERGUNSCRIPT:
 		return new MonsterGunScript;
+	case SCRIPT_TYPE::MONSTERSEARCHSCRIPT:
+		return new MonsterSearchScript;
 	case SCRIPT_TYPE::MONSTERSHIELDSCRIPT:
 		return new MonsterShieldScript;
 	case SCRIPT_TYPE::MONSTERSWORDSCRIPT:
@@ -115,8 +120,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 
 const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 {
-    switch((SCRIPT_TYPE)_pScript->GetScriptType())
-    {
+	switch ((SCRIPT_TYPE)_pScript->GetScriptType())
+	{
 	case SCRIPT_TYPE::BOSSJUGCOMBATMGRSCRIPT:
 		return L"BossJugCombatMgrScript";
 	case SCRIPT_TYPE::BOSSJUGHANDSCRIPT:
@@ -135,6 +140,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"MissileScript";
 	case SCRIPT_TYPE::MONSTERGUNSCRIPT:
 		return L"MonsterGunScript";
+	case SCRIPT_TYPE::MONSTERSEARCHSCRIPT:
+		return L"MonsterSearchScript";
 	case SCRIPT_TYPE::MONSTERSHIELDSCRIPT:
 		return L"MonsterShieldScript";
 	case SCRIPT_TYPE::MONSTERSWORDSCRIPT:
@@ -147,7 +154,6 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"RigidBodyScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return L"TrailScript";
-		}
+	}
 	return nullptr;
 }
-

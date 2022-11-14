@@ -24,6 +24,9 @@ void CAnimation3DShader::UpdateData()
 	m_pOffsetMatBuffer->UpdateData_CS(17, true); // t17
 	m_pOutputBuffer->UpdateData_CS(0, false);   // u0
 
+	//TODO:레지스터 1번으로 UAV 업데이트(그래픽스 파이프라인에서는 사용하지 않으므로, false)
+	m_pSocketBuffer->UpdateData_CS(1, false);
+
 	m_iGroupX = (m_Param.iArr[0] / m_iGroupPerThreadCountX) + 1;
 	m_iGroupY = 1;
 	m_iGroupZ = 1;
@@ -49,5 +52,12 @@ void CAnimation3DShader::Clear()
 	{
 		m_pOutputBuffer->Clear();
 		m_pOutputBuffer = nullptr;
+	}
+
+	//TODO:클리어
+	if (nullptr != m_pSocketBuffer)
+	{
+		m_pSocketBuffer->Clear();
+		m_pSocketBuffer = nullptr;
 	}
 }

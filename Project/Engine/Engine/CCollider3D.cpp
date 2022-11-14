@@ -58,7 +58,7 @@ void CCollider3D::SetOffsetPos(Vec3 _vOffsetPos)
 	m_vOffsetPos = _vOffsetPos;
 }
 
-void CCollider3D::SetOffseetScale(Vec3 _vOffsetScale)
+void CCollider3D::SetOffsetScale(Vec3 _vOffsetScale)
 {
 	m_vOffsetScale = _vOffsetScale;
 
@@ -149,10 +149,10 @@ void CCollider3D::finalupdate()
 	m_matWorld                  = matScale * matRotation * matTranslation;
 
 	const Vec3   vGameObjectScale          = Transform()->GetWorldScale();
-	const Matrix matGameObjectScaleInverse = XMMatrixInverse(nullptr,
-	                                                         XMMatrixScaling(vGameObjectScale.x
-	                                                                         , vGameObjectScale.y
-	                                                                         , vGameObjectScale.z));
+	const Matrix matGameObjectScaleInverse = XMMatrixInverse(nullptr
+	                                                         , XMMatrixScaling(vGameObjectScale.x
+	                                                                           , vGameObjectScale.y
+	                                                                           , vGameObjectScale.z));
 	const Matrix matGameobjectWorld = Transform()->GetWorldMat();
 	// 충돌체 상대행렬 * 오브젝트 월드 크기 역행렬 * 오브젝트 월드 행렬(크기 * 회전 * 이동)
 	m_matWorld = m_matWorld * matGameObjectScaleInverse * matGameobjectWorld;

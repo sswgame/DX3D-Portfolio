@@ -93,7 +93,7 @@ void Collider3DUI::render_update()
 		ImGui::DragFloat("##Scale_SPHERE_drag", &vScale.z);
 		ImGui::PopItemWidth();
 	}
-	pCollider3D->SetOffseetScale(vScale);
+	pCollider3D->SetOffsetScale(vScale);
 
 	static const char* s_arrColliderTypeName[] = {"CUBE", "SPHERE"};
 	if (ImGui::BeginCombo("##Collider3D_COMBO", s_arrColliderTypeName[(int)type]))

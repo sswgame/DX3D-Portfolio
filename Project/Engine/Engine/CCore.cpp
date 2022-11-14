@@ -12,11 +12,14 @@
 #include "CFontMgr.h"
 
 CCore::CCore()
-	:
-	m_hWnd(nullptr)
-  , m_ptResolution{} {}
+	: m_hWnd(nullptr)
+	, m_ptResolution{}
+{
+}
 
-CCore::~CCore() { }
+CCore::~CCore()
+{
+}
 
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
@@ -51,13 +54,14 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 void CCore::Frame_Init()
 {
 	CSceneMgr::GetInst()->ClearLayer();
-
 	CTimeMgr::GetInst()->update();
 	CKeyMgr::GetInst()->update();
 	CRenderMgr::GetInst()->ClearCamera();
 }
 
-void CCore::Frame_Clear() { }
+void CCore::Frame_Clear()
+{
+}
 
 void CCore::progress()
 {
