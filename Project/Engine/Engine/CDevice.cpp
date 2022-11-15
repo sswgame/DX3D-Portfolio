@@ -6,11 +6,12 @@
 #include "CResMgr.h"
 
 CDevice::CDevice()
-	:
-	m_hWnd(nullptr)
-  , m_tSwapChainDesc{}
-  , m_arrRS{}
-  , m_arrCB{} {}
+	: m_hWnd(nullptr)
+	, m_tSwapChainDesc{}
+	, m_arrRS{}
+	, m_arrCB{}
+{
+}
 
 CDevice::~CDevice()
 {
@@ -30,16 +31,16 @@ int CDevice::init(HWND _hWnd, Vec2 _vRenderResolution)
 #endif
 	D3D_FEATURE_LEVEL iFeautureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 
-	HRESULT hr = D3D11CreateDevice(nullptr,
-	                               D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-	                               nullptr,
-	                               iFlag,
-	                               nullptr,
-	                               0,
-	                               D3D11_SDK_VERSION,
-	                               m_pDevice.GetAddressOf(),
-	                               &iFeautureLevel,
-	                               m_pDeviceContext.GetAddressOf());
+	HRESULT hr = D3D11CreateDevice(nullptr
+	                               , D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE
+	                               , nullptr
+	                               , iFlag
+	                               , nullptr
+	                               , 0
+	                               , D3D11_SDK_VERSION
+	                               , m_pDevice.GetAddressOf()
+	                               , &iFeautureLevel
+	                               , m_pDeviceContext.GetAddressOf());
 
 	if (FAILED(hr))
 	{
@@ -153,12 +154,12 @@ int CDevice::CreateView()
 	CResMgr::GetInst()->CreateTexture(L"RenderTargetTex", pBuffer, true);
 
 	// Depth Stencil Texture 만들기
-	Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->CreateTexture(L"DepthStencilTex",
-	                                                                   (UINT)m_vRenderResolution.x,
-	                                                                   (UINT)m_vRenderResolution.y,
-	                                                                   DXGI_FORMAT_D24_UNORM_S8_UINT,
-	                                                                   D3D11_BIND_DEPTH_STENCIL,
-	                                                                   true);
+	Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->CreateTexture(L"DepthStencilTex"
+	                                                                   , (UINT)m_vRenderResolution.x
+	                                                                   , (UINT)m_vRenderResolution.y
+	                                                                   , DXGI_FORMAT_D24_UNORM_S8_UINT
+	                                                                   , D3D11_BIND_DEPTH_STENCIL
+	                                                                   , true);
 
 	return S_OK;
 }
@@ -432,9 +433,9 @@ void CDevice::Init2D()
 	m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
 
 	// 2D용 렌더타겟을 만들어준다.
-	D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_HARDWARE,
-	                                                                   D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN,
-		                                                                   D2D1_ALPHA_MODE_PREMULTIPLIED));
+	D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_HARDWARE
+	                                                                   , D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN
+		                                                                   , D2D1_ALPHA_MODE_PREMULTIPLIED));
 
 	if (FAILED(m_pFactory2D->CreateDxgiSurfaceRenderTarget(pBackBuffer.Get(), props, m_pRtv2D.GetAddressOf())))
 	{

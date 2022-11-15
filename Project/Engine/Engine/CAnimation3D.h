@@ -5,43 +5,70 @@ class CAnimator3D;
 
 enum class ANIMATION_STATE
 {
-	BEFORE_PLAY,	// 재생 이전 
-	PLAY,			// 재생 
-	STOP,			// 일시 정지 
-	FINISH,			// 끝 
-	END,
+	BEFORE_PLAY	// 재생 이전 
+	, PLAY		// 재생 
+	, STOP		// 일시 정지 
+	, FINISH	// 끝 
+	, END
 };
-
 
 class CAnimation3D : public CEntity
 {
 private:
-	CAnimator3D*		m_pOwner;
-	tMTAnimClip			m_tClip;				// 애니메이션 정보  
+	CAnimator3D* m_pOwner;
+	tMTAnimClip  m_tClip;				// 애니메이션 정보  
 
-	ANIMATION_STATE		m_eCurState;			// 현재 애니메이션 상태 
+	ANIMATION_STATE m_eCurState;			// 현재 애니메이션 상태 
 
-	int					m_iFrameCnt;			// 30 프레임 - Default 
+	int m_iFrameCnt;			// 30 프레임 - Default 
 
-	bool				m_bFinalMatUpdate;		// 최종행렬 연산 수행여부
-	bool				m_bFinish;				// 애니메이션 종료 여부
-	bool				m_bPlay;				// 애니메이션 실행 여부 
+	bool m_bFinalMatUpdate;		// 최종행렬 연산 수행여부
+	bool m_bFinish;				// 애니메이션 종료 여부
+	bool m_bPlay;				// 애니메이션 실행 여부 
 
 	// [ CLIP INFO	] 
-	int					m_iCurClip;				// 클립 번호 ( Idx )
+	int m_iCurClip;				// 클립 번호 ( Idx )
 	// [ FRAME INFO ]
-	int					m_iPrevAnimEndFrameIdx; // 이전 애니메이션 끝 프레임 번호
-	int					m_iCurFrameIdx;			// 현재 프레임 번호
-	int					m_iNextFrameIdx;		// 다음 프레임 번호 
-	float				m_fSpeed;				// 프레임 속도 
-	float				m_fRatio;				// 프레임 - 프레임 사이 시간에 따른 비율 
+	int   m_iPrevAnimEndFrameIdx; // 이전 애니메이션 끝 프레임 번호
+	int   m_iCurFrameIdx;			// 현재 프레임 번호
+	int   m_iNextFrameIdx;		// 다음 프레임 번호 
+	float m_fSpeed;				// 프레임 속도 
+	float m_fRatio;				// 프레임 - 프레임 사이 시간에 따른 비율 
 	// [ TIME INFO ]
-	vector<double>		m_vecClipUpdateTime;	// 애니메이션 플레이 이후 누적시간 
-	double				m_dCurTime;				// 현재 시간 
-	float				m_fLerpTime;			// 보간 시간 
+	vector<double> m_vecClipUpdateTime;	// 애니메이션 플레이 이후 누적시간 
+	double         m_dCurTime;				// 현재 시간 
+	float          m_fLerpTime;			// 보간 시간 
 
-	float				m_fLerpTimeAcc;
-	int					m_iPlayCnt;			// 애니메이션이 몇번 반복 실행되고 있는지 카운트
+	float m_fLerpTimeAcc;
+	int   m_iPlayCnt;			// 애니메이션이 몇번 반복 실행되고 있는지 카운트
+
+	bool                                           m_hasCallback = false;
+	bool                                           m_fired       = false;
+	std::unordered_map<int, std::function<void()>> m_mapCallback;
+public:
+	void SetCallback(std::function<void()> func, int frameIndex)
+	{
+		auto iter = m_mapCallback.find(frameIndex);
+		if (iter == m_mapCallback.end())
+		{
+			m_hasCallback = true;
+			m_mapCallback.insert({frameIndex, func});
+		}
+		else
+		{
+			assert(nullptr &&"EXIST CALLBAC AT THE FRAME INDEX");
+		}
+	}
+
+	void FireCallback(int frameIndex)
+	{
+		auto iter = m_mapCallback.find(frameIndex);
+		if (iter != m_mapCallback.end())
+		{
+			iter->second();
+			m_fired = true;
+		}
+	}
 
 public:
 	void         finalupdate();
@@ -61,10 +88,8 @@ public:
 public:
 	// [ SET PART ]
 	void SetOwner(CAnimator3D* _owner) { m_pOwner = _owner; }
-	void SetFrameInfoByFrame(int _ClipNum,
-	                         int _startFrameIdx = 0, int _EndFrameIdx = 0);
-	void SetFrameInfoByTime(int    _ClipNum,
-	                        double _StartTime = 0.0, double _EndTime = 0.0);
+	void SetFrameInfoByFrame(int _ClipNum, int _startFrameIdx = 0, int _EndFrameIdx = 0);
+	void SetFrameInfoByTime(int _ClipNum, double _StartTime = 0.0, double _EndTime = 0.0);
 
 	void SetClipUpdateTime(int _vecClipSize);
 	void SetPrevFrameEndIdx(int _idx) { m_iPrevAnimEndFrameIdx = _idx; }

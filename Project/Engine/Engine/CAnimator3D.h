@@ -26,6 +26,8 @@ private:
 	//TODO:소켓 정보를 저장할 구조화 버퍼 및 들고온 본 행렬 정보를 저장할 벡터.
 	CStructuredBuffer*  m_pSocketBuffer = nullptr;
 	std::vector<Matrix> m_vecSocketMatrix;
+	bool                m_bUseSocket = false;
+
 private:
 	// [ 3D ANIMATION INFO ]
 	map<wstring, CAnimation3D*> m_mapAnim;               // 전체 애니메이션 
@@ -40,14 +42,14 @@ private:
 	CREATE_ANIMATION_MODE m_eCreateMode;			// 애니메이션 생성 모드 
 
 public:
-	virtual void finalupdate() override;
-	virtual void UpdateData() override;
-	void         ClearData();
+	void finalupdate() override;
+	void UpdateData() override;
+	void ClearData();
 
 
 public:
 	CAnimation3D* FindAnim(const wstring& _strName);
-	void          CopyAllAnim(const map<wstring, CAnimation3D*> _mapAnim);
+	void          CopyAllAnim(map<wstring, CAnimation3D*> _mapAnim);
 	void          DeleteAnim(const wstring& _wstrName);
 	CAnimation3D* CreateAnimByFrame(const wstring& _strName, int _clipNum = 0, int _startFrame = 0, int _EndFrame = 0);
 	CAnimation3D* CreateAnimByTime(const wstring& _strName
@@ -83,7 +85,7 @@ public:
 	// [ GET PART ]
 	const map<wstring, CAnimation3D*> GetAllAnim() { return m_mapAnim; }  // 전체 애니메이션을 받는다. 
 
-	UINT        GetBoneCount() { return (UINT)m_pVecBones->size(); }
+	UINT        GetBoneCount() { return static_cast<UINT>(m_pVecBones->size()); }
 	tMTAnimClip GetAnimClip(int _clipIdx) { return m_pVecClip->at(_clipIdx); }
 	bool        GetRepeat() { return m_bRepeat; }
 	bool        GetPlayWithChild() { return m_bPlayWithChild; }
@@ -99,8 +101,6 @@ public:
 
 	//TODO:Animation3D에 넘겨주기 위한 Get
 	CStructuredBuffer* GetSocketBuffer() const { return m_pSocketBuffer; }
-	//TODO:Script에서 접근하는 본 행렬 정보 매트릭스
-	const std::vector<Matrix>& GetSocketMatrix() const { return m_vecSocketMatrix; }
 	//TODO: 만약에 본 개수가 달라질 경우, 그에 대응하는 소켓 행렬들과 버퍼 크기를 재조정하기 위한 함수
 	void ResizeSocketMatrix()
 	{
@@ -110,13 +110,45 @@ public:
 		m_vecSocketMatrix.resize(GetBoneCount());
 	}
 
+	void DisableSocket() { m_bUseSocket = false; }
+
+	const Matrix& GetSocket(int index)
+	{
+		index        = ClampData(index, 0, (int)m_vecSocketMatrix.size());
+		m_bUseSocket = true;
+
+		return m_vecSocketMatrix[index];
+	}
+
 public:
 	void RegisterPrevAnim(CAnimation3D* _pPrevAnim) { m_pPrevAnim = _pPrevAnim; }
 	void RegisterNextAnim(CAnimation3D* _pNextAnim);
 
+private:
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
+	template <typename T, typename...Args>
+	void AddCallback(const std::wstring& animationName
+	                 , int               frameIndex
+	                 , T*                pInstance
+	                 , void (T::*        callback)(Args ...)
+	                 , Args ...          args)
+	{
+		auto arguments = std::make_tuple(pInstance, std::forward<decltype(args)>(args)...);
+		auto func      = [callback,arguments = std::move(arguments)]()
+		{
+			std::apply(callback, arguments);
+		};
+
+		CAnimation3D* pAnimation = FindAnim(animationName);
+		assert(pAnimation && "ANIMAITION NOT FOUND");
+
+		frameIndex = ClampData(frameIndex, pAnimation->GetStartFrameIdx(), pAnimation->GetEndFrameIdx());
+		pAnimation->SetCallback(std::move(func), frameIndex);
+	}
+
+public:
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
@@ -125,5 +157,5 @@ public:
 	CLONE(CAnimator3D);
 	CAnimator3D();
 	CAnimator3D(const CAnimator3D& _origin);
-	~CAnimator3D();
+	virtual ~CAnimator3D();
 };

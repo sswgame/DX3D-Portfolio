@@ -64,7 +64,7 @@ CAnimator3D::~CAnimator3D()
 
 void CAnimator3D::finalupdate()
 {
-	if (nullptr == m_pCurAnim)
+	if (nullptr == m_pCurAnim || false == m_pCurAnim->IsPlay())
 		return;
 
 	m_pCurAnim->finalupdate();
@@ -87,8 +87,11 @@ void CAnimator3D::UpdateData()
 	if (m_pCurAnim != nullptr)
 	{
 		m_pCurAnim->UpdateData();
-		//TODO:계산 셰이더에서 계산한 결과를 CPU쪽으로 들고옴 (GPU->CPU)
-		m_pSocketBuffer->GetData(m_vecSocketMatrix.data());
+		if (m_bUseSocket)
+		{
+			//TODO:계산 셰이더에서 계산한 결과를 CPU쪽으로 들고옴 (GPU->CPU)
+			m_pSocketBuffer->GetData(m_vecSocketMatrix.data());
+		}
 	}
 }
 

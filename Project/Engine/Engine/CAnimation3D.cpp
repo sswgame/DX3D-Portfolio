@@ -16,7 +16,7 @@ CAnimation3D::CAnimation3D()
 	, m_iFrameCnt(30)
 	, m_bFinalMatUpdate(false)
 	, m_bFinish(false)
-	, m_bPlay(true)
+	, m_bPlay(false)
 	, m_iCurClip(0)
 	, m_iPrevAnimEndFrameIdx{0}
 	, m_iCurFrameIdx(0)
@@ -91,6 +91,7 @@ void CAnimation3D::finalupdate()
 				m_iPlayCnt     = 1;
 				m_fLerpTimeAcc = 0.f;
 				m_eCurState    = ANIMATION_STATE::PLAY;
+				m_fired        = false;
 			}
 		}
 		break;
@@ -113,7 +114,6 @@ void CAnimation3D::finalupdate()
 			int    iFrameCount = m_pOwner->GetFrameCount();
 			double dFrameIdx   = m_dCurTime * (double)m_iFrameCnt;
 			m_iCurFrameIdx     = (int)(dFrameIdx);
-
 			// 다음 프레임 인덱스
 			if (m_iCurFrameIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
 				m_iNextFrameIdx = m_iCurFrameIdx;	// 끝이면 현재 인덱스를 유지
@@ -143,6 +143,19 @@ void CAnimation3D::finalupdate()
 
 	// 컴퓨트 쉐이더 연산여부
 	m_bFinalMatUpdate = false;
+
+	//TODO:ANIMATION FUNC
+	if (m_hasCallback && false == m_fired)
+	{
+		if (m_pOwner->GetRepeat() == true && m_eCurState == ANIMATION_STATE::BEFORE_PLAY)
+		{
+			FireCallback(m_iNextFrameIdx);
+		}
+		else
+		{
+			FireCallback(m_iCurFrameIdx);
+		}
+	}
 }
 
 void CAnimation3D::UpdateData()

@@ -36,8 +36,9 @@ void MonsterGunScript::start()
 {
 	InitState();
 	MakeSearchObject();
-	CMgrScript<CObjectManager>::GetInst()->AddScriptEvent(this, &MonsterGunScript::TestCode, 5);
-	CMgrScript<CObjectManager>::GetInst()->AddScriptEvent(this, &MonsterGunScript::TestCode2, 5, 50.f);
+	//CMgrScript<CObjectManager>::GetInst()->AddScriptEvent(this, &MonsterGunScript::TestCode, 5);
+	//CMgrScript<CObjectManager>::GetInst()->AddScriptEvent(this, &MonsterGunScript::TestCode2, 5, 50.f);
+	Animator3D()->AddCallback(L"IDLE", 5, this, &MonsterGunScript::TestCode2, 5, 50.f);
 }
 
 void MonsterGunScript::update()
@@ -49,6 +50,15 @@ void MonsterGunScript::update()
 			FSM()->ChangeState(GAME::DEUXIEMIE::RUN);
 		}
 	}*/
+	if (KEY_TAP(KEY::H))
+	{
+		Animator3D()->GetSocket(0);
+	}
+
+	if (KEY_AWAY(KEY::H))
+	{
+		Animator3D()->DisableSocket();
+	}
 }
 
 void MonsterGunScript::OnCollisionEnter(CGameObject* _OtherObject)
@@ -97,7 +107,8 @@ void MonsterGunScript::TestCode(int a)
 void MonsterGunScript::TestCode2(int a, float b)
 {
 	float result = a * b;
-	MessageBox(nullptr, std::to_wstring(result).c_str(), L"TEST2",MB_OK);
+	/*MessageBox(nullptr, std::to_wstring(result).c_str(), L"TEST2",MB_OK);*/
+	OutputDebugString(L"TEST");
 }
 
 void MonsterGunScript::InitState()
