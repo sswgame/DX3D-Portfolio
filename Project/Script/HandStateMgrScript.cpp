@@ -14,7 +14,6 @@
 #include "JugHand_Idle.h"
 #include "JugHand_None.h"
 #include "JugHand_Vanish.h"
-#include <random>
 
 HandStateMgrScript::HandStateMgrScript()
 	: CScript{(int)SCRIPT_TYPE::HANDSTATEMGRSCRIPT}

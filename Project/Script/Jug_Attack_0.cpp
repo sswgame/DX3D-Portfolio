@@ -37,7 +37,7 @@ void Jug_Attack_0::Init()
 void Jug_Attack_0::Enter()
 {
 	// IDLE 애니메이션 플레이
-	GetOwner()->Animator3D()->Play(L"JUG_ATTACK_0", true);
+	GetOwner()->Animator3D()->Play(L"JUG_ATTACK_0", false);
 }
 
 void Jug_Attack_0::Exit()

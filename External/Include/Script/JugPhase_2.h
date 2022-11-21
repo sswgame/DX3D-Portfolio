@@ -11,14 +11,22 @@ private:
 	BossJugCombatMgrScript* m_pCombatMgr;
 	CFSM*                   m_pBossFSM;
 	CAnimator3D*            m_pBossAnimator;
+
+	float m_fIdleTime;
+	UINT  m_iPrevAttackPattern;
+	UINT  m_iAttackPattern;
 	
-	UINT m_iAttackPattern;
-	bool m_bCurAttackEnd;
+	bool m_bAttackProceeding;
+	bool m_bRot;
+
 private:
-	void Attack_0();	// 빛 기둥 공격
-	void Attack_1();	// 망치 공격
-	void Attack_2();	// 번개 공격
-	void Attack_3();	// 투사체 공격
+	void RotTowardPlayer();
+	void ChangePattern();
+
+	void Attack_1();	// 빛 기둥 공격
+	void Attack_2();	// 망치 공격
+	void Attack_3();	// 번개 공격
+	void Attack_4();	// 투사체 공격
 
 public:
 	virtual void Init();

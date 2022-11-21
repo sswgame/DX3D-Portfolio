@@ -139,7 +139,6 @@
     <ClInclude Include="MonsterShieldScript.h">
       <Filter>Script\Monster\Deuxiemie\Shield</Filter>
     </ClInclude>
-    <ClInclude Include="Jug_Fly.h" />
     <ClInclude Include="HandStateMgrScript.h">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClInclude>
@@ -187,6 +186,10 @@
     </ClInclude>
     <ClInclude Include="CObjectManager.h" />
     <ClInclude Include="CScriptMgr.h" />
+    <ClInclude Include="Jug_Fly.h">
+      <Filter>Script\Boss\Jug\Jug\state</Filter>
+    </ClInclude>
+    <ClInclude Include="ColumnFlameScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -326,7 +329,6 @@
     <ClCompile Include="MonsterShieldScript.cpp">
       <Filter>Script\Monster\Deuxiemie\Shield</Filter>
     </ClCompile>
-    <ClCompile Include="Jug_Fly.cpp" />
     <ClCompile Include="HandStateMgrScript.cpp">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClCompile>
@@ -364,6 +366,10 @@
       <Filter>Script\Monster\Deuxiemie\Gun\State</Filter>
     </ClCompile>
     <ClCompile Include="CObjectManager.cpp" />
+    <ClCompile Include="Jug_Fly.cpp">
+      <Filter>Script\Boss\Jug\Jug\state</Filter>
+    </ClCompile>
+    <ClCompile Include="ColumnFlameScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -488,6 +494,12 @@
     </Filter>
     <Filter Include="Script\Common">
       <UniqueIdentifier>{9f8f4ddc-f144-4954-9e7a-80b22286feed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Boss\Jug\AttackOBJ">
+      <UniqueIdentifier>{f89f8bfe-659a-4691-b863-6cb943486692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Boss\Jug\AttackOBJ\ColumnFlame">
+      <UniqueIdentifier>{5107da19-b96a-4893-a7d3-f47aeeec9661}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

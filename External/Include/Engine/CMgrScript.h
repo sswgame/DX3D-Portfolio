@@ -3,41 +3,69 @@
 
 #include "CSceneMgr.h"
 #include "CScene.h"
+#include <tuple>
 
 #undef max
-template <typename T>
-class CMgrScript : public CScript
+class CSingletonScript
+	: public CScript
 {
-private:
+protected:
+	inline static CGameObject*                       s_pInstance = nullptr;
+	inline static std::vector<std::function<void()>> s_vecFunc{};
+
 public:
-	T* GetInst()
+	template <typename T, typename...Args>
+	static void AddScriptEvent(T* pInstance, void (T::*callback)(Args ...), Args ...args)
 	{
-		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-		if (pCurScene->GetSceneState() != SCENE_STATE::PLAY)
-			return nullptr;
-
-		CGameObject* pDummyObj = CSceneMgr::GetInst()->FindObjectByName(L"DummyObject");
-
-		if (nullptr == pDummyObj)
+		auto arguments = std::make_tuple(pInstance, std::forward<decltype(args)>(args)...);
+		auto func      = [callback,arguments = std::move(arguments)]()
 		{
-			pDummyObj = new CGameObject;
-			pDummyObj->AddComponent(new CTransform);
-			CSceneMgr::GetInst()->GetCurScene()->AddObject(pDummyObj, 0);
+			std::apply(callback, arguments);
+		};
+		s_vecFunc.push_back(std::move(func));
+	}
+
+	static void FireScriptEvents()
+	{
+		for (auto& func : s_vecFunc)
+		{
+			func();
 		}
-
-		T* pScript = pDummyObj->GetScript<T>();
-		if (nullptr != pScript)
-			return pScript;
-
-		pScript = new T;
-		pDummyObj->AddComponent(pScript);
-		return pScript;
+		s_vecFunc.clear();
 	}
 
 public:
-	CMgrScript()
-		:
-		CScript{std::numeric_limits<int>::max()} { }
+	CSingletonScript()
+		: CScript{std::numeric_limits<int>::max()}
+	{
+	}
 
-	virtual ~CMgrScript() { }
+	virtual ~CSingletonScript() { s_pInstance = nullptr; }
+	CLONE(CSingletonScript);
+};
+
+template <typename T>
+class CMgrScript : public CSingletonScript
+{
+public:
+	static T* GetInst()
+	{
+		if (nullptr == s_pInstance)
+		{
+			s_pInstance = new CGameObject{};
+			s_pInstance->SetName(L"ManagerScript");
+			CSceneMgr::GetInst()->GetCurScene()->AddObject(s_pInstance, 0);
+		}
+
+		T* pScript = s_pInstance->GetScript<T>();
+		if (nullptr == pScript)
+		{
+			pScript = new T{};
+			s_pInstance->AddComponent(pScript);
+			pScript->start();
+
+			return pScript;
+		}
+		return pScript;
+	}
 };

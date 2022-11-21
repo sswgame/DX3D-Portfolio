@@ -134,10 +134,10 @@
       <Filter>Engine\07. Resource\07. Shader\ComputeShader</Filter>
     </ClInclude>
     <ClInclude Include="CTestShader.h">
-      <Filter>Engine\HLSL\ComputeShader\TestShader</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\TestShader</Filter>
     </ClInclude>
     <ClInclude Include="CParticleUpdateShader.h">
-      <Filter>Engine\HLSL\ComputeShader\Particle</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\Particle</Filter>
     </ClInclude>
     <ClInclude Include="CParticleSystem.h">
       <Filter>Engine\05. Component\RenderComponent\12. ParticleSystem</Filter>
@@ -176,7 +176,7 @@
       <Filter>Engine\05. Component\06. Animator3D</Filter>
     </ClInclude>
     <ClInclude Include="CAnimation3DShader.h">
-      <Filter>Engine\HLSL\ComputeShader\Animation3D</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\Animation3D</Filter>
     </ClInclude>
     <ClInclude Include="CMeshData.h">
       <Filter>Engine\07. Resource\02. MeshData</Filter>
@@ -185,13 +185,13 @@
       <Filter>Engine\Module</Filter>
     </ClInclude>
     <ClInclude Include="CHeightMapShader.h">
-      <Filter>Engine\HLSL\ComputeShader\LandScape\HeightMap</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\LandScape\HeightMap</Filter>
     </ClInclude>
     <ClInclude Include="CRaycastShader.h">
-      <Filter>Engine\HLSL\ComputeShader\LandScape\Raycast</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\LandScape\Raycast</Filter>
     </ClInclude>
     <ClInclude Include="CWeightMapShader.h">
-      <Filter>Engine\HLSL\ComputeShader\LandScape\WeightMap</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\LandScape\WeightMap</Filter>
     </ClInclude>
     <ClInclude Include="CFontMgr.h">
       <Filter>Engine\03. Manager\10. FontManager</Filter>
@@ -331,10 +331,10 @@
       <Filter>Engine\05. Component\RenderComponent\12. ParticleSystem</Filter>
     </ClCompile>
     <ClCompile Include="CTestShader.cpp">
-      <Filter>Engine\HLSL\ComputeShader\TestShader</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\TestShader</Filter>
     </ClCompile>
     <ClCompile Include="CParticleUpdateShader.cpp">
-      <Filter>Engine\HLSL\ComputeShader\Particle</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\Particle</Filter>
     </ClCompile>
     <ClCompile Include="CRenderMgr_init.cpp">
       <Filter>Engine\03. Manager\02. RenderMgr</Filter>
@@ -376,7 +376,7 @@
       <Filter>Engine\05. Component\06. Animator3D</Filter>
     </ClCompile>
     <ClCompile Include="CAnimation3DShader.cpp">
-      <Filter>Engine\HLSL\ComputeShader\Animation3D</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\Animation3D</Filter>
     </ClCompile>
     <ClCompile Include="CMeshData.cpp">
       <Filter>Engine\07. Resource\02. MeshData</Filter>
@@ -385,13 +385,13 @@
       <Filter>Engine\Module</Filter>
     </ClCompile>
     <ClCompile Include="CHeightMapShader.cpp">
-      <Filter>Engine\HLSL\ComputeShader\LandScape\HeightMap</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\LandScape\HeightMap</Filter>
     </ClCompile>
     <ClCompile Include="CRaycastShader.cpp">
-      <Filter>Engine\HLSL\ComputeShader\LandScape\Raycast</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\LandScape\Raycast</Filter>
     </ClCompile>
     <ClCompile Include="CWeightMapShader.cpp">
-      <Filter>Engine\HLSL\ComputeShader\LandScape\WeightMap</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\LandScape\WeightMap</Filter>
     </ClCompile>
     <ClCompile Include="CFontMgr.cpp">
       <Filter>Engine\03. Manager\10. FontManager</Filter>
@@ -442,6 +442,9 @@
     </Filter>
     <Filter Include="Engine\Module">
       <UniqueIdentifier>{6c2edf20-0cbf-4f35-8483-1f6715732561}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ShaderCode">
+      <UniqueIdentifier>{56648531-ef52-40a1-87ec-2ab5bc787db1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\03. Manager\01. Device">
       <UniqueIdentifier>{7f8cde8a-6461-43af-b50a-2049acb4fdad}</UniqueIdentifier>
@@ -530,6 +533,18 @@
     <Filter Include="Engine\03. Manager\01. Device\StructuredBuffer">
       <UniqueIdentifier>{24e58c48-7a88-4d5c-89ec-9c8f7b0cdf64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\ShaderCode\ComputeShader">
+      <UniqueIdentifier>{c705459f-36c6-4b9a-ab87-07df82f5ad61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ShaderCode\GraphicsShader">
+      <UniqueIdentifier>{41ccf228-a36e-4bea-ab99-d1e1e62190f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ShaderCode\ComputeShader\TestShader">
+      <UniqueIdentifier>{f95b9f61-94f8-442a-ac8b-2fe74245948f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ShaderCode\ComputeShader\Particle">
+      <UniqueIdentifier>{8e930d49-928c-4b1c-bb50-1020b9ca74be}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\07. Resource\08. SceneFile">
       <UniqueIdentifier>{b3c4c678-d8a1-4527-bdb2-3fb9ba4890cf}</UniqueIdentifier>
     </Filter>
@@ -575,6 +590,21 @@
     <Filter Include="Engine\05. Component\02. Camera\Frustum">
       <UniqueIdentifier>{21346835-3164-4371-9e61-42f3944165a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\ShaderCode\ComputeShader\Animation3D">
+      <UniqueIdentifier>{85151d42-9892-4d58-96cc-3f6ae8ad0374}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ShaderCode\ComputeShader\LandScape">
+      <UniqueIdentifier>{4497fdb9-0da1-4b0c-84b5-2d6102aaee81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ShaderCode\ComputeShader\LandScape\HeightMap">
+      <UniqueIdentifier>{db701d3d-7172-4131-a625-ff308cba6bde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ShaderCode\ComputeShader\LandScape\WeightMap">
+      <UniqueIdentifier>{6188124b-55ea-44d5-8832-438b775f47d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ShaderCode\ComputeShader\LandScape\Raycast">
+      <UniqueIdentifier>{a8aeebad-956f-407b-9ef9-ffc5f4a533b8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\03. Manager\10. FontManager">
       <UniqueIdentifier>{1444baf0-6f8c-4ab2-bfd8-acf124f6ad3c}</UniqueIdentifier>
     </Filter>
@@ -587,105 +617,78 @@
     <Filter Include="Engine\05. Component\FSM\State">
       <UniqueIdentifier>{773aa750-5437-4ebe-a930-29ced1cf6ebc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\HLSL">
-      <UniqueIdentifier>{56648531-ef52-40a1-87ec-2ab5bc787db1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HLSL\ComputeShader">
-      <UniqueIdentifier>{c705459f-36c6-4b9a-ab87-07df82f5ad61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HLSL\ComputeShader\TestShader">
-      <UniqueIdentifier>{f95b9f61-94f8-442a-ac8b-2fe74245948f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HLSL\ComputeShader\Particle">
-      <UniqueIdentifier>{8e930d49-928c-4b1c-bb50-1020b9ca74be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HLSL\ComputeShader\Animation3D">
-      <UniqueIdentifier>{85151d42-9892-4d58-96cc-3f6ae8ad0374}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HLSL\ComputeShader\LandScape">
-      <UniqueIdentifier>{4497fdb9-0da1-4b0c-84b5-2d6102aaee81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HLSL\ComputeShader\LandScape\HeightMap">
-      <UniqueIdentifier>{db701d3d-7172-4131-a625-ff308cba6bde}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HLSL\ComputeShader\LandScape\WeightMap">
-      <UniqueIdentifier>{6188124b-55ea-44d5-8832-438b775f47d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HLSL\ComputeShader\LandScape\Raycast">
-      <UniqueIdentifier>{a8aeebad-956f-407b-9ef9-ffc5f4a533b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HLSL\GraphicsShader">
-      <UniqueIdentifier>{41ccf228-a36e-4bea-ab99-d1e1e62190f3}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
       <Filter>Engine\Module</Filter>
     </None>
     <None Include="landscape.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="light.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="paperburn.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="particlerender.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="postprocess.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="std2d.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="std3d.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="std3d_deferred.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="tessellation.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="tilemap.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="tool.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </None>
     <None Include="testcs.fx">
-      <Filter>Engine\HLSL\ComputeShader\TestShader</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\TestShader</Filter>
     </None>
     <None Include="particle.fx">
-      <Filter>Engine\HLSL\ComputeShader\Particle</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\Particle</Filter>
     </None>
     <None Include="func.fx">
-      <Filter>Engine\HLSL</Filter>
+      <Filter>Engine\ShaderCode</Filter>
     </None>
     <None Include="struct.fx">
-      <Filter>Engine\HLSL</Filter>
+      <Filter>Engine\ShaderCode</Filter>
     </None>
     <None Include="value.fx">
-      <Filter>Engine\HLSL</Filter>
+      <Filter>Engine\ShaderCode</Filter>
     </None>
     <None Include="animation3d.fx">
-      <Filter>Engine\HLSL\ComputeShader\Animation3D</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\Animation3D</Filter>
     </None>
     <None Include="heightmap.fx">
-      <Filter>Engine\HLSL\ComputeShader\LandScape\HeightMap</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\LandScape\HeightMap</Filter>
     </None>
     <None Include="raycast.fx">
-      <Filter>Engine\HLSL\ComputeShader\LandScape\Raycast</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\LandScape\Raycast</Filter>
     </None>
     <None Include="weightmap.fx">
-      <Filter>Engine\HLSL\ComputeShader\LandScape\WeightMap</Filter>
+      <Filter>Engine\ShaderCode\ComputeShader\LandScape\WeightMap</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="trail.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
+    </FxCompile>
+    <FxCompile Include="boss.fx">
+      <Filter>Engine\ShaderCode\GraphicsShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

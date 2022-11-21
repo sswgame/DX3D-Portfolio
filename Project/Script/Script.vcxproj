@@ -193,6 +193,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="CDeath_Gun.h" />
     <ClInclude Include="CIdle_Gun.h" />
     <ClInclude Include="CObjectManager.h" />
+    <ClInclude Include="ColumnFlameScript.h" />
     <ClInclude Include="CRun_Gun.h" />
     <ClInclude Include="CStun_Gun.h" />
     <ClInclude Include="CTranslateMgr.h" />
@@ -258,6 +259,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="CDeath_Gun.cpp" />
     <ClCompile Include="CIdle_Gun.cpp" />
     <ClCompile Include="CObjectManager.cpp" />
+    <ClCompile Include="ColumnFlameScript.cpp" />
     <ClCompile Include="CRun_Gun.cpp" />
     <ClCompile Include="CStun_Gun.cpp" />
     <ClCompile Include="CTranslateMgr.cpp" />

@@ -3,8 +3,8 @@
 
 enum class COLLIDER3D_TYPE
 {
-	CUBE,
-	SPHERE
+	CUBE
+	, SPHERE
 };
 
 class CCollider3D final
@@ -23,7 +23,7 @@ private:
 public:
 	void SetCollider3DType(COLLIDER3D_TYPE _type);
 	void SetOffsetPos(Vec3 _vOffsetPos);
-	void SetOffseetScale(Vec3 _vOffsetScale);
+	void SetOffsetScale(Vec3 _vOffsetScale);
 
 	COLLIDER3D_TYPE GetCollider3DType() const;
 	Vec3            GetWorldPos() const;

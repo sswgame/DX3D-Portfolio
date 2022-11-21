@@ -65,13 +65,11 @@ void BossJugCombatMgrScript::SpawnStage()
 		m_pJug->Transform()->SetRelativeScale(1.5f, 1.5f, 1.5f);
 
 		CSceneMgr::GetInst()->SpawnObject(m_pJug, L"MONSTER");
-
 		/* 公扁 积己*/
 		if (nullptr == m_pHammer)
 		{
 			pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\jugulus+hammer_final1.mdat",
 			                                                L"meshdata\\jugulus+hammer_final1.mdat");
-
 			m_pHammer = pMeshData->Instantiate();
 			m_pHammer->SetName(L"JUG_Hammer");
 			m_pHammer->Transform()->SetRelativePos(-320.f, 0.f, -40.f);
@@ -80,6 +78,7 @@ void BossJugCombatMgrScript::SpawnStage()
 			m_pHammer->Transform()->SetRelativeRotation(Rot);
 			//CSceneMgr::GetInst()->SpawnObject(m_pHammer, L"MONSTER");
 			m_pJug->AddChild(m_pHammer);
+			m_pHammer->Deactivate();
 		}
 
 
@@ -87,19 +86,19 @@ void BossJugCombatMgrScript::SpawnStage()
 		m_pJug->GetScript<BossJugScript>()->Init();
 	}
 
-	/* 焊胶 颊 积己 */
-	if (nullptr == m_pJugHandMgr)
-	{
-		m_pJugHandMgr = new CGameObject;
-		m_pJugHandMgr->SetName(L"HANDS");
-		m_pJugHandMgr->AddComponent(new CTransform);
-		m_pJugHandMgr->AddComponent(new HandStateMgrScript);
+	///* 焊胶 颊 积己 */
+	//if (nullptr == m_pJugHandMgr)
+	//{
+	//	m_pJugHandMgr = new CGameObject;
+	//	m_pJugHandMgr->SetName(L"HANDS");
+	//	m_pJugHandMgr->AddComponent(new CTransform);
+	//	m_pJugHandMgr->AddComponent(new HandStateMgrScript);
 
-		CSceneMgr::GetInst()->SpawnObject(m_pJugHandMgr, L"MONSTER");
-		//m_pJug->AddChild(m_pJugHandMgr);
+	//	CSceneMgr::GetInst()->SpawnObject(m_pJugHandMgr, GAME::LAYER::OBJECT_MGR);
+	//	//m_pJug->AddChild(m_pJugHandMgr);
 
-		//m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
-	}
+	//	//m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
+	//}
 }
 
 void BossJugCombatMgrScript::InitState()
@@ -150,8 +149,7 @@ void BossJugCombatMgrScript::CheckPhase() const
 		return;
 	}
 	// [ Dead ]
-	if (L"JUG_PHASE_2" == m_pPhaseFSM->GetCurState()->GetStateType()
-	    && 0 >= m_pJug->GetScript<BossJugScript>()->GetHP())
+	if (0 >= m_pJug->GetScript<BossJugScript>()->GetHP())
 	{
 		m_pPhaseFSM->ChangeState(L"JUG_PHASE_DEAD");
 		return;

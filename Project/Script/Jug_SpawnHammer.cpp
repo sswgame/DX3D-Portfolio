@@ -45,7 +45,6 @@ void Jug_SpawnHammer::Exit()
 
 void Jug_SpawnHammer::Update()
 {
-	CState::Update();
 }
 
 void Jug_SpawnHammer::LateUpdate()

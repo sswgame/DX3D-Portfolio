@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "BossJugHandScript.h"
 
-#include <random>
-
 #include <Engine/CAnimation3D.h>
 #include <Engine/CAnimator3D.h>
 #include <Engine/CGameObject.h>

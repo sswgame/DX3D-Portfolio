@@ -35,7 +35,7 @@ void Jug_Dead::Init()
 void Jug_Dead::Enter()
 {
 	// IDLE 애니메이션 플레이
-	GetOwner()->Animator3D()->Play(L"JUG_DEAD", true);
+	GetOwner()->Animator3D()->Play(L"JUG_DEAD", false);
 }
 
 void Jug_Dead::Exit()
@@ -44,7 +44,6 @@ void Jug_Dead::Exit()
 
 void Jug_Dead::Update()
 {
-	CState::Update();
 }
 
 void Jug_Dead::LateUpdate()

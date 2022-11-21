@@ -112,7 +112,7 @@ void BossJugScript::update()
 {
 	// [ SCRIPT PARAM UPDATE] 
 	// 현재 타입 이름
-	m_strCurState    = ToString(m_pBossFSM->GetCurState()->GetStateType());
+	m_strCurState = ToString(m_pBossFSM->GetCurState()->GetStateType());
 	// 현재 애니메이션 이름
 	CAnimation3D* pCurAnim = m_pBossAnimator->GetCurAnim();
 	if (nullptr == pCurAnim)

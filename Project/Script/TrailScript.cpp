@@ -95,7 +95,6 @@ void TrailScript::start()
 
 	// 미리 만들어 놓기 5개 정도 
 	// activate / Deactivate  - bool;
-	//TODO::이거 하면 작업 목록에서 볼 수 있ㅇ므
 	for (int i = 0; i < m_iTrailMaxCnt; ++i)
 	{
 		DestroyScript* pDestroyScript = new DestroyScript;
