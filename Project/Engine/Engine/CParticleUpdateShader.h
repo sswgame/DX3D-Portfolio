@@ -22,6 +22,9 @@ public:
 	void SetParticleMinMaxTime(float _fMin, float _fMax) { m_Param.v2Arr[0] = Vec2(_fMin, _fMax); }
 	void SetStartEndSpeed(float _fMin, float _fMax) { m_Param.v2Arr[1] = Vec2(_fMin, _fMax); }
 	void SetDirection(Vec2 _vDirection) { m_Param.v2Arr[2] = _vDirection; }
+	void SetAngle(float _angle) { m_Param.v2Arr[3] = Vec2(_angle, 0.f); }
+
+	void SetSpeedDetailData(int _funcNum);
 
 	void SetStartEndColor(const Vec4& _vStart, const Vec4& _vEnd)
 	{
@@ -35,6 +38,12 @@ public:
 		m_Param.v4Arr[3] = _vEnd;
 	}
 
+	void SetStartEndEmissiveColor(const Vec4& _vStart, const Vec4& _vEnd)
+	{
+		// 나중에... 다른 타겟에..
+		//m_Param.v4_Emissive_Arr[0] = _vStart;
+		//m_Param.v4_Emissive_Arr[1] = _vEnd;
+	}
 
 public:
 	virtual void UpdateData() override;

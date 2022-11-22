@@ -25,6 +25,9 @@ private:
 	Vec4 m_vStartColor; // 파티클 초기 색상
 	Vec4 m_vEndColor;   // 파티클 최종 색상
 
+	Vec4 m_vStartEmissiveColor; // 파티클 초기 Emissive 색상
+	Vec4 m_vEndEmissiveColor;   // 파티클 최종 Emissive 색상
+
 	Vec3 m_vStartScale; // 파티클 초기 크기
 	Vec3 m_vEndScale;   // 파티클 최종 크기
 
@@ -32,6 +35,9 @@ private:
 	float m_fParticleCreateDistance; // 파티클 생성 범위
 	float m_fParticleCreateTerm;     // 파티클 생성 간격
 	float m_fAccTime;
+
+	float	m_fAngle;				// 파티클 사출 각도
+	int m_iSpeedDetail_Func;
 
 	int m_iEmissive; // 파티클 발광여부
 	int m_iLighting; // 광원 적용 여부
@@ -62,17 +68,26 @@ public:
 	void                  SetStartEndColor(const Vec4& vStartColor, const Vec4& vEndColor);
 	std::pair<Vec4, Vec4> GetStartEndColor() const { return std::pair<Vec4, Vec4>{m_vStartColor, m_vEndColor}; }
 
+	void                  SetStartEndEmissiveColor(const Vec4& vStartColor, const Vec4& vEndColor);
+	std::pair<Vec4, Vec4> GetStartEndEmissiveColor() const { return std::pair<Vec4, Vec4>{m_vStartColor, m_vEndColor}; }
+
 	void                  SetStartEndScale(const Vec3& vStartScale, const Vec3& vEndScale);
 	std::pair<Vec3, Vec3> GetStartEndScale() const { return std::pair<Vec3, Vec3>{m_vStartScale, m_vEndScale}; }
 
 	void  SetRange(float _fRange);
 	float GetRange() const { return m_fParticleCreateDistance; }
 
+	void  SetAngle(int _angle) { m_fAngle = _angle; }
+	int GetAngle() const { return m_fAngle; }
+
 	void  SetTerm(float _fTerm);
 	float GetTerm() const { return m_fParticleCreateTerm; }
 
 	void SetDirection(Vec2 direction) { m_vDirection = direction; }
 	Vec2 GetDirection() const { return m_vDirection; }
+
+	void SetSpeedDetailFunc(int _funcNum) { m_iSpeedDetail_Func = _funcNum; }
+	int GetSpeedDetailFunc() { return m_iSpeedDetail_Func; }
 
 public:
 	virtual void finalupdate() override;

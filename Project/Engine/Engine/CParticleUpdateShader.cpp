@@ -10,6 +10,11 @@ CParticleUpdateShader::CParticleUpdateShader()
 
 CParticleUpdateShader::~CParticleUpdateShader() {}
 
+void CParticleUpdateShader::SetSpeedDetailData(int _funcNum)
+{
+	m_Param.iArr[3] = _funcNum;
+}
+
 void CParticleUpdateShader::UpdateData()
 {
 	m_ParticleBuffer->UpdateData_CS(0, false);

@@ -23,7 +23,8 @@ enum class SCRIPT_TYPE
 	PLAYERSCRIPT,
 	RIGIDBODYSCRIPT,
 	TRAILSCRIPT,
-	END
+
+    END
 };
 
 class CScript;

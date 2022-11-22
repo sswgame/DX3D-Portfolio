@@ -2,6 +2,7 @@ BossJugCombatMgrScript
 BossJugHandScript
 BossJugScript
 CameraMoveScript
+ColumnFlameScript
 DestroyScript
 GravityScript
 HandStateMgrScript

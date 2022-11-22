@@ -9,6 +9,7 @@
 // Particle Update Shader
 #define MaxThreadCount      g_int_0
 #define MaxParticleCount    g_int_1
+#define SpeedDetailUse          g_int_3
 
 #define CreateRange         g_float_0
 #define WorldPos            float3(g_float_1, g_float_2, g_float_3)
@@ -20,6 +21,7 @@
 #define MaxSpeed            g_vec2_1.y
 
 #define Direction           g_vec2_2
+#define Angle                   g_vec2_3.x
 
 #define StartColor          g_vec4_0
 #define EndColor            g_vec4_1
@@ -89,6 +91,15 @@ void CS_Particle(int3 _id : SV_DispatchThreadID)
     // 활성화 된 파티클
     else
     {
+        float radian = Angle * 3.141592f / 180.f;
+        float cosTheta = dot(ParticleBuffer[_id.x].vDir.xy, Direction);
+        float Theta = acos(cosTheta);
+        if (Theta <= radian / 2.f)
+        {
+            ParticleBuffer[_id.x].Alive = 0;
+            return;
+        }
+
         // 생존시간 누적
         ParticleBuffer[_id.x].m_fCurTime += fDT;
         
@@ -97,14 +108,27 @@ void CS_Particle(int3 _id : SV_DispatchThreadID)
         {
             ParticleBuffer[_id.x].Alive = 0;
             return;
-        }
-                
+        }      
+
         float fLifeRatio = ParticleBuffer[_id.x].m_fCurTime / ParticleBuffer[_id.x].m_fMaxTime;
-        
-        float fSpeed = MinSpeed + (MaxSpeed - MinSpeed) * fLifeRatio;        
-        float4 vColor = StartColor + (EndColor - StartColor) * fLifeRatio;
-        float3 vScale = StartScale + (EndScale - StartScale) * fLifeRatio;
-        
+
+        if (1 == SpeedDetailUse)    // log(2)(x)
+        {
+            fLifeRatio = exp2(fLifeRatio);
+            if (fLifeRatio < 0.f)
+                fLifeRatio = 0.f;
+        }
+        else if (2 == SpeedDetailUse) // 2 ^ x
+        {
+            fLifeRatio = log2(fLifeRatio);
+        }
+
+        float fNormalRatio = ParticleBuffer[_id.x].m_fCurTime / ParticleBuffer[_id.x].m_fMaxTime;
+
+        float fSpeed = MinSpeed + (MaxSpeed - MinSpeed) * fLifeRatio;
+        float4 vColor = StartColor + (EndColor - StartColor) * fNormalRatio;
+        float3 vScale = StartScale + (EndScale - StartScale) * fNormalRatio;
+
         
         ParticleBuffer[_id.x].vPos += ParticleBuffer[_id.x].vDir * fSpeed * fDT;        
         ParticleBuffer[_id.x].vColor = vColor;        

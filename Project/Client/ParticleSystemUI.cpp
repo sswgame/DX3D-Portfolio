@@ -17,7 +17,10 @@ ParticleSystemUI::ParticleSystemUI()
   , m_fArrMinMaxSpeed{{10.f}, {100.f}}
   , m_fRange{10.f}
   , m_fTerm{3.f}
-  , m_bShaderUseDirection{false}
+	, m_fAngle(360.f)
+	, m_bShaderUseEmissive{ false }
+	, m_bShaderUseSpeedDetail(false)
+	, m_fArrDirection{ {1.f}, {0.f} }
 {
 	SetSize(Vec2{0, 330});
 }
@@ -48,10 +51,11 @@ void ParticleSystemUI::SetData()
 	m_vArrStartEndScale[0]                 = pairScale.first;
 	m_vArrStartEndScale[1]                 = pairScale.second;
 
-	const Vec2& vDirection = m_pParticleSystem->GetDirection();
-	m_iArrDirection[0]     = static_cast<int>(vDirection.x);
-	m_iArrDirection[1]     = static_cast<int>(vDirection.y);
+	//const Vec2& vDirection = m_pParticleSystem->GetDirection();
+	//m_iArrDirection[0]     = static_cast<int>(vDirection.x);
+	//m_iArrDirection[1]     = static_cast<int>(vDirection.y);
 
+	m_fAngle = m_pParticleSystem->GetAngle();
 
 	m_fRange = m_pParticleSystem->GetRange();
 	m_fTerm  = m_pParticleSystem->GetTerm();
@@ -122,6 +126,33 @@ void ParticleSystemUI::render_update()
 	ImGui::InputFloat2("##MIN_MAX_SPEED", m_fArrMinMaxSpeed);
 	m_pParticleSystem->SetMinMaxSpeed(m_fArrMinMaxSpeed[0], m_fArrMinMaxSpeed[1]);
 
+	ImGui::Text("SPEED DETAIL");
+	ImGui::SameLine((100));
+	ImGui::Checkbox("##SHADER_USE_SPEED_DETAIL", &m_bShaderUseSpeedDetail);
+	if (m_bShaderUseSpeedDetail)
+	{
+		static const char* s_arrSpeedDetailName[] = {
+			"y = x",
+			"y = log(2)(x)",
+			"y = (2) ^ (x)",
+		};
+
+		int iSpeedDetailIndex = m_pParticleSystem->GetSpeedDetailFunc();
+
+		ImGui::SameLine();
+		if (ImGui::BeginCombo("##PARTICLE_SPEED_DETAIL_COMBO", s_arrSpeedDetailName[iSpeedDetailIndex]))
+		{
+			for (size_t i = 0; i < std::size(s_arrSpeedDetailName); ++i)
+			{
+				if (ImGui::Selectable(s_arrSpeedDetailName[i]))
+				{
+					m_pParticleSystem->SetSpeedDetailFunc(i);
+				}
+			}
+			ImGui::EndCombo();
+		}
+	}
+
 	ImGui::Text("Start Color");
 	ImGui::SameLine(100);
 	ImGui::ColorEdit4("##START_COLOR", m_vArrStartEndColor[0]);
@@ -148,54 +179,24 @@ void ParticleSystemUI::render_update()
 	ImGui::InputFloat("##CREATION_TERM", &m_fTerm);
 	m_pParticleSystem->SetTerm(m_fTerm);
 
-	ImGui::Text("DIRECTION");
+	ImGui::Text("Direction");
+	ImGui::Text("Dir X  :"); 	ImGui::SameLine(100);
+	ImGui::DragFloat("##PARTICLE_DIR_X", &m_fArrDirection[0], 0.1f, -1.0f, 1.0f, "%.1f");
+	ImGui::Text("Dir Y  :"); 	ImGui::SameLine(100);
+	ImGui::DragFloat("##PARTICLE_DIR_Y", &m_fArrDirection[1], 0.1f, -1.0f, 1.0f, "%.1f");
+
+	Vec2 dirNormal = Vec2(m_fArrDirection[0], m_fArrDirection[1]);
+	dirNormal.Normalize();
+	m_fArrDirection[0] = dirNormal.x;
+	m_fArrDirection[1] = dirNormal.y;
+	m_pParticleSystem->SetDirection(Vec2(m_fArrDirection[0], m_fArrDirection[1]));
+
+	ImGui::Text("Angle");
 	ImGui::SameLine((100));
-	ImGui::Checkbox("##SHADER_USE_DIRECTION", &m_bShaderUseDirection);
-	if (m_bShaderUseDirection)
-	{
-		static std::map<std::string, Vec2> s_mapDirection = {
-			{"FROM LEFT", Vec2{1.f, 0.f}},
-			{"FROM RIGHT", Vec2{-1.f, 0.f}},
-			{"FROM TOP", Vec2{0.f, 1.f}},
-			{"FROM BOTTOM", Vec2{0.f, -1.f}}
-		};
+	ImGui::DragFloat("##PARTICLE_ANGLE_FLOAT", &m_fAngle, 1.f, 0, 360, "%.1f");
+	m_pParticleSystem->SetAngle(m_fAngle);
 
-		static const char* s_arrDirectionName[] = {
-			"FROM LEFT",
-			"FROM RIGHT",
-			"FROM TOP",
-			"FROM BOTTOM"
-		};
 
-		static Vec2 s_arrDirection[] = {
-			{1.f, 0.f},
-			{-1.f, 0.f},
-			{0.f, 1.f},
-			{0.f, -1.f}
-		};
-
-		size_t index{};
-		for (size_t i = 0; i < std::size(s_arrDirection); ++i)
-		{
-			if (s_arrDirection[i].x == m_iArrDirection[0]
-			    && s_arrDirection[i].y == m_iArrDirection[1])
-			{
-				index = i;
-			}
-		}
-		ImGui::SameLine();
-		if (ImGui::BeginCombo("##PARTICLE_DIRECTION_COMBO", s_arrDirectionName[index]))
-		{
-			for (size_t i = 0; i < std::size(s_arrDirectionName); ++i)
-			{
-				if (ImGui::Selectable(s_arrDirectionName[i]))
-				{
-					m_pParticleSystem->SetDirection(s_mapDirection[s_arrDirectionName[i]]);
-				}
-			}
-			ImGui::EndCombo();
-		}
-	}
 	ImGui::Text("PARTICLE IMAGE");
 	ImGui::SameLine();
 	Ptr<CTexture> pTexture = m_pParticleSystem->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);

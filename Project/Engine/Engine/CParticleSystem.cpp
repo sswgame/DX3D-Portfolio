@@ -25,7 +25,10 @@ CParticleSystem::CParticleSystem()
   , m_fAccTime(0.f)
   , m_iEmissive(0)
   , m_iLighting(0)
-
+	, m_vStartEmissiveColor(Vec4(0.f, 0.f, 0.f, 1.f))
+	, m_vEndEmissiveColor(Vec4(0.f, 0.f, 0.f, 1.f))
+	, m_fAngle(360.f)
+	, m_iSpeedDetail_Func(0)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -59,6 +62,10 @@ CParticleSystem::CParticleSystem(const CParticleSystem& _origin)
   , m_iEmissive(_origin.m_iEmissive)
   , m_iLighting(_origin.m_iLighting)
   , m_vDirection{_origin.m_vDirection}
+	, m_vStartEmissiveColor(_origin.m_vStartEmissiveColor)
+	, m_vEndEmissiveColor(_origin.m_vEndEmissiveColor)
+	, m_fAngle(_origin.m_fAngle)
+	, m_iSpeedDetail_Func(_origin.m_iSpeedDetail_Func)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -121,6 +128,12 @@ void CParticleSystem::SetStartEndColor(const Vec4& vStartColor, const Vec4& vEnd
 	m_vEndColor   = vEndColor;
 }
 
+void CParticleSystem::SetStartEndEmissiveColor(const Vec4& vStartColor, const Vec4& vEndColor)
+{
+	m_vStartEmissiveColor = vStartColor;
+	m_vEndEmissiveColor = vEndColor;
+}
+
 void CParticleSystem::SetStartEndScale(const Vec3& vStartScale, const Vec3& vEndScale)
 {
 	m_vStartScale = vStartScale;
@@ -158,6 +171,9 @@ void CParticleSystem::finalupdate()
 	m_CS->SetStartEndColor(m_vStartColor, m_vEndColor);
 	m_CS->SetStartEndScale(m_vStartScale, m_vEndScale);
 	m_CS->SetDirection(m_vDirection);
+	m_CS->SetAngle(m_fAngle);
+	m_CS->SetSpeedDetailData(m_iSpeedDetail_Func);
+
 	m_CS->SetObjectWorldPos(Transform()->GetWorldPos());
 
 	m_CS->Excute();
@@ -254,6 +270,10 @@ void CParticleSystem::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_vDirection) << YAML::Value << m_vDirection;
 	emitter << YAML::Key << NAME_OF(m_iEmissive) << YAML::Value << m_iEmissive;
 	emitter << YAML::Key << NAME_OF(m_iLighting) << YAML::Value << m_iLighting;
+	emitter << YAML::Key << NAME_OF(m_fAngle) << YAML::Value << m_fAngle;
+	emitter << YAML::Key << NAME_OF(m_iSpeedDetail_Func) << YAML::Value << m_iSpeedDetail_Func;
+	emitter << YAML::Key << NAME_OF(m_vStartEmissiveColor) << YAML::Value << m_vStartEmissiveColor;
+	emitter << YAML::Key << NAME_OF(m_vEndEmissiveColor) << YAML::Value << m_vEndEmissiveColor;
 }
 
 void CParticleSystem::Deserialize(const YAML::Node& node)
@@ -276,5 +296,9 @@ void CParticleSystem::Deserialize(const YAML::Node& node)
 	m_vDirection = node[NAME_OF(m_vDirection)].as<Vec2>();
 	m_iEmissive = node[NAME_OF(m_iEmissive)].as<int>();
 	m_iLighting = node[NAME_OF(m_iLighting)].as<int>();
+	m_fAngle = node[NAME_OF(m_fAngle)].as<float>();
+	m_iSpeedDetail_Func = node[NAME_OF(m_iSpeedDetail_Func)].as<int>();
+	m_vStartEmissiveColor = node[NAME_OF(m_vStartEmissiveColor)].as<Vec4>();
+	m_vEndEmissiveColor = node[NAME_OF(m_vEndEmissiveColor)].as<Vec4>();
 
 }
