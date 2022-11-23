@@ -28,7 +28,7 @@ struct VTX_OUT
 };
 
 // =========================
-// Trail
+// Trail - Player 전용 ( Mesh ) 4
 // DOMAIN : TRANSLUCENT
 // Rasterizer : CULL_BACK
 // DepthStencilState : LESS
@@ -48,18 +48,15 @@ VTX_OUT VS_Trail(VTX_IN _in)
         Skinning(_in.vPos, _in.vTangent, _in.vBinormal, _in.vNormal, _in.vWeights, _in.vIndices, 0);
     }
 
-    //vScreenUV.y += sin(vScreenUV.x * 3.141592f * 20.f + (TIMER * 4.f)) * 0.01;
     float fTimer = TIMER;
     float3 vLocalPos = _in.vPos;
     float3 vVector = _in.vPos;
     vVector = normalize(vVector);
+    float   fRand = GaussianSample(g_noise_cloud, _in.vUV).r;
 
-    //vLocalPos.x += vVector.x * fTimer * 10.f;
-   // vLocalPos.z += vVector.z * fTimer * 10.f;
-
-    //vLocalPos.x += cos(fTimer * 3.141592f * 5.f);
-    //vLocalPos.z += sin(fTimer * 3.141592f * 5.f);
-
+    // 잔상오브젝트를 늘린다.
+    vLocalPos.x += vVector.x * cos(sin(fTimer)) * fRand * 10.f;
+    vLocalPos.z += fTimer * fRand * 80.f;
 
 
     output.vPosition = mul(float4(vLocalPos, 1.f), g_matWVP);
@@ -67,12 +64,7 @@ VTX_OUT VS_Trail(VTX_IN _in)
     output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV)).xyz;
     output.vUV = _in.vUV;
     //output.vViewTangent = normalize(mul(float4(_in.vTangent, 0.f), g_matWV)).xyz;
-   // output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV)).xyz;
-
-   // output.vPosition.x += fTimer;
-   // output.vPosition.y += fTimer;
-   // output.vPosition.z += fTimer;
-
+    // output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV)).xyz;
 
     return output;
 }
@@ -97,29 +89,25 @@ float4 PS_Trail(VTX_OUT _in) : SV_Target
             *   Hermite 보간법을 리턴한다. x가 min보다 작다면 0을 리턴하고, max보다 크다면 1을 리턴한다.
     */
 
-    float   fRimWidth               = 0.7f;
-    float4  CameraPos               = CAMPOS;
-    float3  vCamBetweenObjVector    = CameraPos.xyz - vWorldPos;
-    float3  vCamPos                 = normalize(vCamBetweenObjVector);
-    float   RimLightColor           = smoothstep(1.f - fRimWidth, 1.f, 1 - max(0, dot(_in.vViewNormal, vCamPos)));
-
+    float   fRimWidth = 0.7f;
+    float4  CameraPos = CAMPOS;
+    float3  vCamBetweenObjVector = CameraPos.xyz - vWorldPos;
+    float3  vCamPos = normalize(vCamBetweenObjVector);
+    float   RimLightColor = smoothstep(1.f - fRimWidth, 1.f, 1 - max(0, dot(_in.vViewNormal, vCamPos)));
 
     // 알파값 적용 
-    float  fAlpha = 0.51f;
-    float fTimer = TIMER;
-    //fAlpha += fTimer;
+    float   fAlpha = 0.7f;
+    float   fTimer = TIMER;
+    float   fRand = GaussianSample(g_noise_cloud, _in.vUV).r;
+    float   fNoise = g_noise_cloud.Sample(g_sam_0, _in.vUV).g;
+
+    fAlpha -= fTimer * 1.8f * fNoise;
+
 
     // 색상 적용 ( 림라이트 포함 )
-    float3 RGB = float3(    ((102.f - (fTimer / fAlpha) * 5.f) / 255.f) + RimLightColor / 2.f
-                        ,   ((180.f - (fTimer / fAlpha) * 5.f) / 255.f) + RimLightColor / 2.f
-                        ,   ((250.f - (fTimer / fAlpha) * 5.f) / 255.f) + RimLightColor / 2.f);
-
-    if (length(RGB) <= 0.7f ||
-        RimLightColor <= 0.01f)
-        fAlpha = 0.f;
-
-
-
+    float3 RGB = float3(((102.f - (fTimer / fAlpha) * 2.f) / 255.f) + RimLightColor * 0.4f
+                        ,   ((153.f - (fTimer / fAlpha) * 2.f) / 255.f) + RimLightColor * 0.4f
+                        ,   ((255.f / 255.f) + RimLightColor * 0.4f));
 
 
     // 최종 색상  
@@ -127,5 +115,63 @@ float4 PS_Trail(VTX_OUT _in) : SV_Target
     return vOutColor;
 
 }
+
+
+// =========================
+// Std3D Sword Trail Shader
+// g_int_0 : Shader Type
+// g_tex_0 : Output Texture
+// g_tex_1 : Normal Map
+//
+// DOMAIN : Masked
+// Rasterizer : CULL_BACK
+// DepthStencilState : LESS
+// BlendState : DEFAULT
+// =========================
+VTX_OUT VS_SwordTrail(VTX_IN _in)
+{
+    VTX_OUT output = (VTX_OUT)0.f;
+
+    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+    output.vUV = _in.vUV;
+
+    return output;
+}
+
+float4 PS_SwordTrail(VTX_OUT _in) : SV_Target
+{
+    float4 vOutColor = (float4) float4(1.f, 1.f, 1.f, 0.5f);
+
+    // 오브젝트 색상 추출
+   if (g_btex_0)
+    {
+       vOutColor = g_tex_0.Sample(g_sam_0, _in.vUV);
+    }
+
+   float   fNoise = g_noise_cloud.Sample(g_sam_0, _in.vUV).g;
+
+
+   // 그냥 검정색 뺄려고 이렇게하고있음 
+   /*
+      if (vOutColor.x <= 0.3f)
+       vOutColor.w = 0.f;
+   else
+   {
+       vOutColor.w = 0.5f;
+
+       vOutColor.x = 0.f   / 255.f;
+       vOutColor.y = 102.f / 255.f;
+       vOutColor.z = 230.f / 255.f;
+   }
+   */
+
+
+
+
+    return vOutColor;
+}
+
+
+
 
 #endif

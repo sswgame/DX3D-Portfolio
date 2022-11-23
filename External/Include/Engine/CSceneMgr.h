@@ -25,6 +25,9 @@ public:
 	void DisconnectParent(CGameObject* _pObject);
 	void ClearLayer();
 
+	void ChangeObjectLayerIndex(CGameObject* _pObject, UINT _iLayerIdx);
+	void SwapLayer(UINT _iLayerIdx_1, UINT _iLayerIdx_2);
+
 	// DESTROY 
 	void DeleteObject(CGameObject* _pDestroyObject);
 

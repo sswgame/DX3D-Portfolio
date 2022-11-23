@@ -38,6 +38,8 @@
 #include <Script/RigidBodyScript.h>
 #include <Script/GravityScript.h>
 #include <Script/TrailScript.h>
+#include <Script/SwordTrailScript.h>
+
 #define TEST_SAVE 1
 
 void CTestScene::CreateTestScene()
@@ -309,11 +311,12 @@ void CTestScene::CreateTestScene()
 	pObj->AddComponent(new CFSM);
 	pObj->AddComponent(new RigidBodyScript);
 	pObj->AddComponent(new GravityScript);
+	pObj->AddComponent(new TrailScript);
 	pObj->AddComponent(new CCollider3D);
 
 	pObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObj->Collider3D()->SetOffsetPos(Vec3(0.f, 125.f, 0.f));
-	pObj->Collider3D()->SetOffseetScale(Vec3(200.f, 250.f, 200.f));
+	pObj->Collider3D()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
+	pObj->Collider3D()->SetOffsetScale(Vec3(75.f, 175.f, 75.f));
 
 	PlayerScript* pPlayerScript = new PlayerScript;
 	pPlayerScript->SetCamera(pCamObj);
@@ -338,6 +341,30 @@ void CTestScene::CreateTestScene()
 	pObj->AddChild(pObjWeapon);
 	pObj->Animator3D()->CopyAllAnimToChild();
 
+
+	// 무기 충돌체 
+	CGameObject* m_pBoneCollider = new CGameObject;
+	m_pBoneCollider->SetName(L"Sword_Bone_Collider");
+
+	m_pBoneCollider->AddComponent(new CTransform);
+	m_pBoneCollider->AddComponent(new CCollider3D);
+
+	m_pBoneCollider->Collider3D()->SetOffsetScale(Vec3(30.f, 10.f, 200.f));
+	CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pBoneCollider, L"PLAYER");
+
+	pObjWeapon->AddChild(m_pBoneCollider);
+
+	// Sword Trail Test
+	CGameObject* pGameObj = new CGameObject;
+	pGameObj->SetName(L"Sword_Trail");
+	pGameObj->AddComponent(new CTransform);
+
+	SwordTrailScript* pSwordTrailScript = new SwordTrailScript;
+	pGameObj->AddComponent(pSwordTrailScript);
+	pGameObj->Transform()->SetIgnoreParent(true);
+
+	pObjWeapon->AddChild(pGameObj);
+
 	//CGameObject* pGameObject = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\DEUXIEME_SHIELD.pref",
 	//                                                             L"prefab\\DEUXIEME_SHIELD.pref")->Instantiate();
 	//pCurScene->AddObject(pGameObject, 0);
@@ -349,15 +376,6 @@ void CTestScene::CreateTestScene()
 	//pObj->AddComponent(new CParticleSystem);
 	//pCurScene->AddObject(pObj, 0);
 
-	CGameObject* pObjFoot = new CGameObject;
-	pObjFoot->SetName(L"Foot");
-	pObjFoot->AddComponent(new CTransform);
-	pObjFoot->AddComponent(new CCollider3D);
-
-	pObjFoot->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
-	pObjFoot->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
-	pObjFoot->Collider3D()->SetOffseetScale(Vec3(100.f, 100.f, 100.f));
-	pObj->AddChild(pObjFoot);
 
 	pObj = new CGameObject;
 	pObj->SetName(L"Trail");
@@ -390,17 +408,6 @@ void CTestScene::CreateTestScene()
 
 	pCurScene->AddObject(pObj, L"PLAYER");
 
-	pObj = new CGameObject;
-	pObj->SetName(L"Land");
-
-	pObj->AddComponent(new CTransform);
-	pObj->AddComponent(new CCollider3D);
-
-	pObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObj->Collider3D()->SetOffsetPos(Vec3(0.f, -150.f, 0.f));
-	pObj->Collider3D()->SetOffseetScale(Vec3(200.f, 250.f, 200.f));
-
-	pCurScene->AddObject(pObj, 1);
 
 
 	CGameObject* pBoss = new CGameObject;

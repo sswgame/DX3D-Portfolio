@@ -225,6 +225,15 @@ CScript* CGameObject::GetScriptByName(const wstring& _strName)
 	return nullptr;
 }
 
+void CGameObject::RenewLayerIndex(int _NewLayerIdx)
+{
+	m_iLayerIdx = _NewLayerIdx;
+	for (int i = 0; i < m_vecChild.size(); ++i)
+	{
+		m_vecChild[i]->RenewLayerIndex(_NewLayerIdx);
+	}
+}
+
 
 void CGameObject::active()
 {

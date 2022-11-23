@@ -18,6 +18,7 @@
 #include "PlayerCamScript.h"
 #include "PlayerScript.h"
 #include "RigidBodyScript.h"
+#include "SwordTrailScript.h"
 #include "TrailScript.h"
 
 void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
@@ -38,6 +39,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"PlayerCamScript");
 	_vec.push_back(L"PlayerScript");
 	_vec.push_back(L"RigidBodyScript");
+	_vec.push_back(L"SwordTrailScript");
 	_vec.push_back(L"TrailScript");
 }
 
@@ -76,6 +78,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new PlayerScript;
 	if (L"RigidBodyScript"== _strScriptName)
 		return new RigidBodyScript;
+	if (L"SwordTrailScript"== _strScriptName)
+		return new SwordTrailScript;
 	if (L"TrailScript"== _strScriptName)
 		return new TrailScript;
 	return nullptr;
@@ -118,6 +122,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new PlayerScript;
 	case SCRIPT_TYPE::RIGIDBODYSCRIPT:
 		return new RigidBodyScript;
+	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
+		return new SwordTrailScript;
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return new TrailScript;
 	}
@@ -161,6 +167,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"PlayerScript";
 	case SCRIPT_TYPE::RIGIDBODYSCRIPT:
 		return L"RigidBodyScript";
+	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
+		return L"SwordTrailScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return L"TrailScript";
 		}

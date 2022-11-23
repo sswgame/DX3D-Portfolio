@@ -18,10 +18,11 @@ TrailScript::TrailScript()
 	: CScript((int)SCRIPT_TYPE::TRAILSCRIPT)
 	, m_fTimer(0.f)
 	, m_fCreateTerm(0.4f)
-	, m_fDestroyTime(3.f)
+	, m_fDestroyTime(1.5f)
 	, m_bCreateTrail(true)
 	, m_pTrail(nullptr)
-	, m_iTrailMaxCnt(10)
+	, m_iTrailMaxCnt(15)
+	, m_bPlayTrail(false)
 
 
 {
@@ -31,6 +32,13 @@ TrailScript::TrailScript()
 
 TrailScript::TrailScript(const TrailScript& _origin)
 	: CScript((int)SCRIPT_TYPE::TRAILSCRIPT)
+	, m_fTimer(0.f)
+	, m_fCreateTerm(0.4f)
+	, m_fDestroyTime(3.f)
+	, m_bCreateTrail(true)
+	, m_pTrail(nullptr)
+	, m_iTrailMaxCnt(15)
+	, m_bPlayTrail(false)
 {
 	SetName(L"TrailScript");
 
@@ -75,7 +83,7 @@ void TrailScript::start()
 	{
 		SetTrailObj();
 	}
-	
+
 	if (m_pCam == nullptr)
 	{
 		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"CAMERA");
@@ -95,6 +103,7 @@ void TrailScript::start()
 
 	// 미리 만들어 놓기 5개 정도 
 	// activate / Deactivate  - bool;
+	//TODO::이거 하면 작업 목록에서 볼 수 있ㅇ므
 	for (int i = 0; i < m_iTrailMaxCnt; ++i)
 	{
 		DestroyScript* pDestroyScript = new DestroyScript;
@@ -104,13 +113,14 @@ void TrailScript::start()
 
 		// 잔상 오브젝트 미리 저장  
 		CGameObject* pGameObj = CloneTrailObj();
+
 		pGameObj->AddComponent(pDestroyScript);
 		CSceneMgr::GetInst()->GetCurScene()->AddObject(pGameObj, 2);
 		pGameObj->Deactivate();
 
 		tTrail trail;
 		trail.pTrailObj = pGameObj;
-		trail.fTimer	= 0.f;
+		trail.fTimer = 0.f;
 
 		m_vecTrail.push_back(trail);
 
@@ -123,28 +133,33 @@ void TrailScript::update()
 {
 	m_fTimer += DT;
 
-
-	Vec3 vCamPos = m_pCam->Transform()->GetRelativePos();
-	Vec4 vCamPos_2 = Vec4(vCamPos, 1.f);
-
-	GetOwner()->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &vCamPos_2);
-	GetOwner()->MeshRender()->GetMaterial(0)->UpdateData();
-
-	UpdateActiveTrail();
-
-	// 잔상 오브젝트를 생성한다.
-	if (m_fTimer >= m_fCreateTerm)
+	if (m_bPlayTrail == true)
 	{
-		TimerReset();
-		if (m_bCreateTrail)
-		{
-			ActivateTrail();
-			DeactivateTrail();
+		Vec3 vCamPos = m_pCam->Transform()->GetRelativePos();
+		Vec4 vCamPos_2 = Vec4(vCamPos, 1.f);
 
+		GetOwner()->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &vCamPos_2);
+		GetOwner()->MeshRender()->GetMaterial(0)->UpdateData();
+
+		UpdateActiveTrail();
+
+		// 잔상 오브젝트를 생성한다.
+		if (m_fTimer >= m_fCreateTerm)
+		{
+			TimerReset();
+			if (m_bCreateTrail)
+			{
+				ActivateTrail();
+				DeactivateTrail();
+
+			}
 		}
 	}
+	else
+	{
+		DeactivateTrail();
 
-
+	}
 }
 void TrailScript::UpdateActiveTrail()
 {
@@ -160,7 +175,7 @@ void TrailScript::UpdateActiveTrail()
 void TrailScript::lateupdate()
 {
 
-	
+
 }
 
 void TrailScript::OnCollisionEnter(CGameObject* _OtherObject)
@@ -198,7 +213,7 @@ void TrailScript::SetTrailMeshData(wstring _strKey)
 void TrailScript::CreateTrail(int _FrameIdx)
 {
 
-	
+
 
 }
 
@@ -216,20 +231,21 @@ bool TrailScript::DeactivateTrail()
 
 				m_vecTrail[i].pTrailObj->Deactivate();
 				m_vecTrail[i].fTimer = 0.f;
+
 				// 사라지면 바로 생성될 수 있게
 				m_fTimer = m_fCreateTerm;
 			}
 		}
 	}
 
-	
+
 
 	return true;
 
 }
 
 
-bool TrailScript::ActivateTrail( )
+bool TrailScript::ActivateTrail()
 {
 
 	for (int i = 0; i < m_vecTrail.size(); ++i)
@@ -251,7 +267,7 @@ bool TrailScript::ActivateTrail( )
 			pAnim->SetEndFrameIdx(FrameIdx);
 			pAnimator->Play(L"TrailMotion", false);
 			pAnimator->SetLerpTime(0.f);
-			
+
 			break;
 
 		}
@@ -267,7 +283,7 @@ CGameObject* TrailScript::SetTrailObj()
 		return nullptr;
 
 	m_pOriginObj = GetOwner();
-	
+
 	wstring _strName = GetOwner()->GetName();
 	_strName += L"_Trail";
 	CGameObject* pObj = new CGameObject;
@@ -299,7 +315,7 @@ CGameObject* TrailScript::SetTrailObj()
 CGameObject* TrailScript::CloneTrailObj()
 {
 	CGameObject* pGameObject = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\Trail.pref",
-																 L"prefab\\Trail.pref")->Instantiate();
+		L"prefab\\Trail.pref")->Instantiate();
 
 	CAnimator3D* pAnimator = pGameObject->Animator3D();
 	pAnimator->CreateAnimByFrame(L"TrailMotion", 0, 0, 0);
@@ -307,10 +323,10 @@ CGameObject* TrailScript::CloneTrailObj()
 	return pGameObject;
 
 	/*
-	
+
 	pGameObject->Transform()->SetRelativePos(m_pOriginObj->Transform()->GetRelativePos());
 	pGameObject->Transform()->SetRelativeRotation(m_pOriginObj->Transform()->GetRelativeRotation());
-	
+
 	// TRAILMOTION
 	int frameIdx = GetTrailFrameIdx();
 	CAnimator3D* pAnimator = pGameObject->Animator3D();
@@ -325,7 +341,7 @@ CGameObject* TrailScript::CloneTrailObj()
 	pGameObject->AddComponent(pDestroyScript);
 	*/
 
-	
+
 
 	//CSceneMgr::GetInst()->GetCurScene()->AddObject(pGameObject, 2);
 

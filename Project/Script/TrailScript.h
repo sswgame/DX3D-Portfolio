@@ -32,6 +32,8 @@ private:
 	int						m_iTrailMaxCnt;			// ÀÜ»ó °¹¼ö
 
 
+	bool					m_bPlayTrail;			// ÀÜ»ó Ãâ·Â ¿©ºÎ 
+
 
 public:
 	void SetOriginObject(CGameObject* _Origin);
@@ -49,6 +51,9 @@ public:
 
 	void TimerReset() { m_fTimer = 0.f; }
 	int GetTrailFrameIdx();
+
+	void On() { m_bPlayTrail = true; }
+	void Off() { m_bPlayTrail = false; }
 
 
 	CGameObject* SetTrailObj();

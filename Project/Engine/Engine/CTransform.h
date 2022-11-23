@@ -17,6 +17,7 @@ private:
 	Matrix  m_matWorldInv;  // 월드 역행렬
 
 	bool    m_bIgnoreParentScale;
+	bool	m_bIgnoreParent;
 
 public:
 	void SetRelativePos(const Vec3& _vPos) { m_vRelativePos = _vPos; }
@@ -47,11 +48,13 @@ public:
 	Vec3 GetWorldScale();
 	Matrix GetWorldRotation();
 	bool GetIgnorantParentScale() { return m_bIgnoreParentScale; }
+	bool GetIgnoreParent() { return m_bIgnoreParent; }
 
 	const Matrix& GetWorldMat() { return m_matWorld; }
 	const Matrix& GetWorldInvMat() { return m_matWorldInv; }
 
 	void SetIgnoreParentScale(bool _bSet) { m_bIgnoreParentScale = _bSet; }
+	void SetIgnoreParent(bool _bSet) { m_bIgnoreParent = _bSet; }
 
 	virtual void UpdateData() override;
 	virtual void finalupdate() override;

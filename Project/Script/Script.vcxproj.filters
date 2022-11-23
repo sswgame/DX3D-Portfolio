@@ -190,6 +190,9 @@
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClInclude>
     <ClInclude Include="ColumnFlameScript.h" />
+    <ClInclude Include="SwordTrailScript.h">
+      <Filter>Script\Effect\Trail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -370,6 +373,9 @@
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClCompile>
     <ClCompile Include="ColumnFlameScript.cpp" />
+    <ClCompile Include="SwordTrailScript.cpp">
+      <Filter>Script\Effect\Trail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">

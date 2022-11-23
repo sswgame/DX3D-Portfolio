@@ -95,8 +95,18 @@ void CEventMgr::update()
 		case EVENT_TYPE::ADD_CHILD:
 			// lParam : Parent Object, wParam : Child Object
 			{
-				CGameObject* pParent = (CGameObject*)m_vecEvent[i].lParam;
-				CGameObject* pChild  = (CGameObject*)m_vecEvent[i].wParam;
+				CGameObject* pParent	= (CGameObject*)m_vecEvent[i].lParam;
+				CGameObject* pChild		= (CGameObject*)m_vecEvent[i].wParam;
+
+				int iParent_LayerIdx	= pParent->GetLayerIndex();
+				int iChild_LayerIdx		= pChild->GetLayerIndex();
+
+				if (iParent_LayerIdx != iChild_LayerIdx)
+				{
+					CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+					pCurScene->GetLayer(iChild_LayerIdx)->DeregisterObject(pChild);
+					pChild->RenewLayerIndex(iParent_LayerIdx);
+				}
 
 				pParent->AddChild(pChild);
 				m_bObjEvn = true;
@@ -203,6 +213,33 @@ void CEventMgr::update()
 
 				break;
 			}
+		case EVENT_TYPE::CHANGE_OBJ_LAYER_INDEX:
+		{
+			// lParam : GameObject*
+			// wParam : LayerIndex		
+			CGameObject* pObject = (CGameObject*)m_vecEvent[i].lParam;
+			UINT		 iNewLayerIdx = (UINT)m_vecEvent[i].wParam;
+
+			UINT		iCurLayerIdx = pObject->GetLayerIndex();
+			CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+			pCurScene->GetLayer(iCurLayerIdx)->DeregisterObject(pObject);
+			pCurScene->AddObject(pObject, iNewLayerIdx);
+
+			m_bObjEvn = true;
+		}
+		break;
+		case EVENT_TYPE::SWAP_LAYER:
+		{
+			// lParam : LayerIndex
+			// wParam : LayerIndex				
+			UINT		 iLayerIdx_1 = (UINT)m_vecEvent[i].lParam;
+			UINT		 iLayerIdx_2 = (UINT)m_vecEvent[i].wParam;
+
+			CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+			pCurScene->SwapLayer(iLayerIdx_1, iLayerIdx_2);
+			m_bObjEvn = true;
+		}
+		break;
 
 		// 이벤트 중에  변경 이벤트가 있었다면,
 		// 나머지 이벤트는 다 무시하고 종료

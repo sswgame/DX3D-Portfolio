@@ -518,3 +518,84 @@ int CMesh::Load(const wstring& _strFilePath)
 
 	return S_OK;
 }
+
+
+
+int CMesh::CreateBuffer_Dynamic(void* _pVtxSys, UINT _iVtxCount, void* _pIdxSys, UINT _iIdxCount)
+{
+	m_iVtxCount = _iVtxCount;
+
+	tIndexInfo IndexInfo = {};
+	IndexInfo.iIdxCount = _iIdxCount;
+
+	// 정점 데이터를 저장할 버텍스 버퍼를 생성한다.	
+	m_tVBDesc.ByteWidth = sizeof(Vertex) * _iVtxCount;
+
+	// 정점 버퍼는 처음 생성이후에 버퍼를 수정하지 않는다.
+	m_tVBDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	m_tVBDesc.Usage = D3D11_USAGE_DYNAMIC;
+
+	// 정점을 저장하는 목적의 버퍼 임을 알림
+	m_tVBDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tVBDesc.MiscFlags = 0;
+	m_tVBDesc.StructureByteStride = 0;
+
+	// 초기 데이터를 넘겨주기 위한 정보 구조체
+	D3D11_SUBRESOURCE_DATA tSubDesc = {};
+	tSubDesc.pSysMem = _pVtxSys;
+
+	if (FAILED(DEVICE->CreateBuffer(&m_tVBDesc, &tSubDesc, m_VB.GetAddressOf())))
+	{
+		return E_FAIL;
+	}
+
+
+	IndexInfo.tIBDesc.ByteWidth = sizeof(UINT) * _iIdxCount;
+
+	// 버퍼 생성 이후에도, 버퍼의 내용을 수정 할 수 있는 옵션
+	IndexInfo.tIBDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	IndexInfo.tIBDesc.Usage = D3D11_USAGE_DYNAMIC;
+
+	// 정점을 저장하는 목적의 버퍼 임을 알림
+	IndexInfo.tIBDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	IndexInfo.tIBDesc.MiscFlags = 0;
+	IndexInfo.tIBDesc.StructureByteStride = 0;
+
+	// 초기 데이터를 넘겨주기 위한 정보 구조체
+	tSubDesc = {};
+	tSubDesc.pSysMem = _pIdxSys;
+
+	if (FAILED(DEVICE->CreateBuffer(&IndexInfo.tIBDesc, &tSubDesc, IndexInfo.pIB.GetAddressOf())))
+	{
+		return E_FAIL;
+	}
+
+	// 시스템 메모리 할당
+	m_pVtxSys = new Vtx[m_iVtxCount];
+	memcpy(m_pVtxSys, _pVtxSys, sizeof(Vtx) * m_iVtxCount);
+
+	IndexInfo.pIdxSysMem = new UINT[IndexInfo.iIdxCount];
+	memcpy(IndexInfo.pIdxSysMem, _pIdxSys, sizeof(UINT) * IndexInfo.iIdxCount);
+
+	m_vecIdxInfo.push_back(IndexInfo);
+
+	return S_OK;
+}
+
+void CMesh::UpdateVertexBuffer_Dynamic()
+{
+	if (D3D11_USAGE::D3D11_USAGE_DYNAMIC == m_tVBDesc.Usage)
+	{
+		// 정점 버퍼 ( CPU -> GPU )
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+		CONTEXT->Map(m_VB.Get(), 0, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);		//  Disable GPU access to the vertex buffer data.
+		memcpy(mappedResource.pData, (Vtx*)m_pVtxSys, sizeof(Vtx) * m_iVtxCount);					//  Update the vertex buffer here.
+		CONTEXT->Unmap(m_VB.Get(), 0);																//  Reenable GPU access to the vertex buffer data.
+
+		return;
+
+	}
+
+}

@@ -13,6 +13,7 @@
 
 #include <Engine/CAnimator3D.h>
 #include <Engine/CFSM.h>
+#include <Engine/CMeshData.h>
 
 
 CPlayerJumpState::CPlayerJumpState()
@@ -71,6 +72,20 @@ void CPlayerJumpState::Enter()
 	m_pStateMgr = pPlayerScript->GetStateMgr();
 	m_pStateMgr->ChangeCurStateType(L"JUMP");
 
+	//if (!m_pJumpEffect_Land)
+	//{
+	//	Ptr<CMeshData> pMeshData = nullptr;
+	//	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_jump0.mdat", L"meshdata\\player_jump0.mdat");
+
+	//	m_pJumpEffect_Land = pMeshData->Instantiate();
+	//	m_pJumpEffect_Land->SetName(L"JumpEffect_Land");
+
+	//	m_pJumpEffect_Land->Transform()->SetRelativePos(CState::GetOwner()->Transform()->GetRelativePos());
+	//	m_pJumpEffect_Land->Transform()->SetRelativeScale(Vec3(100.f, 100., 100.f));
+
+
+	//	CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pJumpEffect_Land, CState::GetOwner()->GetLayerIndex());
+	//}
 
 }
 
@@ -82,6 +97,7 @@ void CPlayerJumpState::Exit()
 
 void CPlayerJumpState::Update()
 {
+
 	CState::Update();
 	m_tCurKeyInfo = m_pStateMgr->GetCurKeyInfo();
 	m_tPrevKeyInfo = m_pStateMgr->GetPrevKeyInfo();
@@ -100,24 +116,23 @@ void CPlayerJumpState::Update()
 
 void CPlayerJumpState::LateUpdate()
 {
+
 	CState::LateUpdate();
 
 	m_pTranslateMgr->LateUpdate();
+
 }
-
-
-
 
 void CPlayerJumpState::Jump(Vec3 _velocity)
 {
-	// 한번만 들어오게 한다. 
-	if ((m_eJumpState == JUMP_STATE::FIRST_JUMP && m_iJumpCnt == 1) ||
-		(m_eJumpState == JUMP_STATE::SECOND_JUMP && m_iJumpCnt == 2))
+
+	if (m_iJumpCnt > 2)
 		return;
 
 	RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
 	if (pRigid)
 	{
+		pRigid->SetVelocity(Vec3(0.f, 0.f, 0.f));
 		pRigid->AddVelocity(_velocity); // 위로 속도를 즉시 올린다. ( 빠르게 힘을 주면서 올라감 )
 		m_iJumpCnt++;					// 점프 횟수를 늘린다.
 	}
@@ -147,19 +162,30 @@ void CPlayerJumpState::UpdateJump()
 			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::TAP &&
 			m_iJumpCnt == 1)
 		{
-			m_eJumpState = JUMP_STATE::SECOND_JUMP; // 더블 점프로 전환 
+			Jump(Vec3(0.f, 900.f, 0.f));				// 점프한다.
+			PlayJumpAnim(L"jump_2_down", false);	// 점프 애니메이션 
+			m_eJumpState = JUMP_STATE::SECOND_JUMP;		// 더블 점프 
+			m_eCurState = JUMP_STATE::JUMP_UP;			// 점프 상태 ( ↑ )
+
 			ResetForDoubleJump();
 		}
 
-		Jump(Vec3(0.f, 800.f, 0.f));		// 점프한다. 
+		// 점프 
+		if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::JUMP &&
+			m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::TAP &&
+			m_iJumpCnt == 0)
+		{
+			Jump(Vec3(0.f, 1200.f, 0.f));		// 점프한다. 
+		}
+
 
 	}
 	break;
 	// 두번째 점프 ( 더블 점프 )
 	case JUMP_STATE::SECOND_JUMP:
 	{
-		Jump(Vec3(0.f, 800.f, 0.f));			// 점프한다.
-		m_eJumpState = JUMP_STATE::LIMIT_JUMP;  // 점프 횟수 제한 
+
+
 	}
 	break;
 	// 점프 제한 
@@ -186,12 +212,14 @@ void CPlayerJumpState::UpdateJumpState()
 		break;
 	case JUMP_STATE::JUMP_UP:
 	{
-		// UP -> AIR ( 떨어지기 시작할 때  )
-		if (m_fPrevHeight - m_fCurHeight >= 0.f)
+
+		// UP -> AIR ( 올라가기 시작할 때  )
+		if (m_fPrevHeight <= m_fCurHeight)
 		{
 			m_ePrevState = m_eCurState;
 			m_eCurState = JUMP_STATE::JUMP_AIR;
 		}
+
 	}
 	break;
 	case JUMP_STATE::JUMP_AIR:
@@ -218,10 +246,8 @@ void CPlayerJumpState::UpdateJumpState()
 		GravityScript* pGravity = (GravityScript*)GetOwner()->GetScriptByName(L"GravityScript");
 		if (pGravity != nullptr)
 		{
-			if (pGravity->Isfalling() == false)
-			{
+			if (!pGravity->Isfalling())
 				GetOwner()->FSM()->ChangeState(L"IDLE");
-			}
 		}
 
 	}
@@ -241,7 +267,7 @@ void CPlayerJumpState::UpdateJumpAnimation()
 		break;
 	case JUMP_STATE::JUMP_UP:
 	{
-		PlayJumpAnim(L"jump_2_up", false);
+
 	}
 	break;
 	case JUMP_STATE::JUMP_AIR:

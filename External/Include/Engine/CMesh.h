@@ -32,6 +32,7 @@ private:
 
 
 public:
+	int GetVtxCount() { return m_iVtxCount; }
 	Vtx* GetVtxSysMem() { return static_cast<Vtx*>(m_pVtxSys); }
 	UINT GetSubsetCount() { return static_cast<UINT>(m_vecIdxInfo.size()); }
 
@@ -50,11 +51,15 @@ public:
 
 	int           Create(void* _pVtxSys, UINT _iVtxCount, void* _pIdxSys, UINT _iIdxCount);
 	static CMesh* CreateFromContainer(CFBXLoader& _loader, int ContainerIdx);
+	int			  CreateBuffer_Dynamic(void* _pVtxSys, UINT _iVtxCount, void* _pIdxSys, UINT _iIdxCount);
 
 	void render(UINT _iSubset);
 	void render_particle(UINT _iCount);
 
 	void UpdateData(UINT _iSubset);
+	void UpdateVertexBuffer_Dynamic();
+
+
 public:
 	CMesh();
 	virtual ~CMesh();

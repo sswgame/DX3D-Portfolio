@@ -11,7 +11,7 @@ RigidBodyScript::RigidBodyScript()
 	, m_fFricCoeff(500.f)
 	, m_vAccelRatio(1.f)
 	, m_fMaxSpeed(200.f)
-	, m_fMaxJumpSpeed(700.f)
+	, m_fMaxJumpSpeed(1200.f)
 {
 	SetName(L"RigidBodyScript");
 
@@ -53,7 +53,7 @@ void RigidBodyScript::update()
 	}
 
 
-	m_vAccel	+= m_vAccelA;							// 추가 가속도 ex) 중력
+	m_vAccel += m_vAccelA;								// 추가 가속도 ex) 중력
 	m_vVelocity += m_vAccel * DT;						// 가속도에 따른 속도 변화 
 
 	if (m_bIgnoreGravity)
@@ -78,17 +78,18 @@ void RigidBodyScript::update()
 		}
 	}
 
-	
+
 	float fVelocity_Speed = m_vVelocity.Length();		// 스피드
-	
-	
+	float fVelocity_JumpSpeed = m_vVelocity.y;
+
+
 
 	// 점프 일 때 속도 제한 
 	if (m_vVelocity.y >= 0.f)
 	{
 		// 점프 속도 제한 
-		if (fVelocity_Speed >= m_fMaxJumpSpeed)
-			fVelocity_Speed = m_fMaxJumpSpeed;
+		if (fVelocity_JumpSpeed >= m_fMaxJumpSpeed)
+			fVelocity_JumpSpeed = m_fMaxJumpSpeed;
 	}
 	// 앞 뒤 좌 우 방향 속도 제한 
 	else
@@ -98,6 +99,12 @@ void RigidBodyScript::update()
 			fVelocity_Speed = m_fMaxSpeed;
 	}
 
+	// 떨어지는 속도 제한
+	if (fVelocity_JumpSpeed <= -550.f)
+	{
+		fVelocity_JumpSpeed = -550.f;
+	}
+
 	// Move 
 	if (0.f != fVelocity_Speed)
 	{
@@ -105,9 +112,26 @@ void RigidBodyScript::update()
 		vDir.Normalize();								// 이동 방향 
 
 		Vec3 vPos = Transform()->GetRelativePos();
-		vPos += vVelocity_Dir * fVelocity_Speed * DT;
+		vPos.x += vVelocity_Dir.x * fVelocity_Speed * DT;
+		vPos.z += vVelocity_Dir.z * fVelocity_Speed * DT;
 		Transform()->SetRelativePos(vPos);
 	}
+	// Jump
+	if (0.f != fVelocity_JumpSpeed)
+	{
+		Vec3 vDir = m_vVelocity;
+		vDir.Normalize();								// 이동 방향 
+
+		Vec3 vPos = Transform()->GetRelativePos();
+
+		if (vDir.y >= 0.f)
+			vPos.y += vVelocity_Dir.y * fVelocity_JumpSpeed * DT;
+		else
+			vPos.y += vVelocity_Dir.y * fVelocity_JumpSpeed * -1 * DT;
+
+		Transform()->SetRelativePos(vPos);
+	}
+
 
 
 	m_vForce = Vec3(0.f, 0.f, 0.f);						// 힘 초기화 

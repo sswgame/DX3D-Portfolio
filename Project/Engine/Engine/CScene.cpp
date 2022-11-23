@@ -162,3 +162,25 @@ void CScene::SetSceneState(SCENE_STATE _eState)
 		}
 	}
 }
+
+
+bool CScene::SwapLayer(int _LayerIdx_1, int _LayerIdx_2)
+{
+
+	assert(!(_LayerIdx_1 < 0 || MAX_LAYER <= _LayerIdx_1));
+	assert(!(_LayerIdx_2 < 0 || MAX_LAYER <= _LayerIdx_2));
+
+	CLayer* Left = m_arrLayer[_LayerIdx_1];
+	CLayer* Right = m_arrLayer[_LayerIdx_2];
+	CLayer* Empty = nullptr;
+
+	Empty = Left;
+	m_arrLayer[_LayerIdx_1] = Right;
+	m_arrLayer[_LayerIdx_2] = Empty;
+
+	Left->RenewLayerIdx(_LayerIdx_2);
+	Right->RenewLayerIdx(_LayerIdx_1);
+
+	return true;
+}
+

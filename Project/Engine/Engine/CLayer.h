@@ -11,10 +11,12 @@ private:
 	int                  m_iLayerIdx; // Scene 에서의 인덱스
 
 
+private:
+	void ClearObjectLayerIndex(CGameObject* _pObj);
+
+
 public:
 	int GetLayerIdx() { return m_iLayerIdx; }
-
-
 public:
 	void start();
 	void update();
@@ -33,6 +35,8 @@ public:
 	vector<CGameObject*>& GetObjects() { return m_vecObj; }
 
 	CGameObject* FindRootObject(wstring _wstrNames) const;
+	void RenewLayerIdx(int _LayerIdx);
+
 
 	CLONE_DISABLE(CLayer)
 

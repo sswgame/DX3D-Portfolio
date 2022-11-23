@@ -30,7 +30,7 @@
 			2. 캐릭터를 회전한다.
 				- RotatePlayerFront(Vec3 Axis)
 				- 캐릭터가 바라보는 축이 RotatePlayerFront 매개변수(Axis)로 들어간 축 방향으로 회전한다.
-				- 이때 이전에 구한 m_fMoveAccRot( 돌아야할 남은 각도 )에 
+				- 이때 이전에 구한 m_fMoveAccRot( 돌아야할 남은 각도 )에
 				  들어간 각도 크기를 이용해 자연스럽게 회전하도록 한다.
 */
 
@@ -47,6 +47,8 @@ CTranslateMgr::CTranslateMgr()
 	, m_pCamera(nullptr)
 	, m_pScript(nullptr)
 	, m_pTransform(nullptr)
+	, m_bEqualizePlayerAxis_CamForward(false)
+
 {
 
 }
@@ -58,6 +60,8 @@ CTranslateMgr::CTranslateMgr(const CTranslateMgr& _origin)
 	, m_fMoveAccRot(_origin.m_fMoveAccRot)
 	, m_fRotRadian(_origin.m_fRotRadian)
 	, m_fRotAngle(_origin.m_fRotAngle)
+	, m_bEqualizePlayerAxis_CamForward(_origin.m_bEqualizePlayerAxis_CamForward)
+
 {
 
 }
@@ -72,10 +76,10 @@ CTranslateMgr::~CTranslateMgr()
 void CTranslateMgr::Init(CGameObject* _pOwner, CGameObject* _pCamera, CScript* _pPlayerScript)
 {
 
-	m_pOwner		= _pOwner;
-	m_pCamera		= _pCamera;
-	m_pScript		= _pPlayerScript;
-	m_pTransform	= _pOwner->Transform();
+	m_pOwner = _pOwner;
+	m_pCamera = _pCamera;
+	m_pScript = _pPlayerScript;
+	m_pTransform = _pOwner->Transform();
 
 }
 
@@ -137,9 +141,21 @@ void CTranslateMgr::RotatePlayerFront(Vec3 vDir)
 	if (m_fMoveAccRot == 0.f)
 		return;
 
+	Vec3 vStandard_Dir = vDir.Normalize();		// 기준이 되는 벡터 
+
+	// 플레이어 방향을 카메라 앞 방향과 같도록 고정  
+	if (m_bEqualizePlayerAxis_CamForward)
+	{
+		m_fMoveAccRot = GetRadianBetweenVector(m_vCamAxis.vFrontAxis, m_vObjForwardAxis);
+		if (m_fMoveAccRot <= 0.f)
+			m_fMoveAccRot *= -1;
+		vStandard_Dir = m_vCamAxis.vFrontAxis;
+	}
+
+
 	// 1. 플레이어의 현재 앞 방향 과 Dir 방향 과의 각도를 구한다. 
 	m_vObjForwardAxis = GetForwardAxis();
-	float fRad_Rest = GetRadianBetweenVector(vDir, m_vObjForwardAxis);		// 플레이어가 돌아야할 남은 각도 
+	float fRad_Rest = GetRadianBetweenVector(vStandard_Dir, m_vObjForwardAxis);		// 플레이어가 돌아야할 남은 각도 
 
 	// 플레이어를 돌린다. 
 	int iDir_Rot = (fRad_Rest <= 0.f) ? -1 : 1;
@@ -765,7 +781,7 @@ void CTranslateMgr::CheckForwardKey()
 	if (true == m_bKeyUpdateFinish)
 		return;
 
-			// FORWARD / TAP
+	// FORWARD / TAP
 	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::TAP &&
 		m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::FORWARD)
 	{

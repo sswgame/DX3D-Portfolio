@@ -25,6 +25,7 @@ public:
 	void SetLayerName(int _iLayerIdx, const wstring& _strName);
 	void AddObject(CGameObject* _pRootObj, const wstring& _strLayerName);
 	void AddObject(CGameObject* _pRootObj, int _iLayerIdx);
+	bool SwapLayer(int _LayerIdx_1, int _LayerIdx_2);
 
 	CLayer* GetLayer(int _iIdx)
 	{

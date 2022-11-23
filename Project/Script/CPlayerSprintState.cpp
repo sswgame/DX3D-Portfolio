@@ -14,6 +14,7 @@
 #include "CStateMgr.h"
 #include "CScriptMgr.h"
 #include "GravityScript.h"
+#include "TrailScript.h"
 
 
 CPlayerSprintState::CPlayerSprintState()
@@ -64,7 +65,7 @@ void CPlayerSprintState::Enter()
 		m_eSprintType = SPRINT_TYPE::JUMP_DASH_PREPARE;
 
 		PlaySprintAnim(L"dash_air2", false);
-		Sprint(750.f);
+		Sprint(800.f);
 		GravityIgnore(true);		// 중력 무시
 
 
@@ -76,7 +77,7 @@ void CPlayerSprintState::Enter()
 		m_eSprintType = SPRINT_TYPE::RUN_DASH;
 
 		PlaySprintAnim(L"roll", false);
-		Sprint(750.f);
+		Sprint(800.f);
 
 	}
 
@@ -118,19 +119,26 @@ void CPlayerSprintState::UpdateSprintState()
 		if (m_pCurAnim != nullptr && m_pCurAnim->IsFinish() == true)
 		{
 			m_eSprintType = SPRINT_TYPE::JUMP_DASH_ING;
-			PlaySprintAnim(L"dash_air2_ing", true);
+			PlaySprintAnim(L"dash_air2_ing", true, 0.8f);
 		}
 
+		// [ 플레이어 잔상 ] 재생 ON
+		TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+		if (pTrail)
+		{
+			pTrail->SetCreateTermTime(0.3f);
+			pTrail->On();
+		}
 	}
 	break;
 	case SPRINT_TYPE::JUMP_DASH_ING:
 	{
 
 		RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
-		if (pRigid->GetVelocity().Length() <= 20.f)
+		if (pRigid->GetVelocity().Length() <= 200.f)
 		{
 			m_eSprintType = SPRINT_TYPE::JUMP_DASH_END;
-			PlaySprintAnim(L"jump_1_down", false);
+			PlaySprintAnim(L"jump_1_down", false, 0.8f);
 			GravityIgnore(false);
 		}
 
@@ -143,12 +151,24 @@ void CPlayerSprintState::UpdateSprintState()
 		GravityScript* pGravity = (GravityScript*)GetOwner()->GetScriptByName(L"GravityScript");
 		if (pGravity != nullptr)
 		{
+			// [ 착지 ] 
 			if (pGravity->Isfalling() == false)
 			{
 				GetOwner()->FSM()->ChangeState(L"IDLE");
+				RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+				Vec3 vCurVelocity = pRigid->GetVelocity();
+				pRigid->SetVelocity(Vec3(0.f, vCurVelocity.y, 0.f));
 			}
 
 		}
+
+		// [ 플레이어 잔상 ] 재생 OFF 
+		TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+		if (pTrail)
+		{
+			pTrail->Off();
+		}
+
 	}
 	break;
 	case SPRINT_TYPE::RUN_DASH:
@@ -157,6 +177,10 @@ void CPlayerSprintState::UpdateSprintState()
 		if (m_pCurAnim != nullptr && m_pCurAnim->IsFinish() == true)
 		{
 			GetOwner()->FSM()->ChangeState(L"IDLE");
+			RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+			Vec3 vCurVelocity = pRigid->GetVelocity();
+			pRigid->SetVelocity(Vec3(0.f, vCurVelocity.y, 0.f));
+
 		}
 
 	}

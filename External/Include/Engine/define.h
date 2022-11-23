@@ -103,6 +103,8 @@ enum class BS_TYPE
 	,	// SrcRGB * (SrcAlpha) + DestRGB * (1 - SrcAlpha)
 	ONEONE_BLEND
 	,		// SrcRGB * (1) + DestRGB * (1)
+	NO_ALPHA_COVERAGE		// Alpha Blend 0.5 미만 이어도 적용되게 함  
+	,
 	END
 	,
 };
@@ -259,25 +261,28 @@ enum class EVENT_TYPE
 	ADD_CHILD
 	,				// lParam : Parent Object, wParam : Child Object
 	DISCONNECT_PARENT
-	,		// lParam : Object Adress
+	,				// lParam : Object Adress
 	SET_CAMEAR_INDEX
-	,		// lParam : Camera Component Adress, wParam : Camera Change Index
+	,				// lParam : Camera Component Adress, wParam : Camera Change Index
 
 	ACTIVATE_OBJECT
-	,		// lParam : Object Adress
+	,				// lParam : Object Adress
 	DEACTIVATE_OBJECT
-	,		// lParam : Object Adress
+	,				// lParam : Object Adress
 
 	ACTIVATE_COMPONENT
-	,		// lParam : Component Adress
+	,				// lParam : Component Adress
 	DEACTIVATE_COMOPNENT
-	,   // lParam : Component Adress
+	,				// lParam : Component Adress
 
 	SCENE_CHANGE
-	,			// lParam : Next Stage Enum
+	,				// lParam : Next Stage Enum
 	CHANGE_FSM_STATE
-	,		// lParam : FSM Adress, wParam : Next State Type
-
+	,				// lParam : FSM Adress, wParam : Next State Type
+	CHANGE_OBJ_LAYER_INDEX
+	,				// lParam : Object Adress, wParam : Layer Index
+	SWAP_LAYER
+	,				// lParam : Layer Index, wParam : Layer Index
 	DELETE_RES
 	,				// lParam : ResAdress
 

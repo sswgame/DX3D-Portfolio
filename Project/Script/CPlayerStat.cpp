@@ -1,11 +1,17 @@
 #include "pch.h"
 #include "CPlayerStat.h"
 
+#include <Engine/CFSM.h>
+
+#include "CStateMgr.h"
+
+#include "PlayerScript.h"
+
 
 CPlayerStat::CPlayerStat()
 {
-	InitCurStat();
-	InitMaxStat(1000.f, 100.f, 100.f, 100.f, 100.f, 1.f); // TEST 용 입니다. 
+	InitCurStat(1000.f, 100.f, 100.f, 200.f, 100.f, 150.f);
+	InitMaxStat(1000.f, 100.f, 100.f, 300.f, 100.f, 170.f); // TEST 용 입니다. 
 }
 
 CPlayerStat::CPlayerStat(const CPlayerStat& _origin)
@@ -23,7 +29,6 @@ CPlayerStat::~CPlayerStat()
 
 void CPlayerStat::start()
 {
-	m_tCurStat.fSpeed = 100.f;
 
 }
 
@@ -36,6 +41,40 @@ void CPlayerStat::lateupdate()
 {
 
 }
+
+float CPlayerStat::GetDamage()
+{
+	PlayerScript* pPlayerScript = (PlayerScript*)m_pOwnerScript;
+	wstring strStateType = pPlayerScript->GetStateMgr()->GetCurstate();
+
+
+	float fMinAttack = 0.f;
+	float fMaxAttack = m_tMaxStat.fAttack;
+
+	if (pPlayerScript)
+	{
+		// 강 공격
+		if (strStateType == L"HEAVT_ATTACK")
+		{
+			fMinAttack = m_tCurStat.fAttack;			// 200
+			fMaxAttack = m_tMaxStat.fAttack + 100.f;	// 400
+
+		}
+		// 약 공격 
+		else if (strStateType == L"LIGHT_ATTACK")
+		{
+			fMinAttack = m_tCurStat.fAttack - 100.f;	// 100
+			fMaxAttack = m_tMaxStat.fAttack;			// 300
+		}
+
+	}
+
+	float fRandDamage = float(rand() % ((int)fMaxAttack - (int)fMinAttack));
+	float fDamage = fMinAttack + fRandDamage;
+
+	return fDamage;
+}
+
 
 
 void CPlayerStat::InitCurStat(float _fHp, float _fStamina, float _fEther

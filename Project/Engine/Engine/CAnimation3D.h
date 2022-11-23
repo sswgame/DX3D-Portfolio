@@ -115,8 +115,11 @@ public:
 
 	void SetPlay(bool _b)
 	{
-		m_bPlay     = _b;
-		m_eCurState = ANIMATION_STATE::STOP;
+		m_bPlay = _b;
+		if (!m_bPlay)
+			m_eCurState = ANIMATION_STATE::STOP;
+		else
+			m_eCurState = ANIMATION_STATE::PLAY;
 	}
 
 	void SetAnimState(ANIMATION_STATE _eState) { m_eCurState = _eState; }

@@ -60,7 +60,9 @@ void GravityScript::update()
 		{
 			// 중력 영향을 받을 건지 여부 
 			if (!m_bIgnoreGravity)
-				pRigidBody->SetAccelAlpha(Vec3(0.f, -2300.f, 0.f));
+			{
+				pRigidBody->SetAccelAlpha(Vec3(0.f, -2000.f, 0.f));
+			}
 
 		}
 		else

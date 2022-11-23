@@ -251,33 +251,67 @@ void SceneOutliner::PressDelete(DWORD_PTR _dw)
 
 void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 {
-	CGameObject* pChildObject      = (CGameObject*)_dwDrag;
-	CGameObject* pDropTargetObject = (CGameObject*)_dwDrop;
+	if (_dwDrag == (DWORD_PTR)nullptr || _dwDrop == (DWORD_PTR)nullptr)
+		return;
 
 
-	// 드롭 목적지가 제대로 들어 온 경우
-	if (nullptr != pDropTargetObject)
+	NODE_TYPE eDragNode_Type = m_TreeUI->GetDragNode()->GetNodeType();
+	NODE_TYPE eDropNode_Type = m_TreeUI->GetDropNode()->GetNodeType();
+
+	// GAME_OBJECT -> GAME_OBJECT
+	if (eDragNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT &&
+		eDropNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT)
 	{
-		if (pChildObject == pDropTargetObject
-		    || pDropTargetObject->IsAncestor(pChildObject))
+		CGameObject* pDrag = (CGameObject*)_dwDrag; // Child 
+		CGameObject* pDrop = (CGameObject*)_dwDrop; // Parent
+
+		if (pDrop != nullptr)
 		{
-			return;
+			if (pDrag == pDrop || pDrop->IsAncestor(pDrag))
+			{
+				return;
+			}
+
+			CSceneMgr::GetInst()->AddChild(pDrop, pDrag);
+		}
+		// 자식 오브젝트의 목적지가 nullptr 인 경우
+		else
+		{
+			// 이미 최상위 부모 오브젝트는 이벤트 처리가 필요없다.
+			if (nullptr == pDrag->GetParent())
+			{
+				return;
+			}
+
+			CSceneMgr::GetInst()->DisconnectParent(pDrag);
 		}
 
-		CSceneMgr::GetInst()->AddChild(pDropTargetObject, pChildObject);
 	}
-
-	// 자식 오브젝트의 목적지가 nullptr 인 경우
-	else
+	// GAME_OBJECT -> LAYER 
+	else if (eDragNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT &&
+			 eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
 	{
-		// 이미 최상위 부모 오브젝트는 이벤트 처리가 필요없다.
-		if (nullptr == pChildObject->GetParent())
-		{
-			return;
-		}
+		CGameObject* pDrag	= (CGameObject*)_dwDrag; // Object 
+		CLayer* pDrop		= (CLayer*)_dwDrop;		// Layer
 
-		CSceneMgr::GetInst()->DisconnectParent(pChildObject);
+		CSceneMgr::GetInst()->ChangeObjectLayerIndex(pDrag, pDrop->GetLayerIdx());
+
 	}
+	// LAYER -> LAYER 
+	else if (eDragNode_Type == NODE_TYPE::ENGINE_LAYER &&
+			 eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
+	{
+		CLayer* pDrag = (CLayer*)_dwDrag;		// Layer 
+		CLayer* pDrop = (CLayer*)_dwDrop;		// Layer
+
+		CSceneMgr::GetInst()->SwapLayer(pDrag->GetLayerIdx(), pDrop->GetLayerIdx());
+
+	}
+
+
+
+
+
 }
 
 void SceneOutliner::ResDrop(DWORD_PTR _resPtr)

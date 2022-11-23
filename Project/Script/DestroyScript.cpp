@@ -48,9 +48,7 @@ void DestroyScript::update()
 {
 
 	m_fTimer += DT;
-
 	m_fTimerRatio = m_fTimer / m_fDeadLine_Timer;
-	GetOwner()->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fTimer);
 
 	switch (m_eDestroyMode)
 	{
@@ -60,7 +58,7 @@ void DestroyScript::update()
 			DestroyObject();
 
 	}
-		break;
+	break;
 	case DESTROY_MODE::TIMER:
 	{
 		if (m_fTimer >= m_fDeadLine_Timer)
@@ -69,12 +67,18 @@ void DestroyScript::update()
 		}
 
 	}
-		break;
+	break;
 	case DESTROY_MODE::ACTIVE:
 	{
 
+		int iMtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
+		for (int i = 0; i < iMtrlCnt; ++i)
+		{
+			GetOwner()->MeshRender()->GetDynamicMaterial(i)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fTimer);
+		}
+
 	}
-		break;
+	break;
 	}
 }
 

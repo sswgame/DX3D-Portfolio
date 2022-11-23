@@ -14,13 +14,16 @@
 
 #include "CScriptMgr.h"
 #include "CPlayerStat.h"
+#include "CObjKeyMgr.h"
 
+#include "PlayerCamScript.h"
 
 
 
 CPlayerMoveState::CPlayerMoveState()
 	:CState(L"MOVE")
 	, m_pTranslateMgr(nullptr)
+	, m_pCamScript(nullptr)
 	, m_bChangeLerpTime(false)
 {
 
@@ -28,7 +31,9 @@ CPlayerMoveState::CPlayerMoveState()
 
 CPlayerMoveState::CPlayerMoveState(const CPlayerMoveState& _origin)
 	:CState(_origin)
-
+	, m_pTranslateMgr(nullptr)
+	, m_pCamScript(nullptr)
+	, m_bChangeLerpTime(false)
 {
 }
 
@@ -56,6 +61,8 @@ void CPlayerMoveState::Enter()
 
 	}
 
+	m_eMode = MOVE_MODE::RUN;
+
 	// 애니메이션 재생
 	PlayMoveAnim(L"run", true);
 
@@ -82,6 +89,25 @@ void CPlayerMoveState::Update()
 {
 	CState::Update();
 
+	// MOVE_MODE 업데이트 
+	UpdateMoveMode();
+
+	switch (m_eMode)
+	{
+	case MOVE_MODE::RUN:
+	{
+		UpdateRunMode();
+	}
+	break;
+	case MOVE_MODE::WALK:
+	{
+		UpdateWalkMode();
+
+	}
+	break;
+	}
+
+
 	// 이동 업데이트 
 	m_pTranslateMgr->Update();
 
@@ -94,6 +120,99 @@ void CPlayerMoveState::LateUpdate()
 	CState::LateUpdate();
 
 	m_pTranslateMgr->LateUpdate();
+
+}
+
+void CPlayerMoveState::UpdateMoveMode()
+{
+	if (m_pCamScript)
+	{
+		CAMERA_OPTION eCamOption = m_pCamScript->GetCameraOption();
+		switch (eCamOption)
+		{
+		case CAMERA_OPTION::DEFAULT:
+			m_eMode = MOVE_MODE::RUN;
+			m_pTranslateMgr->SetEqualize_Player_and_Camera(false);
+			m_pStat->SetSpeed(150.f);
+
+
+			break;
+		case CAMERA_OPTION::CAMERA_LOCK:
+			m_eMode = MOVE_MODE::WALK;
+			m_pTranslateMgr->SetEqualize_Player_and_Camera(true);
+			m_pStat->SetSpeed(100.f);
+
+			break;
+		}
+	}
+	else
+	{
+		PlayerScript* pPlayer = (PlayerScript*)CState::GetOwner()->GetScriptByName(L"PlayerScript");
+		m_pStat = pPlayer->GetPlayerStat();
+
+		if (pPlayer)
+		{
+			CGameObject* pCam = pPlayer->GetCamera();
+			m_pCamScript = (PlayerCamScript*)pCam->GetScriptByName(L"PlayerCamScript");
+		}
+	}
+
+}
+
+void CPlayerMoveState::UpdateRunMode()
+{
+	CAnimation3D* pCurAnim = CState::GetOwner()->Animator3D()->GetCurAnim();
+	if (pCurAnim)
+	{
+		if (pCurAnim->GetName() != L"run")
+		{
+			// 애니메이션 재생
+			PlayMoveAnim(L"run", true);
+		}
+	}
+}
+
+void CPlayerMoveState::UpdateWalkMode()
+{
+	tKey_Zip tCurKeyInfo = m_pStateMgr->GetCurKeyInfo();
+	CAnimation3D* pCurAnim = CState::GetOwner()->Animator3D()->GetCurAnim();
+	wstring sAnimName = L"";
+
+	// 하나씩 눌렀을 때 
+	if (tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::FORWARD)
+	{
+		sAnimName = L"walk_forward";
+	}
+
+	if (tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::BACKWARD)
+	{
+		sAnimName = L"walk_back";
+	}
+
+	if (tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::RIGHT)
+	{
+		sAnimName = L"walk_right";
+	}
+
+	if (tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::LEFT)
+	{
+		sAnimName = L"walk_left";
+	}
+
+	// 동시에 눌렀을 때  
+	if (tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::RIGHT &&
+		tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::LEFT)
+		sAnimName = L"walk_forward";
+
+	if (tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::FORWARD &&
+		tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Pressed & PLAYER_KEY_OPTION::BACKWARD)
+		sAnimName = L"walk_forward";
+
+
+
+	// 애니메이션 업데이트 
+	if (pCurAnim->GetName() != sAnimName)
+		PlayMoveAnim(sAnimName, true);
 
 }
 

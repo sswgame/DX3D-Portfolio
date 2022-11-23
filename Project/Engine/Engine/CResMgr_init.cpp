@@ -108,6 +108,73 @@ void CResMgr::CreateEngineMesh()
 	vecVtx.clear();
 	vecIdx.clear();
 
+
+	/*
+
+		... 9 7 5 3 1
+		... 8 6 4 2 0
+
+	*/
+
+	int iPolyGonCnt = 30;
+	int iVtxCnt = 4 + 2 * (iPolyGonCnt - 1);
+
+	Vec2 vUV_RT = Vec2(1.f, 0.f);
+	Vec2 vUV_RB = Vec2(1.f, 1.f);
+	Vec2 vUV_Dist = Vec2(1.f, 1.f) / iPolyGonCnt;
+
+	for (int i = 0; i < iVtxCnt; ++i)
+	{
+		v.vPos = Vec3(0.f, 0.f, 0.f);
+		v.vColor = Vec4(1.f, 0.2f, 0.2f, 1.f);
+		v.vTangent = Vec3(1.f, 0.f, 0.f);
+		v.vNormal = Vec3(0.f, 0.f, -1.f);
+		v.vBinormal = Vec3(0.f, 1.f, 0.f);
+
+		if (i >= 2)
+		{
+			if (i % 2 == 1)
+			{
+				vUV_RT.x -= vUV_Dist.x;
+				v.vUV = vUV_RT;
+				if (i == iVtxCnt - 1) v.vUV = Vec2(0.f, vUV_RT.y);
+
+			}
+			else
+			{
+				vUV_RB.x -= vUV_Dist.x;
+				v.vUV = vUV_RB;
+				if (i == iVtxCnt - 2) v.vUV = Vec2(0.f, vUV_RB.y);
+
+			}
+		}
+		else
+		{
+			if (i == 0) v.vUV = vUV_RB;
+			if (i == 1) v.vUV = vUV_RT;
+		}
+
+		vecVtx.push_back(v);
+	}
+
+	for (int i = 0; i < iVtxCnt - 2; i += 2)
+	{
+		vecIdx.push_back(i + 3);
+		vecIdx.push_back(i + 1);
+		vecIdx.push_back(i);
+
+		vecIdx.push_back(i + 2);
+		vecIdx.push_back(i + 3);
+		vecIdx.push_back(i);
+
+	}
+
+	pMesh = new CMesh;
+	pMesh->CreateBuffer_Dynamic(vecVtx.data(), (UINT)vecVtx.size(), vecIdx.data(), (UINT)vecIdx.size());
+	AddRes<CMesh>(L"RectMesh_Trail", pMesh, true);
+	vecVtx.clear();
+	vecIdx.clear();
+
 	// ==========
 	// CircleMesh
 	// ==========
@@ -657,9 +724,23 @@ void CResMgr::CreateEngineShader()
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_TRANSLUCENT);
 	pShader->SetRSType(RS_TYPE::CULL_BACK);
 	pShader->SetDSType(DS_TYPE::LESS);
-	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
+	pShader->SetBSType(BS_TYPE::NO_ALPHA_COVERAGE);
 
 	AddRes<CGraphicsShader>(L"TrailShader", pShader, true);
+
+
+	// Sword TRail Shader 
+	pShader = new CGraphicsShader;
+	pShader->CreateVertexShader(L"shader\\trail.fx", "VS_SwordTrail");
+	pShader->CreatePixelShader(L"shader\\trail.fx", "PS_SwordTrail");
+
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_TRANSLUCENT);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::NO_ALPHA_COVERAGE);
+
+	AddRes<CGraphicsShader>(L"SwordTrailShader", pShader, true);
+
 
 	// PaperBurn Shader
 	pShader = new CGraphicsShader;
@@ -833,6 +914,11 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"TrailShader"));
 	AddRes<CMaterial>(L"material\\TrailMtrl.mtrl", pMtrl);
+
+	// Sword Trail Material
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"SwordTrailShader"));
+	AddRes<CMaterial>(L"material\\SwordTrailMtrl.mtrl", pMtrl);
 
 	// PaperBurnMtrl	
 	pMtrl = new CMaterial;

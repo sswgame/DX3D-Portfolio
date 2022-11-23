@@ -356,6 +356,7 @@ void CAnimator3D::Play(const wstring& _strName, bool _bRepeat)
 	}
 
 	m_pCurAnim = pAnim;
+	m_pCurAnim->Play(true);
 	m_pCurAnim->SetAnimState(ANIMATION_STATE::BEFORE_PLAY);
 
 	if (m_pPrevAnim != nullptr)

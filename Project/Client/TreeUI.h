@@ -116,6 +116,9 @@ private:
     vector<tTreeKey>    m_vecKeyBind;
 
 public:
+    TreeNode* GetDragNode() { return m_pDragNode; }
+    TreeNode* GetDropNode() { return m_pDropNode; }
+
     virtual void update() override;
     virtual void render_update() override;
 

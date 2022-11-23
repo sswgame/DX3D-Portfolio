@@ -37,6 +37,10 @@ public:
 	virtual void update();
 	virtual void lateupdate();
 
+
+	float GetDamage();
+
+
 public:
 	// [ S U B ]
 	void SubHp(float _fHp);

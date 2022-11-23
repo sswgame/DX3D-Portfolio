@@ -48,6 +48,9 @@ private:
     JUMP_STATE       m_eJumpState;
     int              m_iJumpCnt;        // а║га х╫╪Ж  
 
+    CGameObject*    m_pJumpEffect_Land;
+
+
 
 public:
     virtual void Enter();

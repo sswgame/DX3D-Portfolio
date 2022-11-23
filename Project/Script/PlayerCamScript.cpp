@@ -5,7 +5,8 @@
 
 #include <Engine/CKeyMgr.h>
 #include <Engine/CCamera.h>
-
+#include <Engine/CMeshRender.h>
+#include <Engine/CTransform.h>
 PlayerCamScript::PlayerCamScript()
 	: CScript((int)SCRIPT_TYPE::PLAYERCAMSCRIPT)
 	, m_vTargetPos(Vec3(0.f, 0.f, 0.f))
@@ -13,6 +14,11 @@ PlayerCamScript::PlayerCamScript()
 	, m_fMinDist(0.f)
 	, m_fMaxDist(0.f)
 	, m_fCamHeight(180.f)
+	, m_eCamMode(CAMERA_MODE::THIRD_PERSON)
+	, m_eCamOption(CAMERA_OPTION::DEFAULT)
+	, m_bCameraLock_Success(false)
+	, m_fCamRotSpeed(5.f)
+	, m_pCamLock_Point(nullptr)
 {
 	SetName(L"PlayerCamScript");
 
@@ -25,6 +31,12 @@ PlayerCamScript::PlayerCamScript(const PlayerCamScript& _origin)
 	, m_fMinDist(0.f)
 	, m_fMaxDist(0.f)
 	, m_fCamHeight(180.f)
+	, m_eCamMode(CAMERA_MODE::THIRD_PERSON)
+	, m_eCamOption(CAMERA_OPTION::DEFAULT)
+	, m_bCameraLock_Success(false)
+	, m_bRotFinish(false)
+	, m_pCamLock_Point(nullptr)
+
 {
 	SetName(L"PlayerCamScript");
 
@@ -46,7 +58,21 @@ void PlayerCamScript::start()
 	SetDistance(500.f); // 캐릭터와 카메라와의 거리 ( 높이는 해당안됨 )
 	SetDistanceMinMax(10.f, 600.f);
 
+	if (m_pCamLock_Point == nullptr)
+	{
+		m_vCamPoint_Color = Vec4(1.f, 1.f, 1.f, 1.f);
+		m_pCamLock_Point = new CGameObject;
+		m_pCamLock_Point->SetName(L"CameraLock_Point");
 
+		m_pCamLock_Point->AddComponent(new CTransform);
+		m_pCamLock_Point->AddComponent(new CMeshRender);
+
+		m_pCamLock_Point->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+		m_pCamLock_Point->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"), 0);
+		m_pCamLock_Point->MeshRender()->GetDynamicMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vCamPoint_Color);
+
+		CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pCamLock_Point, GetOwner()->GetLayerIndex());
+	}
 }
 
 void PlayerCamScript::update()
@@ -54,7 +80,7 @@ void PlayerCamScript::update()
 	if (KEY_TAP(KEY::L))
 	{
 		/*
-			임의로 L 버튼을 누르면 FREE 모드로 전환됩니다. 
+			임의로 L 버튼을 누르면 FREE 모드로 전환됩니다.
 
 		*/
 		if (m_eCamMode == CAMERA_MODE::THIRD_PERSON)
@@ -68,19 +94,28 @@ void PlayerCamScript::update()
 	{
 	case CAMERA_MODE::FIRST_PERSON: // 1인칭 
 	{
-		UpdateFirstPersonMode();
+		if (m_eCamOption == CAMERA_OPTION::DEFAULT)
+			UpdateFirstPersonMode();
 
 	}
 	break;
 	case CAMERA_MODE::THIRD_PERSON: // 3인칭 
 	{
-		UpdateThirdPersonMode();
+		if (m_eCamOption == CAMERA_OPTION::DEFAULT)
+			UpdateThirdPersonMode();
+		else if (m_eCamOption == CAMERA_OPTION::CAMERA_LOCK)
+		{
+			UpdateThirdPersonMode_CameraLock();
+			UpdateCameraLockPoint();
+		}
+
 
 	}
 	break;
 	case CAMERA_MODE::FREE:			// 자유
 	{
-		UpdateFreeMode();
+		if (m_eCamOption == CAMERA_OPTION::DEFAULT)
+			UpdateFreeMode();
 	}
 	break;
 
@@ -96,12 +131,14 @@ void PlayerCamScript::lateupdate()
 	{
 	case CAMERA_MODE::FIRST_PERSON: // 1인칭 
 	{
-		LateUpdateFirstPersonMode();
+		if (m_eCamOption == CAMERA_OPTION::DEFAULT)
+			LateUpdateFirstPersonMode();
 	}
 	break;
 	case CAMERA_MODE::THIRD_PERSON: // 3인칭 
 	{
-		LeteUpdateThirdPersonMode();
+		if (m_eCamOption == CAMERA_OPTION::DEFAULT)
+			LeteUpdateThirdPersonMode();
 	}
 	break;
 	case CAMERA_MODE::FREE:			// 자유 
@@ -188,6 +225,190 @@ void PlayerCamScript::UpdateFreeMode()
 	Transform()->SetRelativePos(vPos);
 }
 
+void PlayerCamScript::UpdateThirdPersonMode_CameraLock()
+{
+	Vec3 vPlayerPos = m_vTargetPos;											// 플레이어 위치 
+	Vec3 vCamTargetPos = m_pCamLock_TargetObj->Transform()->GetRelativePos();	// 카메라 락 타겟 위치  
+	Vec3 vCamPos = UpdateCameraRelativePos();							// 카메라 위치  
+	m_pCam->Transform()->SetRelativePos(vCamPos);
+
+	Vec3 directionVec = XMVector3Normalize(GetForwardAxis());
+	vCamPos = directionVec * -m_fDistance + vCamPos;
+	vCamPos.y += m_fCamHeight;
+
+	Vec3 vTargetDir = vCamTargetPos - vPlayerPos;							// 플레이어 -> 카메라 락 타겟 
+	Vec3 vTargetDir_Inv = vTargetDir * -1;										// 플레이어 <- 카메라 락 타겟 
+	Vec3 vCamDir = vCamPos - vPlayerPos;									// 플레이어 -> 카메라	
+	Vec3 vCamDir_Inv = vCamDir * -1;											// 플레이어 <- 카메라 
+
+	vTargetDir.y = 0.f;
+	vTargetDir_Inv.y = 0.f;
+	vCamDir.y = 0.f;
+	vCamDir_Inv.y = 0.f;
+
+	vTargetDir.Normalize();
+	vTargetDir_Inv.Normalize();
+	vCamDir.Normalize();
+	vCamDir_Inv.Normalize();
+
+	Vec3 vPrev_CamDir = m_vCamDir_CamLock;
+	Vec3 vPrev_TargetDir = m_vTargetDir_CamLock;
+	m_vCamDir_CamLock = vCamDir;
+	m_vTargetDir_CamLock = vTargetDir;
+
+	if (vCamDir != vPrev_CamDir || vTargetDir != vPrev_TargetDir)
+		m_bRotFinish = false;
+
+	if (!m_bCameraLock_Success)
+	{
+		m_bCameraLock_Success = RotateCamera(vCamDir, vTargetDir_Inv);
+	}
+	else
+	{
+		if (!m_bRotFinish)
+			m_bRotFinish = RotateCamera(vCamDir, vTargetDir_Inv);
+	}
+
+	// 위/아래 회전 가능하게 설정  
+	Vec3 vRot = GetOwner()->Transform()->GetRelativeRotation();
+	Vec2 vMouseDir = CKeyMgr::GetInst()->GetMouseDir();
+	if (KEY_PRESSED(KEY::RBTN))
+	{
+		vRot.x -= DT * vMouseDir.y * XM_PI;
+
+		// 0 ~ 360 도 고정 
+		if (vRot.x >= XM_2PI)
+		{
+			float fDiff = vRot.x - XM_2PI;
+			vRot.x = fDiff;
+		}
+		else if (vRot.x <= 0.f)
+		{
+			float fDiff = XM_2PI - vRot.x;
+			vRot.x = fDiff;
+		}
+		GetOwner()->Transform()->SetRelativeRotation(vRot);		// 카메라 회전 
+
+	}
+
+	// 카메라 위치 (뒤/높이) - 3인칭  
+	Translate(GetForwardAxis(), -m_fDistance);							// 카메라가 앞을 바라보는 기준으로 Distance 만큼 [뒤로] 이동
+	Vec3 vPos = m_pCam->Transform()->GetRelativePos();
+	vPos.y = m_pCam->Transform()->GetRelativePos().y + m_fCamHeight;	// 카메라 높이를 올린다. (상대 - 캐릭터 기준) 
+	m_pCam->Transform()->SetRelativePos(vPos);
+
+	// 카메라 잠금 포인트 점 위치 설정  
+	if (m_pCamLock_Point)
+	{
+		float fCamTargetDist = (vCamPos - m_vTargetPos).Length();
+		Vec3 vScale = Vec3(30.f, 30.f, 30.f);
+		Vec3 vPos = vCamTargetPos;
+		Vec3 vDir = directionVec * -1;
+		float fDist = 10.f;
+
+		vPos.x += fDist * vDir.x;
+		vPos.z += fDist * vDir.y;
+
+		m_pCamLock_Point->Transform()->SetRelativePos(vPos);
+		m_pCamLock_Point->Transform()->SetRelativeScale(vScale);
+
+	}
+}
+
+
+bool PlayerCamScript::RotateCamera(Vec3 _vFrom, Vec3 _vTo)
+{
+	if (_vFrom == _vTo)
+		return true;
+
+	Vec3 StartDir = _vFrom;
+	StartDir.y = 0.f;
+	StartDir.Normalize();
+
+	Vec3 EndDir = _vTo;
+	EndDir.y = 0.f;
+	EndDir.Normalize();;
+
+	float fCos = StartDir.Dot(EndDir);
+	fCos += 0.0001f;
+	if (fCos >= 1.f) fCos = 1.f;
+	if (fCos <= -1.f) fCos = -1.f;
+
+	float fRad = acosf(fCos);					// 사이각 ( Radian )
+	float fAng = fRad * (180.f / XM_PI);		// 사이각 ( Angle )						
+
+	Vec3 vCross = XMVector3Cross(EndDir, StartDir);
+	int prevDir = m_iCamRotDir;						// 이전 회전 방향  
+	m_iCamRotDir = (vCross.y > 0.f) ? -1 : 1;		// 현재 회전 방향 ( 시계 : 1 / 반시계 : -1 )
+
+	// 회전  
+	Vec3 vRot = GetOwner()->Transform()->GetRelativeRotation();
+
+	float fDT = DT * m_fCamRotSpeed * m_iCamRotDir;
+	vRot.y += fDT;
+	// 0 ~ 360 도 고정 
+	if (vRot.y >= XM_2PI)
+	{
+		float fDiff = vRot.y - XM_2PI;
+		vRot.y = fDiff;
+	}
+	else if (vRot.y <= 0.f)
+	{
+		float fDiff = XM_2PI + vRot.y;
+		vRot.y = fDiff;
+	}
+
+	GetOwner()->Transform()->SetRelativeRotation(vRot);
+
+	// 회전 종료 여부 확인 
+	Vec3 vForwardAxis = GetForwardAxis();
+	vForwardAxis.y = 0.f;
+	vForwardAxis.Normalize();
+	Vec3 Changed_StartDir = vForwardAxis * -1;
+	Vec3 vCross_Check = XMVector3Cross(EndDir, Changed_StartDir);
+	int iDir = (vCross_Check.y > 0.f) ? -1 : 1;
+	// 회전 종료 - 회전 방향이 바뀜 ( 회전량 초과 ) 
+	if (m_iCamRotDir != iDir)
+	{
+		float fCos = Changed_StartDir.Dot(EndDir);
+		if (fCos >= 1.f) fCos = 1.f;
+		if (fCos <= -1.f) fCos = -1.f;
+
+		float fRad = acosf(fCos);					// 사이각 ( Radian )
+		float fAng = fRad * (180.f / XM_PI);		// 사이각 ( Angle )			
+
+		// 초과 차이 만큼 원상 복구 
+		vRot.y += iDir * fRad;
+		// 0 ~ 360 도 고정 
+		if (vRot.y >= XM_2PI)
+		{
+			float fDiff = vRot.y - XM_2PI;
+			vRot.y = fDiff;
+		}
+		else if (vRot.y <= 0.f)
+		{
+			float fDiff = XM_2PI + vRot.y;
+			vRot.y = fDiff;
+		}
+
+		GetOwner()->Transform()->SetRelativeRotation(vRot);
+
+		return true;
+	}
+
+	return false;
+
+}
+
+void PlayerCamScript::UpdateCameraLockPoint()
+{
+	if (!m_pCamLock_Point)
+		return;
+
+
+
+}
+
 void PlayerCamScript::UpdateFirstPersonMode()
 {
 
@@ -269,6 +490,16 @@ void PlayerCamScript::LateUpdateFirstPersonMode()
 void PlayerCamScript::LeteUpdateThirdPersonMode()
 {
 
+}
+
+void PlayerCamScript::SetCameraLockTargetObj(CGameObject* _pObj, Vec3 _vPos)
+{
+	m_pCamLock_TargetObj = _pObj;
+	if (m_pCamLock_TargetObj)
+	{
+		m_vCamLock_TragetPos = _vPos;
+
+	}
 }
 
 
@@ -384,7 +615,7 @@ void PlayerCamScript::SetDistanceMinMax(float minDist, float maxDist)
 
 Vec3 PlayerCamScript::UpdateCameraRelativePos()
 {
-	Vec3 vCamCurPos = m_pCam->Transform()->GetRelativePos();
+	Vec3 vCamCurPos = GetOwner()->Transform()->GetRelativePos();
 	if (vCamCurPos == m_vTargetPos)
 		return vCamCurPos;;
 
@@ -411,17 +642,17 @@ Vec3 PlayerCamScript::UpdateCameraRelativePos()
 	// 어떻게 할까././
 
 	// 3. 거리 차만큼 카메라 위치를 조정한다. ( 단, 거리차가 너무 작으면 다가가는 속도도 그만큼 작아지므로 지정해준다. )
-	float fXSpeed = 0.01f;
+	float fXSpeed = 0.1f;
 	if (vDist.x <= 10.f)
-		fXSpeed = 2.f;
+		fXSpeed = 3.f;
 
 	float fYSpeed = 0.01f;
 	if (vDist.y <= 10.f)
-		fYSpeed = 2.f;
+		fYSpeed = 3.f;
 
 	float fZSpeed = 0.01f;
 	if (vDist.z <= 10.f)
-		fZSpeed = 2.f;
+		fZSpeed = 3.f;
 
 	vCamCurPos.x += DT * vLength.x * vVector.x * fXSpeed;
 	vCamCurPos.y += DT * vLength.y * vVector.y * fYSpeed;
@@ -465,6 +696,23 @@ Vec3 PlayerCamScript::UpdateCameraRelativePos()
 
 }
 
+void PlayerCamScript::Reset_CameraLock()
+{
+	m_bCameraLock_Success = false;
+	if (m_pCamLock_Point)
+	{
+		m_pCamLock_Point->Activate();
+
+	}
+}
+void PlayerCamScript::Reset_Deafult()
+{
+	if (m_pCamLock_Point)
+	{
+		m_pCamLock_Point->Deactivate();
+
+	}
+}
 
 void PlayerCamScript::OnCollisionEnter(CGameObject* _OtherObject)
 {

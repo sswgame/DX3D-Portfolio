@@ -61,7 +61,7 @@ private:
     float               m_fMoveAccRot;          // 목표 각도까지 움직여야할 남은 각도 
     float               m_fDefaultAngle;        // 정면이 등을 보이게 하는데 필요한 초기 각도
 
-
+    bool                m_bEqualizePlayerAxis_CamForward;       // Player 를 무조건 Camera가 바라보는 방향으로 회전 시킨다
 
 public:
     void    Init(CGameObject* _pOwner, CGameObject* _pCamera, CScript* _pPlayerScript);
@@ -97,6 +97,9 @@ public:
     void CheckBackwardKey();
     void CheckRightKey();
     void CheckLeftKey();
+
+    void SetEqualize_Player_and_Camera(bool _b) { m_bEqualizePlayerAxis_CamForward = _b; }
+
 
 
     // CALCULATE POSITION

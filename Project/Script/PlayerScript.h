@@ -19,7 +19,10 @@ private:
 
 private:
 	Vec3			m_vObjForwardAxis;  // 앞 방향 
-	 
+	
+	CGameObject*	m_pSwordCollider;	// 무기		충돌체
+	CGameObject*	m_pSword_Trail;		// 무기		트레일 
+
 
 public:
 	virtual void start();
@@ -35,18 +38,21 @@ public:
 	virtual void LoadFromScene(FILE* _pFile) override;
 
 public:
-	CObjKeyMgr*  GetObjKeyMgr()		{ return m_pKeyMgr; }
-	CStateMgr*	 GetStateMgr()		{ return m_pStateMgr; }
-	CPlayerStat* GetPlayerStat()	{ return m_pStat; }
-	CGameObject* GetCamera()		{ return m_pCamera; }
-	Vec3		 GetForwardAxis()	{ return m_vObjForwardAxis; }
-
+	CObjKeyMgr*  GetObjKeyMgr()			{ return m_pKeyMgr; }
+	CStateMgr*	 GetStateMgr()			{ return m_pStateMgr; }
+	CPlayerStat* GetPlayerStat()		{ return m_pStat; }
+	CGameObject* GetCamera()			{ return m_pCamera; }
+	Vec3		 GetForwardAxis()		{ return m_vObjForwardAxis; }
+	CGameObject* GetSwordBoneCollider() { return m_pSwordCollider; }
 
 	void SetCamera(CGameObject* _pCameraObj)	{ m_pCamera = _pCameraObj; }
 	void SetForwardAxis(Vec3 _vForwardAxis)		{ m_vObjForwardAxis = _vForwardAxis; }
 
 public:
 	void UpdateCamera();
+	void UpdateSwordCollider();
+
+	CGameObject* GetChildObj(CGameObject* _parent, wstring _name);
 
 
 	CLONE(PlayerScript)

@@ -39,7 +39,7 @@ void CTransform::finalupdate()
 	}
 
 
-	if (GetOwner()->GetParent())
+	if (GetOwner()->GetParent() && !m_bIgnoreParent)
 	{
 		Matrix matParentWorld = GetOwner()->GetParent()->Transform()->GetWorldMat();
 

@@ -45,7 +45,7 @@ void CPlayerLightAttackState::Enter()
 
 	}
 
-	PlayLightAttackAnim(L"attack_light_1", false);
+	PlayLightAttackAnim(L"attack_light_1", false, 1.5f);
 	m_bComboAtt_Start = true;
 	m_bCombo1_2_Success = false;
 	m_bCombo2_3_Success = false;
@@ -95,7 +95,7 @@ void CPlayerLightAttackState::UpdateLightAttackState()
 		m_tAttTimer.fCombo1_Timer += DT;
 
 		// 1.f 초 안에 약 공격키를 또 눌렀다면  
-		if (m_tAttTimer.fCombo1_Timer <= 1.f)
+		if (m_tAttTimer.fCombo1_Timer <= 0.75f)
 		{
 			if (m_bComboAtt_Start)
 				m_bComboAtt_Start = false;
@@ -109,15 +109,15 @@ void CPlayerLightAttackState::UpdateLightAttackState()
 
 		}
 
-		if (m_bCombo1_2_Success && m_tAttTimer.fCombo1_Timer >= 1.f)
+		if (m_bCombo1_2_Success && m_tAttTimer.fCombo1_Timer >= 0.75f)
 		{
 			// 애니메이션 재생 후 콤보3 상태로 변환
-			PlayLightAttackAnim(L"attack_light_3", false);
+			PlayLightAttackAnim(L"attack_light_3", false, 1.5f);
 			m_eLA_State = LIGHT_ATTACK_STATE::COMBO_2;
 		}
 
 		// 콤보 실패 
-		if (!m_bCombo1_2_Success && m_tAttTimer.fCombo1_Timer >= 1.f)
+		if (!m_bCombo1_2_Success && m_tAttTimer.fCombo1_Timer >= 0.75f)
 		{
 			m_eLA_State = LIGHT_ATTACK_STATE::COMBO_END;
 
@@ -130,7 +130,7 @@ void CPlayerLightAttackState::UpdateLightAttackState()
 		m_tAttTimer.fCombo2_Timer += DT;
 
 		// 1.f 초 안에 약 공격키를 또 눌렀다면  
-		if (m_tAttTimer.fCombo2_Timer <= 1.f)
+		if (m_tAttTimer.fCombo2_Timer <= 0.75f)
 		{
 			// 콤보 성공 
 			if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::LIGHT_ATTACK &&
@@ -138,10 +138,10 @@ void CPlayerLightAttackState::UpdateLightAttackState()
 				m_bCombo2_3_Success = true;
 		}
 
-		if (m_bCombo2_3_Success && m_tAttTimer.fCombo2_Timer >= 1.f)
+		if (m_bCombo2_3_Success && m_tAttTimer.fCombo2_Timer >= 0.75f)
 		{
 			// 애니메이션 재생 후 콤보3 상태로 변환
-			PlayLightAttackAnim(L"attack_light_4", false);
+			PlayLightAttackAnim(L"attack_light_4", false, 1.f);
 			m_eLA_State = LIGHT_ATTACK_STATE::COMBO_3;
 		}
 

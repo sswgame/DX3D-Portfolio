@@ -106,6 +106,7 @@ public:
 	CScript*                GetScriptByName(const wstring& _strName);
 
 	int GetLayerIndex() { return m_iLayerIdx; }
+	void RenewLayerIndex(int _NewLayerIdx);
 
 	template <typename T>
 	T* GetScript();

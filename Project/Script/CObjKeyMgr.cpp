@@ -32,7 +32,7 @@ void CObjKeyMgr::Init()
 	m_tMovingKey.eJump			= KEY::SPACE;
 	m_tMovingKey.eInteract		= KEY::E;
 	m_tMovingKey.eSprint		= KEY::LCTRL;
-	m_tMovingKey.eWalk			= KEY::LALT;
+	m_tMovingKey.eWalk			= KEY::V;
 
 	// [ ¿¸≈ı ≈∞ ]
 	m_tCombatKey.eLightAttack	= KEY::LBTN;
