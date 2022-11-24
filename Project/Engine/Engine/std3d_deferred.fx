@@ -121,6 +121,7 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
 #define IsCube          g_int_0
 #define PositionTarget  g_tex_0
 #define DecalTex        g_tex_1
+#define COLOR           g_vec4_0
 // =====================
 VTX_OUT VS_Deferred_Decal(VTX_IN _in)
 {
@@ -168,12 +169,22 @@ float4 PS_Deferred_Decal(VTX_OUT _in) : SV_Target0
     {
         float2 vDecalUV = vLocalPos.xz + 0.5f;
         vOutColor = DecalTex.Sample(g_sam_0, vDecalUV);
+        
+        vOutColor *= COLOR;
+        if (0.1f > vOutColor.r 
+            && 0.1f > vOutColor.g
+	        && 0.1f > vOutColor.b )
+        {
+            vOutColor.a = 0.f;
+
+        }
     }
     else
     {
         clip(-1);
     }
     
+
     return vOutColor;
 }
 

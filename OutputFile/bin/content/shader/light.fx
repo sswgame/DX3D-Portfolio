@@ -249,6 +249,12 @@ struct VS_MERGE_OUT
     float4 vPosition : SV_Position;
 };
 
+static const float Weight4[25] = // 12 - 1 - 12
+{
+    0.0050, 0.0162, 0.0382, 0.0561, 0.1353, 0.1953, 0.278, 0.4868, 0.6018, 0.7261, 0.8131, 0.9231,
+    1, 0.9231, 0.8131, 0.7261, 0.6018, 0.4868, 0.278, 0.1953, 0.1353, 0.0561, 0.0382, 0.0162, 0.0050
+};
+
 VS_MERGE_OUT VS_Merge(VS_MERGE_IN _in)
 {
     VS_MERGE_OUT output = (VS_MERGE_OUT) 0.f;
@@ -271,9 +277,40 @@ float4 PS_Merge(VS_MERGE_OUT _in) : SV_Target0
         
     vOutColor = float4(vColor * vDiffuse * (1.f - fShadowPow)
                        + vSpecular * (1.f - fShadowPow), 1.f);
-    
-    
-    return vOutColor;
+
+    // bloom
+    float fWeightOnePixel = 1.f / vResolution.x;
+    float fHeightOnePixel = 1.f / vResolution.y;
+
+    float2 t = vUV;
+    float2 uv = (float2) 0.f;
+    float4 vBloomColor = (float4) 0.f;
+
+    for (int i = -12; i < 12; ++i)
+    {
+        uv = t + float2(fWeightOnePixel * i, 0.f);
+        vBloomColor += Weight4[12 + i] * g_tex_0.Sample(g_sam_0, uv);
+
+    }
+
+    for (int i = -12; i < 12; ++i)
+    {
+        uv = t + float2(0, fHeightOnePixel * i);
+        vBloomColor += Weight4[12 + i] * g_tex_0.Sample(g_sam_0, uv);
+    }
+
+    // bloom ÃßÃâ
+
+    vBloomColor /= 12.f;
+    float vBrightness = dot(vBloomColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
+
+    if (vBrightness > 0.99)
+        vBrightness = float4(vOutColor.rgb, 1.f);
+    else
+        return vOutColor;
+
+
+    return vBloomColor;
 }
 
 

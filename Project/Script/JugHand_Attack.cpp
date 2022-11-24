@@ -118,16 +118,16 @@ void JugHand_Attack::Hand02Attack()
 				// ==========================
 				//	       magma »ý¼º  
 				// ==========================
-				CGameObject* pMagma = new CGameObject;
-				wstring pMagmaName = L"";
-				pMagmaName = L"meshdata//magma0.mdat";
-				Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
-					pMagmaName.c_str());
-				pMagma = pMagmaMeshData->Instantiate();
-				pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
-				pMagma->SetName(L"Magma");
-				//pMagma->AddComponent(new MagmaScript);
-				GetOwner()->AddChild(pMagma);
+				//CGameObject* pMagma = new CGameObject;
+				//wstring pMagmaName = L"";
+				//pMagmaName = L"meshdata//magma0.mdat";
+				//Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
+				//	pMagmaName.c_str());
+				//pMagma = pMagmaMeshData->Instantiate();
+				//pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
+				//pMagma->SetName(L"Magma");
+				////pMagma->AddComponent(new MagmaScript);
+				//GetOwner()->AddChild(pMagma);
 
 			}
 			else if (m_pAnimation->GetCurFrameIdx() == m_pAnimation->GetEndFrameIdx())

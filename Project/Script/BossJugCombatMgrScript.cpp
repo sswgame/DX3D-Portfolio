@@ -86,19 +86,17 @@ void BossJugCombatMgrScript::SpawnStage()
 		m_pJug->GetScript<BossJugScript>()->Init();
 	}
 
-	///* 보스 손 생성 */
-	//if (nullptr == m_pJugHandMgr)
-	//{
-	//	m_pJugHandMgr = new CGameObject;
-	//	m_pJugHandMgr->SetName(L"HANDS");
-	//	m_pJugHandMgr->AddComponent(new CTransform);
-	//	m_pJugHandMgr->AddComponent(new HandStateMgrScript);
+	/* 보스 손 생성 */
+	if (nullptr == m_pJugHandMgr)
+	{
+		m_pJugHandMgr = new CGameObject;
+		m_pJugHandMgr->SetName(L"HAND MGR");
+		m_pJugHandMgr->AddComponent(new CTransform);
+		m_pJugHandMgr->AddComponent(new HandStateMgrScript);
 
-	//	CSceneMgr::GetInst()->SpawnObject(m_pJugHandMgr, GAME::LAYER::OBJECT_MGR);
-	//	//m_pJug->AddChild(m_pJugHandMgr);
-
-	//	//m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
-	//}
+		CSceneMgr::GetInst()->SpawnObject(m_pJugHandMgr, GAME::LAYER::OBJECT_MGR);
+		m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
+	}
 }
 
 void BossJugCombatMgrScript::InitState()
@@ -130,14 +128,14 @@ void BossJugCombatMgrScript::CheckPhase() const
 	// [ Phase Intro]
 	if (L"JUG_PHASE_NONE" == m_pPhaseFSM->GetCurState()->GetStateType() && m_bStartCombat)
 	{
-		m_pPhaseFSM->ChangeState(L"JUG_PHASE_INTRO");
+		m_pPhaseFSM->ChangeState(GAME::BOSS::PHASE::JUG_PHASE_INTRO);
 		return;
 	}
 	// [ Phase 1 ]
 	if (L"JUG_PHASE_INTRO" == m_pPhaseFSM->GetCurState()->GetStateType()
-	    && ANIMATION_STATE::FINISH == m_pJug->Animator3D()->GetCurAnim()->GetState())
+	    && 4.f < m_pPhaseFSM->GetCurState()->GetTimer())
 	{
-		m_pPhaseFSM->ChangeState(L"JUG_PHASE_1");
+		m_pPhaseFSM->ChangeState(GAME::BOSS::PHASE::JUG_PHASE_1);
 		return;
 	}
 
@@ -145,13 +143,13 @@ void BossJugCombatMgrScript::CheckPhase() const
 	if (L"JUG_PHASE_1" == m_pPhaseFSM->GetCurState()->GetStateType()
 	    && m_pJug->GetScript<BossJugScript>()->GetHP() < (m_pJug->GetScript<BossJugScript>()->GetMaxHP() / 2))
 	{
-		m_pPhaseFSM->ChangeState(L"JUG_PHASE_2");
+		m_pPhaseFSM->ChangeState(GAME::BOSS::PHASE::JUG_PHASE_2);
 		return;
 	}
 	// [ Dead ]
 	if (0 >= m_pJug->GetScript<BossJugScript>()->GetHP())
 	{
-		m_pPhaseFSM->ChangeState(L"JUG_PHASE_DEAD");
+		m_pPhaseFSM->ChangeState(GAME::BOSS::PHASE::JUG_PHASE_DEAD);
 		return;
 	}
 }

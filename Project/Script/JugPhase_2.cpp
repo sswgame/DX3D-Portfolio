@@ -12,6 +12,7 @@
 // [ SCRIPT PART ]
 #include "BossJugCombatMgrScript.h"
 #include "BossJugScript.h"
+#include "ColumnFlameScript.h"
 
 
 JugPhase_2::JugPhase_2()
@@ -24,6 +25,7 @@ JugPhase_2::JugPhase_2()
 	, m_iAttackPattern(0)
 	, m_bAttackProceeding(false)
 	, m_bRot(true)
+	, m_fAttackTime(3.f)
 {
 }
 
@@ -37,17 +39,34 @@ JugPhase_2::JugPhase_2(const JugPhase_2& _origin)
 	, m_iAttackPattern(0)
 	, m_bAttackProceeding(false)
 	, m_bRot(true)
+	, m_fAttackTime(_origin.m_fAttackTime)
 {
 }
 
 JugPhase_2::~JugPhase_2()
 {
+	if (!m_vecColumnFlames.empty())
+	{
+		for (auto& i : m_vecColumnFlames)
+		{
+			delete(i);
+		}
+	}
 }
 
 void JugPhase_2::Init()
 {
 	m_pCombatMgr = GetOwner()->GetScript<BossJugCombatMgrScript>();
 	assert(m_pCombatMgr);
+
+	if (m_vecColumnFlames.empty())
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			Ptr<CPrefab> pColumn = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\ColumnLaser.pref");
+			m_vecColumnFlames.push_back(pColumn->Instantiate());
+		}
+	}
 }
 
 void JugPhase_2::Enter()
@@ -64,8 +83,6 @@ void JugPhase_2::Enter()
 
 void JugPhase_2::Update()
 {
-	return;
-
 	CState::Update();
 
 	CState* pCurState = m_pBossFSM->GetCurState();
@@ -138,7 +155,7 @@ void JugPhase_2::RotTowardPlayer()
 	float dot   = XMConvertToDegrees(v1.Dot(v2)); // 0 ~ 180
 	Vec3  cross = v1.Cross(v2); // -1 ~ 1
 
-	float fSpeed;
+	float fSpeed = 0;
 
 	// 회전 방향을 찾는다
 	if (0.f < cross.y)
@@ -147,7 +164,7 @@ void JugPhase_2::RotTowardPlayer()
 		fSpeed = -20.f;
 
 	// 각이 5도 이상이면 플레이어 방향으로 지속적으로 회전하고 5도 이하이면 플레이를 바로 바라본다.
-	if (fabsf(dot) > 8.f)
+	if (fabsf(dot) > 5.f)
 	{
 		Vec3 vBossRot = m_pCombatMgr->GetJug()->Transform()->GetRelativeRotation();
 		vBossRot.ToDegree();
@@ -203,7 +220,7 @@ void JugPhase_2::Attack_1()
 	}
 	else
 	{
-		if (m_pBossAnimator->GetCurAnim()->IsFinish())
+		if (GetTimer() > m_fAttackTime)
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
@@ -223,7 +240,7 @@ void JugPhase_2::Attack_2()
 	}
 	else
 	{
-		if (m_pBossAnimator->GetCurAnim()->IsFinish())
+		if (GetTimer() > m_fAttackTime)
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
@@ -243,7 +260,7 @@ void JugPhase_2::Attack_3()
 	}
 	else
 	{
-		if (m_pBossAnimator->GetCurAnim()->IsFinish())
+		if (GetTimer() > m_fAttackTime)
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
@@ -263,7 +280,7 @@ void JugPhase_2::Attack_4()
 	}
 	else
 	{
-		if (m_pBossAnimator->GetCurAnim()->IsFinish())
+		if (GetTimer() > m_fAttackTime)
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;

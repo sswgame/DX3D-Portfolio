@@ -39,6 +39,7 @@
 #include <Script/GravityScript.h>
 #include <Script/TrailScript.h>
 #include <Script/SwordTrailScript.h>
+#include <Script/ColumnFlameScript.h>
 
 #define TEST_SAVE 1
 
@@ -291,7 +292,7 @@ void CTestScene::CreateTestScene()
 	//	Ptr<CMeshData>     pMeshData = CResMgr::GetInst()->Load<CMeshData>(path.c_str(), path.c_str());
 
 	Ptr<CMeshData> pMeshData = nullptr;
-	CGameObject* pObj = nullptr;
+	CGameObject*   pObj      = nullptr;
 
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
@@ -327,11 +328,12 @@ void CTestScene::CreateTestScene()
 
 
 	Ptr<CMeshData> pMeshDataWeapon = nullptr;
-	CGameObject* pObjWeapon = nullptr;
+	CGameObject*   pObjWeapon      = nullptr;
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"fbx\\monster.FBX");
 	//pMeshData->Save(wstring(CPathMgr::GetInst()->GetContentPath()) + pMeshData->GetRelativePath());
-	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat", L"meshdata\\player_sword1.mdat");
+	pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat",
+	                                                      L"meshdata\\player_sword1.mdat");
 
 	pObjWeapon = pMeshDataWeapon->Instantiate();
 	pObjWeapon->SetName(L"player_sword1");
@@ -409,14 +411,13 @@ void CTestScene::CreateTestScene()
 	pCurScene->AddObject(pObj, L"PLAYER");
 
 
-
 	CGameObject* pBoss = new CGameObject;
 	pBoss->SetName(L"BOSS_COMBAT");
 	pBoss->AddComponent(new CTransform);
 	pBoss->AddComponent(new BossJugCombatMgrScript);
 	pCurScene->AddObject(pBoss, L"MONSTER");
 	//pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
-	
+
 	// 충돌 레이어 설정
 	CCollisionMgr::GetInst()->CollisionCheck(1, 1);
 

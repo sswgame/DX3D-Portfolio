@@ -96,13 +96,17 @@ void CRenderMgr::render_play()
 	// Directional Light ShadowMap ¸¸µé±â
 	render_shadowmap();
 
-	g_transform.matView = pMainCam->GetViewMat();
-	g_transform.matProj = pMainCam->GetProjMat();
+	g_transform.matView    = pMainCam->GetViewMat();
+	g_transform.matViewInv = pMainCam->GetViewInvMat();
+	g_transform.matProj    = pMainCam->GetProjMat();
 
 
 	// Deferred ¹°Ã¼ ·»´õ¸µ	
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
 	pMainCam->render_deferred();
+
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
+	pMainCam->render_deferred_decal();
 
 	// ±¤¿ø ·»´õ¸µ
 	render_lights();
@@ -116,22 +120,23 @@ void CRenderMgr::render_play()
 	m_pMergeMtrl->UpdateData();
 	pRectMesh->render(0);
 
-
 	// Foward ¹°Ã¼ ·»´õ¸µ	
 	pMainCam->render_forward();
 
 	// Masked ¹°Ã¼ ·»´õ¸µ
 	pMainCam->render_masked();
 
+	// Foward Decal ·»´õ¸µ
+	pMainCam->render_forward_decal();
+
 	// Alpha ¹°Ã¼ ·»´õ¸µ
 	pMainCam->render_translucent();
-
-	// Debug Object ·»´õ¸µ 
-	pMainCam->render_debug();
 
 	// PostProcess ¹°Ã¼ ·»´õ¸µ
 	pMainCam->render_postprocess();
 
+	// Debug Object ·»´õ¸µ 
+	pMainCam->render_debug();
 
 	// Sub Ä«¸Þ¶ó ½ÃÁ¡À¸·Î ·»´õ¸µ
 	for (int i = 1; i < m_vecCam.size(); ++i)
@@ -141,8 +146,9 @@ void CRenderMgr::render_play()
 
 		m_vecCam[i]->SortGameObject();
 
-		g_transform.matView = m_vecCam[i]->GetViewMat();
-		g_transform.matProj = m_vecCam[i]->GetProjMat();
+		g_transform.matView    = m_vecCam[i]->GetViewMat();
+		g_transform.matViewInv = pMainCam->GetViewInvMat();
+		g_transform.matProj    = m_vecCam[i]->GetProjMat();
 
 		// Foward ¹°Ã¼ ·»´õ¸µ
 		m_vecCam[i]->render_forward();
@@ -151,18 +157,16 @@ void CRenderMgr::render_play()
 		m_vecCam[i]->render_masked();
 
 		// Foward Decal ·»´õ¸µ
-		pMainCam->render_forward_decal();
+		m_vecCam[i]->render_forward_decal();
 
 		// Alpha ¹°Ã¼ ·»´õ¸µ
 		m_vecCam[i]->render_translucent();
 
+		// PostProcess ¹°Ã¼ ·»´õ¸µ
+		m_vecCam[i]->render_postprocess();
+
 		// Debug Object Render
 		m_vecCam[i]->render_debug();
-
-		// PostProcess ¹°Ã¼ ·»´õ¸µ
-		pMainCam->render_postprocess();
-
-
 	}
 }
 
@@ -213,11 +217,11 @@ void CRenderMgr::render_editor()
 	// Alpha ¹°Ã¼ ·»´õ¸µ
 	m_pEditorCam->render_translucent();
 
-	// Debug Object ·»´õ¸µ 
-	m_pEditorCam->render_debug();
-
 	// PostProcess ¹°Ã¼ ·»´õ¸µ
 	m_pEditorCam->render_postprocess();
+
+	// Debug Object ·»´õ¸µ 
+	m_pEditorCam->render_debug();
 }
 
 void CRenderMgr::render_shadowmap()

@@ -403,9 +403,9 @@ void CResMgr::CreateEngineMesh()
 		{
 			float theta = j * fSliceAngle;
 
-			v.vPos = Vec3(fRadius * sinf(i * fStackAngle) * cosf(j * fSliceAngle)
-			              , fRadius * cosf(i * fStackAngle)
-			              , fRadius * sinf(i * fStackAngle) * sinf(j * fSliceAngle));
+			v.vPos = Vec3(fRadius * sinf(i * fStackAngle) * cosf(j * fSliceAngle),
+			              fRadius * cosf(i * fStackAngle),
+			              fRadius * sinf(i * fStackAngle) * sinf(j * fSliceAngle));
 			v.vUV     = Vec2(fUVXStep * j, fUVYStep * i);
 			v.vColor  = Vec4(1.f, 1.f, 1.f, 1.f);
 			v.vNormal = v.vPos;
@@ -615,7 +615,8 @@ void CResMgr::CreateEngineTexture()
 {
 	Ptr<CTexture> pNoise01    = Load<CTexture>(L"texture\\noise\\noise_01.png", L"texture\\noise\\noise_01.png", true);
 	Ptr<CTexture> pNoise02    = Load<CTexture>(L"texturenoise\\noise_02.png", L"texture\\noise\\noise_02.png", true);
-	Ptr<CTexture> pNoiseCloud = Load<CTexture>(L"texture\\noise\\noise_cloud.jpg", L"texture\\noise\\noise_cloud.jpg",
+	Ptr<CTexture> pNoiseCloud = Load<CTexture>(L"texture\\noise\\noise_cloud.jpg",
+	                                           L"texture\\noise\\noise_cloud.jpg",
 	                                           true);
 
 	pNoise01->UpdateData(PIPELINE_STAGE::ALL, 70);
@@ -849,8 +850,23 @@ void CResMgr::CreateEngineShader()
 	pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_PostProcess");
 
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
 
 	AddRes<CGraphicsShader>(L"PostProcessShader", pShader, true);
+
+	// FlamePostProcess Shader
+	pShader = new CGraphicsShader;
+
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
+	pShader->CreateVertexShader(L"Shader\\postprocess.fx", "VS_FlamePostProcess");
+	pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_FlamePostProcess");
+
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+
+	pShader->AddScalarParamInfo(L"Speed", SCALAR_PARAM::FLOAT_0);
+
+	AddRes<CGraphicsShader>(L"FlamePostProcessShader", pShader, true);
 
 	// Tessellation Test Shader
 	pShader = new CGraphicsShader;
@@ -950,6 +966,11 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"PostProcessShader"));
 	//pMtrl->SetTexParam(TEX_PARAM::TEX_0, FindRes<CTexture>(L"PostProcessTex"));
 	AddRes<CMaterial>(L"material\\PostProcessMtrl.mtrl", pMtrl);
+
+	// PostProcess Mtrl
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"FlamePostProcessShader"));
+	AddRes<CMaterial>(L"material\\FlamePostProcessMtrl.mtrl", pMtrl);
 
 	// Tessellation Test Material
 	pMtrl = new CMaterial;

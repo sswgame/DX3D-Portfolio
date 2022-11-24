@@ -38,9 +38,6 @@ void JugPhase_Intro::Enter()
 	CGameObject* pBoss = m_pCombatMgr->GetJug();
 	CFSM*        pFSM  = pBoss->GetScript<BossJugScript>()->GetBossFSM();
 	pFSM->ChangeState(L"JUG_INTRO");
-
-	// Jug Hand Init È£Ãâ
-	//m_pCombatMgr->GetJugHand()->GetScript<HandStateMgrScript>()->init();
 }
 
 void JugPhase_Intro::Exit()

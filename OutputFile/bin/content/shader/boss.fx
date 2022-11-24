@@ -37,6 +37,7 @@ struct VTX_OUT
 
 #define YPOS g_float_0
 #define COLOR g_vec4_0
+#define SCALE g_vec4_1
 
 VTX_OUT VS_ColumnFlame(VTX_IN _in)
 {
@@ -59,7 +60,7 @@ float4 PS_ColumnFlame(VTX_OUT _in) : SV_Target
 {
     float4 vOutColor = (float4) 0.f;
 
-    _in.vUV.x *= 0.2f;
+    //_in.vUV.x *= 0.2f;
     _in.vUV.y += YPOS;
     
     if (g_btex_0)
@@ -69,11 +70,12 @@ float4 PS_ColumnFlame(VTX_OUT _in) : SV_Target
     
     vOutColor *= COLOR;
 
-    if ( 0.5f > vOutColor.b)
+    if ( 0.1f > vOutColor.b)
         vOutColor.a = 0.f;
 
     return vOutColor;
 }
+
 
 
 #endif

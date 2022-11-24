@@ -31,6 +31,7 @@ public:
 	CGameObject* GetHammer() { return m_pHammer; }
 	CGameObject* GetJugHand() { return m_pJugHandMgr; }
 	CGameObject* GetPlayer() { return m_pPlayer; }
+	CFSM*        GetPhaseFSM() { return m_pPhaseFSM; }
 
 	void start() override;
 	void update() override;

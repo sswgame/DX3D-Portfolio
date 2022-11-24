@@ -38,8 +38,6 @@ void Jug_Intro::Enter()
 {
 	// IDLE 애니메이션 플레이
 	GetOwner()->Animator3D()->Play(m_pAnim->GetName(), false);
-
-	// paper burn shader 설정
 }
 
 void Jug_Intro::Exit()

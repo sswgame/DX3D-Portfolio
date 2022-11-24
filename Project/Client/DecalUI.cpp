@@ -29,7 +29,7 @@ void DecalUI::render_update()
 	// Decal Types
 	int iDecalType = (int)m_pTargetDecal->GetDecalType();
 	string strCurTypeName = ToString(m_pTargetDecal->GetDecalTypeName(iDecalType));
-	
+
 	ImGui::Text("Decal Type");
 	ImGui::SameLine(100.f);
 
@@ -49,7 +49,7 @@ void DecalUI::render_update()
 
 	// Texture ¼³Á¤
 	string strTexture;
-	
+
 	if (nullptr != m_pTargetDecal->GetDecalTexture())
 		strTexture = ToString(m_pTargetDecal->GetDecalTexture()->GetKey());
 	else
@@ -86,6 +86,15 @@ void DecalUI::render_update()
 		m_pTargetDecal->SetDeferredLighting(bUseDeferredLighting);
 	}
 
+	// color
+	Vec4  vColor   = m_pTargetDecal->GetColor();
+	float color[4] = {vColor.x, vColor.y, vColor.z, vColor.w};
+	ImGui::Text("Color");
+	ImGui::SameLine(100.f);
+	if (ImGui::ColorPicker4("##DecalColor", color, ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaBar))
+	{
+		m_pTargetDecal->SetColor(Vec4(color[0], color[1], color[2], color[3]));
+	}
 }
 
 void DecalUI::TextureSelect(void* _pTextureName)

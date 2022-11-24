@@ -4,6 +4,7 @@
 class BossJugCombatMgrScript;
 class CAnimator3D;
 class CFSM;
+class CGameObject;
 
 class JugPhase_2 : public CState
 {
@@ -12,12 +13,16 @@ private:
 	CFSM*                   m_pBossFSM;
 	CAnimator3D*            m_pBossAnimator;
 
+	vector<CGameObject*> m_vecColumnFlames;
+
 	float m_fIdleTime;
 	UINT  m_iPrevAttackPattern;
 	UINT  m_iAttackPattern;
 	
 	bool m_bAttackProceeding;
 	bool m_bRot;
+	
+	float m_fAttackTime;
 
 private:
 	void RotTowardPlayer();

@@ -33,24 +33,24 @@ void MagmaScript::Update()
 		//	magma explode
 		// ===============
 
-		// magma collider
-		CGameObject* pExplodeCollider = new CGameObject;
-		pExplodeCollider->AddComponent(new CTransform);
-		pExplodeCollider->AddComponent(new CCollider3D);
-		pExplodeCollider->Transform()->SetRelativePos(GetOwner()->Transform()->GetRelativePos());
-		pExplodeCollider->Transform()->SetRelativeScale(Vec3(m_fExplodeScale, m_fExplodeScale, m_fExplodeScale));
-		pExplodeCollider->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
-		CSceneMgr::GetInst()->SpawnObject(pExplodeCollider, 6);
+		//// magma collider
+		//CGameObject* pExplodeCollider = new CGameObject;
+		//pExplodeCollider->AddComponent(new CTransform);
+		//pExplodeCollider->AddComponent(new CCollider3D);
+		//pExplodeCollider->Transform()->SetRelativePos(GetOwner()->Transform()->GetRelativePos());
+		//pExplodeCollider->Transform()->SetRelativeScale(Vec3(m_fExplodeScale, m_fExplodeScale, m_fExplodeScale));
+		//pExplodeCollider->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+		//CSceneMgr::GetInst()->SpawnObject(pExplodeCollider, 6);
 
-		// magma effect
-		CGameObject* pExplodeParticle = new CGameObject;
-		const CParticleSystem* parti = CResMgr::GetInst()->FindRes<CParticleSystem>(L"Magma_Effect").Get();
-		pExplodeParticle->AddComponent(new CParticleSystem(*parti));
-		pExplodeParticle->AddComponent(new CTransform);
-		pExplodeParticle->Transform()->SetRelativePos(GetOwner()->Transform()->GetRelativePos());
-		CSceneMgr::GetInst()->SpawnObject(pExplodeParticle, 1);
+		//// magma effect
+		//CGameObject* pExplodeParticle = new CGameObject;
+		//const CParticleSystem* parti = CResMgr::GetInst()->FindRes<CParticleSystem>(L"Magma_Effect").Get();
+		//pExplodeParticle->AddComponent(new CParticleSystem(*parti));
+		//pExplodeParticle->AddComponent(new CTransform);
+		//pExplodeParticle->Transform()->SetRelativePos(GetOwner()->Transform()->GetRelativePos());
+		//CSceneMgr::GetInst()->SpawnObject(pExplodeParticle, 1);
 
-		GetOwner()->Destroy();
+		//GetOwner()->Destroy();
 
 	}
 	else if (4.f < m_fAddTime && m_fAddTime < 6.f)

@@ -1,0 +1,119 @@
+NAME: ColumnLaser
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 300, -1700]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+  - COLLIDER3D:
+      m_eCollider3DType: 0
+      m_vOffsetPos: [0, 0, 0]
+      m_vOffsetScale: [60, 600, 60]
+SCRIPTS:
+  - ColumnFlameScript:
+      m_fFlameSpeed: 1
+      m_fRotSpeed: 30
+      m_vColor: [0, 1, 1, 1]
+CHILDREN:
+  - NAME: Decal
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, -285, 0]
+          m_vRelativeScale: [110, 10, 110]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - DECAL:
+          MESH: [CubeMesh, CubeMesh]
+          MATERIAL COUNT: 1
+          0: [material\ForwardDecalMtrl.mtrl, material\ForwardDecalMtrl.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+          m_eType: 1
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: Attack0_Laser1
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 0, 0]
+          m_vRelativeScale: [60, 600, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\ColumnFlameMtrl.mtrl, material\ColumnFlameMtrl.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      - NAME: Distortion
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [1, 1, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\PostProcessMtrl.mtrl, material\PostProcessMtrl.mtrl]
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+  - NAME: Attack0_Laser2
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 0, 0]
+          m_vRelativeScale: [60, 600, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\ColumnFlameMtrl.mtrl, material\ColumnFlameMtrl.mtrl]
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      - NAME: Distortion
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [1, 1, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\PostProcessMtrl.mtrl, material\PostProcessMtrl.mtrl]
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
