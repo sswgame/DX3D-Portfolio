@@ -16,6 +16,7 @@
 
 #include "CScene.h"
 #include "CLayer.h"
+#include "CRenderMgr.h"
 
 
 CSceneMgr::CSceneMgr()
@@ -42,7 +43,8 @@ void CSceneMgr::progress()
 		m_pCurScene->update();
 		m_pCurScene->lateupdate();
 	}
-
+	ClearLayer();
+	CRenderMgr::GetInst()->ClearCamera();
 	m_pCurScene->finalupdate();
 
 	// Collision Check

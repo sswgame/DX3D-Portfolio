@@ -3,11 +3,12 @@
 
 
 UI::UI(const string& _strName)
-	:
-	m_strName(_strName)
+	: m_strName(_strName)
 	, m_pParentUI(nullptr)
 	, m_bOpen(true)
-	, m_bModal(false) {}
+	, m_bModal(false)
+{
+}
 
 UI::~UI()
 {
@@ -47,8 +48,8 @@ void UI::render()
 				{
 					// 사이즈 재확인
 					ImVec2 vSize = ImGui::GetWindowSize();
-					m_vSize.x = vSize.x;
-					m_vSize.y = vSize.y;
+					m_vSize.x    = vSize.x;
+					m_vSize.y    = vSize.y;
 
 					render_update();
 
@@ -67,8 +68,8 @@ void UI::render()
 
 				// 사이즈 재확인
 				ImVec2 vSize = ImGui::GetWindowSize();
-				m_vSize.x = vSize.x;
-				m_vSize.y = vSize.y;
+				m_vSize.x    = vSize.x;
+				m_vSize.y    = vSize.y;
 
 				render_update();
 

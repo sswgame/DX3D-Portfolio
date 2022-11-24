@@ -26,7 +26,6 @@ private:
 	                                             DWRITE_FONT_STRETCH _fontStretch = DWRITE_FONT_STRETCH_NORMAL,
 	                                             float               _fontSize    = 16.f,
 	                                             const std::wstring& _locale      = L"en_us");
-
 	ComPtr<ID2D1SolidColorBrush> FindColor(const Vec4& _color);
 	UINT                         GetColorID(const Vec4& _color);
 public:
@@ -34,4 +33,8 @@ public:
 	ComPtr<IDWriteTextFormat>    LoadFontFromFile(const std::wstring& _relativePath);
 	ComPtr<ID2D1SolidColorBrush> GetBrush(const Vec4& _color);
 	ComPtr<ID2D1SolidColorBrush> GetBrush(const D2D1::ColorF& _color);
+	ComPtr<IDWriteTextLayout>    CreateTextLayout(const std::wstring&       text,
+	                                              ComPtr<IDWriteTextFormat> pFont,
+	                                              float                     width,
+	                                              float                     height);
 };

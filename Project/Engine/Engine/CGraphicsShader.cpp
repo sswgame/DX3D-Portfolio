@@ -4,6 +4,12 @@
 #include "CPathMgr.h"
 #include "CDevice.h"
 
+#ifdef _DEBUG
+static UINT g_iFlag = D3DCOMPILE_DEBUG;
+#else
+static UINT g_iFlag = 0;
+#endif
+
 vector<D3D11_INPUT_ELEMENT_DESC> CGraphicsShader::g_vecLayout;
 
 
@@ -22,15 +28,20 @@ CGraphicsShader::~CGraphicsShader()
 }
 
 
-
 int CGraphicsShader::CreateVertexShader(const wstring& _strRelativePath, const string& _strVSFunc)
-{	
+{
 	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(), nullptr
-		, D3D_COMPILE_STANDARD_FILE_INCLUDE, _strVSFunc.c_str(), "vs_5_0", g_iFlag, 0
-		, m_VSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
+	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                nullptr,
+	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                _strVSFunc.c_str(),
+	                                "vs_5_0",
+	                                g_iFlag,
+	                                0,
+	                                m_VSBlob.GetAddressOf(),
+	                                m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
@@ -40,14 +51,14 @@ int CGraphicsShader::CreateVertexShader(const wstring& _strRelativePath, const s
 
 	// 컴파일 된 코드로 VertexShader 객체 만들기
 	if (FAILED(DEVICE->CreateVertexShader(m_VSBlob->GetBufferPointer(), m_VSBlob->GetBufferSize()
-		, nullptr, m_VS.GetAddressOf())))
+		           , nullptr, m_VS.GetAddressOf())))
 	{
 		return E_FAIL;
 	}
 
 	if (FAILED(DEVICE->CreateInputLayout(g_vecLayout.data(), (UINT)g_vecLayout.size()
-		, m_VSBlob->GetBufferPointer(), m_VSBlob->GetBufferSize()
-		, m_InputLayout.GetAddressOf())))
+		           , m_VSBlob->GetBufferPointer(), m_VSBlob->GetBufferSize()
+		           , m_InputLayout.GetAddressOf())))
 	{
 		return E_FAIL;
 	}
@@ -61,9 +72,15 @@ int CGraphicsShader::CreateHullShader(const wstring& _strRelativePath, const str
 	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(), nullptr
-		, D3D_COMPILE_STANDARD_FILE_INCLUDE, _strFunc.c_str(), "hs_5_0", g_iFlag, 0
-		, m_HSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
+	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                nullptr,
+	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                _strFunc.c_str(),
+	                                "hs_5_0",
+	                                g_iFlag,
+	                                0,
+	                                m_HSBlob.GetAddressOf(),
+	                                m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
@@ -73,7 +90,7 @@ int CGraphicsShader::CreateHullShader(const wstring& _strRelativePath, const str
 
 	// 컴파일 된 코드로 VertexShader 객체 만들기
 	if (FAILED(DEVICE->CreateHullShader(m_HSBlob->GetBufferPointer(), m_HSBlob->GetBufferSize()
-		, nullptr, m_HS.GetAddressOf())))
+		           , nullptr, m_HS.GetAddressOf())))
 	{
 		return E_FAIL;
 	}
@@ -86,9 +103,15 @@ int CGraphicsShader::CreateDomainShader(const wstring& _strRelativePath, const s
 	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(), nullptr
-		, D3D_COMPILE_STANDARD_FILE_INCLUDE, _strFunc.c_str(), "ds_5_0", g_iFlag, 0
-		, m_DSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
+	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                nullptr,
+	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                _strFunc.c_str(),
+	                                "ds_5_0",
+	                                g_iFlag,
+	                                0,
+	                                m_DSBlob.GetAddressOf(),
+	                                m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
@@ -98,7 +121,7 @@ int CGraphicsShader::CreateDomainShader(const wstring& _strRelativePath, const s
 
 	// 컴파일 된 코드로 VertexShader 객체 만들기
 	if (FAILED(DEVICE->CreateDomainShader(m_DSBlob->GetBufferPointer(), m_DSBlob->GetBufferSize()
-		, nullptr, m_DS.GetAddressOf())))
+		           , nullptr, m_DS.GetAddressOf())))
 	{
 		return E_FAIL;
 	}
@@ -111,9 +134,15 @@ int CGraphicsShader::CreateGeometryShader(const wstring& _strRelativePath, const
 	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(), nullptr
-		, D3D_COMPILE_STANDARD_FILE_INCLUDE, _strFunc.c_str(), "gs_5_0", g_iFlag, 0
-		, m_GSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
+	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                nullptr,
+	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                _strFunc.c_str(),
+	                                "gs_5_0",
+	                                g_iFlag,
+	                                0,
+	                                m_GSBlob.GetAddressOf(),
+	                                m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
@@ -123,7 +152,7 @@ int CGraphicsShader::CreateGeometryShader(const wstring& _strRelativePath, const
 
 	// 컴파일 된 코드로 VertexShader 객체 만들기
 	if (FAILED(DEVICE->CreateGeometryShader(m_GSBlob->GetBufferPointer(), m_GSBlob->GetBufferSize()
-		, nullptr, m_GS.GetAddressOf())))
+		           , nullptr, m_GS.GetAddressOf())))
 	{
 		return E_FAIL;
 	}
@@ -136,9 +165,15 @@ int CGraphicsShader::CreatePixelShader(const wstring& _strRelativePath, const st
 	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(), nullptr
-		, D3D_COMPILE_STANDARD_FILE_INCLUDE, _strFunc.c_str(), "ps_5_0", g_iFlag, 0
-		, m_PSBlob.GetAddressOf(), m_ErrBlob.GetAddressOf());
+	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                nullptr,
+	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                _strFunc.c_str(),
+	                                "ps_5_0",
+	                                g_iFlag,
+	                                0,
+	                                m_PSBlob.GetAddressOf(),
+	                                m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
@@ -148,7 +183,7 @@ int CGraphicsShader::CreatePixelShader(const wstring& _strRelativePath, const st
 
 	// 컴파일 된 코드로 VertexShader 객체 만들기
 	if (FAILED(DEVICE->CreatePixelShader(m_PSBlob->GetBufferPointer(), m_PSBlob->GetBufferSize()
-		, nullptr, m_PS.GetAddressOf())))
+		           , nullptr, m_PS.GetAddressOf())))
 	{
 		return E_FAIL;
 	}
@@ -160,13 +195,13 @@ void CGraphicsShader::UpdateData()
 {
 	CONTEXT->IASetInputLayout(m_InputLayout.Get());
 	CONTEXT->IASetPrimitiveTopology(m_eTopology);
-		
-	CONTEXT->VSSetShader(m_VS.Get(), 0, 0);
-	CONTEXT->HSSetShader(m_HS.Get(), 0, 0);
-	CONTEXT->DSSetShader(m_DS.Get(), 0, 0);
-	CONTEXT->GSSetShader(m_GS.Get(), 0, 0);
-	CONTEXT->PSSetShader(m_PS.Get(), 0, 0);
-		
+
+	CONTEXT->VSSetShader(m_VS.Get(), nullptr, 0);
+	CONTEXT->HSSetShader(m_HS.Get(), nullptr, 0);
+	CONTEXT->DSSetShader(m_DS.Get(), nullptr, 0);
+	CONTEXT->GSSetShader(m_GS.Get(), nullptr, 0);
+	CONTEXT->PSSetShader(m_PS.Get(), nullptr, 0);
+
 	CONTEXT->RSSetState(CDevice::GetInst()->GetRS(m_eRSType).Get());
 	CONTEXT->OMSetDepthStencilState(CDevice::GetInst()->GetDS(m_eDSType).Get(), 0);
 	CONTEXT->OMSetBlendState(CDevice::GetInst()->GetBS(m_eBSType).Get(), Vec4(), 0xffffffff);
@@ -179,7 +214,7 @@ void CGraphicsShader::AddScalarParamInfo(const wstring& _strDesc, SCALAR_PARAM _
 
 void CGraphicsShader::AddTexParamInfo(const wstring& _strDesc, TEX_PARAM _eParamType)
 {
-	m_vecTexParamInfo.push_back(tTexParamInfo{ _strDesc ,_eParamType });
+	m_vecTexParamInfo.push_back(tTexParamInfo{_strDesc, _eParamType});
 }
 
 void CGraphicsShader::AddInputLayout(D3D11_INPUT_ELEMENT_DESC _desc)

@@ -61,7 +61,7 @@ private:
 public:
 	CGameObject*                GetParent() { return m_pParent; }
 	const vector<CGameObject*>& GetChild() { return m_vecChild; }
-
+	void                        SortChild(std::function<bool(CGameObject*, CGameObject*)> func);
 	// Deregister ==> 등록 취소(등록->미등록)
 	// Unregister ==> 등록 안됨(등록 x == 등록->미등록, 애초에 등록된적 없음)
 	void Deregister();
@@ -74,17 +74,17 @@ public:
 	bool IsAncestor(CGameObject* _pObj);
 
 public:
-	void              AddChild(CGameObject* _pChild);
-	void              AddComponent(CComponent* _component);
-	
+	void AddChild(CGameObject* _pChild);
+	void AddComponent(CComponent* _component);
+
 	CComponent*       GetComponent(COMPONENT_TYPE _eType) { return m_arrCom[(UINT)_eType]; }
 	CRenderComponent* GetRenderComponent() { return m_pRenderComponent; }
 
-	void              DeleteComponent(COMPONENT_TYPE _eType);
-	void			  DeleteScript(UINT _ScriptID);
+	void DeleteComponent(COMPONENT_TYPE _eType);
+	void DeleteScript(UINT _ScriptID);
 
 	void Destroy();
-	
+
 	GET_COMPONENT(Transform, TRANSFORM)
 	GET_COMPONENT(MeshRender, MESHRENDER)
 	GET_COMPONENT(Camera, CAMERA)
@@ -105,7 +105,7 @@ public:
 	CScript*                GetScript(UINT _iIdx);
 	CScript*                GetScriptByName(const wstring& _strName);
 
-	int GetLayerIndex() { return m_iLayerIdx; }
+	int  GetLayerIndex() { return m_iLayerIdx; }
 	void RenewLayerIndex(int _NewLayerIdx);
 
 	template <typename T>

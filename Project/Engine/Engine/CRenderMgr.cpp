@@ -17,6 +17,7 @@
 
 CRenderMgr::CRenderMgr()
 	: m_pEditorCam(nullptr)
+	, m_pUICamera{nullptr}
 	, m_pLight2DBuffer(nullptr)
 	, m_pLight3DBuffer(nullptr)
 	, m_arrMRT{}
@@ -43,7 +44,6 @@ CRenderMgr::~CRenderMgr()
 
 void CRenderMgr::update()
 {
-
 }
 
 void CRenderMgr::render()
@@ -79,7 +79,6 @@ void CRenderMgr::render()
 
 	m_vecLight2D.clear();
 	m_vecLight3D.clear();
-
 }
 
 void CRenderMgr::render_play()
@@ -96,17 +95,13 @@ void CRenderMgr::render_play()
 	// Directional Light ShadowMap ¸¸µé±â
 	render_shadowmap();
 
-	g_transform.matView    = pMainCam->GetViewMat();
-	g_transform.matViewInv = pMainCam->GetViewInvMat();
-	g_transform.matProj    = pMainCam->GetProjMat();
+	g_transform.matView = pMainCam->GetViewMat();
+	g_transform.matProj = pMainCam->GetProjMat();
 
 
 	// Deferred ¹°Ã¼ ·»´õ¸µ	
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
 	pMainCam->render_deferred();
-
-	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
-	pMainCam->render_deferred_decal();
 
 	// ±¤¿ø ·»´õ¸µ
 	render_lights();
@@ -115,10 +110,11 @@ void CRenderMgr::render_play()
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
 
 	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-	int a = 0;
+	int        a         = 0;
 	m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
 	m_pMergeMtrl->UpdateData();
 	pRectMesh->render(0);
+
 
 	// Foward ¹°Ã¼ ·»´õ¸µ	
 	pMainCam->render_forward();
@@ -126,17 +122,15 @@ void CRenderMgr::render_play()
 	// Masked ¹°Ã¼ ·»´õ¸µ
 	pMainCam->render_masked();
 
-	// Foward Decal ·»´õ¸µ
-	pMainCam->render_forward_decal();
-
 	// Alpha ¹°Ã¼ ·»´õ¸µ
 	pMainCam->render_translucent();
+
+	// Debug Object ·»´õ¸µ 
+	pMainCam->render_debug();
 
 	// PostProcess ¹°Ã¼ ·»´õ¸µ
 	pMainCam->render_postprocess();
 
-	// Debug Object ·»´õ¸µ 
-	pMainCam->render_debug();
 
 	// Sub Ä«¸Þ¶ó ½ÃÁ¡À¸·Î ·»´õ¸µ
 	for (int i = 1; i < m_vecCam.size(); ++i)
@@ -146,9 +140,8 @@ void CRenderMgr::render_play()
 
 		m_vecCam[i]->SortGameObject();
 
-		g_transform.matView    = m_vecCam[i]->GetViewMat();
-		g_transform.matViewInv = pMainCam->GetViewInvMat();
-		g_transform.matProj    = m_vecCam[i]->GetProjMat();
+		g_transform.matView = m_vecCam[i]->GetViewMat();
+		g_transform.matProj = m_vecCam[i]->GetProjMat();
 
 		// Foward ¹°Ã¼ ·»´õ¸µ
 		m_vecCam[i]->render_forward();
@@ -157,16 +150,16 @@ void CRenderMgr::render_play()
 		m_vecCam[i]->render_masked();
 
 		// Foward Decal ·»´õ¸µ
-		m_vecCam[i]->render_forward_decal();
+		pMainCam->render_forward_decal();
 
 		// Alpha ¹°Ã¼ ·»´õ¸µ
 		m_vecCam[i]->render_translucent();
 
-		// PostProcess ¹°Ã¼ ·»´õ¸µ
-		m_vecCam[i]->render_postprocess();
-
 		// Debug Object Render
 		m_vecCam[i]->render_debug();
+
+		// PostProcess ¹°Ã¼ ·»´õ¸µ
+		pMainCam->render_postprocess();
 	}
 }
 
@@ -182,9 +175,9 @@ void CRenderMgr::render_editor()
 	// Directional Light ShadowMap ¸¸µé±â
 	render_shadowmap();
 
-	g_transform.matView = m_pEditorCam->GetViewMat();
+	g_transform.matView    = m_pEditorCam->GetViewMat();
 	g_transform.matViewInv = m_pEditorCam->GetViewInvMat();
-	g_transform.matProj = m_pEditorCam->GetProjMat();
+	g_transform.matProj    = m_pEditorCam->GetProjMat();
 
 	// Deferred ¹°Ã¼ ·»´õ¸µ			
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
@@ -200,7 +193,7 @@ void CRenderMgr::render_editor()
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
 
 	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-	int a = 0;
+	int        a         = 0;
 	m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
 	m_pMergeMtrl->UpdateData();
 	pRectMesh->render(0);
@@ -217,11 +210,11 @@ void CRenderMgr::render_editor()
 	// Alpha ¹°Ã¼ ·»´õ¸µ
 	m_pEditorCam->render_translucent();
 
-	// PostProcess ¹°Ã¼ ·»´õ¸µ
-	m_pEditorCam->render_postprocess();
-
 	// Debug Object ·»´õ¸µ 
 	m_pEditorCam->render_debug();
+
+	// PostProcess ¹°Ã¼ ·»´õ¸µ
+	m_pEditorCam->render_postprocess();
 }
 
 void CRenderMgr::render_shadowmap()
@@ -251,7 +244,7 @@ void CRenderMgr::RegisterCamera(CCamera* _pCam)
 	if (-1 == _pCam->m_iCamIdx)
 	{
 		m_vecCam.push_back(_pCam);
-		int iIdx = (int)m_vecCam.size() - 1;
+		int iIdx         = (int)m_vecCam.size() - 1;
 		_pCam->m_iCamIdx = iIdx;
 	}
 	else
@@ -274,7 +267,7 @@ void CRenderMgr::SwapCameraIndex(CCamera* _pCam, int _iChangeIdx)
 			if (nullptr != m_vecCam[_iChangeIdx])
 			{
 				m_vecCam[_iChangeIdx]->m_iCamIdx = (int)i;
-				_pCam->m_iCamIdx = _iChangeIdx;
+				_pCam->m_iCamIdx                 = _iChangeIdx;
 
 				return;
 			}
@@ -287,7 +280,7 @@ void CRenderMgr::SwapCameraIndex(CCamera* _pCam, int _iChangeIdx)
 void CRenderMgr::CopyTargetToPostProcess()
 {
 	Ptr<CTexture> pRenderTarget = CResMgr::GetInst()->FindRes<CTexture>(L"RenderTargetTex");
-	Ptr<CTexture> pPostProcess = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
+	Ptr<CTexture> pPostProcess  = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
 
 	CONTEXT->CopyResource(pPostProcess->GetTex2D().Get(), pRenderTarget->GetTex2D().Get());
 }
@@ -296,7 +289,11 @@ void CRenderMgr::UpdateLight2D()
 {
 	if (m_pLight2DBuffer->GetElementCount() < m_vecLight2D.size())
 	{
-		m_pLight2DBuffer->Create((UINT)sizeof(tLightInfo), (UINT)m_vecLight2D.size(), SB_TYPE::READ_ONLY, true, nullptr);
+		m_pLight2DBuffer->Create((UINT)sizeof(tLightInfo),
+		                         (UINT)m_vecLight2D.size(),
+		                         SB_TYPE::READ_ONLY,
+		                         true,
+		                         nullptr);
 	}
 
 	static vector<tLightInfo> vecLight2DInfo;
@@ -310,15 +307,17 @@ void CRenderMgr::UpdateLight2D()
 	m_pLight2DBuffer->UpdateData(PIPELINE_STAGE::PS, 60);
 
 	g_global.Light2DCount = (int)m_vecLight2D.size();
-
-
 }
 
 void CRenderMgr::UpdateLight3D()
 {
 	if (m_pLight3DBuffer->GetElementCount() < m_vecLight3D.size())
 	{
-		m_pLight3DBuffer->Create((UINT)sizeof(tLightInfo), (UINT)m_vecLight3D.size(), SB_TYPE::READ_ONLY, true, nullptr);
+		m_pLight3DBuffer->Create((UINT)sizeof(tLightInfo),
+		                         (UINT)m_vecLight3D.size(),
+		                         SB_TYPE::READ_ONLY,
+		                         true,
+		                         nullptr);
 	}
 
 	static vector<tLightInfo> vecLight3DInfo;
@@ -332,8 +331,6 @@ void CRenderMgr::UpdateLight3D()
 	m_pLight3DBuffer->UpdateData(PIPELINE_STAGE::PS, 61);
 
 	g_global.Light3DCount = (int)m_vecLight3D.size();
-
-
 }
 
 // ÇöÀç ½ÃÁ¡ Ä«¸Þ¶ó °¡Á®¿À±â
@@ -350,4 +347,24 @@ CCamera* CRenderMgr::GetMainCam()
 	{
 		return m_pEditorCam;
 	}
+}
+
+CCamera* CRenderMgr::GetUICamera()
+{
+	if (nullptr == m_pUICamera)
+	{
+		const auto iter = std::find_if(m_vecCam.begin(),
+		                               m_vecCam.end(),
+		                               [](const CCamera* pCamera)
+		                               {
+			                               return pCamera->GetOwner()->GetName() == L"UICamera";
+		                               });
+		if (iter != m_vecCam.end())
+		{
+			m_pUICamera = *iter;
+			return m_pUICamera;
+		}
+		return nullptr;
+	}
+	return m_pUICamera;
 }

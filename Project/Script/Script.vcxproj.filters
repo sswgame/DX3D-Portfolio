@@ -4,12 +4,6 @@
     <ClInclude Include="pch.h">
       <Filter>Default</Filter>
     </ClInclude>
-    <ClInclude Include="CameraMoveScript.h">
-      <Filter>Script</Filter>
-    </ClInclude>
-    <ClInclude Include="MissileScript.h">
-      <Filter>Script</Filter>
-    </ClInclude>
     <ClInclude Include="CStateMgr.h">
       <Filter>Script\Player\StateMgr</Filter>
     </ClInclude>
@@ -18,9 +12,6 @@
     </ClInclude>
     <ClInclude Include="CObjKeyMgr.h">
       <Filter>Script\Player\Key</Filter>
-    </ClInclude>
-    <ClInclude Include="CSceneSaveLoad.h">
-      <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="BossJugCombatMgrScript.h">
       <Filter>Script\Boss\Jug\CombatMgr</Filter>
@@ -139,6 +130,7 @@
     <ClInclude Include="MonsterShieldScript.h">
       <Filter>Script\Monster\Deuxiemie\Shield</Filter>
     </ClInclude>
+    <ClInclude Include="Jug_Fly.h" />
     <ClInclude Include="HandStateMgrScript.h">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClInclude>
@@ -184,25 +176,45 @@
     <ClInclude Include="CWalk_Gun.h">
       <Filter>Script\Monster\Deuxiemie\Gun\State</Filter>
     </ClInclude>
-    <ClInclude Include="CObjectManager.h" />
-    <ClInclude Include="CScriptMgr.h" />
-    <ClInclude Include="Jug_Fly.h">
-      <Filter>Script\Boss\Jug\Jug\state</Filter>
+    <ClInclude Include="UIProgressBarScript.h">
+      <Filter>Script\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UITextScript.h">
+      <Filter>Script\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanelScript.h">
+      <Filter>Script\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIImageScript.h">
+      <Filter>Script\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonScript.h">
+      <Filter>Script\UI\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIBase.h">
+      <Filter>Script\UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="ColumnFlameScript.h" />
-    <ClInclude Include="SwordTrailScript.h">
-      <Filter>Script\Effect\Trail</Filter>
+    <ClInclude Include="CObjectManager.h">
+      <Filter>Script\Common</Filter>
     </ClInclude>
+    <ClInclude Include="CScriptMgr.h">
+      <Filter>Script\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CSceneSaveLoad.h">
+      <Filter>Script\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMoveScript.h">
+      <Filter>Script\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="MissileScript.h">
+      <Filter>Script\MIssile</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Default</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraMoveScript.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
-    <ClCompile Include="MissileScript.cpp">
-      <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="CStateMgr.cpp">
       <Filter>Script\Player\StateMgr</Filter>
@@ -213,8 +225,6 @@
     <ClCompile Include="CObjKeyMgr.cpp">
       <Filter>Script\Player\Key</Filter>
     </ClCompile>
-    <ClCompile Include="CSceneSaveLoad.cpp" />
-    <ClCompile Include="CScriptMgr.cpp" />
     <ClCompile Include="BossJugCombatMgrScript.cpp">
       <Filter>Script\Boss\Jug\CombatMgr</Filter>
     </ClCompile>
@@ -332,6 +342,7 @@
     <ClCompile Include="MonsterShieldScript.cpp">
       <Filter>Script\Monster\Deuxiemie\Shield</Filter>
     </ClCompile>
+    <ClCompile Include="Jug_Fly.cpp" />
     <ClCompile Include="HandStateMgrScript.cpp">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClCompile>
@@ -368,14 +379,41 @@
     <ClCompile Include="CWalk_Gun.cpp">
       <Filter>Script\Monster\Deuxiemie\Gun\State</Filter>
     </ClCompile>
-    <ClCompile Include="CObjectManager.cpp" />
-    <ClCompile Include="Jug_Fly.cpp">
-      <Filter>Script\Boss\Jug\Jug\state</Filter>
+    <ClCompile Include="UIProgressBarScript.cpp">
+      <Filter>Script\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UITextScript.cpp">
+      <Filter>Script\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanelScript.cpp">
+      <Filter>Script\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIImageScript.cpp">
+      <Filter>Script\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonScript.cpp">
+      <Filter>Script\UI\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIBase.cpp">
+      <Filter>Script\UI\Common</Filter>
     </ClCompile>
     <ClCompile Include="ColumnFlameScript.cpp" />
-    <ClCompile Include="SwordTrailScript.cpp">
-      <Filter>Script\Effect\Trail</Filter>
+    <ClCompile Include="CObjectManager.cpp">
+      <Filter>Script\Common</Filter>
     </ClCompile>
+    <ClCompile Include="CSceneSaveLoad.cpp">
+      <Filter>Script\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="CScriptMgr.cpp">
+      <Filter>Script\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMoveScript.cpp">
+      <Filter>Script\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="MissileScript.cpp">
+      <Filter>Script\MIssile</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -501,11 +539,17 @@
     <Filter Include="Script\Common">
       <UniqueIdentifier>{9f8f4ddc-f144-4954-9e7a-80b22286feed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Script\Boss\Jug\AttackOBJ">
-      <UniqueIdentifier>{f89f8bfe-659a-4691-b863-6cb943486692}</UniqueIdentifier>
+    <Filter Include="Script\UI">
+      <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Script\Boss\Jug\AttackOBJ\ColumnFlame">
-      <UniqueIdentifier>{5107da19-b96a-4893-a7d3-f47aeeec9661}</UniqueIdentifier>
+    <Filter Include="Script\UI\Common">
+      <UniqueIdentifier>{d33527f4-c655-4f19-b787-b14c9a1478ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Camera">
+      <UniqueIdentifier>{26ff9c4b-bb46-4786-aa05-4d7222b78d33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\MIssile">
+      <UniqueIdentifier>{d12f4513-b60f-40b5-a81e-c7bbd4b7869a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

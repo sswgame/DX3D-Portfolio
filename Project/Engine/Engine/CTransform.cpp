@@ -6,14 +6,18 @@
 
 
 CTransform::CTransform()
-	:
-	CComponent(COMPONENT_TYPE::TRANSFORM)
-  , m_vRelativeScale(Vec3(1.f, 1.f, 1.f))
-  , m_arrRelativeDir{}
-  , m_arrWorldDir{}
-  , m_bIgnoreParentScale(false) {}
+	: CComponent(COMPONENT_TYPE::TRANSFORM)
+	, m_vRelativeScale(Vec3(1.f, 1.f, 1.f))
+	, m_arrRelativeDir{}
+	, m_arrWorldDir{}
+	, m_bIgnoreParentScale(false)
+	, m_bIgnoreParent{false}
+{
+}
 
-CTransform::~CTransform() {}
+CTransform::~CTransform()
+{
+}
 
 void CTransform::finalupdate()
 {

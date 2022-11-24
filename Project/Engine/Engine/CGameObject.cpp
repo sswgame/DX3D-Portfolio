@@ -141,7 +141,6 @@ void CGameObject::lateupdate()
 
 void CGameObject::finalupdate()
 {
-
 	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
 	{
 		if (nullptr != m_arrCom[i])
@@ -275,6 +274,11 @@ void CGameObject::deactive()
 }
 
 
+void CGameObject::SortChild(std::function<bool(CGameObject*, CGameObject*)> func)
+{
+	std::sort(m_vecChild.begin(), m_vecChild.end(), func);
+}
+
 void CGameObject::Deregister()
 {
 	if (-1 == m_iLayerIdx)
@@ -363,8 +367,6 @@ void CGameObject::AddChild(CGameObject* _pChild)
 	if (-1 == _pChild->m_iLayerIdx)
 	{
 		_pChild->m_iLayerIdx = m_iLayerIdx;
-		
-		
 	}
 	m_vecChild.push_back(_pChild);
 	_pChild->m_pParent = this;

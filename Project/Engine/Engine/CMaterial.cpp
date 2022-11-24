@@ -11,12 +11,16 @@
 
 CMaterial::CMaterial()
 	: CRes(RES_TYPE::MATERIAL)
-  , m_Param{}
-  , m_arrTex{}
-  , m_pShader(nullptr)
-  , m_pMasterMtrl(nullptr) {}
+	, m_Param{}
+	, m_arrTex{}
+	, m_pShader(nullptr)
+	, m_pMasterMtrl(nullptr)
+{
+}
 
-CMaterial::~CMaterial() {}
+CMaterial::~CMaterial()
+{
+}
 
 
 void CMaterial::UpdateData()
@@ -39,7 +43,6 @@ void CMaterial::UpdateData()
 	CConstBuffer* pCB = CDevice::GetInst()->GetCB(CB_TYPE::SCALAR_PARAM);
 	pCB->SetData(&m_Param, sizeof(tScalarParam));
 	pCB->UpdateData();
-
 
 	if (nullptr != m_pShader)
 	{

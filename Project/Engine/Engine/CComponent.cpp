@@ -21,9 +21,11 @@
 
 CComponent::CComponent(COMPONENT_TYPE _eType)
 	: m_eComType(_eType)
-	, m_pOwner{ nullptr }
+	, m_pOwner{nullptr}
 	, m_bActive(true)
-	, m_pDebugObj(nullptr) {}
+	, m_pDebugObj(nullptr)
+{
+}
 
 CComponent::~CComponent()
 {
@@ -35,7 +37,7 @@ void CComponent::Activate()
 {
 	tEventInfo info = {};
 
-	info.eType = EVENT_TYPE::ACTIVATE_COMPONENT;
+	info.eType  = EVENT_TYPE::ACTIVATE_COMPONENT;
 	info.lParam = (DWORD_PTR)this;
 
 	CEventMgr::GetInst()->AddEvent(info);
@@ -45,7 +47,7 @@ void CComponent::Deactivate()
 {
 	tEventInfo info = {};
 
-	info.eType = EVENT_TYPE::DEACTIVATE_COMOPNENT;
+	info.eType  = EVENT_TYPE::DEACTIVATE_COMOPNENT;
 	info.lParam = (DWORD_PTR)this;
 
 	CEventMgr::GetInst()->AddEvent(info);

@@ -9,6 +9,7 @@
 class CSingletonScript
 	: public CScript
 {
+	friend class CEventMgr;
 protected:
 	inline static CGameObject*                       s_pInstance = nullptr;
 	inline static std::vector<std::function<void()>> s_vecFunc{};

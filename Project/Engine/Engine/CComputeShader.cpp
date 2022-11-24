@@ -5,37 +5,34 @@
 #include "CConstBuffer.h"
 #include "CPathMgr.h"
 
-#ifdef _DEBUG
-static UINT g_iFlag = D3DCOMPILE_DEBUG;
-#else
-static UINT g_iFlag = 0;
-#endif
-
-
 
 CComputeShader::CComputeShader()
-	:
-	CShader(RES_TYPE::COMPUTE_SHADER)
-  , m_iGroupX(0)
-  , m_iGroupY(0)
-  , m_iGroupZ(0)
-  , m_iGroupPerThreadCountX(0)
-  , m_iGroupPerThreadCountY(0)
-  , m_iGroupPerThreadCountZ(0)
-  , m_Param{} {}
+	: CShader(RES_TYPE::COMPUTE_SHADER)
+	, m_iGroupX(0)
+	, m_iGroupY(0)
+	, m_iGroupZ(0)
+	, m_iGroupPerThreadCountX(0)
+	, m_iGroupPerThreadCountY(0)
+	, m_iGroupPerThreadCountZ(0)
+	, m_Param{}
+{
+}
 
 CComputeShader::CComputeShader(UINT _iGroupPerThreadX, UINT _iGroupPerThreadY, UINT _iGroupPerThreadZ)
-	:
-	CShader(RES_TYPE::COMPUTE_SHADER)
-  , m_iGroupX(0)
-  , m_iGroupY(0)
-  , m_iGroupZ(0)
-  , m_iGroupPerThreadCountX(_iGroupPerThreadX)
-  , m_iGroupPerThreadCountY(_iGroupPerThreadY)
-  , m_iGroupPerThreadCountZ(_iGroupPerThreadZ)
-  , m_Param{} {}
+	: CShader(RES_TYPE::COMPUTE_SHADER)
+	, m_iGroupX(0)
+	, m_iGroupY(0)
+	, m_iGroupZ(0)
+	, m_iGroupPerThreadCountX(_iGroupPerThreadX)
+	, m_iGroupPerThreadCountY(_iGroupPerThreadY)
+	, m_iGroupPerThreadCountZ(_iGroupPerThreadZ)
+	, m_Param{}
+{
+}
 
-CComputeShader::~CComputeShader() {}
+CComputeShader::~CComputeShader()
+{
+}
 
 void CComputeShader::Excute()
 {
@@ -106,7 +103,7 @@ int CComputeShader::CreateComputeShader(const wstring& _strRelativePath, const s
 
 	// 컴파일 된 코드로 ComputeShader 객체 만들기	
 	if (FAILED(DEVICE->CreateComputeShader(m_CSBlob->GetBufferPointer(), m_CSBlob->GetBufferSize()
-		         , nullptr, m_CS.GetAddressOf())))
+		           , nullptr, m_CS.GetAddressOf())))
 	{
 		assert(nullptr);
 		return E_FAIL;

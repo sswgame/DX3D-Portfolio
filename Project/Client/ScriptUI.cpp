@@ -8,6 +8,7 @@
 #include "IconsFontAwesome5.h"
 #include "InspectorUI.h"
 #include "CImGuiMgr.h"
+#include <Engine/CResMgr.h>
 
 ScriptUI::ScriptUI()
 	: UI("Script")
@@ -81,8 +82,7 @@ void ScriptUI::render_update()
 		string TargetObjName = ToString(m_pTargetObject->GetName());
 		string text          = TargetObjName + " / " + strScriptName;
 		ImGui::Text(text.c_str());
-		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f)
-		                   , u8"해당 SCRIPT를 정말로 삭제하시겠습니까?\n\n");
+		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), u8"해당 SCRIPT를 정말로 삭제하시겠습니까?\n\n");
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
@@ -139,6 +139,7 @@ void ScriptUI::render_update()
 			}
 			break;
 		case SCRIPTPARAM_TYPE::TEX:
+
 			break;
 		case SCRIPTPARAM_TYPE::PREFAB:
 			break;

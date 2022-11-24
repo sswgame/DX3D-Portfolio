@@ -1,9 +1,13 @@
 #include "pch.h"
 #include "CFontMgr.h"
 
-CFontMgr::CFontMgr() { }
+CFontMgr::CFontMgr()
+{
+}
 
-CFontMgr::~CFontMgr() { }
+CFontMgr::~CFontMgr()
+{
+}
 
 void CFontMgr::Init()
 {
@@ -117,12 +121,11 @@ std::wstring CFontMgr::GetFontFaceName(const std::wstring& _key)
 
 ComPtr<IDWriteTextFormat> CFontMgr::CreateFontFromFile(const std::wstring& _key,
                                                        const std::wstring& _fontFace,
-                                                       DWRITE_FONT_WEIGHT  _fontWeight /*= DWRITE_FONT_WEIGHT_NORMAL*/,
-                                                       DWRITE_FONT_STYLE   _fontStyle /*= DWRITE_FONT_STYLE_NORMAL*/,
-                                                       DWRITE_FONT_STRETCH _fontStretch
-                                                       /*= DWRITE_FONT_STRETCH_NORMAL*/,
-                                                       float               _fontSize /*= 16.f*/,
-                                                       const std::wstring& _locale /*= L"en_us"*/)
+                                                       DWRITE_FONT_WEIGHT  _fontWeight,
+                                                       DWRITE_FONT_STYLE   _fontStyle,
+                                                       DWRITE_FONT_STRETCH _fontStretch,
+                                                       float               _fontSize,
+                                                       const std::wstring& _locale)
 {
 	ComPtr<IDWriteTextFormat> pFont = FindFont(_key);
 
@@ -166,6 +169,26 @@ ComPtr<ID2D1SolidColorBrush> CFontMgr::GetBrush(const Vec4& _color)
 ComPtr<ID2D1SolidColorBrush> CFontMgr::GetBrush(const D2D1::ColorF& _color)
 {
 	return GetBrush(Vec4{_color.r, _color.g, _color.b, _color.a});
+}
+
+ComPtr<IDWriteTextLayout> CFontMgr::CreateTextLayout(const std::wstring&       text,
+                                                     ComPtr<IDWriteTextFormat> pFont,
+                                                     float                     width,
+                                                     float                     height)
+{
+	ComPtr<IDWriteTextLayout> pLayout{};
+	const HRESULT             hr = m_pFactory->CreateTextLayout(text.c_str(),
+	                                                            (uint32_t)text.size(),
+	                                                            pFont.Get(),
+	                                                            width,
+	                                                            height,
+	                                                            pLayout.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return nullptr;
+	}
+
+	return pLayout;
 }
 
 

@@ -1,6 +1,7 @@
 BossJugCombatMgrScript
 BossJugHandScript
 BossJugScript
+ButtonScript
 CameraMoveScript
 ColumnFlameScript
 DestroyScript
@@ -16,4 +17,9 @@ PlayerCamScript
 PlayerScript
 RigidBodyScript
 SwordTrailScript
+TestScript
 TrailScript
+UIImageScript
+UIPanelScript
+UIProgressBarScript
+UITextScript

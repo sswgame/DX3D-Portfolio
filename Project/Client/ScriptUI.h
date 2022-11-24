@@ -3,7 +3,8 @@
 
 #include <Engine/CGameObject.h>
 
-class ScriptUI : public UI
+class ScriptUI
+	: public UI
 {
 private:
 	CGameObject*   m_pTargetObject;
@@ -12,22 +13,20 @@ private:
 
 	bool m_bActive;
 	bool m_bFold;
-
 public:
 	void         SetTargetObject(CGameObject* _pTarget) { m_pTargetObject = _pTarget; }
-	CGameObject* GetTargetObject() { return m_pTargetObject; }
+	CGameObject* GetTargetObject() const { return m_pTargetObject; }
 
 	void     SetTargetScript(CScript* _pScript) { m_pTargetScript = _pScript; }
-	CScript* GetTargetScript() { return m_pTargetScript; }
+	CScript* GetTargetScript() const { return m_pTargetScript; }
 
 protected:
-	bool IsComponentActive() { return m_bActive; }
-	bool IsFold() { return m_bFold; }
+	bool IsComponentActive() const { return m_bActive; }
+	bool IsFold() const { return m_bFold; }
 
 public:
-	virtual void update() override;
-	virtual void render_update() override;
-
+	void update() override;
+	void render_update() override;
 
 public:
 	ScriptUI();

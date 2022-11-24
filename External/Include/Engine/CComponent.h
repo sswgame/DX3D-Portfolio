@@ -12,7 +12,7 @@ public:
 	static CComponent* MakeComponent(const std::wstring& name);
 private:
 	const COMPONENT_TYPE m_eComType;
-	CGameObject* m_pOwner;
+	CGameObject*         m_pOwner;
 
 	bool m_bActive;
 
@@ -74,23 +74,23 @@ public:
 
 
 public:
-	COMPONENT_TYPE GetType() { return m_eComType; }
-	CGameObject* GetOwner() { return m_pOwner; }
+	COMPONENT_TYPE GetType() const { return m_eComType; }
+	CGameObject*   GetOwner() const { return m_pOwner; }
 
 	GET_OTHER_COMPONENT(Transform)
-		GET_OTHER_COMPONENT(MeshRender)
-		GET_OTHER_COMPONENT(Camera)
-		GET_OTHER_COMPONENT(Collider2D)
-		GET_OTHER_COMPONENT(Animator2D)
-		GET_OTHER_COMPONENT(Animator3D)
-		GET_OTHER_COMPONENT(TileMap)
-		GET_OTHER_COMPONENT(ParticleSystem)
-		GET_OTHER_COMPONENT(SkyBox)
-		GET_OTHER_COMPONENT(Light2D)
-		GET_OTHER_COMPONENT(Light3D)
-		GET_OTHER_COMPONENT(Decal)
-		GET_OTHER_COMPONENT(LandScape)
-		GET_OTHER_COMPONENT(Collider3D);
+	GET_OTHER_COMPONENT(MeshRender)
+	GET_OTHER_COMPONENT(Camera)
+	GET_OTHER_COMPONENT(Collider2D)
+	GET_OTHER_COMPONENT(Animator2D)
+	GET_OTHER_COMPONENT(Animator3D)
+	GET_OTHER_COMPONENT(TileMap)
+	GET_OTHER_COMPONENT(ParticleSystem)
+	GET_OTHER_COMPONENT(SkyBox)
+	GET_OTHER_COMPONENT(Light2D)
+	GET_OTHER_COMPONENT(Light3D)
+	GET_OTHER_COMPONENT(Decal)
+	GET_OTHER_COMPONENT(LandScape)
+	GET_OTHER_COMPONENT(Collider3D);
 	GET_OTHER_COMPONENT(FSM);
 
 	CComponent* Clone() = 0;

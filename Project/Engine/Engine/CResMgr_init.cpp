@@ -1,6 +1,47 @@
 #include "pch.h"
 #include "CResMgr.h"
 
+namespace
+{
+	void MakeGameShader()
+	{
+		CGraphicsShader* pShader{};
+
+		//UI Shader
+		pShader = new CGraphicsShader;
+		pShader->CreateVertexShader(L"shader\\ui.fx", "VS_UI");
+		pShader->CreatePixelShader(L"shader\\ui.fx", "PS_UI");
+
+		pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_FORWARD);
+		pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+		pShader->SetRSType(RS_TYPE::CULL_BACK);
+
+		pShader->AddTexParamInfo(L"UI TEXTURE", TEX_PARAM::TEX_0);
+		pShader->AddScalarParamInfo(L"UI TYPE", SCALAR_PARAM::INT_0);
+		pShader->AddScalarParamInfo(L"USE INFO", SCALAR_PARAM::INT_1);
+		pShader->AddScalarParamInfo(L"USE PROGRESS BAR", SCALAR_PARAM::INT_2);
+		pShader->AddScalarParamInfo(L"PROGRESS BAR DIRECTION", SCALAR_PARAM::INT_3);
+		pShader->AddScalarParamInfo(L"PERCENTAGE", SCALAR_PARAM::FLOAT_0);
+		pShader->AddScalarParamInfo(L"TEXTURE SIZE", SCALAR_PARAM::VEC2_0);
+		pShader->AddScalarParamInfo(L"UI INFO", SCALAR_PARAM::VEC4_0);
+
+		CResMgr::GetInst()->AddRes<CGraphicsShader>(L"UIShader", pShader, true);
+	}
+
+	void MakeGameMaterial()
+	{
+		CMaterial* pMtrl = nullptr;
+
+		// Std2DMtrl »ý¼º
+		pMtrl = new CMaterial;
+		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UIShader"));
+		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIMtrl.mtrl", pMtrl);
+	}
+
+	void MakeGameCompute()
+	{
+	}
+}
 
 void CResMgr::init()
 {
@@ -117,18 +158,18 @@ void CResMgr::CreateEngineMesh()
 	*/
 
 	int iPolyGonCnt = 30;
-	int iVtxCnt = 4 + 2 * (iPolyGonCnt - 1);
+	int iVtxCnt     = 4 + 2 * (iPolyGonCnt - 1);
 
-	Vec2 vUV_RT = Vec2(1.f, 0.f);
-	Vec2 vUV_RB = Vec2(1.f, 1.f);
+	Vec2 vUV_RT   = Vec2(1.f, 0.f);
+	Vec2 vUV_RB   = Vec2(1.f, 1.f);
 	Vec2 vUV_Dist = Vec2(1.f, 1.f) / iPolyGonCnt;
 
 	for (int i = 0; i < iVtxCnt; ++i)
 	{
-		v.vPos = Vec3(0.f, 0.f, 0.f);
-		v.vColor = Vec4(1.f, 0.2f, 0.2f, 1.f);
-		v.vTangent = Vec3(1.f, 0.f, 0.f);
-		v.vNormal = Vec3(0.f, 0.f, -1.f);
+		v.vPos      = Vec3(0.f, 0.f, 0.f);
+		v.vColor    = Vec4(1.f, 0.2f, 0.2f, 1.f);
+		v.vTangent  = Vec3(1.f, 0.f, 0.f);
+		v.vNormal   = Vec3(0.f, 0.f, -1.f);
 		v.vBinormal = Vec3(0.f, 1.f, 0.f);
 
 		if (i >= 2)
@@ -138,14 +179,12 @@ void CResMgr::CreateEngineMesh()
 				vUV_RT.x -= vUV_Dist.x;
 				v.vUV = vUV_RT;
 				if (i == iVtxCnt - 1) v.vUV = Vec2(0.f, vUV_RT.y);
-
 			}
 			else
 			{
 				vUV_RB.x -= vUV_Dist.x;
 				v.vUV = vUV_RB;
 				if (i == iVtxCnt - 2) v.vUV = Vec2(0.f, vUV_RB.y);
-
 			}
 		}
 		else
@@ -166,7 +205,6 @@ void CResMgr::CreateEngineMesh()
 		vecIdx.push_back(i + 2);
 		vecIdx.push_back(i + 3);
 		vecIdx.push_back(i);
-
 	}
 
 	pMesh = new CMesh;
@@ -881,6 +919,8 @@ void CResMgr::CreateEngineShader()
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 	AddRes<CGraphicsShader>(L"TessShader", pShader, true);
+
+	MakeGameShader();
 }
 
 void CResMgr::CreateEngineMaterial()
@@ -976,6 +1016,8 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"TessShader"));
 	AddRes<CMaterial>(L"material\\TessMtrl.mtrl", pMtrl);
+
+	MakeGameMaterial();
 }
 
 #include "CTestShader.h"
@@ -1000,6 +1042,8 @@ void CResMgr::CreateEngineComputeShader()
 	pCS = new CAnimation3DShader;
 	pCS->CreateComputeShader(L"shader\\animation3d.fx", "CS_Animation3D");
 	AddRes<CComputeShader>(L"Animation3DUpdateShader", pCS, true);
+
+	MakeGameCompute();
 }
 
 

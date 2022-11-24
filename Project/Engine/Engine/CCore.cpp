@@ -53,10 +53,8 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 void CCore::Frame_Init()
 {
-	CSceneMgr::GetInst()->ClearLayer();
 	CTimeMgr::GetInst()->update();
 	CKeyMgr::GetInst()->update();
-	CRenderMgr::GetInst()->ClearCamera();
 }
 
 void CCore::Frame_Clear()
