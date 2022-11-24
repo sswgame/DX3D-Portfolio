@@ -1,0 +1,3 @@
+Hand03_Death 0 54
+Hand03_Idle 55 95
+Hand03_Pattern3 96 131

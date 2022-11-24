@@ -1,0 +1,4 @@
+Hand01_Death 0 54
+Hand01_Idle 55 95
+Hand01_SmashingStart 95 117
+Hand01_Smashing 118 135
