@@ -81,6 +81,8 @@ void JugHand_Gen::Update()
 {
 	CState::Update();
 
+	CGameObject* pobj = GetOwner();
+
 	CScript* pScript = GetOwner()->GetScript<BossJugHandScript>();
 
 	if (((BossJugHandScript*)pScript)->GetRunningTime() < CState::GetTimer())

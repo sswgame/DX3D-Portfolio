@@ -24,8 +24,8 @@ private:
 
 
 public:
-	void	Update();
-	void	LateUpdate();
+	void	update() override;
+	void	lateupdate() override;
 	void	init();
 
 

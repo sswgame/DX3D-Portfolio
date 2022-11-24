@@ -37,7 +37,7 @@ HandStateMgrScript::~HandStateMgrScript()
 {
 }
 
-void HandStateMgrScript::Update()
+void HandStateMgrScript::update()
 {
 	m_sPrevState = L"";
 	m_sPrevState = m_sCurstate;
@@ -54,7 +54,7 @@ void HandStateMgrScript::Update()
 	}
 }
 
-void HandStateMgrScript::LateUpdate()
+void HandStateMgrScript::lateupdate()
 {
 }
 
@@ -109,8 +109,8 @@ void HandStateMgrScript::InitState()
 {
 	//m_pOwnerObj = _pOwner;
 	CFSM* pFSM01 = m_pHand1->FSM();
-	CFSM* pFSM02 = m_pHand1->FSM();
-	CFSM* pFSM03 = m_pHand1->FSM();
+	CFSM* pFSM02 = m_pHand2->FSM();
+	CFSM* pFSM03 = m_pHand3->FSM();
 
 	if (pFSM01 == nullptr || pFSM02 == nullptr || pFSM03 == nullptr)
 		return;
@@ -150,6 +150,7 @@ void HandStateMgrScript::InitState()
 		pState->Init();
 	}
 
+	m_sCurstate = L"GEN";
 }
 
 void HandStateMgrScript::ResetCurAttackHandNumber()
