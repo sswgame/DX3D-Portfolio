@@ -20,8 +20,6 @@ public:
 	void Hand02Attack();
 	void Hand03Attack();
 
-	void AllAttackDone();
-	void SetAttackFinsh(int _attackNum);
 
 public:
 	void Enter() override;

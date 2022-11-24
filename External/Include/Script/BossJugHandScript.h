@@ -7,11 +7,10 @@ class BossJugHandScript :
 	public CScript
 {
 private:
-	HandStateMgrScript* m_pHandStateMgr;
-
 	Vec3            m_vDirection;
 	Vec3            m_vPrevDirection;
 
+	wstring					m_sCurState;
 
 	float					m_fRunningTime;
 	float					m_fSpeed;
@@ -19,7 +18,12 @@ private:
 	int						m_iOwnerHandIdx;
 	int						m_iCurAttackHandIdx;
 
-	bool					m_bAnimDone;
+	bool					m_bAllAttackIsDone;
+	bool					m_bGenStateDone;
+	bool					m_bAttackStateDone;
+	bool					m_bVanishStateDone;
+
+	bool					m_bAttackRepeat;
 
 public:
 	// [ GET ]
@@ -29,26 +33,19 @@ public:
 	float GetSpeed() { return m_fSpeed; }
 	Vec3 GetCurDir() { return m_vDirection; }
 	Vec3 GetPlayerPosition();
-
-	int  GetSavedMidFrm() { return GetOwner()->GetScript<HandStateMgrScript>()->GetSavedMidFrame(); }
-	bool Get1stAttackDone() { return GetOwner()->GetScript<HandStateMgrScript>()->Get1stAttackDone(); }
-	bool Get2ndAttackDone() { return GetOwner()->GetScript<HandStateMgrScript>()->Get2ndAttackDone(); }
-	bool Get3rdAttackDone() { return GetOwner()->GetScript<HandStateMgrScript>()->Get3rdAttackDone(); }
+	bool GetAttackRepeat() { return m_bAttackRepeat; }
+	wstring GetCurState() { return m_sCurState; }
 
 
 	// [ SET ]
-	void SetHandStateMgr(HandStateMgrScript* _pMgr) { m_pHandStateMgr = _pMgr; }
 	void SetRunningTime(float _time) { m_fRunningTime = _time; }
-	void SetCurAnimationPlayDone(bool _TorF) { m_bAnimDone = _TorF; }
 	void SetMonsterDir(Vec3 _dir) { m_vDirection = _dir; }
 	void SetMonsterSpeed(float _speed) { m_fSpeed = _speed; }
-
-	void SetAllAttackDone(bool _TorF) { GetOwner()->GetScript<HandStateMgrScript>()->SetAllAttackDone(_TorF); }
-	void Set1stAttackDone(bool _TorF) { GetOwner()->GetScript<HandStateMgrScript>()->Set1stAttackDone(_TorF); }
-	void Set2ndAttackDone(bool _TorF) { GetOwner()->GetScript<HandStateMgrScript>()->Set2ndAttackDone(_TorF); }
-	void Set3rdAttackDone(bool _TorF) { GetOwner()->GetScript<HandStateMgrScript>()->Set3rdAttackDone(_TorF); }
-	void SetSaveMidFrm(int _frame) { GetOwner()->GetScript<HandStateMgrScript>()->SetSaveMidFrame(_frame); }
-
+	void SetGenStateDone(bool _TorF) { m_bGenStateDone = _TorF; }
+	void SetAttackStateDone(bool _TorF) { m_bAttackStateDone = _TorF; }
+	void SetVanishStateDone(bool _TorF) { m_bVanishStateDone = _TorF; }
+	void SetAllAttackDone(bool _TorF) { m_bAllAttackIsDone = _TorF; }
+	void SetAttackRepeat(bool _TorF) { m_bAttackRepeat = _TorF; }
 public:
 	void InitMonsterStat();
 
@@ -63,8 +60,8 @@ public:
 	virtual void OnCollisionExit(CGameObject* _OtherObject)		override;
 
 public:
-	virtual void SaveToScene(FILE* _pFile)						override;
-	virtual void LoadFromScene(FILE* _pFile)					override;
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 
 public:
 	CLONE(BossJugHandScript);

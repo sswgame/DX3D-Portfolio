@@ -10,6 +10,7 @@
 #include "DestroyScript.h"
 #include "GravityScript.h"
 #include "HandStateMgrScript.h"
+#include "MagmaScript.h"
 #include "MissileScript.h"
 #include "MonsterGunScript.h"
 #include "MonsterSearchScript.h"
@@ -31,6 +32,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"DestroyScript");
 	_vec.push_back(L"GravityScript");
 	_vec.push_back(L"HandStateMgrScript");
+	_vec.push_back(L"MagmaScript");
 	_vec.push_back(L"MissileScript");
 	_vec.push_back(L"MonsterGunScript");
 	_vec.push_back(L"MonsterSearchScript");
@@ -62,6 +64,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new GravityScript;
 	if (L"HandStateMgrScript"== _strScriptName)
 		return new HandStateMgrScript;
+	if (L"MagmaScript"== _strScriptName)
+		return new MagmaScript;
 	if (L"MissileScript"== _strScriptName)
 		return new MissileScript;
 	if (L"MonsterGunScript"== _strScriptName)
@@ -106,6 +110,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new GravityScript;
 	case SCRIPT_TYPE::HANDSTATEMGRSCRIPT:
 		return new HandStateMgrScript;
+	case SCRIPT_TYPE::MAGMASCRIPT:
+		return new MagmaScript;
 	case SCRIPT_TYPE::MISSILESCRIPT:
 		return new MissileScript;
 	case SCRIPT_TYPE::MONSTERGUNSCRIPT:
@@ -151,6 +157,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"GravityScript";
 	case SCRIPT_TYPE::HANDSTATEMGRSCRIPT:
 		return L"HandStateMgrScript";
+	case SCRIPT_TYPE::MAGMASCRIPT:
+		return L"MagmaScript";
 	case SCRIPT_TYPE::MISSILESCRIPT:
 		return L"MissileScript";
 	case SCRIPT_TYPE::MONSTERGUNSCRIPT:

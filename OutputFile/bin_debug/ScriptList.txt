@@ -6,6 +6,7 @@ ColumnFlameScript
 DestroyScript
 GravityScript
 HandStateMgrScript
+MagmaScript
 MissileScript
 MonsterGunScript
 MonsterSearchScript

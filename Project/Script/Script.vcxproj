@@ -235,6 +235,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="Jug_Norm_Idle.h" />
     <ClInclude Include="Jug_SpawnHammer.h" />
     <ClInclude Include="Jug_WalkGround.h" />
+    <ClInclude Include="MagmaScript.h" />
     <ClInclude Include="MissileScript.h" />
     <ClInclude Include="CObjKeyMgr.h" />
     <ClInclude Include="MonsterGunScript.h" />
@@ -300,6 +301,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="Jug_Norm_Idle.cpp" />
     <ClCompile Include="Jug_SpawnHammer.cpp" />
     <ClCompile Include="Jug_WalkGround.cpp" />
+    <ClCompile Include="MagmaScript.cpp" />
     <ClCompile Include="MissileScript.cpp" />
     <ClCompile Include="CObjKeyMgr.cpp" />
     <ClCompile Include="MonsterGunScript.cpp" />

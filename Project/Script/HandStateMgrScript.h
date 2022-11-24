@@ -14,17 +14,13 @@ private:
 	CGameObject*			m_pHand2;
 	CGameObject*			m_pHand3;
 
+	Vec3					m_vHand1HitBoxScale;
+	Vec3					m_vHand1AttackBoxScale;
 
 	int					m_iCurAttackHandNumber;
-	int					m_iSaveMidFrame;
 
-	bool				m_bGenDone;
-	bool				m_bAllAttackDone;
-	bool				m_bVanishDone;
-
-	bool				m_bAttack1Done;
-	bool				m_bAttack2Done;
-	bool				m_bAttack3Done;
+	bool				m_bHand01_FirstAttackDone;
+	bool				m_bHand01_SecondAttackDone;
 
 
 public:
@@ -40,26 +36,15 @@ public:
 public:
 	 // [ SET ]
 	void SetNextState(wstring _state) { m_sNextState = _state; }
-	void SetGenDone(bool _TorF) { m_bGenDone = _TorF; }
-	void SetAllAttackDone(bool _TorF) { m_bAllAttackDone = _TorF; }
-	void SetVanishDone(bool _TorF) { m_bVanishDone = _TorF; }
 	void SetCurAttackNumber(int _num) { m_iCurAttackHandNumber = _num; }
-	void Set1stAttackDone(bool _TorF) { m_bAttack1Done = _TorF; }
-	void Set2ndAttackDone(bool _TorF) { m_bAttack2Done = _TorF; }
-	void Set3rdAttackDone(bool _TorF) { m_bAttack3Done = _TorF; }
-	void SetSaveMidFrame(int _frame) { m_iSaveMidFrame = _frame; }
-
+	void SetHand01_FirstAttackDone(bool _TorF) { m_bHand01_FirstAttackDone = _TorF; }
+	void SetHand01_SecondAttackDone(bool _TorF) { m_bHand01_SecondAttackDone = _TorF; }
 
 public:
 	// [ GET ]
-	int GetSavedMidFrame() { return m_iSaveMidFrame; }
-	bool GetGenDone() { return m_bGenDone; }
-	bool GetAllAttackDone() { return m_bAllAttackDone; }
-	bool GetVanishDone() { return m_bVanishDone; }
-	bool GetCurAttackHandNUM() { return m_iCurAttackHandNumber; }
-	bool Get1stAttackDone() { return m_bAttack1Done; }
-	bool Get2ndAttackDone() { return m_bAttack2Done; }
-	bool Get3rdAttackDone() { return m_bAttack3Done; }
+	int GetCurAttackHandNUM() { return m_iCurAttackHandNumber; }
+	bool GetHand01_FirstAttackDone() { return m_bHand01_FirstAttackDone; }
+	bool GetHand01_SecondAttackDone() { return m_bHand01_SecondAttackDone; }
 
 	CGameObject* GetHandObject(int _handNum) 
 	{ 
@@ -76,8 +61,14 @@ public:
 
 	wstring GetCurState() { return m_sCurstate; }
 
+public:
+	void ResetCurAttackHandNumber();
+
 private:
 	void ChangeState(wstring _sStateName);
+
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 
 
 	CLONE(HandStateMgrScript)

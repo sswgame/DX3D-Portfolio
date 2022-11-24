@@ -6,6 +6,7 @@
 // Engine
 #include <Engine/CAnimation3D.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CFSM.h>
 
 JugHand_Attack::JugHand_Attack()
 	: CState{ L"ATTACK" }
@@ -35,82 +36,58 @@ void JugHand_Attack::Hand01Attack()
 	Vec3 vRotate = GetOwner()->Transform()->GetRelativeRotation();
 	Vec3 vPlayerPos = ((BossJugHandScript*)pScript)->GetPlayerPosition();
 	float fSpeed = ((BossJugHandScript*)pScript)->GetSpeed();
-	float iDisappearaceTime = 2.f;
-	float iAppearanceTime = 1.f;
+
+	bool repeat = ((BossJugHandScript*)pScript)->GetAttackRepeat();
 
 	Vec3 vDir = vPlayerPos - vPos;
 	vDir = vDir.Normalize();
 
-	if (false == m_bFirstAttackDone)
+	if (repeat) // 마지막 공격이 아니다 (첫번째 공격이다)
 	{
-		if (m_pAnimation->GetCurFrameIdx() < 117)
+		if (((BossJugHandScript*)pScript)->GetRunningTime() < CState::GetTimer())
+		{
+			((BossJugHandScript*)pScript)->SetAttackStateDone(true);
+			m_pAnimation->SetAnimState(ANIMATION_STATE::STOP);
+			m_bFirstAttackDone = true;
+		}
+		else if (2.f < CState::GetTimer())
+		{
+			if (ANIMATION_STATE::STOP == m_pAnimation->GetState())
+				m_pAnimation->SetAnimState(ANIMATION_STATE::PLAY);
+
+			// =======
+			// 내려찍기
+			// =======
+		}
+		else
 		{
 			vPos.x += vDir.x * DT * fSpeed;
 			vPos.z += vDir.z * DT * fSpeed;
 		}
-		else
+	}
+	else
+	{
+		if (ANIMATION_STATE::PLAY == m_pAnimation->GetState())
 		{
 			if (((BossJugHandScript*)pScript)->GetRunningTime() < CState::GetTimer())
 			{
-				SetAttackFinsh(1);
+				((BossJugHandScript*)pScript)->SetAttackStateDone(true);
+				GetOwner()->GetScript<BossJugHandScript>()->SetAllAttackDone(true);
+				m_bFirstAttackDone = false;
+				((BossJugHandScript*)pScript)->SetAttackRepeat(false);
 			}
 			else
 			{
-				// ===============
-				// 아래로 내려 찍기
-				// ===============
+				// =======
+				// 내려찍기
+				// =======
 			}
-		}
-	}
-	else if (false == m_bSecondAttackDone)
-	{
-		// 두번쨰 공격부터 중간에 저장된 frm이 있는지 본다.
-		// SavedFrm 이 -1 이 아니라면 저장된 frm 이 있는것.
-		int iSavedFrm = GetOwner()->GetScript<HandStateMgrScript>()->GetSavedMidFrame();
-		if (-1 != iSavedFrm)
-		{
-			m_pAnimation->SetCurFrameIdx(iSavedFrm);
-			vPos.x = vPlayerPos.x;
-			vPos.z = vPlayerPos.z;
-		}
-		else if (m_pAnimation->GetCurFrameIdx() == m_pAnimation->GetEndFrameIdx())
-		{
-			SetAttackFinsh(2);
-		}
-		else
-		{
-			// ===============
-			// 아래로 내려 찍기
-			// ===============
-		}
-	}
-	else if (false == m_bThirdAttackDone)
-	{
-		// 두번쨰 공격부터 중간에 저장된 frm이 있는지 본다.
-		// SavedFrm 이 -1 이 아니라면 저장된 frm 이 있는것.
-		int iSavedFrm = GetOwner()->GetScript<HandStateMgrScript>()->GetSavedMidFrame();
-
-		if (-1 != iSavedFrm)
-		{
-			m_pAnimation->SetCurFrameIdx(117);
-			vPos.x = vPlayerPos.x;
-			vPos.z = vPlayerPos.z;
-		}
-		else if (m_pAnimation->GetCurFrameIdx() == m_pAnimation->GetEndFrameIdx())
-		{
-			SetAttackFinsh(3);
-			AllAttackDone();
-		}
-		else
-		{
-			// ===============
-			// 아래로 내려 찍기
-			// ===============
 		}
 	}
 
 	GetOwner()->Transform()->SetRelativePos(vPos);
 	GetOwner()->Transform()->SetRelativePos(vRotate);
+
 
 }
 
@@ -123,23 +100,53 @@ void JugHand_Attack::Hand02Attack()
 	// 3. 238 부터 애니메이션 시작
 	// 3. 애니메이션 끝나면 사라짐
 
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
-	float iDisappearaceTime = 2.f;
-	float iAppearanceTime = 1.f;
+	CScript* pScript = GetOwner()->GetScript<BossJugHandScript>();
 
 	Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
 	Vec3 vRotate = GetOwner()->Transform()->GetRelativeRotation();
 
-	if (237 == m_pAnimation->GetCurFrameIdx())
+	if (ANIMATION_STATE::PLAY == m_pAnimation->GetState())
 	{
-		SetAttackFinsh(1);
+		if (false == m_bFirstAttackDone)
+		{
+			if (237 == m_pAnimation->GetCurFrameIdx())
+			{
+				// ==========================
+				//		던지는 파티클 생성  
+				// ==========================
+
+				// ==========================
+				//	       magma 생성  
+				// ==========================
+				CGameObject* pMagma = new CGameObject;
+				wstring pMagmaName = L"";
+				pMagmaName = L"meshdata//magma0.mdat";
+				Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
+					pMagmaName.c_str());
+				pMagma = pMagmaMeshData->Instantiate();
+				pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
+				pMagma->SetName(L"Magma");
+				//pMagma->AddComponent(new MagmaScript);
+				GetOwner()->AddChild(pMagma);
+
+			}
+			else if (m_pAnimation->GetCurFrameIdx() == m_pAnimation->GetEndFrameIdx())
+			{
+				((BossJugHandScript*)pScript)->SetAttackStateDone(true);
+				GetOwner()->GetScript<BossJugHandScript>()->SetAllAttackDone(true);
+				m_bFirstAttackDone = false;
+				return;
+			}
+		}
 	}
-	else
-	{
-		// ==============
-		// Create Monster
-		// ==============
-	}
+
+	//if (ANIMATION_STATE::FINISH == m_pAnimation->GetState())
+	//{
+	//	((BossJugHandScript*)pScript)->SetAttackStateDone(true);
+	//	GetOwner()->GetScript<BossJugHandScript>()->SetAllAttackDone(true);
+	//	m_bFirstAttackDone = false;
+	//	return;
+	//}
 
 	GetOwner()->Transform()->SetRelativePos(vPos);
 	GetOwner()->Transform()->SetRelativePos(vRotate);
@@ -149,121 +156,64 @@ void JugHand_Attack::Hand02Attack()
 
 void JugHand_Attack::Hand03Attack()
 {
-	// [ Hand03 Attack routine ]
-	// DONE
-
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
-
-	if (true == m_bThirdAttackDone)
-	{
-		((BossJugHandScript*)pScript)->SetCurAnimationPlayDone(true);
-		return;
-	}
+	CScript* pScript = GetOwner()->GetScript<BossJugHandScript>();
 
 	Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
 	Vec3 vRotate = GetOwner()->Transform()->GetRelativeRotation();
 	Vec3 vPlayerPos = ((BossJugHandScript*)pScript)->GetPlayerPosition();
 	Vec3 vMonsterCurDir = ((BossJugHandScript*)pScript)->GetCurDir();
 
-	Vec3 vNewDir = vPlayerPos - vPos;
-	vNewDir = vNewDir.Normalize();
+	Vec2 vPlayertoMonsterDir = Vec2(vPos.x - vPlayerPos.x, vPos.z - vPlayerPos.z);
+	vPlayertoMonsterDir.Normalize();
 
-	float fTheta = vMonsterCurDir.x * vNewDir.x + vMonsterCurDir.z * vNewDir.z;
+	Vec2 vNewMonsterVec = -vPlayertoMonsterDir;
+
+	((BossJugHandScript*)pScript)->SetMonsterDir(Vec3(vNewMonsterVec.x, 0, vNewMonsterVec.y));
+
+	float fTheta = vMonsterCurDir.x * vNewMonsterVec.x + vMonsterCurDir.z * vNewMonsterVec.y;
 	fTheta = acos(fTheta);
 
-	if (vMonsterCurDir.x < vNewDir.x)
-		fTheta = -fTheta;
+	if (vPos.x < vPlayerPos.x)
+		fTheta = fTheta + XM_PI / 2.f;
+	else
+		fTheta = -fTheta + XM_PI / 2.f;
 
-	if (false == m_bThirdAttackDone)
+	if (m_pAnimation->GetCurFrameIdx() == m_pAnimation->GetEndFrameIdx())
 	{
-		if (m_pAnimation->GetCurFrameIdx() == m_pAnimation->GetEndFrameIdx())
+		if (((BossJugHandScript*)pScript)->GetRunningTime() < CState::GetTimer())
 		{
-			if (false == m_bFirstAttackDone)
-			{
-				m_bFirstAttackDone = true;
-			}
-			else if (false == m_bSecondAttackDone)
-			{
-				m_bSecondAttackDone = true;
-			}
-			else if (false == m_bThirdAttackDone)
-			{
-				m_bThirdAttackDone = true;
-			}
-		}
-		else if (120 == m_pAnimation->GetCurFrameIdx())
-		{
-			// ==================
-			// create attack ball
-			// ==================
-		}
-		else
-		{
-			vRotate.y += fTheta;
+			((BossJugHandScript*)pScript)->SetAttackStateDone(true);
+			GetOwner()->GetScript<BossJugHandScript>()->SetAllAttackDone(true);
+			m_bFirstAttackDone = false;
+			m_bSecondAttackDone = false;
+			m_bThirdAttackDone = false;
+			return;
 		}
 	}
-
+	else if (120 == m_pAnimation->GetCurFrameIdx())
+	{
+		// ==================
+		// create attack ball
+		// ==================
+	}
+	else
+	{
+		vRotate.y += fTheta;
+	}
 
 	GetOwner()->Transform()->SetRelativePos(vPos);
 	GetOwner()->Transform()->SetRelativePos(vRotate);
-}
-
-void JugHand_Attack::AllAttackDone()
-{
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
-
-	((BossJugHandScript*)pScript)->Set1stAttackDone(false);
-	((BossJugHandScript*)pScript)->Set2ndAttackDone(false);
-	((BossJugHandScript*)pScript)->Set3rdAttackDone(false);
-}
-
-void JugHand_Attack::SetAttackFinsh(int _attackNum)
-{
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
-
-	switch (_attackNum)
-	{
-	case 1:
-	{
-		m_bFirstAttackDone = true;
-		((BossJugHandScript*)pScript)->SetCurAnimationPlayDone(true);
-		((BossJugHandScript*)pScript)->Set1stAttackDone(m_bFirstAttackDone);
-		((BossJugHandScript*)pScript)->SetSaveMidFrm(m_pAnimation->GetCurFrameIdx());
-		break;
-	}
-	case 2:
-	{
-		m_bSecondAttackDone = true;
-		((BossJugHandScript*)pScript)->SetCurAnimationPlayDone(true);
-		((BossJugHandScript*)pScript)->Set2ndAttackDone(m_bSecondAttackDone);
-		((BossJugHandScript*)pScript)->SetSaveMidFrm(m_pAnimation->GetCurFrameIdx());
-		break;
-	}
-	case 3:
-	{
-		m_bThirdAttackDone = true;
-		((BossJugHandScript*)pScript)->SetCurAnimationPlayDone(true);
-		((BossJugHandScript*)pScript)->Set3rdAttackDone(m_bThirdAttackDone);
-		((BossJugHandScript*)pScript)->SetAllAttackDone(true);
-		break;
-	}
-	}
 }
 
 void JugHand_Attack::Enter()
 {
 	CState::ResetTimer();
 
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
-
-	m_bFirstAttackDone = ((BossJugHandScript*)pScript)->Get1stAttackDone();
-	m_bSecondAttackDone = ((BossJugHandScript*)pScript)->Get2ndAttackDone();
-	m_bThirdAttackDone = ((BossJugHandScript*)pScript)->Get3rdAttackDone();
+	CScript* pScript = GetOwner()->GetScript<BossJugHandScript>();
 
 	m_fLerfTime = 2.f;
 
 	int iIndex = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
-	int iCurAttackIdx = ((BossJugHandScript*)pScript)->GetCurAttackHandIdx();
 	wstring sAnimName = L"";
 
 	if (nullptr == m_pAnimation)
@@ -289,74 +239,79 @@ void JugHand_Attack::Enter()
 		m_pAnimation = mapAnim.find(sAnimName)->second;
 	}
 
+	sAnimName = m_pAnimation->GetName();
+
 	if (3 == iIndex)
 	{
+		float fHand3RunTime = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		fHand3RunTime *= 3.f;
+
 		GetOwner()->Animator3D()->Play(sAnimName, true);
 		m_pAnimation->SetLerpTime(0.f);
+		((BossJugHandScript*)pScript)->SetRunningTime(fHand3RunTime);
 	}
 	else if (1 == iIndex)
 	{
-		GetOwner()->Animator3D()->Play(sAnimName, false);
+		m_pAnimation->SetLerpTime(0.f);
+
+		float fRunTime = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
 
 		if (true == m_bFirstAttackDone)
 		{
-			m_pAnimation->SetCurFrameIdx(117);
+			((BossJugHandScript*)pScript)->SetRunningTime(fRunTime);
+			GetOwner()->Animator3D()->Play(sAnimName, false);
+			((BossJugHandScript*)pScript)->SetAttackRepeat(false);
+		}
+		else
+		{
+			((BossJugHandScript*)pScript)->SetRunningTime(fRunTime + 2.f);
+			m_pAnimation->SetAnimState(ANIMATION_STATE::STOP);
+			((BossJugHandScript*)pScript)->SetAttackRepeat(true);
 		}
 	}
 	else if (2 == iIndex)
 	{
 		GetOwner()->Animator3D()->Play(sAnimName, false);
+		m_pAnimation->SetLerpTime(0.5f);
 		if (true == m_bFirstAttackDone)
 		{
 			m_pAnimation->SetCurFrameIdx(238);
 		}
 	}
-
-
 }
 
 void JugHand_Attack::Update()
 {
 	CState::Update();
 
-	float iDisappearaceTime = 2.f;
-	float iAppearanceTime = 1.f;
-
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
-
-	
-	int iIndex = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
-
-	Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
-	Vec3 vRotate = GetOwner()->Transform()->GetRelativeRotation();
-	Vec3 vPlayerPos = ((BossJugHandScript*)pScript)->GetPlayerPosition();
+	int curAttackIndex = GetOwner()->GetParent()->GetScript<HandStateMgrScript>()->GetCurAttackHandNUM();
+	int iIndex = GetOwner()->GetScript<BossJugHandScript>()->GetHandIndexNumber();
 
 
-	if (1 == iIndex)
+	if (curAttackIndex == iIndex)
 	{
-		Hand01Attack();
+		if (1 == iIndex)
+		{
+			Hand01Attack();
+		}
+		else if (2 == iIndex)
+		{
+			Hand02Attack();
+		}
+		else
+		{
+			Hand03Attack();
+		}
 	}
-	else if (2 == iIndex)
-	{
-		Hand02Attack();
-	}
-	else
-	{
-		Hand03Attack();
-	}
-
-
-	GetOwner()->Transform()->SetRelativePos(vPos);
-	GetOwner()->Transform()->SetRelativePos(vRotate);
 }
 
 void JugHand_Attack::Exit()
 {
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
+	m_pAnimation->Reset();
+	CScript* pScript = GetOwner()->GetScript<BossJugHandScript>();
 
 	if (nullptr == pScript)
 		return;
 
 	((BossJugHandScript*)pScript)->SetRunningTime(0);
-
 }

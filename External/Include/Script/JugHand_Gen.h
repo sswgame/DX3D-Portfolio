@@ -10,11 +10,6 @@ class JugHand_Gen :
 	float			m_fLerfTime;
 
 public:
-	void Hand01Gen();
-	void Hand02Gen();
-	void Hand03Gen();
-
-public:
 	void Enter() override;
 	void Exit() override;
 

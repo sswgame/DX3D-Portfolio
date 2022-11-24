@@ -22,7 +22,7 @@ void JugHand_Idle::Enter()
 {
 	CState::ResetTimer();
 
-	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
+	CScript* pScript = GetOwner()->GetScript<BossJugHandScript>();
 	int iIndex = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
 	wstring sAnimName = L"";
 
@@ -48,7 +48,7 @@ void JugHand_Idle::Enter()
 
 		m_pAnimation = mapAnim.find(sAnimName)->second;
 	}
-
+	sAnimName = m_pAnimation->GetName();
 	GetOwner()->Animator3D()->Play(sAnimName, true);
 
 }
