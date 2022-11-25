@@ -89,63 +89,39 @@ void CRenderMgr::render_play()
 	// 메인 카메라 시점으로 렌더링
 	CCamera* pMainCam = m_vecCam[0];
 
-	// Camera 가 찍는 Layer 의 오브젝트들을 Shader Domain 에 따라 분류해둠
-	pMainCam->SortGameObject();
-
-	// Directional Light ShadowMap 만들기
-	render_shadowmap();
-
-	g_transform.matView    = pMainCam->GetViewMat();
-	g_transform.matViewInv = pMainCam->GetViewInvMat();
-	g_transform.matProj    = pMainCam->GetProjMat();
-
-	// Deferred 물체 렌더링	
-	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
-	pMainCam->render_deferred();
-
-	// Deferred decal 물체 렌더링	
-	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
-	pMainCam->render_deferred_decal();
-
-	// 광원 렌더링
-	render_lights();
-
-	// Merge
-	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
-
-	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-	int        a         = 0;
-	m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
-	m_pMergeMtrl->UpdateData();
-	pRectMesh->render(0);
-
-	// Foward 물체 렌더링	
-	pMainCam->render_forward();
-
-	// Masked 물체 렌더링
-	pMainCam->render_masked();
-
-	// Alpha 물체 렌더링
-	pMainCam->render_translucent();
-
-	// Debug Object 렌더링 
-	pMainCam->render_debug();
-
-	// PostProcess 물체 렌더링
-	pMainCam->render_postprocess();
-
-
 	// Sub 카메라 시점으로 렌더링
-	for (int i = 1; i < m_vecCam.size(); ++i)
+	for (int i = 0; i < m_vecCam.size(); ++i)
 	{
 		if (nullptr == m_vecCam[i])
 			continue;
 
 		m_vecCam[i]->SortGameObject();
 
+		// Directional Light ShadowMap 만들기
+		render_shadowmap();
+
 		g_transform.matView    = m_vecCam[i]->GetViewMat();
 		g_transform.matViewInv = m_vecCam[i]->GetViewInvMat();
 		g_transform.matProj    = m_vecCam[i]->GetProjMat();
+
+		// Deferred 물체 렌더링			
+		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
+		m_vecCam[i]->render_deferred();
+
+		m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
+		m_vecCam[i]->render_deferred_decal();
+
+		// 광원 렌더링
+		render_lights();
+
+		// Merge
+		m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
+
+		Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+		int        a         = 0;
+		m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
+		m_pMergeMtrl->UpdateData();
+		pRectMesh->render(0);
 
 		// Foward 물체 렌더링
 		m_vecCam[i]->render_forward();

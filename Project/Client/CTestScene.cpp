@@ -453,10 +453,10 @@ namespace
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
 
-		//AddPlayer(pCurScene, pCamObj);
-		//AddBoss(pCurScene);
+		AddPlayer(pCurScene, pCamObj);
+		AddBoss(pCurScene);
 
-		TestUI(pCurScene);
+		//TestUI(pCurScene);
 
 		// 충돌 레이어 설정
 		CCollisionMgr::GetInst()->CollisionCheck(1, 1);

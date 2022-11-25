@@ -14,6 +14,7 @@
 #include "BossJugScript.h"
 #include "ColumnFlameScript.h"
 
+#define FLAME_COUNT 6
 
 JugPhase_2::JugPhase_2()
 	: CState(L"JUG_PHASE_2")
@@ -45,12 +46,10 @@ JugPhase_2::JugPhase_2(const JugPhase_2& _origin)
 
 JugPhase_2::~JugPhase_2()
 {
-	if (!m_vecColumnFlames.empty())
+	vector<CGameObject*>::iterator iter = m_vecColumnFlames.begin();
+	for (; iter != m_vecColumnFlames.end();)
 	{
-		for (auto& i : m_vecColumnFlames)
-		{
-			delete(i);
-		}
+		iter = m_vecColumnFlames.erase(iter);
 	}
 }
 
@@ -61,9 +60,10 @@ void JugPhase_2::Init()
 
 	if (m_vecColumnFlames.empty())
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < FLAME_COUNT; i++)
 		{
 			Ptr<CPrefab> pColumn = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\ColumnLaser.pref");
+			pColumn->SetName(L"Flame_" + std::to_wstring(i));
 			m_vecColumnFlames.push_back(pColumn->Instantiate());
 		}
 	}
