@@ -108,6 +108,10 @@ void CRenderMgr::render_play()
 		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
 		m_vecCam[i]->render_deferred();
 
+		// Particle ¹°Ã¼ ·»´õ¸µ	
+		m_arrMRT[(UINT)MRT_TYPE::PARTICLE]->OMSet();
+		pMainCam->render_particle();
+
 		m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
 		m_vecCam[i]->render_deferred_decal();
 
@@ -165,6 +169,10 @@ void CRenderMgr::render_editor()
 
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
 	m_pEditorCam->render_deferred_decal();
+
+	// Particle ¹°Ã¼ ·»´õ¸µ			
+	m_arrMRT[(UINT)MRT_TYPE::PARTICLE]->OMSet();
+	m_pEditorCam->render_particle();
 
 	// ±¤¿ø ·»´õ¸µ
 	render_lights();
