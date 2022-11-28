@@ -32,6 +32,8 @@ private:
 
 	void SetData();
 
+	friend class ParticleTool;
+
 public:
 	void render_update() override;
 

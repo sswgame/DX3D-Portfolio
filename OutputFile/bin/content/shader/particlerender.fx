@@ -7,16 +7,21 @@
 // ====================
 // ParticleRenderShader
 // Mesh     : PointMesh
-// Domain   : Opaque
+// Domain   : DOMAIN_EMISSIVE_PARTICLE
 // Blend    : AlphaBlend
 // DepthStencil : Less
 // Rasterizer : CULL_NONE
-
+// g_tex_0 : particle target Texture
+// g_tex_1 : Emissive target Texture
 
 // Parameter
 #define POS_INHERIT     g_int_0
 #define PARTICLE_INDEX  g_int_1
 #define APPLY_LIGHTING  g_int_2
+
+#define EMISSIVE_USE    g_int_3
+
+#define EMISSIVE_COLOR g_vec4_0
 // ====================
 
 StructuredBuffer<tParticle> ParticleBuffer : register(t16);
@@ -116,18 +121,23 @@ void GS_ParticleRender(point VTX_OUT _in[1], inout TriangleStream<GS_OUT> _outpu
     _output.RestartStrip();
 }
 
-
-float4 PS_ParticleRender(GS_OUT _in) : SV_Target
+struct PS_OUT
 {
-    float4 vOutColor = (float4) 0.f;    
+    float4 vParticle    : SV_Target0;
+    float4 vEmissive    : SV_Target1;
+};
+
+PS_OUT PS_ParticleRender(GS_OUT _in)
+{
+    PS_OUT output = (PS_OUT)0.f;
     
     if(g_btex_0)
     {
-        vOutColor = g_tex_0.Sample(g_sam_0, _in.vUV) * ParticleBuffer[_in.InstID].vColor;
+        output.vParticle = g_tex_0.Sample(g_sam_0, _in.vUV) * ParticleBuffer[_in.InstID].vColor;
     }
     else
     {
-        vOutColor = ParticleBuffer[_in.InstID].vColor;
+        output.vParticle = ParticleBuffer[_in.InstID].vColor;
     }
         
      // Lighting 연산
@@ -141,11 +151,18 @@ float4 PS_ParticleRender(GS_OUT _in) : SV_Target
         }
                     
         // Diffuse, Specular, Ambient 로 최종 색상을 구한다.
-        vOutColor.rgb = (vOutColor.rgb * lightColor.vDiff.rgb)                        
-                        + (vOutColor.rgb * lightColor.vAmb.rgb);
+        output.vParticle.rgb = (output.vParticle.rgb * lightColor.vDiff.rgb)
+                        + (output.vParticle.rgb * lightColor.vAmb.rgb);
     }    
+
+   /* if (1 == EMISSIVE_USE)
+    {
+        output.vEmissive = EMISSIVE_COLOR;
+    }*/
+
+    output.vEmissive = float4(0.f, 1.f, 1.f, 1.f);
     
-    return vOutColor;
+    return output;
 }
 
 #endif

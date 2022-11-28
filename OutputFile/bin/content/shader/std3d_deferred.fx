@@ -64,6 +64,7 @@ struct PS_OUT
     float4 vNormal : SV_Target1;
     float4 vPosition : SV_Target2;
     float4 vData : SV_Target3;
+
 };
 
 PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
@@ -105,7 +106,6 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
     
     output.vNormal = float4(vViewNormal, 1.f);
     output.vPosition = float4(_in.vViewPos, 1.f);
-    
     
     return output;
 }

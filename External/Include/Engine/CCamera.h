@@ -16,6 +16,8 @@ class CCamera : public CComponent
 private:
 	vector<CGameObject*> m_vecDeferred;      // Deferred 물체
 	vector<CGameObject*> m_vecDeferredDecal; // Decal
+	vector<CGameObject*> m_vecDeferredParticle; // Decal
+
 	vector<CGameObject*> m_vecForward;       // 불투명 물체    
 	vector<CGameObject*> m_vecMasked;        // 투명, 불투명 물체
 	vector<CGameObject*> m_vecForwardDecal;  // Decal
@@ -86,6 +88,7 @@ public:
 	virtual void finalupdate_module() override;
 	void         render_deferred();
 	void         render_deferred_decal();
+	void         render_particle();
 	void         render_forward();
 	void         render_forward_decal();
 	void         render_masked();

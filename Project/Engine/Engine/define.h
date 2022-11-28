@@ -116,11 +116,10 @@ enum class SHADER_DOMAIN
 	,			// 지연 렌더링 물체
 	DOMAIN_DEFERRED_DECAL
 	,		// 데칼
-
+	DOMAIN_EMISSIVE_PARTICLE
+	,	// 파티클
 	DOMAIN_LIGHT
 	,				// 광원
-	DOMAIN_EMISSIVE_PARTICLE
-	,	// 발광 파티클
 
 	DOMAIN_FORWARD
 	,				// 불투명
@@ -304,6 +303,7 @@ enum class MRT_TYPE
 {
 	SWAPCHAIN
 	, DEFERRED
+	, PARTICLE
 	, DEFERRED_DECAL
 	, LIGHT
 	, SHADOWMAP

@@ -70,11 +70,36 @@ void CRenderMgr::CreateMRT()
 				                                  (UINT)vResolution.y,
 				                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
 				                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-				                                  true)
+				                                  true),
+
 			};
 
 		m_arrMRT[(UINT)MRT_TYPE::DEFERRED] = new CMRT;
 		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Create(4, arrTex, pDSTex);
+	}
+
+	// =====================
+	// Particle Emissive MRT
+	// =====================
+	{
+		Ptr<CTexture> arrTex[8]
+			= {
+				CResMgr::GetInst()->CreateTexture(L"ParticleTargetTex",
+												  (UINT)vResolution.x,
+												  (UINT)vResolution.y,
+												  DXGI_FORMAT_R32G32B32A32_FLOAT,
+												  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+												  true),
+
+				CResMgr::GetInst()->CreateTexture(L"EmissiveTargetTex",
+												  (UINT)vResolution.x,
+												  (UINT)vResolution.y,
+												  DXGI_FORMAT_R32G32B32A32_FLOAT,
+												  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+												  true)
+		};
+		m_arrMRT[(UINT)MRT_TYPE::PARTICLE] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::PARTICLE]->Create(2, arrTex, pDSTex);
 	}
 
 	// ==================
@@ -165,6 +190,8 @@ void CRenderMgr::CreateMaterial()
 	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_1, CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex"));
 	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_2, CResMgr::GetInst()->FindRes<CTexture>(L"SpecularTargetTex"));
 	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_3, CResMgr::GetInst()->FindRes<CTexture>(L"ShadowPowerTargetTex"));
+	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_4, CResMgr::GetInst()->FindRes<CTexture>(L"ParticleTargetTex"));
+	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_5, CResMgr::GetInst()->FindRes<CTexture>(L"EmissiveTargetTex"));
 
 	Ptr<CGraphicsShader> pShader = nullptr;
 	Ptr<CMaterial>       pMtrl   = nullptr;

@@ -12,6 +12,7 @@
 #include "UI.h"
 #include "ParamUI.h"
 #include "IconsFontAwesome5.h"
+#include "ParticleTool.h"
 
 
 
@@ -189,6 +190,12 @@ void CImGuiMgr::CreateUI()
 	pListUI->Deactivate();
 	pListUI->SetModalUI(true);
 	m_mapUI.insert(make_pair(pListUI->GetName(), pListUI));
+
+	// Particle Tool UI »ý¼º
+	ParticleTool* pParticleTool = new ParticleTool;
+	pParticleTool->Deactivate();
+	m_mapUI.insert(make_pair(pParticleTool->GetName(), pParticleTool));
+
 }
 
 

@@ -12,11 +12,11 @@
 // DS       : NO_TEST_NO_WRITE
 // BS       : ONE_ONE
 
-#define LightIdx        g_int_0
-#define PositionTarget  g_tex_0
-#define NormalTarget    g_tex_1
-#define ShadowMap       g_tex_2
-#define DataTarget      g_tex_3
+#define LightIdx            g_int_0
+#define PositionTarget      g_tex_0
+#define NormalTarget        g_tex_1
+#define ShadowMap           g_tex_2
+#define DataTarget          g_tex_3
 
 #define LightVP         g_mat_0
 // ========================
@@ -234,10 +234,12 @@ PS_DIR_OUT PS_Spot(VS_DIR_OUT _in)
 // ==============================
 // Merge Shader
 // Mesh : RectMesh
-#define ColorTarget g_tex_0
-#define DiffuseTarget g_tex_1
-#define SpecularTarget g_tex_2
-#define ShadowPowTarget g_tex_3
+#define ColorTarget         g_tex_0
+#define DiffuseTarget       g_tex_1
+#define SpecularTarget      g_tex_2
+#define ShadowPowTarget     g_tex_3
+#define ParticleTarget      g_tex_4
+#define EmissiveTarget      g_tex_5
 // ==============================
 struct VS_MERGE_IN
 {
@@ -273,6 +275,9 @@ float4 PS_Merge(VS_MERGE_OUT _in) : SV_Target0
     float3 vColor = ColorTarget.Sample(g_sam_0, vUV).xyz;
     float3 vDiffuse = DiffuseTarget.Sample(g_sam_0, vUV).xyz;
     float3 vSpecular = SpecularTarget.Sample(g_sam_0, vUV).xyz;
+    float3 vParticle = ParticleTarget.Sample(g_sam_0, vUV).xyz;
+    float3 vEmissive = EmissiveTarget.Sample(g_sam_0, vUV).xyz;
+
     float fShadowPow = ShadowPowTarget.Sample(g_sam_0, vUV).x;
         
     vOutColor = float4(vColor * vDiffuse * (1.f - fShadowPow)

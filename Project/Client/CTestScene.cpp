@@ -138,7 +138,7 @@ namespace
 
 		pParticleObj->Transform()->SetRelativePos(Vec3(0.f, 100.f, 0.f));
 
-		_pScene->AddObject(pParticleObj, L"Default");
+		_pScene->AddObject(pParticleObj, L"BG");
 	}
 
 	void AddSkybox(CScene* _pScene)
@@ -355,7 +355,7 @@ namespace
 		pBoss->AddComponent(new CTransform);
 		pBoss->AddComponent(new BossJugCombatMgrScript);
 		_pScene->AddObject(pBoss, L"MONSTER");
-		//pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
+		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
 	}
 
 
@@ -366,75 +366,75 @@ namespace
 		CSceneMgr::GetInst()->ChangeScene(pCurScene);
 	}
 
-	void TestUI(CScene* _pScene)
-	{
-		Ptr<CMesh>    pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-		Ptr<CTexture> pPanelTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\UI_NameBox_Tex.png",
-		                                                             L"texture\\UI\\UI_NameBox_Tex.png");
-		Ptr<CTexture> pTexture_1 = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\StageBGUI_Tex.png",
-		                                                              L"texture\\UI\\StageBGUI_Tex.png");
-		Ptr<CTexture> pTexture_2 = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\Cursor.png",
-		                                                              L"texture\\UI\\Cursor.png");
-		Ptr<CMaterial> pUIMaterial = CResMgr::GetInst()->Load<CMaterial>(L"material\\UIMtrl.mtrl",
-		                                                                 L"material\\UIMtrl.mtrl");
-		//UI CAMERA
-		CGameObject* pUICamera = new CGameObject{};
-		pUICamera->SetName(L"UICamera");
-		pUICamera->AddComponent(new CTransform{});
-		pUICamera->AddComponent(new CCamera{});
-		pUICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
-		pUICamera->Camera()->CheckLayerMask(L"UI_STATIC");
-		pUICamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
-		pUICamera->AddComponent(new CameraMoveScript{});
-		_pScene->AddObject(pUICamera, L"CAMERA");
+	//void TestUI(CScene* _pScene)
+	//{
+	//	Ptr<CMesh>    pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+	//	Ptr<CTexture> pPanelTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\UI_NameBox_Tex.png",
+	//	                                                             L"texture\\UI\\UI_NameBox_Tex.png");
+	//	Ptr<CTexture> pTexture_1 = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\StageBGUI_Tex.png",
+	//	                                                              L"texture\\UI\\StageBGUI_Tex.png");
+	//	Ptr<CTexture> pTexture_2 = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\Cursor.png",
+	//	                                                              L"texture\\UI\\Cursor.png");
+	//	Ptr<CMaterial> pUIMaterial = CResMgr::GetInst()->Load<CMaterial>(L"material\\UIMtrl.mtrl",
+	//	                                                                 L"material\\UIMtrl.mtrl");
+	//	//UI CAMERA
+	//	CGameObject* pUICamera = new CGameObject{};
+	//	pUICamera->SetName(L"UICamera");
+	//	pUICamera->AddComponent(new CTransform{});
+	//	pUICamera->AddComponent(new CCamera{});
+	//	pUICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
+	//	pUICamera->Camera()->CheckLayerMask(L"UI_STATIC");
+	//	pUICamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
+	//	pUICamera->AddComponent(new CameraMoveScript{});
+	//	_pScene->AddObject(pUICamera, L"CAMERA");
 
-		//PANEL UI
-		CGameObject* pPanelUI = new CGameObject{};
-		pPanelUI->SetName(L"UI_PANEL");
-		pPanelUI->AddComponent(new CTransform{});
-		pPanelUI->Transform()->SetRelativeScale(500.f, 500.f, 1.f);
-		pPanelUI->AddComponent(new CMeshRender{});
-		pPanelUI->MeshRender()->SetMesh(pRectMesh);
-		pPanelUI->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
-		pPanelUI->AddComponent(new UIPanelScript{});
-		pPanelUI->GetScript<UIPanelScript>()->SetTexture(L"texture\\UI\\UI_NameBox_Tex.png");
-		_pScene->AddObject(pPanelUI, L"UI_STATIC");
+	//	//PANEL UI
+	//	CGameObject* pPanelUI = new CGameObject{};
+	//	pPanelUI->SetName(L"UI_PANEL");
+	//	pPanelUI->AddComponent(new CTransform{});
+	//	pPanelUI->Transform()->SetRelativeScale(500.f, 500.f, 1.f);
+	//	pPanelUI->AddComponent(new CMeshRender{});
+	//	pPanelUI->MeshRender()->SetMesh(pRectMesh);
+	//	pPanelUI->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
+	//	pPanelUI->AddComponent(new UIPanelScript{});
+	//	pPanelUI->GetScript<UIPanelScript>()->SetTexture(L"texture\\UI\\UI_NameBox_Tex.png");
+	//	_pScene->AddObject(pPanelUI, L"UI_STATIC");
 
-		//IMAGE UI_1
-		CGameObject* pImageUI_1 = new CGameObject{};
-		pImageUI_1->SetName(L"UI_1");
-		pImageUI_1->AddComponent(new CTransform{});
-		pImageUI_1->Transform()->SetRelativeScale(400.f, 400.f, 1.f);
-		pImageUI_1->AddComponent(new CMeshRender{});
-		pImageUI_1->MeshRender()->SetMesh(pRectMesh);
-		pImageUI_1->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
-		pImageUI_1->AddComponent(new UIImageScript{});
-		pImageUI_1->GetScript<UIImageScript>()->SetPreserveRatio(true);
-		pImageUI_1->GetScript<UIImageScript>()->SetTexture(L"texture\\UI\\StageBGUI_Tex.png");
-		pPanelUI->AddChild(pImageUI_1);
+	//	//IMAGE UI_1
+	//	CGameObject* pImageUI_1 = new CGameObject{};
+	//	pImageUI_1->SetName(L"UI_1");
+	//	pImageUI_1->AddComponent(new CTransform{});
+	//	pImageUI_1->Transform()->SetRelativeScale(400.f, 400.f, 1.f);
+	//	pImageUI_1->AddComponent(new CMeshRender{});
+	//	pImageUI_1->MeshRender()->SetMesh(pRectMesh);
+	//	pImageUI_1->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
+	//	pImageUI_1->AddComponent(new UIImageScript{});
+	//	pImageUI_1->GetScript<UIImageScript>()->SetPreserveRatio(true);
+	//	pImageUI_1->GetScript<UIImageScript>()->SetTexture(L"texture\\UI\\StageBGUI_Tex.png");
+	//	pPanelUI->AddChild(pImageUI_1);
 
-		//IMAMGE_UI_2
-		CGameObject* pImageUI_2 = new CGameObject{};
-		pImageUI_2->SetName(L"UI_2");
-		pImageUI_2->AddComponent(new CTransform{});
-		pImageUI_2->Transform()->SetRelativeScale(5.f, 5.f, 1.f);
-		pImageUI_2->AddComponent(new CMeshRender{});
-		pImageUI_2->MeshRender()->SetMesh(pRectMesh);
-		pImageUI_2->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
-		pImageUI_2->AddComponent(new UIImageScript{});
-		pImageUI_2->GetScript<UIImageScript>()->SetPreserveRatio(true);
-		//pImageUI_2->GetScript<UIImageScript>()->SetAnchorH(ANCHOR_HORIZONTAL::LEFT);
-		pImageUI_2->GetScript<UIImageScript>()->SetTexture(L"texture\\UI\\Cursor.png");
-		auto pScript = new TestScript{};
-		pImageUI_2->AddComponent(pScript);
-		pImageUI_2->GetScript<UIImageScript>()->SetMouseHoverCallback(pScript, &TestScript::MouseHover);
-		pImageUI_2->AddComponent(new ButtonScript{});
-		pImageUI_2->GetScript<ButtonScript>()->SetCallback(pScript,
-		                                                   &TestScript::OneClick,
-		                                                   MOUSE_TYPE::LEFT,
-		                                                   CLICK_TYPE::ONE);
-		pPanelUI->AddChild(pImageUI_2);
-	}
+	//	//IMAMGE_UI_2
+	//	CGameObject* pImageUI_2 = new CGameObject{};
+	//	pImageUI_2->SetName(L"UI_2");
+	//	pImageUI_2->AddComponent(new CTransform{});
+	//	pImageUI_2->Transform()->SetRelativeScale(5.f, 5.f, 1.f);
+	//	pImageUI_2->AddComponent(new CMeshRender{});
+	//	pImageUI_2->MeshRender()->SetMesh(pRectMesh);
+	//	pImageUI_2->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
+	//	pImageUI_2->AddComponent(new UIImageScript{});
+	//	pImageUI_2->GetScript<UIImageScript>()->SetPreserveRatio(true);
+	//	//pImageUI_2->GetScript<UIImageScript>()->SetAnchorH(ANCHOR_HORIZONTAL::LEFT);
+	//	pImageUI_2->GetScript<UIImageScript>()->SetTexture(L"texture\\UI\\Cursor.png");
+	//	auto pScript = new TestScript{};
+	//	pImageUI_2->AddComponent(pScript);
+	//	pImageUI_2->GetScript<UIImageScript>()->SetMouseHoverCallback(pScript, &TestScript::MouseHover);
+	//	pImageUI_2->AddComponent(new ButtonScript{});
+	//	pImageUI_2->GetScript<ButtonScript>()->SetCallback(pScript,
+	//	                                                   &TestScript::OneClick,
+	//	                                                   MOUSE_TYPE::LEFT,
+	//	                                                   CLICK_TYPE::ONE);
+	//	pPanelUI->AddChild(pImageUI_2);
+	//}	
 
 	void CreateScene()
 	{
@@ -447,7 +447,7 @@ namespace
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
 		//AddPointLight(pCurScene);
-		//AddParticle(pCurScene);
+		AddParticle(pCurScene);
 		//AddLandScape(pCurScene);
 		//AddDecal(pCurScene);
 		//AddSphere(pCureScene);

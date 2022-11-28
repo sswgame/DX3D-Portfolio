@@ -186,6 +186,7 @@
     <ClInclude Include="MenuUI.h" />
     <ClInclude Include="ParamUI.h" />
     <ClInclude Include="ParticleSystemUI.h" />
+    <ClInclude Include="ParticleTool.h" />
     <ClInclude Include="ResInfoUI.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="MenuUI.cpp" />
     <ClCompile Include="ParamUI.cpp" />
     <ClCompile Include="ParticleSystemUI.cpp" />
+    <ClCompile Include="ParticleTool.cpp" />
     <ClCompile Include="ResInfoUI.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />

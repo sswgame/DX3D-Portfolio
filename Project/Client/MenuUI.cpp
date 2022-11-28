@@ -11,6 +11,7 @@
 #include <Script/CSceneSaveLoad.h>
 #include "CImGuiMgr.h"
 #include "SceneOutliner.h"
+#include "ParticleTool.h"
 
 MenuUI::MenuUI()
 	:
@@ -19,7 +20,9 @@ MenuUI::MenuUI()
   , m_bSceneSave(false)
   , m_bSceneLoad(false)
   , m_bScenePlayPause(false)
-  , m_bSceneStop(false) {}
+  , m_bSceneStop(false)
+	, m_bParticleTool(false)
+{}
 
 MenuUI::~MenuUI() {}
 
@@ -102,6 +105,9 @@ void MenuUI::render_update()
 
 	if (ImGui::BeginMenu("Tools"))
 	{
+
+		ImGui::MenuItem("Particle Tool", nullptr, &m_bParticleTool);
+
 		ImGui::EndMenu();
 	}
 }
@@ -210,5 +216,15 @@ void MenuUI::Task()
 		((SceneOutliner*)CImGuiMgr::GetInst()->FindUI("SceneOutliner"))->Reset();
 
 		m_bSceneStop = false;
+	}
+
+	if (m_bParticleTool)
+	{
+		ParticleTool* pParticleToolUI = (ParticleTool*)CImGuiMgr::GetInst()->FindUI("##ParticleToolUI");
+		pParticleToolUI->SetTitle("Particle Tool");
+		if (nullptr == pParticleToolUI)
+			return;
+		pParticleToolUI->Activate();
+		m_bParticleTool = false;
 	}
 }

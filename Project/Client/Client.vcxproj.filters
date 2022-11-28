@@ -125,6 +125,9 @@
     <ClCompile Include="Collider3DUI.cpp">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\04. Collider3D</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleTool.cpp">
+      <Filter>ImGui\UI\05. ParticleTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -271,6 +274,9 @@
     <ClInclude Include="Collider3DUI.h">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\04. Collider3D</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleTool.h">
+      <Filter>ImGui\UI\05. ParticleTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">
@@ -385,6 +391,9 @@
     </Filter>
     <Filter Include="ImGui\ImGuizmo">
       <UniqueIdentifier>{e342bf89-a912-45fa-a833-2be9f2059116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\UI\05. ParticleTool">
+      <UniqueIdentifier>{21efe5ad-b5d4-40e1-89f7-703eb53da463}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

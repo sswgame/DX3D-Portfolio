@@ -121,6 +121,7 @@ void CCamera::SortGameObject()
 {
 	m_vecDeferred.clear();
 	m_vecDeferredDecal.clear();
+	m_vecDeferredParticle.clear();
 	m_vecForward.clear();
 	m_vecMasked.clear();
 	m_vecForwardDecal.clear();
@@ -174,6 +175,9 @@ void CCamera::SortGameObject()
 				break;
 			case SHADER_DOMAIN::DOMAIN_DEFERRED_DECAL:
 				m_vecDeferredDecal.push_back(vecObj[j]);
+				break;
+			case SHADER_DOMAIN::DOMAIN_EMISSIVE_PARTICLE:
+				m_vecDeferredParticle.push_back(vecObj[j]);
 				break;
 			case SHADER_DOMAIN::DOMAIN_FORWARD:
 				m_vecForward.push_back(vecObj[j]);
@@ -245,6 +249,15 @@ void CCamera::render_deferred_decal()
 	{
 		if (m_vecDeferredDecal[i]->IsActive())
 			m_vecDeferredDecal[i]->render();
+	}
+}
+
+void CCamera::render_particle()
+{
+	for (size_t i = 0; i < m_vecDeferredParticle.size(); ++i)
+	{
+		if (m_vecDeferredParticle[i]->IsActive())
+			m_vecDeferredParticle[i]->render();
 	}
 }
 

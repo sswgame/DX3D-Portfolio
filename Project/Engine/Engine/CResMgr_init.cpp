@@ -872,9 +872,9 @@ void CResMgr::CreateEngineShader()
 	pShader->CreateGeometryShader(L"Shader\\particlerender.fx", "GS_ParticleRender");
 	pShader->CreatePixelShader(L"Shader\\particlerender.fx", "PS_ParticleRender");
 
-	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_TRANSLUCENT);
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_EMISSIVE_PARTICLE);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	pShader->SetDSType(DS_TYPE::NO_WRITE);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 

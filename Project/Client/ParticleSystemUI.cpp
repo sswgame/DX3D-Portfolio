@@ -17,7 +17,7 @@ ParticleSystemUI::ParticleSystemUI()
   , m_fArrMinMaxSpeed{{10.f}, {100.f}}
   , m_fRange{10.f}
   , m_fTerm{3.f}
-	, m_fAngle(360.f)
+	, m_fAngle(180.f)
 	, m_bShaderUseEmissive{ false }
 	, m_bShaderUseSpeedDetail(false)
 	, m_fArrDirection{ {1.f}, {0.f} }
@@ -194,7 +194,7 @@ void ParticleSystemUI::render_update()
 	ImGui::Text("Angle");
 	ImGui::SameLine((100));
 	ImGui::DragFloat("##PARTICLE_ANGLE_FLOAT", &m_fAngle, 1.f, 0, 360, "%.1f");
-	m_pParticleSystem->SetAngle(m_fAngle);
+	m_pParticleSystem->SetAngle((m_fAngle));
 
 
 	ImGui::Text("PARTICLE IMAGE");
