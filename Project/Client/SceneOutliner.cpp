@@ -6,12 +6,16 @@
 #include <Engine/CLayer.h>
 #include <Engine/CGameObject.h>
 #include <Engine/CPrefab.h>
+#include <Engine/CTransform.h>
 
 #include <Engine/CEventMgr.h>
 
 #include "TreeUI.h"
 #include "CImGuiMgr.h"
 #include "InspectorUI.h"
+#include "IconsFontAwesome5.h"
+#include "CImGuiMgr.h"
+#include "ListUI.h"
 
 
 SceneOutliner::SceneOutliner()
@@ -46,6 +50,8 @@ SceneOutliner::~SceneOutliner()
 
 void SceneOutliner::update()
 {
+	m_pSelectedScene = CSceneMgr::GetInst()->GetCurScene();
+
 	if (CEventMgr::GetInst()->HasOccurObjEvent())
 	{
 		Reset();
@@ -58,17 +64,17 @@ void SceneOutliner::render_update()
 {
 	//마우스 우측 클릭으로 마우스 위치에 팝업 만들기
 	const ImVec2   windowLeftTop = ImGui::GetCursorScreenPos();
-	const ImVec2   windowSize    = ImGui::GetContentRegionAvail();
-	const ImGuiIO& io            = ImGui::GetIO();
-	const ImVec2   mousePos      = io.MousePos - windowLeftTop;
+	const ImVec2   windowSize = ImGui::GetContentRegionAvail();
+	const ImGuiIO& io = ImGui::GetIO();
+	const ImVec2   mousePos = io.MousePos - windowLeftTop;
 
 	static bool bIsOpenPopUp = false;
 	if (0 < mousePos.x && mousePos.x < windowSize.x
-	    && 0 < mousePos.y && mousePos.y < windowSize.y)
+		&& 0 < mousePos.y && mousePos.y < windowSize.y)
 	{
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 		{
-			ImGui::OpenPopup("PREFAB_POPUP");
+			ImGui::OpenPopup("SUB_TOOL_POPUP");
 			bIsOpenPopUp = true;
 		}
 	}
@@ -76,10 +82,10 @@ void SceneOutliner::render_update()
 	if (bIsOpenPopUp)
 	{
 		static const std::string menus[] = {
-			"Create", "Delete", "Add Component", "Delete Component", "Add Script", "Delete Script", "Make as Prefab",
-			"Change Name"
+			"Make as Prefab",
+			"Create GameObject"
 		};
-		if (ImGui::BeginPopup("PREFAB_POPUP"))
+		if (ImGui::BeginPopup("SUB_TOOL_POPUP"))
 		{
 			for (int i = 0; i < std::size(menus); ++i)
 			{
@@ -89,11 +95,20 @@ void SceneOutliner::render_update()
 					{
 						MakePrefab();
 					}
+					else if (menus[i] == L"Create GameObject")
+					{
+						CreateGameObject();
+					}
 				}
 			}
 			ImGui::EndPopup();
 		}
 	}
+
+	RenderAddObject();
+	RenderAddLayer();
+
+
 }
 
 void SceneOutliner::Reset()
@@ -107,8 +122,8 @@ void SceneOutliner::Reset()
 	pInspectorUI->SetTargetScene(nullptr);
 
 	// SceneOutlinerUI 갱신
-	m_pSelectedScene      = nullptr;
-	m_pSelectedLayer      = nullptr;
+	m_pSelectedScene = nullptr;
+	m_pSelectedLayer = nullptr;
 	m_pSelectedGameObject = nullptr;
 }
 
@@ -131,10 +146,10 @@ void SceneOutliner::ResetTreeUI()
 		TreeNode* pLayerNode = AddLayerToTree(pLayer, pSceneNode);
 
 		vector<CGameObject*>& vecRoots = pLayer->GetRootObjects();
-		for (size_t i = 0; i < vecRoots.size(); ++i)
+		for (size_t k = 0; k < vecRoots.size(); ++k)
 		{
 			// 3. GAMEOBJECT NODE
-			AddGameObjectToTree(vecRoots[i], pLayerNode);
+			AddGameObjectToTree(vecRoots[k], pLayerNode);
 		}
 	}
 }
@@ -143,47 +158,161 @@ void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 {
 	TreeNode* pNode = (TreeNode*)_dw;
 
-	string       strKey       = pNode->GetName();
-	NODE_TYPE    NodeType     = pNode->GetNodeType();
-	DWORD_PTR    pData        = pNode->GetData();
+	string       strKey = pNode->GetName();
+	NODE_TYPE    NodeType = pNode->GetNodeType();
+	DWORD_PTR    pData = pNode->GetData();
 	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
 
 	switch (NodeType)
 	{
 	case NODE_TYPE::ENGINE_SCENE:
-		{
-			CScene* pScene = (CScene*)pData;
-			assert(pScene);
-			pInspectorUI->SetTargetScene(pScene);
-			pInspectorUI->SetTargetLayer(nullptr);
-			pInspectorUI->SetTargetObject(nullptr);
+	{
+		CScene* pScene = (CScene*)pData;
+		assert(pScene);
+		pInspectorUI->SetTargetScene(pScene);
+		pInspectorUI->SetTargetLayer(nullptr);
+		pInspectorUI->SetTargetObject(nullptr);
 
-			m_pSelectedScene      = pScene;
-			m_pSelectedLayer      = nullptr;
-			m_pSelectedGameObject = nullptr;
-		}
-		break;
-	case NODE_TYPE::ENGINE_LAYER:
-		{
-			CLayer* pLayer = (CLayer*)pData;
-			assert(pLayer);
-			pInspectorUI->SetTargetLayer(pLayer);
-			pInspectorUI->SetTargetObject(nullptr);
-
-			m_pSelectedLayer      = pLayer;
-			m_pSelectedGameObject = nullptr;
-		}
-		break;
-	case NODE_TYPE::ENGINE_GAMEOBJECT:
-		{
-			CGameObject* pObj = (CGameObject*)pData;
-			assert(pObj);
-			pInspectorUI->SetTargetObject(pObj);
-
-			m_pSelectedGameObject = pObj;
-		}
-		break;
+		m_pSelectedScene = pScene;
+		m_pSelectedLayer = nullptr;
+		m_pSelectedGameObject = nullptr;
 	}
+	break;
+	case NODE_TYPE::ENGINE_LAYER:
+	{
+		CLayer* pLayer = (CLayer*)pData;
+		assert(pLayer);
+		pInspectorUI->SetTargetLayer(pLayer);
+		pInspectorUI->SetTargetObject(nullptr);
+
+		m_pSelectedLayer = pLayer;
+		m_pSelectedGameObject = nullptr;
+	}
+	break;
+	case NODE_TYPE::ENGINE_GAMEOBJECT:
+	{
+		CGameObject* pObj = (CGameObject*)pData;
+		assert(pObj);
+		pInspectorUI->SetTargetObject(pObj);
+
+		m_pSelectedGameObject = pObj;
+	}
+	break;
+	}
+}
+
+void SceneOutliner::RenderAddObject()
+{
+	// [ ADD GAMEOBJECT BUTTON ]
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(153.f / 255.f, 153.f / 255.f, 153.f / 255.f, 1.f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(102.f / 255.f, 102.f / 255.f, 102.f / 255.f, 1.f));
+	string ButtonName = ICON_FA_PLUS;
+	ButtonName += "Add GameObject";
+	if (ImGui::Button(ButtonName.c_str(), ImVec2(150.f, 25.f)))
+	{
+		ImGui::OpenPopup("Create New Obj");
+	}
+	ImGui::PopStyleColor(2);
+
+	bool unused_open = true;
+	if (ImGui::BeginPopupModal("Create New Obj", &unused_open))
+	{
+		if (nullptr != m_pSelectedScene)
+		{
+			ImGui::Text("select Scene - ");
+			ImGui::SameLine();
+			string sName = string(m_pSelectedScene->GetName().begin(), m_pSelectedScene->GetName().end());
+			if (sName == "")
+				sName = "NO NAME";
+			ImGui::TextColored(ImVec4(0.0f, 0.5f, 0.5f, 1.f), sName.c_str());
+
+		}
+		else
+			ImGui::TextColored(ImVec4(1.f, 0.0f, 0.0f, 1.f), "YOU MUST SELECT SCENE!");
+
+		if (nullptr != m_pSelectedLayer)
+		{
+			ImGui::Text("select Layer - ");
+			ImGui::SameLine();
+			string sName = string(m_pSelectedLayer->GetName().begin(), m_pSelectedLayer->GetName().end());
+			ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.8f, 1.f), sName.c_str());
+		}
+		else
+			ImGui::TextColored(ImVec4(1.f, 0.0f, 0.0f, 1.f), "YOU MUST SELECT LAYER!");
+
+
+		ImGui::Text("Show Prefab List");
+		ImGui::SameLine();
+		if (ImGui::Button("##PrefabListbtn", Vec2(15, 15)))
+		{
+			// ListUI 활성화한다.
+			const map<wstring, CRes*>& mapRes = CResMgr::GetInst()->GetResList(RES_TYPE::PREFAB);
+			ListUI* pListUI = (ListUI*)CImGuiMgr::GetInst()->FindUI("##ListUI");
+			pListUI->Clear();
+			pListUI->SetTitle("Prefab List");
+
+			for (const auto& pair : mapRes)
+			{
+				pListUI->AddList(string(pair.first.begin(), pair.first.end()));
+			}
+
+			pListUI->Activate();
+			pListUI->SetDBCEvent(this, (DBCLKED) & ::SceneOutliner::SelectPrefab);
+		}
+
+
+
+		static char buf[512];
+		ImGui::InputText("SetName", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_None);
+
+		if (ImGui::Button("Complete"))
+		{
+			string name = buf;
+			wstring newName = wstring(name.begin(), name.end());
+
+			CGameObject* NewObj = new CGameObject;
+			NewObj->SetName(newName);
+
+			// Create GameObject
+			if (nullptr != m_pSelectedScene && nullptr != m_pSelectedLayer)
+			{
+				// 기본적으로 CTransform 을 갖는다. 
+				NewObj->AddComponent(new CTransform);
+
+				NewObj->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+				NewObj->Transform()->SetRelativeScale(200.f, 200.f, 1.f);
+
+
+				m_pSelectedScene->AddObject(NewObj, m_pSelectedLayer->GetName());
+
+				// TReeUI 에 추가하기 위해서 Reset() 
+				ResetTreeUI();
+				char empty[512] = { NULL, };
+				strcpy_s(buf, empty);
+				ImGui::CloseCurrentPopup();
+
+			}
+
+			ImGui::CloseCurrentPopup();
+
+		}
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel", ImVec2(120, 0)))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+
+
+
+
+}
+
+void SceneOutliner::RenderAddLayer()
+{
 }
 
 void SceneOutliner::MakePrefab()
@@ -193,11 +322,58 @@ void SceneOutliner::MakePrefab()
 		return;
 	}
 	const std::wstring contentPath = CPathMgr::GetInst()->GetContentPath();
-	const std::wstring prefabPath  = L"prefab\\" + m_pSelectedGameObject->GetName() + L".pref";
+	const std::wstring prefabPath = L"prefab\\" + m_pSelectedGameObject->GetName() + L".pref";
 
 	Ptr<CPrefab> pPrefab = new CPrefab{};
 	pPrefab->SetProto(m_pSelectedGameObject->Clone());
 	CResMgr::GetInst()->AddRes<CPrefab>(prefabPath, pPrefab.Get(), false);
+}
+
+void SceneOutliner::SelectPrefab(DWORD_PTR _param)
+{
+	string strSelectedName = (char*)_param;
+	wstring strPrefabKey = wstring(strSelectedName.begin(), strSelectedName.end());
+	wstring strContent = CPathMgr::GetInst()->GetContentPath();
+	wstring FullPath = strContent + strPrefabKey;
+
+	CPrefab* pPrefab = new CPrefab;
+	pPrefab->Load(FullPath);
+
+	assert(pPrefab);
+
+	if (m_pSelectedScene && m_pSelectedLayer)
+	{
+		// Prefab 파일에 저장된 gameObject 를 읽어서 해당 Layer 에 포함한다. 
+		CGameObject* NewObj = pPrefab->Instantiate();
+		m_pSelectedScene->AddObject(NewObj, m_pSelectedLayer->GetName());
+		SAFE_DELETE(pPrefab);
+		// TReeUI 에 추가하기 위해서 Reset() 
+		ResetTreeUI();
+	}
+
+}
+
+void SceneOutliner::CreateGameObject()
+{
+
+	if (m_pSelectedLayer)
+	{
+		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		CGameObject* pDefaultObj = new CGameObject;
+
+		pDefaultObj->SetName(L"New_GameObject");
+		pDefaultObj->AddComponent(new CTransform);
+		pCurScene->AddObject(pDefaultObj, m_pSelectedLayer->GetLayerIdx());
+
+		Reset();
+
+
+	}
+	else
+	{
+
+	}
+
 }
 
 TreeNode* SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestNode)
@@ -227,7 +403,7 @@ TreeNode* SceneOutliner::AddSceneToTree(CScene* _pScene, TreeNode* _pDestNode)
 TreeNode* SceneOutliner::AddLayerToTree(CLayer* _pLayer, TreeNode* _pDestNode)
 {
 	int       layerIdx = _pLayer->GetLayerIdx();
-	TreeNode* pNode    = m_TreeUI->AddTreeNode(_pDestNode, "Layer " + ToString(_pLayer->GetName()), (DWORD_PTR)_pLayer);
+	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode, "Layer " + ToString(_pLayer->GetName()), (DWORD_PTR)_pLayer);
 
 	pNode->SetNodeType(NODE_TYPE::ENGINE_LAYER);
 	return pNode;
@@ -289,17 +465,17 @@ void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 	}
 	// GAME_OBJECT -> LAYER 
 	else if (eDragNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT &&
-			 eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
+		eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
 	{
-		CGameObject* pDrag	= (CGameObject*)_dwDrag; // Object 
-		CLayer* pDrop		= (CLayer*)_dwDrop;		// Layer
+		CGameObject* pDrag = (CGameObject*)_dwDrag; // Object 
+		CLayer* pDrop = (CLayer*)_dwDrop;		// Layer
 
 		CSceneMgr::GetInst()->ChangeObjectLayerIndex(pDrag, pDrop->GetLayerIdx());
 
 	}
 	// LAYER -> LAYER 
 	else if (eDragNode_Type == NODE_TYPE::ENGINE_LAYER &&
-			 eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
+		eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
 	{
 		CLayer* pDrag = (CLayer*)_dwDrag;		// Layer 
 		CLayer* pDrop = (CLayer*)_dwDrop;		// Layer

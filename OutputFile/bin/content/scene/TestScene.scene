@@ -23,45 +23,6 @@ LAYERS:
           []
         CHILDREN:
           []
-      - NAME: Test Particle
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, 100, 0]
-              m_vRelativeScale: [1, 1, 1]
-              m_vRelativeRot: [0, 0, 0]
-              m_bIgnoreParentScale: false
-          - PARTICLESYSTEM:
-              MESH: [PointMesh, PointMesh]
-              MATERIAL COUNT: 1
-              0: [material\ParticleRenderMtrl.mtrl, material\ParticleRenderMtrl.mtrl]
-              m_bDynamicShadow: false
-              m_bFrustumCulling: false
-              SHADER: [ParticleUpdateShader, ParticleUpdateShader]
-              m_iMaxCount: 1000
-              m_bPosInherit: 0
-              m_iAliveCount: 4
-              m_fMinLifeTime: 0.5
-              m_fMaxLifeTime: 2
-              m_fStartSpeed: 100
-              m_fEndSpeed: 10
-              m_vStartColor: [1, 0.200000003, 0.699999988, 1]
-              m_vEndColor: [1, 1, 1, 1]
-              m_fParticleCreateDistance: 50
-              m_fParticleCreateTerm: 0.0199999996
-              m_vDirection: [0, 0]
-              m_iEmissive: 0
-              m_iLighting: 0
-              m_fAngle: 360
-              m_iSpeedDetail_Func: 0
-              m_vStartEmissiveColor: [0, 0, 0, 1]
-              m_vEndEmissiveColor: [0, 0, 0, 1]
-        SCRIPTS:
-          []
-        CHILDREN:
-          []
   - LAYER NAME: BG_OBJ
     GAME OBJECTS:
       - NAME: Directional Light
@@ -1597,21 +1558,7 @@ LAYERS:
       []
   - LAYER NAME: MONSTER
     GAME OBJECTS:
-      - NAME: BOSS_COMBAT
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, 0, 0]
-              m_vRelativeScale: [1, 1, 1]
-              m_vRelativeRot: [0, 0, 0]
-              m_bIgnoreParentScale: false
-        SCRIPTS:
-          - BossJugCombatMgrScript:
-              {}
-        CHILDREN:
-          []
+      []
   - LAYER NAME: MONSTER_NON-PARRING-ATTACK
     GAME OBJECTS:
       []

@@ -10,15 +10,20 @@ class CLayer;
 class SceneOutliner : public UI
 {
 private:
-	TreeUI*   m_TreeUI;
-	NODE_TYPE m_eClickedNodeType;
+	TreeUI*		m_TreeUI;
+	NODE_TYPE	m_eClickedNodeType;
 
 	CScene*      m_pSelectedScene;
 	CLayer*      m_pSelectedLayer;
 	CGameObject* m_pSelectedGameObject;
 
 private:
+	void RenderAddObject();
+	void RenderAddLayer();
+
 	void MakePrefab();
+	void SelectPrefab(DWORD_PTR _param);
+	void CreateGameObject();
 
 public:
 	TreeNode* AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestNode);
