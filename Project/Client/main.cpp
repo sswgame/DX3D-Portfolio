@@ -14,6 +14,9 @@
 
 #include "CTestScene.h"
 
+#include <crtdbg.h>
+
+
 HINSTANCE hInst;
 HWND      g_hWnd;
 
@@ -28,7 +31,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
                       _In_ int           nCmdShow)
 {
 #ifdef _DEBUG
+
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_crtBreakAlloc = 3271597;
+
 #endif
 
 	MyRegisterClass(hInstance);

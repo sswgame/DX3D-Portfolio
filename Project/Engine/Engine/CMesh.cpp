@@ -120,7 +120,6 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader, int ContainerIdx)
 		pSys[i].vWeights  = container->vecWeights[i];
 		pSys[i].vIndices  = container->vecIndices[i];
 	}
-
 	ComPtr<ID3D11Buffer> pVB = nullptr;
 	if (FAILED(DEVICE->CreateBuffer(&tVtxDesc, &tSub, pVB.GetAddressOf())))
 	{

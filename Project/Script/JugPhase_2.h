@@ -15,14 +15,17 @@ private:
 
 	vector<CGameObject*> m_vecColumnFlames;
 
+	UINT m_iPrevAttackPattern;
+	UINT m_iAttackPattern;
+
 	float m_fIdleTime;
-	UINT  m_iPrevAttackPattern;
-	UINT  m_iAttackPattern;
-	
+	float m_fAttackTime;
+
+	float m_fDMG[4];
+
 	bool m_bAttackProceeding;
 	bool m_bRot;
-	
-	float m_fAttackTime;
+
 
 private:
 	void RotTowardPlayer();
@@ -34,6 +37,7 @@ private:
 	void Attack_4();	// 투사체 공격
 
 public:
+	void         SetDamage(int _idx, float _dmg);
 	virtual void Init();
 	virtual void Enter();
 	virtual void Exit();

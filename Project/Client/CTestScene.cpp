@@ -23,6 +23,7 @@
 #include <Engine/CMeshData.h>
 
 // [SCRIPT TYPE]
+#include <Script/GameDefine.h>
 #include <Script/PlayerScript.h>
 #include <Script/CameraMoveScript.h>
 #include <Script/PlayerCamScript.h>
@@ -354,7 +355,7 @@ namespace
 		pBoss->SetName(L"BOSS_COMBAT");
 		pBoss->AddComponent(new CTransform);
 		pBoss->AddComponent(new BossJugCombatMgrScript);
-		_pScene->AddObject(pBoss, L"MONSTER");
+		_pScene->AddObject(pBoss, GAME::LAYER::OBJECT_MGR);
 		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
 	}
 
@@ -447,19 +448,21 @@ namespace
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
 		//AddPointLight(pCurScene);
-		AddParticle(pCurScene);
+		//AddParticle(pCurScene);
 		//AddLandScape(pCurScene);
 		//AddDecal(pCurScene);
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
 
 		AddPlayer(pCurScene, pCamObj);
-		AddBoss(pCurScene);
+		//AddBoss(pCurScene);
 
 		//TestUI(pCurScene);
 
 		// 충돌 레이어 설정
-		CCollisionMgr::GetInst()->CollisionCheck(1, 1);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
 
 		pCurScene->SetResKey(L"scene\\TestScene.scene");
 		wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();

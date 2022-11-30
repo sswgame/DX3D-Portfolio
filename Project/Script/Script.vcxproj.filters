@@ -194,7 +194,6 @@
     <ClInclude Include="CUIBase.h">
       <Filter>Script\UI\Common</Filter>
     </ClInclude>
-    <ClInclude Include="ColumnFlameScript.h" />
     <ClInclude Include="CObjectManager.h">
       <Filter>Script\Common</Filter>
     </ClInclude>
@@ -211,6 +210,11 @@
       <Filter>Script\MIssile</Filter>
     </ClInclude>
     <ClInclude Include="TestScript.h" />
+    <ClInclude Include="MagmaScript.h" />
+    <ClInclude Include="SwordTrailScript.h" />
+    <ClInclude Include="ColumnFlameScript.h">
+      <Filter>Script\Boss\Jug\Attack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -397,7 +401,6 @@
     <ClCompile Include="CUIBase.cpp">
       <Filter>Script\UI\Common</Filter>
     </ClCompile>
-    <ClCompile Include="ColumnFlameScript.cpp" />
     <ClCompile Include="CObjectManager.cpp">
       <Filter>Script\Common</Filter>
     </ClCompile>
@@ -414,6 +417,11 @@
       <Filter>Script\MIssile</Filter>
     </ClCompile>
     <ClCompile Include="TestScript.cpp" />
+    <ClCompile Include="MagmaScript.cpp" />
+    <ClCompile Include="SwordTrailScript.cpp" />
+    <ClCompile Include="ColumnFlameScript.cpp">
+      <Filter>Script\Boss\Jug\Attack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -550,6 +558,9 @@
     </Filter>
     <Filter Include="Script\MIssile">
       <UniqueIdentifier>{d12f4513-b60f-40b5-a81e-c7bbd4b7869a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Boss\Jug\Attack">
+      <UniqueIdentifier>{3744aa0a-c8c1-4d78-b805-1d0d7ee56959}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

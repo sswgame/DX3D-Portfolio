@@ -139,11 +139,11 @@ void CRenderMgr::render_play()
 		// Alpha ¹°Ã¼ ·»´õ¸µ
 		m_vecCam[i]->render_translucent();
 
-		// Debug Object Render
-		m_vecCam[i]->render_debug();
-
 		// PostProcess ¹°Ã¼ ·»´õ¸µ
 		m_vecCam[i]->render_postprocess();
+
+		// Debug Object Render
+		m_vecCam[i]->render_debug();
 	}
 }
 
@@ -198,11 +198,11 @@ void CRenderMgr::render_editor()
 	// Alpha ¹°Ã¼ ·»´õ¸µ
 	m_pEditorCam->render_translucent();
 
-	// Debug Object ·»´õ¸µ 
-	m_pEditorCam->render_debug();
-
 	// PostProcess ¹°Ã¼ ·»´õ¸µ
 	m_pEditorCam->render_postprocess();
+
+	// Debug Object ·»´õ¸µ 
+	m_pEditorCam->render_debug();
 }
 
 void CRenderMgr::render_shadowmap()

@@ -48,7 +48,7 @@ void CSceneMgr::progress()
 	m_pCurScene->finalupdate();
 
 	// Collision Check
-	//if (SCENE_STATE::PLAY == eState)
+	if (SCENE_STATE::PLAY == eState)
 	{
 		CCollisionMgr::GetInst()->update();
 	}

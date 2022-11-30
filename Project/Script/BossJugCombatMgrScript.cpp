@@ -15,6 +15,9 @@
 #include <Engine/CSceneMgr.h>
 
 // [ SCRIPT PART ]
+#include <Engine/CCollider3D.h>
+
+#include "CObjectManager.h"
 #include "BossJugScript.h"
 #include "HandStateMgrScript.h"
 
@@ -72,11 +75,14 @@ void BossJugCombatMgrScript::SpawnStage()
 			                                                L"meshdata\\jugulus+hammer_final1.mdat");
 			m_pHammer = pMeshData->Instantiate();
 			m_pHammer->SetName(L"JUG_Hammer");
+			m_pHammer->AddComponent(new CCollider3D);
+
 			m_pHammer->Transform()->SetRelativePos(-320.f, 0.f, -40.f);
 			Vec3 Rot(-90.f, 0.f, 0.f);
 			Rot.ToRadian();
 			m_pHammer->Transform()->SetRelativeRotation(Rot);
-			//CSceneMgr::GetInst()->SpawnObject(m_pHammer, L"MONSTER");
+
+
 			m_pJug->AddChild(m_pHammer);
 			m_pHammer->Deactivate();
 		}
@@ -107,20 +113,21 @@ void BossJugCombatMgrScript::InitState()
 	{
 		m_pPhaseFSM = new CFSM;
 		GetOwner()->AddComponent(m_pPhaseFSM);
+
+
+		m_pPhaseFSM->AddState(GAME::BOSS::PHASE::NONE, new JugPhase_None);
+		m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_INTRO, new JugPhase_Intro);
+		m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_1, new JugPhase_1);
+		m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_2, new JugPhase_2);
+		m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_DEAD, new JugPhase_Dead);
+
+		for (auto pState : m_pPhaseFSM->GetAllStates())
+		{
+			pState.second->Init();
+		}
+
+		m_pPhaseFSM->SetCurState(L"JUG_PHASE_NONE");
 	}
-
-	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::NONE, new JugPhase_None);
-	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_INTRO, new JugPhase_Intro);
-	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_1, new JugPhase_1);
-	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_2, new JugPhase_2);
-	m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_DEAD, new JugPhase_Dead);
-
-	for (auto pState : m_pPhaseFSM->GetAllStates())
-	{
-		pState.second->Init();
-	}
-
-	m_pPhaseFSM->SetCurState(L"JUG_PHASE_NONE");
 }
 
 void BossJugCombatMgrScript::CheckPhase() const
@@ -158,6 +165,9 @@ void BossJugCombatMgrScript::start()
 {
 	SpawnStage();
 	InitState();
+
+	// Object Mgr¿¡ µî·Ï
+	CObjectManager::GetInst()->SetBossCombatMgr(GetOwner());
 }
 
 void BossJugCombatMgrScript::update()

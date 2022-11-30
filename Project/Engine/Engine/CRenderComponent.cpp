@@ -47,6 +47,12 @@ void CRenderComponent::SetMesh(Ptr<CMesh> _pMesh)
 
 	if (!m_vecMtrls.empty())
 	{
+		for (size_t i = 0; i < m_vecMtrls.size(); ++i)
+		{
+			if (nullptr != m_vecMtrls[i].pDynamicMtrl)
+				delete m_vecMtrls[i].pDynamicMtrl.Get();
+		}
+
 		m_vecMtrls.clear();
 		vector<tMtrlSet> vecMtrls;
 		m_vecMtrls.swap(vecMtrls);
@@ -84,12 +90,12 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _iIdx)
 	if (CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
 		return nullptr;
 
-	if (nullptr != m_vecMtrls[_iIdx].pDynamicMtrl && m_vecMtrls[_iIdx].pDynamicMtrl->GetMasterMtrl() != m_vecMtrls[
-		    _iIdx].pSharedMtrl)
+	if (nullptr != m_vecMtrls[_iIdx].pDynamicMtrl)
 	{
-		CMaterial* pMtrl               = m_vecMtrls[_iIdx].pDynamicMtrl.Get();
+		CMaterial* pMtrl = m_vecMtrls[_iIdx].pDynamicMtrl.Get();
+		delete(pMtrl);
+
 		m_vecMtrls[_iIdx].pDynamicMtrl = nullptr;
-		delete pMtrl;
 	}
 
 	if (nullptr == m_vecMtrls[_iIdx].pDynamicMtrl)

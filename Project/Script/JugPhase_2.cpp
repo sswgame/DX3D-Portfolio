@@ -8,6 +8,7 @@
 #include <Engine/CAnimation3D.h>
 #include <Engine/CGameObject.h>
 #include <Engine/CTransform.h>
+#include <Engine/CCollider3D.h>
 
 // [ SCRIPT PART ]
 #include "BossJugCombatMgrScript.h"
@@ -26,7 +27,8 @@ JugPhase_2::JugPhase_2()
 	, m_iAttackPattern(0)
 	, m_bAttackProceeding(false)
 	, m_bRot(true)
-	, m_fAttackTime(3.f)
+	, m_fAttackTime(5.f)
+	, m_fDMG{80.f, 30.f, 0.f, 0.f}
 {
 }
 
@@ -46,11 +48,7 @@ JugPhase_2::JugPhase_2(const JugPhase_2& _origin)
 
 JugPhase_2::~JugPhase_2()
 {
-	vector<CGameObject*>::iterator iter = m_vecColumnFlames.begin();
-	for (; iter != m_vecColumnFlames.end();)
-	{
-		iter = m_vecColumnFlames.erase(iter);
-	}
+	//m_vecColumnFlames.erase(m_vecColumnFlames.begin(), m_vecColumnFlames.end());
 }
 
 void JugPhase_2::Init()
@@ -62,9 +60,25 @@ void JugPhase_2::Init()
 	{
 		for (int i = 0; i < FLAME_COUNT; i++)
 		{
-			Ptr<CPrefab> pColumn = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\ColumnLaser.pref");
-			pColumn->SetName(L"Flame_" + std::to_wstring(i));
-			m_vecColumnFlames.push_back(pColumn->Instantiate());
+			CGameObject* pFlame = new CGameObject;
+			pFlame->SetName(L"FLAME_" + std::to_wstring(i));
+			pFlame->AddComponent(new CTransform);
+			pFlame->AddComponent(new CCollider3D);
+			pFlame->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+			pFlame->Collider3D()->SetOffsetScale(Vec3(60.f, 300.f, 60.f));
+			pFlame->Collider3D()->SetOffsetPos(Vec3(0.f, -150.f, 0.f));
+
+			pFlame->AddComponent(new ColumnFlameScript);
+			ColumnFlameScript* pFlameScript = pFlame->GetScript<ColumnFlameScript>();
+			pFlameScript->Init();
+			pFlameScript->SetDamage(m_fDMG[1]);
+			pFlameScript->SetColor(Vec4(0.f, 1.f, 1.f, 1.f));
+			pFlameScript->SetFlameSpeed(1.5f);
+			pFlameScript->SetRotSpeed(25.f);
+
+			m_vecColumnFlames.push_back(pFlame);
+			CSceneMgr::GetInst()->SpawnObject(pFlame, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
+			pFlame->Deactivate();
 		}
 	}
 }
@@ -106,6 +120,7 @@ void JugPhase_2::Update()
 		RotTowardPlayer();
 	}
 
+	m_iAttackPattern = 2;
 	switch (m_iAttackPattern)
 	{
 	case 0:
@@ -189,13 +204,8 @@ void JugPhase_2::ChangePattern()
 
 	ResetTimer();
 
-	// 시드값을 얻기 위한 random_device 생성.
-	std::random_device rd;
-
-	// random_device 를 통해 난수 생성 엔진을 초기화 한다.
-	std::mt19937 gen(rd());
-
-	// 1 부터 4 까지 균등하게 나타나는 난수열을 생성하기 위해 균등 분포 정의.
+	std::random_device                 rd;
+	std::mt19937                       gen(rd());
 	std::uniform_int_distribution<int> dis(1, 4);
 
 	m_iAttackPattern = dis(gen);
@@ -236,10 +246,11 @@ void JugPhase_2::Attack_2()
 	if (!m_bAttackProceeding)
 	{
 		m_bAttackProceeding = true;
-		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_1);
+		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_0);
 	}
 	else
 	{
+		// 공격 종료
 		if (GetTimer() > m_fAttackTime)
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
@@ -247,6 +258,34 @@ void JugPhase_2::Attack_2()
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
 			ResetTimer();
+
+			return;
+		}
+
+		// 공격
+		if (GetTimer() > 1.5f)
+		{
+			if (FLAME_COUNT == 0)
+				return;
+
+			static float fFlameTimer   = 0.f;
+			static int   fFlameCounter = 0;
+
+			if (fFlameTimer >= 0.6f)
+			{
+				Vec3 vPlayerPos = m_pCombatMgr->GetPlayer()->Transform()->GetWorldPos();
+				m_vecColumnFlames[fFlameCounter]->Transform()->SetRelativePos(Vec3(vPlayerPos.x, 300.f, vPlayerPos.z));
+				m_vecColumnFlames[fFlameCounter]->Activate();
+
+				fFlameTimer = 0.f;
+				++fFlameCounter;
+				if (FLAME_COUNT - 1 < fFlameCounter)
+				{
+					fFlameCounter = 0;
+				}
+			}
+			else
+				fFlameTimer += DT;
 		}
 	}
 }
@@ -256,7 +295,7 @@ void JugPhase_2::Attack_3()
 	if (!m_bAttackProceeding)
 	{
 		m_bAttackProceeding = true;
-		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_0);
+		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_1);
 	}
 	else
 	{
@@ -289,4 +328,13 @@ void JugPhase_2::Attack_4()
 			ResetTimer();
 		}
 	}
+}
+
+void JugPhase_2::SetDamage(int _idx, float _dmg)
+{
+	// 공격 패턴 개수 이상의 인덱스를 입력하면 경고 
+	if (4 < _idx)
+		return;
+
+	m_fDMG[_idx] = _dmg;
 }

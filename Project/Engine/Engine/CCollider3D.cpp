@@ -12,16 +12,16 @@ CCollider3D::CCollider3D()
 	, m_eCollider3DType{COLLIDER3D_TYPE::CUBE}
 {
 	// Debug Obj 추가
-	m_pDebugObj = new CGameObject;
-	m_pDebugObj->SetName(L"Collider_debug");
-	m_pDebugObj->AddComponent(new CTransform);
-	m_pDebugObj->AddComponent(new CMeshRender);
+	if (nullptr == m_pDebugObj)
+	{
+		m_pDebugObj = new CGameObject;
+		m_pDebugObj->SetName(L"Collider_debug");
+		m_pDebugObj->AddComponent(new CTransform);
+		m_pDebugObj->AddComponent(new CMeshRender);
 
-	m_pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
-	m_pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Collider3D.mtrl");
-
-	m_pDebugObj->MeshRender()->SetMesh(m_pMesh);
-	m_pDebugObj->MeshRender()->SetSharedMaterial(m_pMaterial, 0);
+		m_pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
+		m_pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Collider3D.mtrl");
+	}
 }
 
 CCollider3D::CCollider3D(const CCollider3D& _origin)
@@ -149,10 +149,10 @@ void CCollider3D::finalupdate()
 	m_matWorld                  = matScale * matRotation * matTranslation;
 
 	const Vec3   vGameObjectScale          = Transform()->GetWorldScale();
-	const Matrix matGameObjectScaleInverse = XMMatrixInverse(nullptr
-	                                                         , XMMatrixScaling(vGameObjectScale.x
-	                                                                           , vGameObjectScale.y
-	                                                                           , vGameObjectScale.z));
+	const Matrix matGameObjectScaleInverse = XMMatrixInverse(nullptr,
+	                                                         XMMatrixScaling(vGameObjectScale.x,
+	                                                                         vGameObjectScale.y,
+	                                                                         vGameObjectScale.z));
 	const Matrix matGameobjectWorld = Transform()->GetWorldMat();
 	// 충돌체 상대행렬 * 오브젝트 월드 크기 역행렬 * 오브젝트 월드 행렬(크기 * 회전 * 이동)
 	m_matWorld = m_matWorld * matGameObjectScaleInverse * matGameobjectWorld;
@@ -168,7 +168,9 @@ void CCollider3D::finalupdate_debug()
 
 		m_pDebugObj->MeshRender()->SetMesh(m_pMesh);
 		m_pDebugObj->MeshRender()->SetSharedMaterial(m_pMaterial, 0);
-		m_pDebugObj->MeshRender()->GetSharedMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &m_iCollisionCount);
+
+		if (nullptr != m_pDebugObj->MeshRender()->GetDynamicMaterial(0))
+			m_pDebugObj->MeshRender()->GetDynamicMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &m_iCollisionCount);
 
 		m_pDebugObj->finalupdate();
 	}
@@ -176,13 +178,10 @@ void CCollider3D::finalupdate_debug()
 
 void CCollider3D::render_debug()
 {
-	if (!m_pDebugObj->IsActive())
-		return;
-
-	m_pDebugObj->Transform()->UpdateData();
-
-	m_pDebugObj->MeshRender()->GetMaterial(0)->UpdateData();
-	m_pDebugObj->MeshRender()->GetMesh()->render(0);
+	if (nullptr != m_pDebugObj)
+	{
+		m_pDebugObj->MeshRender()->render();
+	}
 }
 
 void CCollider3D::render()

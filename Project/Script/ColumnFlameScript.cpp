@@ -6,10 +6,13 @@
 #include <Engine/CCollider3D.h>
 #include <Engine/CDecal.h>
 
+// [Script]
+#include "BossJugCombatMgrScript.h"
+#include "CPlayerStat.h"
+#include "PlayerScript.h"
 
 ColumnFlameScript::ColumnFlameScript()
 	: CScript((int)SCRIPT_TYPE::COLUMNFLAMESCRIPT)
-	, m_fDamage(10.f)
 {
 	AddScriptParam("FLAME SPEED", SCRIPTPARAM_TYPE::FLOAT, &m_fFlameSpeed);
 	AddScriptParam("ROTATION SPEED", SCRIPTPARAM_TYPE::FLOAT, &m_fRotSpeed);
@@ -26,7 +29,7 @@ ColumnFlameScript::~ColumnFlameScript()
 {
 }
 
-void ColumnFlameScript::start()
+void ColumnFlameScript::Init()
 {
 	if (nullptr == m_pDecal)
 	{
@@ -44,13 +47,11 @@ void ColumnFlameScript::start()
 		m_pDecal->Transform()->SetRelativePos(0.f, -285.f, 0.f);
 		m_pDecal->Transform()->SetRelativeScale(110.f, 10.f, 110.f);
 
-
 		GetOwner()->AddChild(m_pDecal);
 	}
 
 	if (nullptr == m_pLaser_1)
 	{
-		///* TEST
 		m_pLaser_1 = new CGameObject;
 		m_pLaser_1->SetName(L"Attack0_Laser1");
 		m_pLaser_1->AddComponent(new CTransform);
@@ -87,7 +88,6 @@ void ColumnFlameScript::start()
 
 	if (nullptr == m_pLaser_2)
 	{
-		///* TEST
 		m_pLaser_2 = m_pLaser_1->Clone();
 		m_pLaser_2->SetName(L"Attack0_Laser2");
 
@@ -99,29 +99,53 @@ void ColumnFlameScript::start()
 
 		GetOwner()->AddChild(m_pLaser_2);
 	}
+}
 
-	if (nullptr == GetOwner()->GetComponent(COMPONENT_TYPE::COLLIDER3D))
-	{
-		GetOwner()->AddComponent(new CCollider3D);
-
-		GetOwner()->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-		GetOwner()->Collider3D()->SetOffsetScale(Vec3(60.f, 600.f, 60.f));
-	}
+void ColumnFlameScript::start()
+{
 }
 
 void ColumnFlameScript::update()
 {
-	Vec3 rot = m_pLaser_1->Transform()->GetRelativeRotation();
-	rot.ToDegree();
-	rot.y += m_fRotSpeed * DT;
-	rot.ToRadian();
-	m_pLaser_1->Transform()->SetRelativeRotation(rot);
+	m_fTimer += DT;
 
-	rot = m_pLaser_2->Transform()->GetRelativeRotation();
-	rot.ToDegree();
-	rot.y += m_fRotSpeed * DT;
-	rot.ToRadian();
-	m_pLaser_2->Transform()->SetRelativeRotation(rot);
+	if (0.3f < m_fTimer)
+	{
+		if (!m_fActiveLaser)
+		{
+			m_pLaser_1->Activate();
+			m_pLaser_2->Activate();
+			Collider3D()->Activate();
+
+			m_fActiveLaser = true;
+		}
+
+		Vec3 rot = m_pLaser_1->Transform()->GetRelativeRotation();
+		rot.ToDegree();
+		rot.y += m_fRotSpeed * DT;
+		rot.ToRadian();
+		m_pLaser_1->Transform()->SetRelativeRotation(rot);
+
+		rot = m_pLaser_2->Transform()->GetRelativeRotation();
+		rot.ToDegree();
+		rot.y += m_fRotSpeed * DT;
+		rot.ToRadian();
+		m_pLaser_2->Transform()->SetRelativeRotation(rot);
+
+
+		if (2.5f < m_fTimer)
+		{
+			GetOwner()->Deactivate();
+			m_fActiveLaser = false;
+			m_fTimer       = 0.f;
+		}
+	}
+	else
+	{
+		m_pLaser_1->Activate();
+		m_pLaser_2->Activate();
+		Collider3D()->Activate();
+	}
 }
 
 void ColumnFlameScript::lateupdate()
@@ -146,30 +170,15 @@ void ColumnFlameScript::lateupdate()
 
 void ColumnFlameScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
+	PlayerScript* pPlayerScript = _OtherObject->GetScript<PlayerScript>();
+	if (nullptr != pPlayerScript)
+		pPlayerScript->GetPlayerStat()->SubHp(m_fDamage);
 }
 
 void ColumnFlameScript::OnCollision(CGameObject* _OtherObject)
 {
-	CScript::OnCollision(_OtherObject);
 }
 
 void ColumnFlameScript::OnCollisionExit(CGameObject* _OtherObject)
 {
-	CScript::OnCollisionExit(_OtherObject);
-}
-
-void ColumnFlameScript::Serialize(YAML::Emitter& emitter)
-{
-	emitter << YAML::Key << NAME_OF(m_fFlameSpeed) << YAML::Value << m_fFlameSpeed;
-	emitter << YAML::Key << NAME_OF(m_fRotSpeed) << YAML::Value << m_fRotSpeed;
-	emitter << YAML::Key << NAME_OF(m_vColor) << YAML::Value << m_vColor;
-	//emitter << YAML::Key << NAME_OF(m_fDamage) << YAML::Value << m_fDamage;
-}
-
-void ColumnFlameScript::Deserialize(const YAML::Node& node)
-{
-	m_fFlameSpeed = node[NAME_OF(m_fFlameSpeed)].as<float>();
-	m_fRotSpeed   = node[NAME_OF(m_fRotSpeed)].as<float>();
-	m_vColor      = node[NAME_OF(m_vColor)].as<Vec4>();
-	//m_fDamage     = node[NAME_OF(m_fDamage)].as<float>();
 }

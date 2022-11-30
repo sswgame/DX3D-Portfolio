@@ -26,7 +26,7 @@ BossJugScript::BossJugScript()
 	: CScript((int)SCRIPT_TYPE::BOSSJUGSCRIPT)
 	, m_pBossFSM(nullptr)
 	, m_pBossAnimator(nullptr)
-	, m_fHP(1000.f)
+	, m_fHP(400.f)
 	, m_fMaxHP(1000.f)
 {
 	AddScriptParam("BOSS STATE", SCRIPTPARAM_TYPE::TEXT, &m_strCurState);
@@ -79,28 +79,28 @@ void BossJugScript::InitState()
 	{
 		m_pBossFSM = new CFSM;
 		GetOwner()->AddComponent(m_pBossFSM);
+
+		m_pBossFSM->AddState(GAME::BOSS::JUG_NONE, new Jug_None);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_INTRO, new Jug_Intro);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_NORM_IDLE, new Jug_Norm_Idle);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_NORM_HIT, new Jug_Norm_Hit);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_HAMMER_IDLE, new Jug_Hammer_Idle);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_HAMMER_HIT, new Jug_Hammer_Hit);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_ATTACK_0, new Jug_Attack_0);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_ATTACK_1, new Jug_Attack_1);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_SPAWNHAMMER, new Jug_SpawnHammer);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_WALKGROUND, new Jug_WalkGround);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_FLY, new Jug_Fly);
+		m_pBossFSM->AddState(GAME::BOSS::JUG_DEAD, new Jug_Dead);
+
+		for (const auto& [strName, pState] : m_pBossFSM->GetAllStates())
+		{
+			// 애니메이션 연결			
+			pState->Init();
+		}
+
+		m_pBossFSM->SetCurState(L"JUG_NONE");
 	}
-
-	m_pBossFSM->AddState(GAME::BOSS::JUG_NONE, new Jug_None);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_INTRO, new Jug_Intro);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_NORM_IDLE, new Jug_Norm_Idle);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_NORM_HIT, new Jug_Norm_Hit);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_HAMMER_IDLE, new Jug_Hammer_Idle);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_HAMMER_HIT, new Jug_Hammer_Hit);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_ATTACK_0, new Jug_Attack_0);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_ATTACK_1, new Jug_Attack_1);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_SPAWNHAMMER, new Jug_SpawnHammer);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_WALKGROUND, new Jug_WalkGround);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_FLY, new Jug_Fly);
-	m_pBossFSM->AddState(GAME::BOSS::JUG_DEAD, new Jug_Dead);
-
-	for (const auto& [strName, pState] : m_pBossFSM->GetAllStates())
-	{
-		// 애니메이션 연결			
-		pState->Init();
-	}
-
-	m_pBossFSM->SetCurState(L"JUG_NONE");
 }
 
 void BossJugScript::start()

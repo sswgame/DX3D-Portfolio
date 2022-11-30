@@ -275,6 +275,7 @@ CGameObject* PlayerScript::GetChildObj(CGameObject* _parent, wstring _name)
 
 void PlayerScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
+	int a = 1;
 }
 
 void PlayerScript::OnCollision(CGameObject* _OtherObject)

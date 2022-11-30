@@ -15,6 +15,8 @@ public:
 	CGameObject* GetPlayerCamera() const { return m_pPlayerCamera; }
 	CGameObject* GetBossCombatMgr() const { return m_pBossCombatMgr; }
 
+	void SetBossCombatMgr(CGameObject* _pMgr) { m_pBossCombatMgr = _pMgr; }
+
 public:
 	void start() override;
 
