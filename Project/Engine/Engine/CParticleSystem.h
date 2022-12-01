@@ -77,8 +77,8 @@ public:
 	void  SetRange(float _fRange);
 	float GetRange() const { return m_fParticleCreateDistance; }
 
-	void  SetAngle(int _angle) { m_fAngle = _angle; }
-	int GetAngle() const { return m_fAngle; }
+	void  SetAngle(float _angle) { m_fAngle = _angle; }
+	const float GetAngle() const { return m_fAngle; }
 
 	void  SetTerm(float _fTerm);
 	float GetTerm() const { return m_fParticleCreateTerm; }
