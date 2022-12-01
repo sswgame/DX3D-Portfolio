@@ -29,19 +29,26 @@ private:
 
     float m_fRange; // 파티클 생성 범위
     float m_fTerm;  // 파티클 생성 간격
-
     float m_fAngle;
 
     bool	m_bShaderUseEmissive;
-    bool m_bShaderUseSpeedDetail;
+    bool    m_bShaderUseSpeedDetail;
+
+    int m_iParticleComboIDX;
 
 private:
     void SetData();
-
+    void TextureSelect(void* _pTextureName);
 
 public:
+    void ParticleCreate();
+    void ParticleErase();
+    void ParticleSaveNLoad();
+    void AddParticleCombo(CGameObject* _newparti);
     void MakeTargetParticleCombo();
     void ParticleOptionSetting();
+    void SaveParticle();
+    void LoadParticle(CGameObject* _load);
 
 public:
     virtual void update() override;

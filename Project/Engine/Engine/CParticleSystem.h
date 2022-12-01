@@ -89,9 +89,15 @@ public:
 	void SetSpeedDetailFunc(int _funcNum) { m_iSpeedDetail_Func = _funcNum; }
 	int GetSpeedDetailFunc() { return m_iSpeedDetail_Func; }
 
+	void SetMaterial(wstring _mtrl);
+
 public:
 	virtual void finalupdate() override;
 	virtual void render() override;
+
+public:
+	void SaveParticle(FILE* _pFile);
+	void LoadParticle(FILE* _pFile);
 
 
 public:

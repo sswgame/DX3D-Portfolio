@@ -9,22 +9,22 @@
 CParticleSystem::CParticleSystem()
 	:
 	CRenderComponent(COMPONENT_TYPE::PARTICLESYSTEM)
-  , m_iMaxCount(1000)
-  , m_bPosInherit(0)
-  , m_iAliveCount(4)
-  , m_fMinLifeTime(0.5f)
-  , m_fMaxLifeTime(2.f)
-  , m_fStartSpeed(100.f)
-  , m_fEndSpeed(10.f)
-  , m_vStartColor(Vec4(1.f, 0.2f, 0.7f, 1.f))
-  , m_vEndColor(Vec4(1.f, 1.f, 1.f, 1.f))
-  , m_vStartScale(Vec3(10.f, 10.f, 1.f))
-  , m_vEndScale(Vec3(1.f, 1.f, 1.f))
-  , m_fParticleCreateDistance(50.f)
-  , m_fParticleCreateTerm(0.02f)
-  , m_fAccTime(0.f)
-  , m_iEmissive(0)
-  , m_iLighting(0)
+	, m_iMaxCount(1000)
+	, m_bPosInherit(0)
+	, m_iAliveCount(4)
+	, m_fMinLifeTime(0.5f)
+	, m_fMaxLifeTime(2.f)
+	, m_fStartSpeed(100.f)
+	, m_fEndSpeed(10.f)
+	, m_vStartColor(Vec4(1.f, 0.2f, 0.7f, 1.f))
+	, m_vEndColor(Vec4(1.f, 1.f, 1.f, 1.f))
+	, m_vStartScale(Vec3(10.f, 10.f, 1.f))
+	, m_vEndScale(Vec3(1.f, 1.f, 1.f))
+	, m_fParticleCreateDistance(50.f)
+	, m_fParticleCreateTerm(0.02f)
+	, m_fAccTime(0.f)
+	, m_iEmissive(0)
+	, m_iLighting(0)
 	, m_vStartEmissiveColor(Vec4(0.f, 0.f, 0.f, 1.f))
 	, m_vEndEmissiveColor(Vec4(0.f, 0.f, 0.f, 1.f))
 	, m_fAngle(360.f)
@@ -45,23 +45,23 @@ CParticleSystem::CParticleSystem()
 CParticleSystem::CParticleSystem(const CParticleSystem& _origin)
 	:
 	CRenderComponent(_origin)
-  , m_iMaxCount(_origin.m_iMaxCount)
-  , m_bPosInherit(_origin.m_bPosInherit)
-  , m_iAliveCount(_origin.m_iAliveCount)
-  , m_fMinLifeTime(_origin.m_fMinLifeTime)
-  , m_fMaxLifeTime(_origin.m_fMaxLifeTime)
-  , m_fStartSpeed(_origin.m_fStartSpeed)
-  , m_fEndSpeed(_origin.m_fEndSpeed)
-  , m_vStartColor(_origin.m_vStartColor)
-  , m_vEndColor(_origin.m_vEndColor)
-  , m_vStartScale(_origin.m_vStartScale)
-  , m_vEndScale(_origin.m_vEndScale)
-  , m_fParticleCreateDistance(_origin.m_fParticleCreateDistance)
-  , m_fParticleCreateTerm(_origin.m_fParticleCreateTerm)
-  , m_fAccTime(_origin.m_fAccTime)
-  , m_iEmissive(_origin.m_iEmissive)
-  , m_iLighting(_origin.m_iLighting)
-  , m_vDirection{_origin.m_vDirection}
+	, m_iMaxCount(_origin.m_iMaxCount)
+	, m_bPosInherit(_origin.m_bPosInherit)
+	, m_iAliveCount(_origin.m_iAliveCount)
+	, m_fMinLifeTime(_origin.m_fMinLifeTime)
+	, m_fMaxLifeTime(_origin.m_fMaxLifeTime)
+	, m_fStartSpeed(_origin.m_fStartSpeed)
+	, m_fEndSpeed(_origin.m_fEndSpeed)
+	, m_vStartColor(_origin.m_vStartColor)
+	, m_vEndColor(_origin.m_vEndColor)
+	, m_vStartScale(_origin.m_vStartScale)
+	, m_vEndScale(_origin.m_vEndScale)
+	, m_fParticleCreateDistance(_origin.m_fParticleCreateDistance)
+	, m_fParticleCreateTerm(_origin.m_fParticleCreateTerm)
+	, m_fAccTime(_origin.m_fAccTime)
+	, m_iEmissive(_origin.m_iEmissive)
+	, m_iLighting(_origin.m_iLighting)
+	, m_vDirection{ _origin.m_vDirection }
 	, m_vStartEmissiveColor(_origin.m_vStartEmissiveColor)
 	, m_vEndEmissiveColor(_origin.m_vEndEmissiveColor)
 	, m_fAngle(_origin.m_fAngle)
@@ -112,20 +112,20 @@ void CParticleSystem::SetAliveCount(UINT _iCount)
 
 void CParticleSystem::SetMinMaxLifeTime(float fMin, float fMax)
 {
-	m_fMinLifeTime = ClampData(fMin, 0.f,D3D11_FLOAT32_MAX);
+	m_fMinLifeTime = ClampData(fMin, 0.f, D3D11_FLOAT32_MAX);
 	m_fMaxLifeTime = ClampData(fMax, 0.f, D3D11_FLOAT32_MAX);
 }
 
 void CParticleSystem::SetMinMaxSpeed(float fMin, float fMax)
 {
 	m_fStartSpeed = fMin;
-	m_fEndSpeed   = fMax;
+	m_fEndSpeed = fMax;
 }
 
 void CParticleSystem::SetStartEndColor(const Vec4& vStartColor, const Vec4& vEndColor)
 {
 	m_vStartColor = vStartColor;
-	m_vEndColor   = vEndColor;
+	m_vEndColor = vEndColor;
 }
 
 void CParticleSystem::SetStartEndEmissiveColor(const Vec4& vStartColor, const Vec4& vEndColor)
@@ -137,7 +137,7 @@ void CParticleSystem::SetStartEndEmissiveColor(const Vec4& vStartColor, const Ve
 void CParticleSystem::SetStartEndScale(const Vec3& vStartScale, const Vec3& vEndScale)
 {
 	m_vStartScale = vStartScale;
-	m_vEndScale   = vEndScale;
+	m_vEndScale = vEndScale;
 }
 
 void CParticleSystem::SetRange(float _fRange)
@@ -150,6 +150,11 @@ void CParticleSystem::SetTerm(float _fTerm)
 	m_fParticleCreateTerm = ClampData(_fTerm, 0.f, D3D11_FLOAT32_MAX);
 }
 
+void CParticleSystem::SetMaterial(const wstring _mtrl)
+{
+	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(_mtrl), 0);
+}
+
 void CParticleSystem::finalupdate()
 {
 	m_fAccTime += DT;
@@ -158,7 +163,7 @@ void CParticleSystem::finalupdate()
 		m_fAccTime = 0.f;
 
 		tParticleData data = {};
-		data.iAliveCount   = m_iAliveCount;
+		data.iAliveCount = m_iAliveCount;
 		m_DataBuffer->SetData(&data, 1);
 	}
 
@@ -194,6 +199,14 @@ void CParticleSystem::render()
 	m_ParticleBuffer->Clear();
 }
 
+void CParticleSystem::SaveParticle(FILE* _pFile)
+{
+}
+
+void CParticleSystem::LoadParticle(FILE* _pFile)
+{
+}
+
 void CParticleSystem::SaveToScene(FILE* _pFile)
 {
 	CRenderComponent::SaveToScene(_pFile);
@@ -219,6 +232,10 @@ void CParticleSystem::SaveToScene(FILE* _pFile)
 	fwrite(&m_vDirection, sizeof(Vec2), 1, _pFile);
 	fwrite(&m_iEmissive, sizeof(int), 1, _pFile);
 	fwrite(&m_iLighting, sizeof(int), 1, _pFile);
+	fwrite(&m_vDirection, sizeof(Vec2), 1, _pFile);
+	fwrite(&m_fAngle, sizeof(float), 1, _pFile);
+	fwrite(&m_iSpeedDetail_Func, sizeof(int), 1, _pFile);
+	fwrite(&m_vStartEmissiveColor, sizeof(Vec4), 1, _pFile);
 }
 
 void CParticleSystem::LoadFromScene(FILE* _pFile)
@@ -248,6 +265,10 @@ void CParticleSystem::LoadFromScene(FILE* _pFile)
 	fread(&m_vDirection, sizeof(Vec2), 1, _pFile);
 	fread(&m_iEmissive, sizeof(int), 1, _pFile);
 	fread(&m_iLighting, sizeof(int), 1, _pFile);
+	fread(&m_vDirection, sizeof(Vec2), 1, _pFile);
+	fread(&m_fAngle, sizeof(float), 1, _pFile);
+	fread(&m_iSpeedDetail_Func, sizeof(int), 1, _pFile);
+	fread(&m_vStartEmissiveColor, sizeof(Vec4), 1, _pFile);
 }
 
 void CParticleSystem::Serialize(YAML::Emitter& emitter)

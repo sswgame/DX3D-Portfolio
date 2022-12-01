@@ -9,6 +9,10 @@
 #include <Engine/define.h>
 #include <Engine/CGameObject.h>
 #include <Engine/CParticleSystem.h>
+#include <Engine/CTransform.h>
+#include <Engine/CGraphicsShader.h>
+#include <Engine/CMaterial.h>
+#include <Engine/CCore.h>
 
 #include "ListUI.h"
 #include "CImGuiMgr.h"
@@ -33,6 +37,7 @@ ParticleTool::ParticleTool()
 	, m_bShaderUseEmissive{ false }
 	, m_bShaderUseSpeedDetail(false)
 	, m_fArrDirection{ {1.f}, {0.f} }
+	, m_iParticleComboIDX(0)
 {
 }
 
@@ -109,6 +114,13 @@ void ParticleTool::ParticleOptionSetting()
 	ImGui::ColorEdit4("##END_COLOR", m_vArrStartEndColor[1]);
 	pTargetParticleSystem->SetStartEndColor(m_vArrStartEndColor[0], m_vArrStartEndColor[1]);
 
+	ImGui::BulletText("Emissive");
+	ImGui::SameLine(200);
+	ImGui::ColorEdit4("##EMISSIVE", m_vArrStartEndEmissive[0]);
+	CParticleSystem* pCurPSys = m_pTargetParticle->ParticleSystem();
+	pCurPSys->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, m_vArrStartEndEmissive[0]);
+	pTargetParticleSystem->SetStartEndEmissiveColor(m_vArrStartEndEmissive[0], m_vArrStartEndEmissive[0]);
+
 	ImGui::BulletText("Start Scale");
 	ImGui::SameLine(200);
 	ImGui::InputFloat3("##START_SCALE", m_vArrStartEndScale[0]);
@@ -171,14 +183,92 @@ void ParticleTool::ParticleOptionSetting()
 		}
 
 		pListUI->Activate();
-		pListUI->SetDBCEvent(this, (DBCLKED)&ParticleSystemUI::TextureSelect);
+		pListUI->SetDBCEvent(this, (DBCLKED)&ParticleTool::TextureSelect);
 	}
 
 
 }
 
+void ParticleTool::SaveParticle()
+{
+	wchar_t szName[256] = {};
+	OPENFILENAME ofn = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Particle\0*.prtcl\0";
+	ofn.nFilterIndex = 0;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+	strTileFolder += L"prtcl";
+
+	ofn.lpstrInitialDir = strTileFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	// Modal
+	if (GetSaveFileName(&ofn))
+	{
+		FILE* pFile = nullptr;
+		_wfopen_s(&pFile, szName, L"wb");
+
+		assert(pFile);
+		if (nullptr == pFile)
+			return;
+
+		m_pTargetParticle->SaveToScene(pFile);
+
+		fclose(pFile);
+	}
+}
+
+void ParticleTool::LoadParticle(CGameObject* _load)
+{
+	wchar_t szName[256] = {};
+
+	OPENFILENAME ofn = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Particle\0*.prtcl\0";
+	ofn.nFilterIndex = 0;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+	strTileFolder += L"prtcl";
+
+	ofn.lpstrInitialDir = strTileFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	// Modal
+	if (GetOpenFileName(&ofn))
+	{
+		FILE* pFile = nullptr;
+		_wfopen_s(&pFile, szName, L"rb");
+
+		assert(pFile);
+		if (nullptr == pFile)
+			return;
+
+		_load->LoadFromScene(pFile);
+
+		fclose(pFile);
+	}
+}
+
 void ParticleTool::SetData()
 {
+	if (nullptr == m_pTargetParticle)
+		return;
+	if (true == m_pTargetParticle->IsDead())
+		return;
+
 	CParticleSystem* pTargetParticleSystem = m_pTargetParticle->ParticleSystem();
 
 	m_iMaxCount = pTargetParticleSystem->GetMaxParticleCount();
@@ -197,32 +287,182 @@ void ParticleTool::SetData()
 	m_vArrStartEndColor[0] = pairColor.first;
 	m_vArrStartEndColor[1] = pairColor.second;
 
+	const std::pair<Vec4, Vec4>& pairEColor = pTargetParticleSystem->GetStartEndEmissiveColor();
+	m_vArrStartEndEmissive[0] = pairEColor.first;
+	m_vArrStartEndEmissive[1] = pairEColor.second;
+
 	const std::pair<Vec3, Vec3>& pairScale = pTargetParticleSystem->GetStartEndScale();
 	m_vArrStartEndScale[0] = pairScale.first;
 	m_vArrStartEndScale[1] = pairScale.second;
 
-	//const Vec2& vDirection = m_pParticleSystem->GetDirection();
-	//m_iArrDirection[0]     = static_cast<int>(vDirection.x);
-	//m_iArrDirection[1]     = static_cast<int>(vDirection.y);
-
 	m_fAngle = pTargetParticleSystem->GetAngle();
+
+	Vec2 dir = pTargetParticleSystem->GetDirection();
+	m_fArrDirection[0] = dir.x;
+	m_fArrDirection[1] = dir.y;
 
 	m_fRange = pTargetParticleSystem->GetRange();
 	m_fTerm = pTargetParticleSystem->GetTerm();
+}
+
+void ParticleTool::TextureSelect(void* _pTextureName)
+{
+	const std::wstring  key = ToWString(static_cast<char*>(_pTextureName));
+	const Ptr<CTexture> pTexture = CResMgr::GetInst()->FindRes<CTexture>(key);
+
+	CParticleSystem* pCurPSys = m_pTargetParticle->ParticleSystem();
+
+	// 변경점이 있을 때만 세팅
+	if (pCurPSys->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0) != pTexture)
+	{
+		pCurPSys->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
+
+		CMaterial* curMaterial = pCurPSys->GetMaterial(0).Get();
+		wstring contentPath = CPathMgr::GetInst()->GetContentPath();
+		contentPath += curMaterial->GetKey();
+		pCurPSys->GetMaterial(0)->Save(contentPath);
+	}
+}
+
+void ParticleTool::ParticleCreate()
+{
+	ImGui::Text("Particle Menu");
+
+	if (ImGui::Button("Create Particle", ImVec2(0, 0)))
+	{
+		ImGui::OpenPopup("Set Particle Name");
+	}
+
+	if (ImGui::BeginPopupModal("Set Particle Name", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		static char particleName[512];
+		ImGui::Text("Set Particle Name : "); ImGui::SameLine();
+		ImGui::InputText("Name", particleName, IM_ARRAYSIZE(particleName), ImGuiInputTextFlags_None);
+
+		if (ImGui::Button("CREATE", ImVec2(0, 0)))
+		{
+			wstring name = L"";
+			int i = 0;
+			while (true)
+			{
+				if ('\0' == particleName[i])
+				{
+					break;
+				}
+				name += particleName[i];
+				particleName[i] = '\0';
+				i++;
+			}
+
+			CGameObject* pParticle = new CGameObject;
+			pParticle->SetName(name);
+			pParticle->AddComponent(new CTransform);
+			pParticle->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+			pParticle->AddComponent(new CParticleSystem);
+			CSceneMgr::GetInst()->SpawnObject(pParticle, L"BG");
+
+
+
+			CMaterial* pMtrl = nullptr;
+			wstring materialName = L"material\\";
+			materialName += name;
+			materialName += L".mtrl";
+
+			if (nullptr != CResMgr::GetInst()->FindRes<CMaterial>(materialName))
+			{
+				pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(materialName).Get();
+			}
+			else
+			{
+				pMtrl = new CMaterial;
+				pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"ParticleRenderShader"));
+				CResMgr::GetInst()->AddRes<CMaterial>(materialName, pMtrl);
+			}
+
+			pParticle->ParticleSystem()->SetMaterial(materialName);
+
+			AddParticleCombo(pParticle);
+
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine(200);
+		if (ImGui::Button("CLOSE", ImVec2(0, 0)))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
+
+	}
+
+}
+
+void ParticleTool::ParticleErase()
+{
+	if (ImGui::Button("Erase Particle", ImVec2(0, 0)))
+	{
+		CGameObject* pDeleteParticle = m_pTargetParticle;
+		m_vecParticleSystem = {};
+
+		vector<CGameObject*> pVecBGObj = CSceneMgr::GetInst()->GetCurScene()->GetLayer(0)->GetObjects();
+		for (size_t i = 0; i < pVecBGObj.size(); i++)
+		{
+			if (nullptr != pVecBGObj[i]->GetComponent(COMPONENT_TYPE::PARTICLESYSTEM))
+			{
+				if (pVecBGObj[i] != pDeleteParticle)
+					m_vecParticleSystem.push_back(pVecBGObj[i]);
+			}
+		}
+
+		m_pTargetParticle->Destroy();
+		if (0 == m_vecParticleSystem.size())
+		{
+			m_pTargetParticle = nullptr;
+		}
+		else
+		{
+			m_pTargetParticle = m_vecParticleSystem[0];
+			m_iParticleComboIDX = 0;
+			SetData();
+		}
+	}
+}
+
+void ParticleTool::ParticleSaveNLoad()
+{
+	if (ImGui::Button("SAVE - CUR PARTICLE"))
+	{
+		SaveParticle();
+	} ImGui::SameLine(150);
+	if (ImGui::Button("LOAD"))
+	{
+		CGameObject* pLoadParticle = new CGameObject;
+		LoadParticle(pLoadParticle);
+		CSceneMgr::GetInst()->SpawnObject(pLoadParticle, L"BG");
+		AddParticleCombo(pLoadParticle);
+	}
+}
+
+void ParticleTool::AddParticleCombo(CGameObject* _newparti)
+{
+	m_vecParticleSystem.push_back(_newparti);
+	string name;
+	name.assign(_newparti->GetName().begin(), _newparti->GetName().end());
+	m_strvecParticleName.push_back(name);
 }
 
 void ParticleTool::MakeTargetParticleCombo()
 {
 	ImGui::Text("Change Target Particle : "); ImGui::SameLine();
 
+	m_strvecParticleName = {};
 	for (size_t i = 0; i < m_vecParticleSystem.size(); i++)
 	{
 		string particleName;
 		particleName.assign(m_vecParticleSystem[i]->GetName().begin(), m_vecParticleSystem[i]->GetName().end());
 		m_strvecParticleName.push_back(particleName);
+
 	}
 
-	static int item_current_idx = 0; 
 	const char* combo_preview_value;
 	if (0 == m_strvecParticleName.size())
 	{
@@ -232,24 +472,27 @@ void ParticleTool::MakeTargetParticleCombo()
 	}
 	else
 	{
-		combo_preview_value = m_strvecParticleName[item_current_idx].c_str();
+		combo_preview_value = m_strvecParticleName[m_iParticleComboIDX].c_str();
 
 		if (ImGui::BeginCombo("##SetTarget_ParticleCombo", combo_preview_value, 0))
 		{
 			for (int n = 0; n < m_vecParticleSystem.size(); n++)
 			{
-				const bool is_selected = (item_current_idx == n);
+				const bool is_selected = (m_iParticleComboIDX == n);
 				if (ImGui::Selectable(m_strvecParticleName[n].c_str(), is_selected))
-					item_current_idx = n;
+				{
+					m_iParticleComboIDX = n;
+					m_pTargetParticle = m_vecParticleSystem[m_iParticleComboIDX];
+
+					SetData();
+				}
 
 				if (is_selected)
 					ImGui::SetItemDefaultFocus();
 
-				m_pTargetParticle = m_vecParticleSystem[item_current_idx];
 			}
 			ImGui::EndCombo();
 		}
-
 
 		ParticleOptionSetting();
 	}
@@ -279,7 +522,8 @@ void ParticleTool::update()
 		{
 			if (nullptr != pVecBGObj[i]->GetComponent(COMPONENT_TYPE::PARTICLESYSTEM))
 			{
-				m_vecParticleSystem.push_back(pVecBGObj[i]);
+				if (false == pVecBGObj[i]->IsDead())
+					m_vecParticleSystem.push_back(pVecBGObj[i]);
 			}
 		}
 	}
@@ -297,23 +541,57 @@ void ParticleTool::update()
 
 void ParticleTool::render_update()
 {
-	// 구현...
-
 	// 필요한것
 	// 1. particle target
-	// 2. scene outliner 에 있는 정보들
 	// 3. 저장하기
 	// 4. 불러오기
 	// 5. 파티클 여러개 저장하는 기능.
 
 	SetData();
 
-	ImVec2 pTargetImageSize;
-	pTargetImageSize.x = m_vecTargetResolution.x * 2.f / 3.f;
-	pTargetImageSize.y = m_vecTargetResolution.y * 2.f / 3.f;
+	ParticleCreate(); ImGui::SameLine(); ParticleErase();
+	ParticleSaveNLoad();
+	ImGui::Separator();
 
-	ImGui::Image(m_pParticleTarget.Get()->GetSRV().Get(), pTargetImageSize, ImVec2(0, 0)
-	, ImVec2(1,1), ImVec4(1,1,1,1), ImVec4(0,0,0,0));	
+	ImVec2 pTargetImageSize;
+	pTargetImageSize.x = m_vecTargetResolution.x * 1.f / 3.f;
+	pTargetImageSize.y = m_vecTargetResolution.y * 1.f / 3.f;
+
+
+	static const char* s_arrTargetTextureName[] = {
+		"Particle Target",
+		"Emissive Target",
+		"Particle + Emissive Target",
+	};
+	static int TargetTextureIDX = 0;
+	ImGui::Text("Set Particle Target"); ImGui::SameLine();
+	if (ImGui::BeginCombo("##PARTICLE_TARGET_COMBO", s_arrTargetTextureName[TargetTextureIDX]))
+	{
+		for (size_t i = 0; i < std::size(s_arrTargetTextureName); ++i)
+		{
+			if (ImGui::Selectable(s_arrTargetTextureName[i]))
+			{
+				TargetTextureIDX = i;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	if (0 == TargetTextureIDX)
+	{
+		ImGui::Image(m_pParticleTarget.Get()->GetSRV().Get(), pTargetImageSize, ImVec2(0, 0)
+			, ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+	}
+	else if (1 == TargetTextureIDX)
+	{
+		ImGui::Image(m_pEmissiveTarget.Get()->GetSRV().Get(), pTargetImageSize, ImVec2(0, 0)
+			, ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+	}
+	else if (2 == TargetTextureIDX)
+	{
+
+	}
+
 
 	if (nullptr == m_pTargetParticle)
 	{
