@@ -12,7 +12,7 @@ private:
 public:
 	int  init(HWND _hWnd, POINT _ptResolution);
 	void progress();
-	HWND GetMainHwnd() { return m_hWnd; }
+	HWND GetMainHwnd() const { return m_hWnd; }
 
 private:
 	void Frame_Init();

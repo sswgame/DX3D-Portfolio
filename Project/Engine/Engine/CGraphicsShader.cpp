@@ -19,33 +19,29 @@ CGraphicsShader::CGraphicsShader()
 	, m_eRSType(RS_TYPE::CULL_BACK)
 	, m_eDSType(DS_TYPE::LESS)
 	, m_eBSType(BS_TYPE::DEFAULT)
-	, m_eTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
-{
-}
+	, m_eTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST) {}
 
-CGraphicsShader::~CGraphicsShader()
-{
-}
+CGraphicsShader::~CGraphicsShader() = default;
 
 
 int CGraphicsShader::CreateVertexShader(const wstring& _strRelativePath, const string& _strVSFunc)
 {
-	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
-	                                nullptr,
-	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
-	                                _strVSFunc.c_str(),
-	                                "vs_5_0",
-	                                g_iFlag,
-	                                0,
-	                                m_VSBlob.GetAddressOf(),
-	                                m_ErrBlob.GetAddressOf());
+	const HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                      nullptr,
+	                                      D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                      _strVSFunc.c_str(),
+	                                      "vs_5_0",
+	                                      g_iFlag,
+	                                      0,
+	                                      m_VSBlob.GetAddressOf(),
+	                                      m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
-		MessageBoxA(nullptr, (char*)m_ErrBlob->GetBufferPointer(), "Shader Compile Failed!!", MB_OK);
+		MessageBoxA(nullptr, static_cast<char*>(m_ErrBlob->GetBufferPointer()), "Shader Compile Failed!!", MB_OK);
 		return E_FAIL;
 	}
 
@@ -56,7 +52,7 @@ int CGraphicsShader::CreateVertexShader(const wstring& _strRelativePath, const s
 		return E_FAIL;
 	}
 
-	if (FAILED(DEVICE->CreateInputLayout(g_vecLayout.data(), (UINT)g_vecLayout.size()
+	if (FAILED(DEVICE->CreateInputLayout(g_vecLayout.data(), static_cast<UINT>(g_vecLayout.size())
 		           , m_VSBlob->GetBufferPointer(), m_VSBlob->GetBufferSize()
 		           , m_InputLayout.GetAddressOf())))
 	{
@@ -69,22 +65,22 @@ int CGraphicsShader::CreateVertexShader(const wstring& _strRelativePath, const s
 
 int CGraphicsShader::CreateHullShader(const wstring& _strRelativePath, const string& _strFunc)
 {
-	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
-	                                nullptr,
-	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
-	                                _strFunc.c_str(),
-	                                "hs_5_0",
-	                                g_iFlag,
-	                                0,
-	                                m_HSBlob.GetAddressOf(),
-	                                m_ErrBlob.GetAddressOf());
+	const HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                      nullptr,
+	                                      D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                      _strFunc.c_str(),
+	                                      "hs_5_0",
+	                                      g_iFlag,
+	                                      0,
+	                                      m_HSBlob.GetAddressOf(),
+	                                      m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
-		MessageBoxA(nullptr, (char*)m_ErrBlob->GetBufferPointer(), "Shader Compile Failed!!", MB_OK);
+		MessageBoxA(nullptr, static_cast<char*>(m_ErrBlob->GetBufferPointer()), "Shader Compile Failed!!", MB_OK);
 		return E_FAIL;
 	}
 
@@ -100,22 +96,22 @@ int CGraphicsShader::CreateHullShader(const wstring& _strRelativePath, const str
 
 int CGraphicsShader::CreateDomainShader(const wstring& _strRelativePath, const string& _strFunc)
 {
-	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
-	                                nullptr,
-	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
-	                                _strFunc.c_str(),
-	                                "ds_5_0",
-	                                g_iFlag,
-	                                0,
-	                                m_DSBlob.GetAddressOf(),
-	                                m_ErrBlob.GetAddressOf());
+	const HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                      nullptr,
+	                                      D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                      _strFunc.c_str(),
+	                                      "ds_5_0",
+	                                      g_iFlag,
+	                                      0,
+	                                      m_DSBlob.GetAddressOf(),
+	                                      m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
-		MessageBoxA(nullptr, (char*)m_ErrBlob->GetBufferPointer(), "Shader Compile Failed!!", MB_OK);
+		MessageBoxA(nullptr, static_cast<char*>(m_ErrBlob->GetBufferPointer()), "Shader Compile Failed!!", MB_OK);
 		return E_FAIL;
 	}
 
@@ -131,22 +127,22 @@ int CGraphicsShader::CreateDomainShader(const wstring& _strRelativePath, const s
 
 int CGraphicsShader::CreateGeometryShader(const wstring& _strRelativePath, const string& _strFunc)
 {
-	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
-	                                nullptr,
-	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
-	                                _strFunc.c_str(),
-	                                "gs_5_0",
-	                                g_iFlag,
-	                                0,
-	                                m_GSBlob.GetAddressOf(),
-	                                m_ErrBlob.GetAddressOf());
+	const HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                      nullptr,
+	                                      D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                      _strFunc.c_str(),
+	                                      "gs_5_0",
+	                                      g_iFlag,
+	                                      0,
+	                                      m_GSBlob.GetAddressOf(),
+	                                      m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
-		MessageBoxA(nullptr, (char*)m_ErrBlob->GetBufferPointer(), "Shader Compile Failed!!", MB_OK);
+		MessageBoxA(nullptr, static_cast<char*>(m_ErrBlob->GetBufferPointer()), "Shader Compile Failed!!", MB_OK);
 		return E_FAIL;
 	}
 
@@ -162,22 +158,22 @@ int CGraphicsShader::CreateGeometryShader(const wstring& _strRelativePath, const
 
 int CGraphicsShader::CreatePixelShader(const wstring& _strRelativePath, const string& _strFunc)
 {
-	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 버텍스 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
-	                                nullptr,
-	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
-	                                _strFunc.c_str(),
-	                                "ps_5_0",
-	                                g_iFlag,
-	                                0,
-	                                m_PSBlob.GetAddressOf(),
-	                                m_ErrBlob.GetAddressOf());
+	const HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                      nullptr,
+	                                      D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                      _strFunc.c_str(),
+	                                      "ps_5_0",
+	                                      g_iFlag,
+	                                      0,
+	                                      m_PSBlob.GetAddressOf(),
+	                                      m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
-		MessageBoxA(nullptr, (char*)m_ErrBlob->GetBufferPointer(), "Shader Compile Failed!!", MB_OK);
+		MessageBoxA(nullptr, static_cast<char*>(m_ErrBlob->GetBufferPointer()), "Shader Compile Failed!!", MB_OK);
 		return E_FAIL;
 	}
 

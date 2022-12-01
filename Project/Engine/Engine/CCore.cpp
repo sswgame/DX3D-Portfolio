@@ -13,13 +13,9 @@
 
 CCore::CCore()
 	: m_hWnd(nullptr)
-	, m_ptResolution{}
-{
-}
+	, m_ptResolution{} {}
 
-CCore::~CCore()
-{
-}
+CCore::~CCore() = default;
 
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
@@ -31,7 +27,8 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	m_ptResolution = _ptResolution;
 
 	// Manager 초기화
-	if (FAILED(CDevice::GetInst()->init(m_hWnd, Vec2((float)m_ptResolution.x, (float)m_ptResolution.y))))
+	if (FAILED(CDevice::GetInst()->init(m_hWnd, Vec2(static_cast<float>(m_ptResolution.x), static_cast<float>(
+		           m_ptResolution.y)))))
 	{
 		return E_FAIL;
 	}
@@ -39,12 +36,9 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CPathMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
-
 	CResMgr::GetInst()->init();
 	CRenderMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
-
-	//Direct2D
 	CFontMgr::GetInst()->Init();
 
 	return S_OK;
@@ -57,27 +51,14 @@ void CCore::Frame_Init()
 	CKeyMgr::GetInst()->update();
 }
 
-void CCore::Frame_Clear()
-{
-}
+void CCore::Frame_Clear() {}
 
 void CCore::progress()
 {
-	// 프레임 시작
 	Frame_Init();
-
-	// Scene Update
 	CSceneMgr::GetInst()->progress();
-
-	// ResMgr update
 	CResMgr::GetInst()->update();
-
-	// Render	
 	CRenderMgr::GetInst()->render();
-
-	// EventMgr update
 	CEventMgr::GetInst()->update();
-
-	// 프레임 종료
 	Frame_Clear();
 }

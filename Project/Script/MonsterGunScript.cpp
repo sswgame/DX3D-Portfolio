@@ -28,9 +28,7 @@ MonsterGunScript::MonsterGunScript()
 	AddScriptParam("PREPARE RADIUS", SCRIPTPARAM_TYPE::FLOAT, &m_prepareRange);
 }
 
-MonsterGunScript::~MonsterGunScript()
-{
-}
+MonsterGunScript::~MonsterGunScript() {}
 
 void MonsterGunScript::start()
 {
@@ -68,7 +66,7 @@ void MonsterGunScript::OnCollisionEnter(CGameObject* _OtherObject)
 	{
 		CState* pPlayerState = _OtherObject->FSM()->GetCurState();
 
-		if (pPlayerLayer->GetName() == "HEAVY_ATTACK" || pPlayerState->GetName() == "LIGHT_ATTACK")
+		if (pPlayerLayer->GetName() == L"HEAVY_ATTACK" || pPlayerState->GetName() == L"LIGHT_ATTACK")
 		{
 			//
 			m_hp -= 10;
@@ -82,9 +80,7 @@ void MonsterGunScript::OnCollisionEnter(CGameObject* _OtherObject)
 			}
 		}
 	}
-	else
-	{
-	}
+	else { }
 }
 
 void MonsterGunScript::Serialize(YAML::Emitter& emitter)

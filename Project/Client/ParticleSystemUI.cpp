@@ -7,20 +7,19 @@
 #include "ListUI.h"
 
 ParticleSystemUI::ParticleSystemUI()
-	:
-	ComponentUI{"ParticleSystem", COMPONENT_TYPE::PARTICLESYSTEM}
-  , m_pParticleSystem{nullptr}
-  , m_iMaxCount{5}
-  , m_bPosInherit{false}
-  , m_iAliveCount{1}
-  , m_fArrMinMaxTime{{0.f}, {5.f}}
-  , m_fArrMinMaxSpeed{{10.f}, {100.f}}
-  , m_fRange{10.f}
-  , m_fTerm{3.f}
+	: ComponentUI{"ParticleSystem", COMPONENT_TYPE::PARTICLESYSTEM}
+	, m_pParticleSystem{nullptr}
+	, m_iMaxCount{5}
+	, m_bPosInherit{false}
+	, m_iAliveCount{1}
+	, m_fArrMinMaxTime{{0.f}, {5.f}}
+	, m_fArrMinMaxSpeed{{10.f}, {100.f}}
+	, m_fRange{10.f}
+	, m_fTerm{3.f}
 	, m_fAngle(180.f)
-	, m_bShaderUseEmissive{ false }
+	, m_bShaderUseEmissive{false}
 	, m_bShaderUseSpeedDetail(false)
-	, m_fArrDirection{ {1.f}, {0.f} }
+	, m_fArrDirection{{1.f}, {0.f}}
 {
 	SetSize(Vec2{0, 330});
 }
@@ -55,7 +54,7 @@ void ParticleSystemUI::SetData()
 	//m_iArrDirection[0]     = static_cast<int>(vDirection.x);
 	//m_iArrDirection[1]     = static_cast<int>(vDirection.y);
 
-	m_fAngle = m_pParticleSystem->GetAngle();
+	m_fAngle = (float)m_pParticleSystem->GetAngle();
 
 	m_fRange = m_pParticleSystem->GetRange();
 	m_fTerm  = m_pParticleSystem->GetTerm();
@@ -64,7 +63,11 @@ void ParticleSystemUI::SetData()
 void ParticleSystemUI::render_update()
 {
 	ComponentUI::render_update();
-	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
+	if (ComponentUI::IsFold())
+	{
+		SetSize(Vec2(0.f, 25.f));
+		return;
+	}
 	else { SetSize(Vec2(0.f, 330.f)); }
 
 	SetData();
@@ -146,7 +149,7 @@ void ParticleSystemUI::render_update()
 			{
 				if (ImGui::Selectable(s_arrSpeedDetailName[i]))
 				{
-					m_pParticleSystem->SetSpeedDetailFunc(i);
+					m_pParticleSystem->SetSpeedDetailFunc(static_cast<int>(i));
 				}
 			}
 			ImGui::EndCombo();
@@ -180,9 +183,11 @@ void ParticleSystemUI::render_update()
 	m_pParticleSystem->SetTerm(m_fTerm);
 
 	ImGui::Text("Direction");
-	ImGui::Text("Dir X  :"); 	ImGui::SameLine(100);
+	ImGui::Text("Dir X  :");
+	ImGui::SameLine(100);
 	ImGui::DragFloat("##PARTICLE_DIR_X", &m_fArrDirection[0], 0.1f, -1.0f, 1.0f, "%.1f");
-	ImGui::Text("Dir Y  :"); 	ImGui::SameLine(100);
+	ImGui::Text("Dir Y  :");
+	ImGui::SameLine(100);
 	ImGui::DragFloat("##PARTICLE_DIR_Y", &m_fArrDirection[1], 0.1f, -1.0f, 1.0f, "%.1f");
 
 	Vec2 dirNormal = Vec2(m_fArrDirection[0], m_fArrDirection[1]);
@@ -194,7 +199,7 @@ void ParticleSystemUI::render_update()
 	ImGui::Text("Angle");
 	ImGui::SameLine((100));
 	ImGui::DragFloat("##PARTICLE_ANGLE_FLOAT", &m_fAngle, 1.f, 0, 360, "%.1f");
-	m_pParticleSystem->SetAngle((m_fAngle));
+	m_pParticleSystem->SetAngle(m_fAngle);
 
 
 	ImGui::Text("PARTICLE IMAGE");

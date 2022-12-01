@@ -243,7 +243,7 @@ void JugHand_Attack::Enter()
 
 	if (3 == iIndex)
 	{
-		float fHand3RunTime = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fHand3RunTime = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		fHand3RunTime *= 3.f;
 
 		GetOwner()->Animator3D()->Play(sAnimName, true);
@@ -254,7 +254,7 @@ void JugHand_Attack::Enter()
 	{
 		m_pAnimation->SetLerpTime(0.f);
 
-		float fRunTime = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fRunTime = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 
 		if (true == m_bFirstAttackDone)
 		{

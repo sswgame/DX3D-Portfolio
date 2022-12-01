@@ -191,7 +191,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="CameraMoveScript.h" />
     <ClInclude Include="CAttack_Gun.h" />
     <ClInclude Include="CDeath_Gun.h" />
-    <ClInclude Include="TestScript.h" />
+    <ClInclude Include="UITestScript.h" />
     <ClInclude Include="UIImageScript.h" />
     <ClInclude Include="UIPanelScript.h" />
     <ClInclude Include="CUIBase.h" />
@@ -266,7 +266,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="CameraMoveScript.cpp" />
     <ClCompile Include="CAttack_Gun.cpp" />
     <ClCompile Include="CDeath_Gun.cpp" />
-    <ClCompile Include="TestScript.cpp" />
+    <ClCompile Include="UITestScript.cpp" />
     <ClCompile Include="UIImageScript.cpp" />
     <ClCompile Include="UIPanelScript.cpp" />
     <ClCompile Include="CUIBase.cpp" />

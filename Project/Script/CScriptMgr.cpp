@@ -21,11 +21,11 @@
 #include "PlayerScript.h"
 #include "RigidBodyScript.h"
 #include "SwordTrailScript.h"
-#include "TestScript.h"
 #include "TrailScript.h"
 #include "UIImageScript.h"
 #include "UIPanelScript.h"
 #include "UIProgressBarScript.h"
+#include "UITestScript.h"
 #include "UITextScript.h"
 
 void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
@@ -49,11 +49,11 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"PlayerScript");
 	_vec.push_back(L"RigidBodyScript");
 	_vec.push_back(L"SwordTrailScript");
-	_vec.push_back(L"TestScript");
 	_vec.push_back(L"TrailScript");
 	_vec.push_back(L"UIImageScript");
 	_vec.push_back(L"UIPanelScript");
 	_vec.push_back(L"UIProgressBarScript");
+	_vec.push_back(L"UITestScript");
 	_vec.push_back(L"UITextScript");
 }
 
@@ -98,8 +98,6 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new RigidBodyScript;
 	if (L"SwordTrailScript"== _strScriptName)
 		return new SwordTrailScript;
-	if (L"TestScript"== _strScriptName)
-		return new TestScript;
 	if (L"TrailScript"== _strScriptName)
 		return new TrailScript;
 	if (L"UIImageScript"== _strScriptName)
@@ -108,6 +106,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new UIPanelScript;
 	if (L"UIProgressBarScript"== _strScriptName)
 		return new UIProgressBarScript;
+	if (L"UITestScript"== _strScriptName)
+		return new UITestScript;
 	if (L"UITextScript"== _strScriptName)
 		return new UITextScript;
 	return nullptr;
@@ -156,8 +156,6 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new RigidBodyScript;
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
 		return new SwordTrailScript;
-	case SCRIPT_TYPE::TESTSCRIPT:
-		return new TestScript;
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return new TrailScript;
 	case SCRIPT_TYPE::UIIMAGESCRIPT:
@@ -166,6 +164,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new UIPanelScript;
 	case SCRIPT_TYPE::UIPROGRESSBARSCRIPT:
 		return new UIProgressBarScript;
+	case SCRIPT_TYPE::UITESTSCRIPT:
+		return new UITestScript;
 	case SCRIPT_TYPE::UITEXTSCRIPT:
 		return new UITextScript;
 	}
@@ -215,8 +215,6 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"RigidBodyScript";
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
 		return L"SwordTrailScript";
-	case SCRIPT_TYPE::TESTSCRIPT:
-		return L"TestScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return L"TrailScript";
 	case SCRIPT_TYPE::UIIMAGESCRIPT:
@@ -225,6 +223,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"UIPanelScript";
 	case SCRIPT_TYPE::UIPROGRESSBARSCRIPT:
 		return L"UIProgressBarScript";
+	case SCRIPT_TYPE::UITESTSCRIPT:
+		return L"UITestScript";
 	case SCRIPT_TYPE::UITEXTSCRIPT:
 		return L"UITextScript";
 		}

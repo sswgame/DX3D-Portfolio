@@ -5,14 +5,13 @@
 
 
 CTimeMgr::CTimeMgr()
-	:
-	m_llFrequency{}
-  , m_llPrevCount{}
-  , m_llCurCount{}
-  , m_iFPS(0)
-  , m_fDT{0}
-  , m_fAddTime(0.f)
-  , m_fCurTime{0} {}
+	: m_llFrequency{}
+	, m_llPrevCount{}
+	, m_llCurCount{}
+	, m_iFPS(0)
+	, m_fDT{0}
+	, m_fAddTime(0.f)
+	, m_fCurTime{0} {}
 
 CTimeMgr::~CTimeMgr() {}
 

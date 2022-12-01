@@ -14,14 +14,12 @@
 #include "CSound.h"
 #include "CMeshData.h"
 
-
-
 class CResMgr
 	: public CSingleton<CResMgr>
 {
 	SINGLE(CResMgr);
 private:
-	map<wstring, CRes*>		m_Res[(UINT)RES_TYPE::END];
+	std::map<std::wstring, CRes*> m_Res[static_cast<UINT>(RES_TYPE::END)];
 
 public:
 	void init();
@@ -38,33 +36,37 @@ private:
 	void MakeInputLayoutInfo();
 
 public:
-	template<typename type>
-	RES_TYPE GetResType();
+	template <typename T>
+	RES_TYPE GetResType() const;
 
-	template<typename type>
-	Ptr<type> Load(const wstring& _strKey, const wstring& _strRelativePath, bool _bEngineRes = false);
+	template <typename T>
+	Ptr<T> Load(const wstring& _strKey, const wstring& _strRelativePath, bool _bEngineResource = false);
 
-	template<typename type>
-	Ptr<type> FindRes(const wstring& _strKey);
+	template <typename T>
+	Ptr<T> FindRes(const wstring& _strKey);
 
 	vector<Ptr<CMeshData>> LoadFBX(const wstring& _strPath);
 
-	const map<wstring, CRes*>& GetResList(RES_TYPE _eType) { return m_Res[(UINT)_eType]; }
+	const map<wstring, CRes*>& GetResList(RES_TYPE _eType) { return m_Res[static_cast<UINT>(_eType)]; }
 
-	template<typename type>
-	void AddRes(const wstring& _strKey, type* _pRes, bool _bEngineRes = false);
+	template <typename T>
+	void AddRes(const wstring& _strKey, T* _pResource, bool _bEngineResource = false);
 
 	// _flag : D3D11_BIND_FLAG
-	Ptr<CTexture> CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight
-		, DXGI_FORMAT _format, UINT _flag, bool _bEngineRes = false);
+	Ptr<CTexture> CreateTexture(const wstring& _strKey,
+	                            UINT           _iWidth,
+	                            UINT           _iHeight,
+	                            DXGI_FORMAT    _format,
+	                            UINT           _flag,
+	                            bool           _bEngineResource = false);
 
-	Ptr<CTexture> CreateTexture(const wstring& _strKey, ComPtr<ID3D11Texture2D> _pTex2D, bool _bEngineRes = false);
+	Ptr<CTexture> CreateTexture(const wstring& _strKey, ComPtr<ID3D11Texture2D> _pTex2D, bool _bEngineResource = false);
 
 	Ptr<CTexture> LoadTexture(const wstring& _strKey, const wstring& _strRelativePath, int _iMapLevel);
 
 
-	template<typename T>
-	inline void ForceDeleteRes(const wstring& _key);
+	template <typename T>
+	void ForceDeleteRes(const wstring& _key);
 
 
 private:
@@ -73,113 +75,111 @@ private:
 	friend class CEventMgr;
 };
 
-template<typename type>
-inline RES_TYPE CResMgr::GetResType()
+template <typename T>
+RES_TYPE CResMgr::GetResType() const
 {
-	const type_info& info = typeid(type);
-
-	if (info.hash_code() == typeid(CPrefab).hash_code())
+	if (std::is_same_v<T, CPrefab>)
 		return RES_TYPE::PREFAB;
-	else if (info.hash_code() == typeid(CMeshData).hash_code())
+	if (std::is_same_v<T, CMeshData>)
 		return RES_TYPE::MESHDATA;
-	else if (info.hash_code() == typeid(CMesh).hash_code())
+	if (std::is_same_v<T, CMesh>)
 		return RES_TYPE::MESH;
-	else if (info.hash_code() == typeid(CSound).hash_code())
+	if (std::is_same_v<T, CSound>)
 		return RES_TYPE::SOUND;
-	else if (info.hash_code() == typeid(CGraphicsShader).hash_code())
+	if (std::is_same_v<T, CGraphicsShader>)
 		return RES_TYPE::GRAPHICS_SHADER;
-	else if (info.hash_code() == typeid(CComputeShader).hash_code())
+	if (std::is_same_v<T, CComputeShader>)
 		return RES_TYPE::COMPUTE_SHADER;
-	else if (info.hash_code() == typeid(CMaterial).hash_code())
+	if (std::is_same_v<T, CMaterial>)
 		return RES_TYPE::MATERIAL;
-	else if (info.hash_code() == typeid(CTexture).hash_code())
+	if (std::is_same_v<T, CTexture>)
 		return RES_TYPE::TEXTURE;
-	else if (info.hash_code() == typeid(CSceneFile).hash_code())
+	if (std::is_same_v<T, CSceneFile>)
 		return RES_TYPE::SCENEFILE;
-
 
 	return RES_TYPE::END;
 }
 
-template<typename type>
-Ptr<type> CResMgr::Load(const wstring& _strKey, const wstring& _strRelativePath, bool _bEngineRes)
+template <typename T>
+Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strRelativePath, bool _bEngineResource)
 {
-	RES_TYPE eType = GetResType<type>();
-
-	CRes* pRes = FindRes<type>(_strKey).Get();
+	RES_TYPE eType = GetResType<T>();
+	CRes*    pRes  = FindRes<T>(_strKey).Get();
 	if (nullptr != pRes)
-		return Ptr<type>((type*)pRes);
-
-	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
-	wstring strFilePath = strContentPath + _strRelativePath;
-
-	pRes = new type;
-	if (FAILED(pRes->Load(strFilePath)))
 	{
+		return static_cast<T*>(pRes);
+	}
+
+	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	const wstring strFullPath    = strContentPath + _strRelativePath;
+
+	pRes = new T{};
+	pRes->SetKey(_strKey);
+	pRes->SetRelativePath(_strRelativePath);
+	pRes->m_bEngineRes = _bEngineResource;
+	if (FAILED(pRes->Load(strFullPath)))
+	{
+		SAFE_DELETE(pRes);
 		MessageBox(nullptr, L"리소스 로딩 실패", L"리소스 로딩 오류", MB_OK);
 		return nullptr;
 	}
 
-	pRes->SetKey(_strKey);
-	pRes->SetRelativePath(_strRelativePath);
-	pRes->m_bEngineRes = _bEngineRes;
+	m_Res[static_cast<UINT>(eType)].insert({_strKey, pRes});
 
-	m_Res[(UINT)eType].insert(make_pair(_strKey, pRes));
-
-	return Ptr<type>((type*)pRes);
+	return static_cast<T*>(pRes);
 }
 
-template<typename type>
-Ptr<type> CResMgr::FindRes(const wstring& _strKey)
-{
-	RES_TYPE eType = GetResType<type>();
-
-	map<wstring, CRes*>::iterator iter = m_Res[(UINT)eType].find(_strKey);
-
-	if (iter == m_Res[(UINT)eType].end())
-		return nullptr;
-
-	return (type*)iter->second;
-}
-
-template<typename type>
-void CResMgr::AddRes(const wstring& _strKey, type* _pRes, bool _bEngineRes)
-{
-	RES_TYPE eType = GetResType<type>();
-
-	Ptr<type> pRes = FindRes<type>(_strKey);
-
-	assert(nullptr == pRes);
-
-	_pRes->SetKey(_strKey);
-	_pRes->SetRelativePath(_strKey);
-	_pRes->m_bEngineRes = _bEngineRes;
-
-	m_Res[(UINT)eType].insert(make_pair(_strKey, _pRes));
-
-	if (_bEngineRes)
-		return;
-
-	wstring strContent = CPathMgr::GetInst()->GetContentPath();
-
-	if (!filesystem::exists(strContent + _pRes->GetRelativePath()))
-	{
-		_pRes->Save(strContent + _pRes->GetKey());
-	}
-}
-
-template<typename T>
-inline void CResMgr::ForceDeleteRes(const wstring& _key)
+template <typename T>
+Ptr<T> CResMgr::FindRes(const wstring& _strKey)
 {
 	RES_TYPE eType = GetResType<T>();
 
-	map<wstring, CRes*>::iterator iter = m_Res[(UINT)eType].find(_key);
+	const auto iter = m_Res[static_cast<UINT>(eType)].find(_strKey);
+	if (iter == m_Res[static_cast<UINT>(eType)].end())
+	{
+		return nullptr;
+	}
 
+	return static_cast<T*>(iter->second);
+}
+
+template <typename T>
+void CResMgr::AddRes(const wstring& _strKey, T* _pResource, bool _bEngineResource)
+{
+	RES_TYPE eType = GetResType<T>();
+	Ptr<T>   pRes  = FindRes<T>(_strKey);
+	assert(nullptr == pRes);
+
+	_pResource->SetKey(_strKey);
+	_pResource->SetRelativePath(_strKey);
+	_pResource->m_bEngineRes = _bEngineResource;
+
+	m_Res[static_cast<UINT>(eType)].insert({_strKey, _pResource});
+	if (_bEngineResource)
+	{
+		return;
+	}
+
+	const std::wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	const std::wstring strFullPath    = strContentPath + _pResource->GetRelativePath();
+	if (false == std::filesystem::exists(strFullPath))
+	{
+		_pResource->Save(strContentPath + _pResource->GetRelativePath());
+	}
+}
+
+template <typename T>
+void CResMgr::ForceDeleteRes(const wstring& _key)
+{
+	RES_TYPE eType = GetResType<T>();
+
+	const auto iter = m_Res[static_cast<UINT>(eType)].find(_key);
 	if (nullptr != iter->second)
 	{
 		if (nullptr != iter->second)
+		{
 			delete iter->second;
-
-		m_Res[(UINT)eType].erase(iter);
+		}
+		m_Res[static_cast<UINT>(eType)].erase(iter);
 	}
 }

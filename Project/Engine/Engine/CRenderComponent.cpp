@@ -88,7 +88,9 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _iIdx)
 {
 	// Play 모드에서만 동작가능
 	if (CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
+	{
 		return nullptr;
+	}
 
 	if (nullptr != m_vecMtrls[_iIdx].pDynamicMtrl)
 	{
@@ -106,6 +108,12 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _iIdx)
 	m_vecMtrls[_iIdx].pMtrl = m_vecMtrls[_iIdx].pDynamicMtrl;
 
 	return m_vecMtrls[_iIdx].pMtrl;
+}
+
+bool CRenderComponent::IsUsingDynamicMaterial(UINT _index) const
+{
+	assert(_index < m_vecMtrls.size());
+	return m_vecMtrls[_index].pMtrl.Get() == m_vecMtrls[_index].pDynamicMtrl.Get();
 }
 
 
@@ -159,8 +167,16 @@ void CRenderComponent::LoadFromScene(FILE* _pFile)
 
 void CRenderComponent::Serialize(YAML::Emitter& emitter)
 {
-	CRes& mesh = *m_pMesh.Get();
-	emitter << YAML::Key << "MESH" << YAML::Value << mesh;
+	if (nullptr != m_pMesh)
+	{
+		CRes& mesh = *m_pMesh.Get();
+		emitter << YAML::Key << "MESH" << YAML::Value << mesh;
+	}
+	else
+	{
+		emitter << YAML::Key << "MESH" << YAML::Value << "";
+	}
+
 	int materialCount = GetMtrlCount();
 	emitter << YAML::Key << "MATERIAL COUNT" << YAML::Value << materialCount;
 	for (int i = 0; i < materialCount; ++i)

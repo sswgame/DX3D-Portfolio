@@ -23,33 +23,29 @@ CComponent::CComponent(COMPONENT_TYPE _eType)
 	: m_eComType(_eType)
 	, m_pOwner{nullptr}
 	, m_bActive(true)
-	, m_pDebugObj(nullptr)
-{
-}
+	, m_pDebugObj(nullptr) {}
 
 CComponent::~CComponent()
 {
 	if (nullptr != m_pDebugObj)
+	{
 		delete(m_pDebugObj);
+	}
 }
 
 void CComponent::Activate()
 {
-	tEventInfo info = {};
-
+	tEventInfo info{};
 	info.eType  = EVENT_TYPE::ACTIVATE_COMPONENT;
 	info.lParam = (DWORD_PTR)this;
-
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
 void CComponent::Deactivate()
 {
-	tEventInfo info = {};
-
+	tEventInfo info{};
 	info.eType  = EVENT_TYPE::DEACTIVATE_COMOPNENT;
 	info.lParam = (DWORD_PTR)this;
-
 	CEventMgr::GetInst()->AddEvent(info);
 }
 

@@ -49,8 +49,7 @@ public:
 	{
 		if (m_pRes == _pRes)
 			return true;
-		else
-			return false;
+		return false;
 	}
 
 	bool operator !=(T* _pRes)
@@ -62,8 +61,7 @@ public:
 	{
 		if (m_pRes == _OtherPtr.m_pRes)
 			return true;
-		else
-			return false;
+		return false;
 	}
 
 	bool operator !=(const Ptr<T>& _OtherPtr)
@@ -73,20 +71,17 @@ public:
 
 public:
 	Ptr()
-		:
-		m_pRes(nullptr) {}
+		: m_pRes(nullptr) {}
 
 	Ptr(T* _pRes)
-		:
-		m_pRes(_pRes)
+		: m_pRes(_pRes)
 	{
 		if (nullptr != m_pRes)
 			m_pRes->AddRef();
 	}
 
 	Ptr(const Ptr<T>& _otherPtr)
-		:
-		m_pRes(_otherPtr.m_pRes)
+		: m_pRes(_otherPtr.m_pRes)
 	{
 		if (nullptr != m_pRes)
 			m_pRes->AddRef();

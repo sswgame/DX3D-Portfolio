@@ -21,17 +21,23 @@ private:
 	PROGRESS_DIR m_dir;
 
 	UIImageScript* m_pImageScript;
-	std::wstring   m_textureName;
+	std::string    m_textureName;
 public:
 	float GetPercent() const { return m_percentage; }
 	void  SetPercent(float value);
 	void  SetDir(PROGRESS_DIR dir) { m_dir = dir; }
-	void  SetTexture(const std::wstring& texturePath) { m_textureName = texturePath; }
+	void  SetTexture(const std::string& texturePath);
 public:
 	void start() override;
 	void lateupdate() override;
+
+public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
+
 public:
 	CLONE(UIProgressBarScript);
 	UIProgressBarScript();
+	UIProgressBarScript(const UIProgressBarScript& _origin);
 	virtual ~UIProgressBarScript();
 };

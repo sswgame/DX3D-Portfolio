@@ -16,6 +16,7 @@ CAnimator3D::CAnimator3D()
 	, m_pVecClip(nullptr)
 	, m_iFrameCount(30)
 	, m_pBoneFinalMatBuffer(nullptr)
+	, m_bUseSocket{false}
 	, m_pPrevAnim(nullptr)
 	, m_pCurAnim(nullptr)
 	, m_pNextAnim(nullptr)
@@ -34,13 +35,13 @@ CAnimator3D::CAnimator3D(const CAnimator3D& _origin)
 	, m_pVecClip(_origin.m_pVecClip)
 	, m_iFrameCount(_origin.m_iFrameCount)
 	, m_pBoneFinalMatBuffer(nullptr)
+	, m_bUseSocket{_origin.m_bUseSocket}
 	, m_bRepeat(_origin.m_bRepeat)
 	, m_bPlayWithChild{_origin.m_bPlayWithChild}
 	, m_eCreateMode{_origin.m_eCreateMode}
 {
 	m_pBoneFinalMatBuffer = new CStructuredBuffer;
-	//TODO:복사 생성할 때 자기 것만 생성.
-	m_pSocketBuffer = new CStructuredBuffer{};
+	m_pSocketBuffer       = new CStructuredBuffer{};
 
 	for (const auto& pairData : _origin.m_mapAnim)
 	{
@@ -121,27 +122,24 @@ void CAnimator3D::CopyAllAnim(const map<wstring, CAnimation3D*> _mapAnim)
 	{
 		if (m_eCreateMode == CREATE_ANIMATION_MODE::FRAME)
 		{
-			CreateAnimByFrame(iter->second->GetName()
-			                  , iter->second->GetClipNum()
-			                  , iter->second->GetStartFrameIdx()
-			                  , iter->second->GetEndFrameIdx()
+			CreateAnimByFrame(iter->second->GetName(),
+			                  iter->second->GetClipNum(),
+			                  iter->second->GetStartFrameIdx(),
+			                  iter->second->GetEndFrameIdx()
 			                 );
 		}
 		else if (m_eCreateMode == CREATE_ANIMATION_MODE::TIME)
 		{
-			CreateAnimByTime(iter->second->GetName()
-			                 , iter->second->GetClipNum()
-			                 , iter->second->GetStartTime()
-			                 , iter->second->GetEndTime()
+			CreateAnimByTime(iter->second->GetName(),
+			                 iter->second->GetClipNum(),
+			                 iter->second->GetStartTime(),
+			                 iter->second->GetEndTime()
 			                );
 		}
 	}
 }
 
-CAnimation3D* CAnimator3D::CreateAnimByFrame(const wstring& _strName
-                                             , int          _clipNum
-                                             , int          _startFrame
-                                             , int          _EndFrame)
+CAnimation3D* CAnimator3D::CreateAnimByFrame(const wstring& _strName, int _clipNum, int _startFrame, int _EndFrame)
 {
 	if (FindAnim(_strName) != nullptr) return nullptr;
 	//assert(!FindAnim(_strName));
@@ -304,10 +302,7 @@ void CAnimator3D::CopyAllAnimToChild()
 	}
 }
 
-CAnimation3D* CAnimator3D::CreateAnimByTime(const wstring& _strName
-                                            , int          _clipNum
-                                            , double       _StartTime
-                                            , double       _EndTime)
+CAnimation3D* CAnimator3D::CreateAnimByTime(const wstring& _strName, int _clipNum, double _StartTime, double _EndTime)
 {
 	if (FindAnim(_strName) != nullptr) return nullptr;
 	//assert(!FindAnim(_strName));
@@ -381,6 +376,22 @@ void CAnimator3D::Play(const wstring& _strName, bool _bRepeat)
 			}
 		}
 	}
+}
+
+void CAnimator3D::ResizeSocketMatrix()
+{
+	m_pSocketBuffer->Create(sizeof(Matrix), GetBoneCount(), SB_TYPE::READ_WRITE, true, nullptr);
+	m_vecSocketMatrix.clear();
+	m_vecSocketMatrix.shrink_to_fit();
+	m_vecSocketMatrix.resize(GetBoneCount());
+}
+
+const Matrix& CAnimator3D::GetSocket(int index)
+{
+	index        = ClampData(index, 0, (int)m_vecSocketMatrix.size());
+	m_bUseSocket = true;
+
+	return m_vecSocketMatrix[index];
 }
 
 void CAnimator3D::RegisterNextAnim(CAnimation3D* _pNextAnim)
@@ -680,13 +691,9 @@ void CAnimator3D::SetRepeat(bool _b)
 	}
 }
 
-void CAnimator3D::SaveToScene(FILE* _pFile)
-{
-}
+void CAnimator3D::SaveToScene(FILE* _pFile) {}
 
-void CAnimator3D::LoadFromScene(FILE* _pFile)
-{
-}
+void CAnimator3D::LoadFromScene(FILE* _pFile) {}
 
 void CAnimator3D::Serialize(YAML::Emitter& emitter)
 {

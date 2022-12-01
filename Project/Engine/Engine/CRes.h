@@ -1,9 +1,9 @@
 #pragma once
 #include "CEntity.h"
-
 #include "Ptr.h"
 
-class CRes : public CEntity
+class CRes
+	: public CEntity
 {
 private:
 	const RES_TYPE m_eResType;
@@ -22,10 +22,10 @@ protected:
 public:
 	const wstring& GetKey() const { return m_strKey; }
 	const wstring& GetRelativePath() const { return m_strRelativePath; }
-	UINT           GetRefCount() { return m_iRefCount; }
-	RES_TYPE       GetResType() { return m_eResType; }
-	bool           IsEngineRes() { return m_bEngineRes; }
-	bool           IsChanged() { return m_bChanged; }
+	UINT           GetRefCount() const { return m_iRefCount; }
+	RES_TYPE       GetResType() const { return m_eResType; }
+	bool           IsEngineRes() const { return m_bEngineRes; }
+	bool           IsChanged() const { return m_bChanged; }
 
 protected:
 	virtual int Save(const wstring& _strFilePath)

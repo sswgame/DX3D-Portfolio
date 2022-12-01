@@ -43,6 +43,15 @@ void Safe_Del_Arr(T (&_Arr)[_iSize])
 	}
 }
 
+template <typename T, UINT _Size>
+void Safe_Del_Arr(std::array<T*, _Size> pArray)
+{
+	for (auto& pData : pArray)
+	{
+		SAFE_DELETE(pData);
+	}
+}
+
 
 void SaveStringToFile(const string& _str, FILE* _pFile);
 void LoadStringFromFile(string& _str, FILE* _pFile);
@@ -51,7 +60,7 @@ void SaveWStringToFile(const wstring& _str, FILE* _pFile);
 void LoadWStringFromFile(wstring& _str, FILE* _pFile);
 
 
-Matrix GetMatrixFromFbxMatrix(FbxAMatrix& _mat);
+Matrix GetMatrixFromFbxMatrix(const FbxAMatrix& _mat);
 
 
 std::wstring ToWString(COMPONENT_TYPE _type);
@@ -157,6 +166,8 @@ void LoadResPtr(Ptr<RES>& _ptr, FILE* _pFile)
 }
 
 Vec3 DecomposeRotMat(const Matrix& _matRot);
+
+bool CloseEnough(const float& a, const float& b, const float& epsilon = std::numeric_limits<float>::epsilon());
 
 template <typename T>
 T ClampData(T _target, T _min, T _max)

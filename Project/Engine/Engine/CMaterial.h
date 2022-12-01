@@ -41,13 +41,13 @@ public:
 	const void*   GetScalarParam(SCALAR_PARAM _eType);
 	Ptr<CTexture> GetTexParam(TEX_PARAM _eType);
 
-	void       UpdateData();
+	void       UpdateData() override;
 	CMaterial* GetMtrlInst();
-	CMaterial* GetMasterMtrl() { return m_pMasterMtrl; }
+	CMaterial* GetMasterMtrl() const { return m_pMasterMtrl; }
 
 public:
-	virtual int Save(const wstring& _strFilePath) override;
-	virtual int Load(const wstring& _strFilePath) override;
+	int Save(const wstring& _strFilePath) override;
+	int Load(const wstring& _strFilePath) override;
 
 	CLONE(CMaterial);
 

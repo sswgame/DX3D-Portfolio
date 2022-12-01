@@ -105,7 +105,7 @@ Texture2DArray g_texarr_1 : register(t9);
 Texture2D g_Atlas : register(t10);
 
 // Animation3D Bone Matrix Buffer
-StructuredBuffer<Matrix> g_arrBoneMat : register(t30);
+StructuredBuffer<matrix> g_arrBoneMat : register(t30);
 
 // Light2DBuffer, // Light3DBuffer
 StructuredBuffer<tLightInfo> g_Light2DBuffer : register(t60);

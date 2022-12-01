@@ -16,12 +16,12 @@ private:
 	ComPtr<IDXGISwapChain> m_pSwapChain;
 	DXGI_SWAP_CHAIN_DESC   m_tSwapChainDesc;
 
-	ComPtr<ID3D11RasterizerState>   m_arrRS[(UINT)RS_TYPE::END];
-	ComPtr<ID3D11DepthStencilState> m_arrDS[(UINT)DS_TYPE::END];
-	ComPtr<ID3D11BlendState>        m_arrBS[(UINT)BS_TYPE::END];
+	ComPtr<ID3D11RasterizerState>   m_arrRS[static_cast<UINT>(RS_TYPE::END)];
+	ComPtr<ID3D11DepthStencilState> m_arrDS[static_cast<UINT>(DS_TYPE::END)];
+	ComPtr<ID3D11BlendState>        m_arrBS[static_cast<UINT>(BS_TYPE::END)];
 
 
-	CConstBuffer* m_arrCB[(UINT)CB_TYPE::END];
+	CConstBuffer* m_arrCB[static_cast<UINT>(CB_TYPE::END)];
 
 	ComPtr<ID3D11SamplerState> m_arrSam[2];
 
@@ -35,21 +35,21 @@ public:
 
 public:
 	int  init(HWND _hWnd, Vec2 _vRenderResolution);
-	void Present() { m_pSwapChain->Present(0, 0); }
+	void Present() const { m_pSwapChain->Present(0, 0); }
 
-	Vec2 GetRenderResolution() { return m_vRenderResolution; }
+	Vec2 GetRenderResolution() const { return m_vRenderResolution; }
 
 	ComPtr<ID3D11Device>        GetDevice() { return m_pDevice; }
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() { return m_pDeviceContext; }
 
-	ComPtr<ID3D11RasterizerState>   GetRS(RS_TYPE _eType) { return m_arrRS[(UINT)_eType]; }
-	ComPtr<ID3D11DepthStencilState> GetDS(DS_TYPE _eType) { return m_arrDS[(UINT)_eType]; }
-	ComPtr<ID3D11BlendState>        GetBS(BS_TYPE _eType) { return m_arrBS[(UINT)_eType]; }
-	CConstBuffer*                   GetCB(CB_TYPE _eType) { return m_arrCB[(UINT)_eType]; }
+	ComPtr<ID3D11RasterizerState>   GetRS(RS_TYPE _eType) { return m_arrRS[static_cast<UINT>(_eType)]; }
+	ComPtr<ID3D11DepthStencilState> GetDS(DS_TYPE _eType) { return m_arrDS[static_cast<UINT>(_eType)]; }
+	ComPtr<ID3D11BlendState>        GetBS(BS_TYPE _eType) { return m_arrBS[static_cast<UINT>(_eType)]; }
+	CConstBuffer*                   GetCB(CB_TYPE _eType) const { return m_arrCB[static_cast<UINT>(_eType)]; }
 
 private:
 	int  CreateSwapchain();
-	int  CreateView();
+	int  CreateView() const;
 	int  CreateRasterizerState();
 	int  CreateDepthStencilState();
 	int  CreateBlendState();

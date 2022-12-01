@@ -13,12 +13,8 @@
 #include <Engine/CScene.h>
 #include <Script/CSceneSaveLoad.h>
 
-#include <experimental/filesystem>
-
-
 ResourceUI::ResourceUI()
-	:
-	UI("Resource")
+	: UI("Resource")
 {
 	m_TreeUI = new TreeUI(true);
 	m_TreeUI->SetTitle("Resource");
@@ -116,32 +112,46 @@ void ResourceUI::Reload()
 	for (size_t i = 0; i < m_vecResPath.size(); ++i)
 	{
 		// 1. 파일명을 통해서 리소스의 종류를 알아낸다.
-		RES_TYPE eType = GetResTypeFromExt(m_vecResPath[i]);
+		const RES_TYPE eType = GetResTypeFromExt(m_vecResPath[i]);
 
 		// 2. 상대경로를 키값으로 해서 리소스매니저에 로딩한다.
 		switch (eType)
 		{
 		case RES_TYPE::PREFAB:
-			CResMgr::GetInst()->Load<CPrefab>(m_vecResPath[i], m_vecResPath[i]);
-			break;
+			{
+				CResMgr::GetInst()->Load<CPrefab>(m_vecResPath[i], m_vecResPath[i]);
+				break;
+			}
 		case RES_TYPE::MESHDATA:
-
-			break;
+			{
+				CResMgr::GetInst()->Load<CMeshData>(m_vecResPath[i], m_vecResPath[i]);
+				break;
+			}
 		case RES_TYPE::MATERIAL:
-			CResMgr::GetInst()->Load<CMaterial>(m_vecResPath[i], m_vecResPath[i]);
-			break;
+			{
+				CResMgr::GetInst()->Load<CMaterial>(m_vecResPath[i], m_vecResPath[i]);
+				break;
+			}
 		case RES_TYPE::MESH:
-
-			break;
+			{
+				CResMgr::GetInst()->Load<CMesh>(m_vecResPath[i], m_vecResPath[i]);
+				break;
+			}
 		case RES_TYPE::TEXTURE:
-			CResMgr::GetInst()->Load<CTexture>(m_vecResPath[i], m_vecResPath[i]);
-			break;
+			{
+				CResMgr::GetInst()->Load<CTexture>(m_vecResPath[i], m_vecResPath[i]);
+				break;
+			}
 		case RES_TYPE::SOUND:
-			CResMgr::GetInst()->Load<CSound>(m_vecResPath[i], m_vecResPath[i]);
-			break;
+			{
+				CResMgr::GetInst()->Load<CSound>(m_vecResPath[i], m_vecResPath[i]);
+				break;
+			}
 		case RES_TYPE::SCENEFILE:
-			CResMgr::GetInst()->Load<CSceneFile>(m_vecResPath[i], m_vecResPath[i]);
-			break;
+			{
+				CResMgr::GetInst()->Load<CSceneFile>(m_vecResPath[i], m_vecResPath[i]);
+				break;
+			}
 		}
 	}
 
@@ -157,7 +167,7 @@ void ResourceUI::Reload()
 				continue;
 
 			// File Exist 체크
-			if (!exists(strContentPath + pair.second->GetRelativePath()))
+			if (false == std::filesystem::exists(strContentPath + pair.second->GetRelativePath()))
 			{
 				// 4. 없으면 리소스매니저에서 메모리 해제
 				MessageBox(nullptr, L"원본파일 삭제 됨", L"파일변경 감지", MB_OK);
@@ -165,14 +175,13 @@ void ResourceUI::Reload()
 				if (0 == pair.second->GetRefCount())
 				{
 					// 삭제
-					tEventInfo info;
+					tEventInfo info{};
 					info.eType  = EVENT_TYPE::DELETE_RES;
 					info.lParam = (DWORD_PTR)pair.second;
 					CEventMgr::GetInst()->AddEvent(info);
 
 					MessageBox(nullptr, L"리소스 메모리 해제", L"파일변경 감지", MB_OK);
 				}
-
 				else
 				{
 					MessageBox(nullptr, L"사용 중인 리소스\n 메모리 해제 실패", L"파일변경 감지", MB_OK);
@@ -205,7 +214,8 @@ void ResourceUI::Renew()
 
 void ResourceUI::FindFileName(const wstring& _strFolderPath)
 {
-	wstring strContent = _strFolderPath + L"*.*";
+	//강사님 방식으로 로딩하는 것.
+	/*wstring strContent = _strFolderPath + L"*.*";
 
 	WIN32_FIND_DATA FindFileData = {};
 
@@ -233,30 +243,57 @@ void ResourceUI::FindFileName(const wstring& _strFolderPath)
 		m_vecResPath.push_back(strRelativePath);
 	}
 
-	FindClose(hFind);
+	FindClose(hFind);*/
+
+	for (const auto& entry : std::filesystem::recursive_directory_iterator{_strFolderPath})
+	{
+		if (false == entry.is_directory())
+		{
+			std::wstring relativePath = CPathMgr::GetInst()->GetRelativePath(entry.path());
+			m_vecResPath.push_back(relativePath);
+		}
+	}
 }
 
 
 RES_TYPE ResourceUI::GetResTypeFromExt(const wstring& _strExt)
 {
-	wchar_t szExt[50] = {};
-	_wsplitpath_s(_strExt.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, szExt, 50);
+	const std::filesystem::path extension = std::filesystem::path{_strExt}.extension();
 
-	wstring strExt = szExt;
-
-	if (L".mtrl" == strExt)
+	if (L".mtrl" == extension)
+	{
 		return RES_TYPE::MATERIAL;
-	if (L".png" == strExt || L".jpeg" == strExt || L".bmp" == strExt
-	    || L".jpg" == strExt || L".tga" == strExt || L".dds" == strExt)
+	}
+
+	if (L".png" == extension
+	    || L".jpeg" == extension
+	    || L".bmp" == extension
+	    || L".jpg" == extension
+	    || L".tga" == extension
+	    || L".dds" == extension)
+	{
 		return RES_TYPE::TEXTURE;
-	if (L".mp3" == strExt || L".wav" == strExt || L".ogg" == strExt)
+	}
+
+	if (L".mp3" == extension || L".wav" == extension || L".ogg" == extension)
+	{
 		return RES_TYPE::SOUND;
-	if (L".pref" == strExt)
+	}
+
+	if (L".pref" == extension)
+	{
 		return RES_TYPE::PREFAB;
-	if (L".mesh" == strExt)
+	}
+
+	if (L".mesh" == extension)
+	{
 		return RES_TYPE::MESH;
-	if (L".scene" == strExt)
+	}
+
+	if (L".scene" == extension)
+	{
 		return RES_TYPE::SCENEFILE;
+	}
 
 	return RES_TYPE::END;
 }

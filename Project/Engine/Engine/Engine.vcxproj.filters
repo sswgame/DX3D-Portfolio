@@ -209,7 +209,7 @@
       <Filter>Engine\01. Header</Filter>
     </ClInclude>
     <ClInclude Include="CState.h">
-      <Filter>Engine\05. Component\FSM\State</Filter>
+      <Filter>Engine\05. Component\FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -409,7 +409,7 @@
       <Filter>Engine\01. Header</Filter>
     </ClCompile>
     <ClCompile Include="CState.cpp">
-      <Filter>Engine\05. Component\FSM\State</Filter>
+      <Filter>Engine\05. Component\FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -613,9 +613,6 @@
     </Filter>
     <Filter Include="Engine\05. Component\FSM">
       <UniqueIdentifier>{7cbc60b2-a81f-4883-832f-41a1fca93c51}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\05. Component\FSM\State">
-      <UniqueIdentifier>{773aa750-5437-4ebe-a930-29ced1cf6ebc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

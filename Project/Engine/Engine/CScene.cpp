@@ -6,17 +6,15 @@
 #include "CRenderMgr.h"
 #include "CResMgr.h"
 #include "CSceneFile.h"
-#include "CSceneMgr.h"
-
 
 CScene::CScene()
 	: m_arrLayer{}
 	, m_eSceneState(SCENE_STATE::STOP)
 {
-	for (UINT i = 0; i < MAX_LAYER; ++i)
+	for (size_t layerIndex = 0; layerIndex < std::size(m_arrLayer); ++layerIndex)
 	{
-		m_arrLayer[i]              = new CLayer;
-		m_arrLayer[i]->m_iLayerIdx = i;
+		m_arrLayer[layerIndex]              = new CLayer;
+		m_arrLayer[layerIndex]->m_iLayerIdx = static_cast<int>(layerIndex);
 	}
 }
 
@@ -28,7 +26,7 @@ CScene::~CScene()
 
 void CScene::start()
 {
-	for (UINT i = 0; i < MAX_LAYER; ++i)
+	for (size_t i = 0; i < std::size(m_arrLayer); ++i)
 	{
 		m_arrLayer[i]->start();
 	}
@@ -36,7 +34,7 @@ void CScene::start()
 
 void CScene::update()
 {
-	for (UINT i = 0; i < MAX_LAYER; ++i)
+	for (size_t i = 0; i < std::size(m_arrLayer); ++i)
 	{
 		m_arrLayer[i]->update();
 	}
@@ -44,7 +42,7 @@ void CScene::update()
 
 void CScene::lateupdate()
 {
-	for (UINT i = 0; i < MAX_LAYER; ++i)
+	for (size_t i = 0; i < std::size(m_arrLayer); ++i)
 	{
 		m_arrLayer[i]->lateupdate();
 	}
@@ -52,85 +50,92 @@ void CScene::lateupdate()
 
 void CScene::finalupdate()
 {
-	for (UINT i = 0; i < MAX_LAYER; ++i)
+	for (size_t i = 0; i < std::size(m_arrLayer); ++i)
 	{
 		m_arrLayer[i]->finalupdate();
 	}
 }
 
 
-void CScene::SetLayerName(int _iLayerIdx, const wstring& _strName)
+void CScene::SetLayerName(int _iLayerIdx, const wstring& _strName) const
 {
 	assert(0 <= _iLayerIdx && _iLayerIdx < MAX_LAYER);
-	m_arrLayer[_iLayerIdx]->SetName(_strName);
+	GetLayer(_iLayerIdx)->SetName(_strName);
 }
 
 
-int CScene::GetLayerIdxFromName(const wstring& _strName)
+int CScene::GetLayerIdxFromName(const wstring& _strName) const
 {
-	for (int i = 0; i < MAX_LAYER; ++i)
+	for (int layerIndex = 0; layerIndex < MAX_LAYER; ++layerIndex)
 	{
-		if (m_arrLayer[i]->GetName() == _strName)
+		if (m_arrLayer[layerIndex]->GetName() == _strName)
 		{
-			return i;
+			return layerIndex;
 		}
 	}
 
 	return -1;
 }
 
-void CScene::AddObject(CGameObject* _pRootObj, const wstring& _strLayerName)
+void CScene::AddObject(CGameObject* _pRootObj, const wstring& _strLayerName) const
 {
-	int iLayerIdx = GetLayerIdxFromName(_strLayerName);
-
-	assert(iLayerIdx != -1);
-	assert(!_pRootObj->m_pParent);
-
-	AddObject(_pRootObj, iLayerIdx);
+	const int iLayerIndex = GetLayerIdxFromName(_strLayerName);
+	assert(iLayerIndex != -1);
+	assert(nullptr == _pRootObj->m_pParent);
+	AddObject(_pRootObj, iLayerIndex);
 }
 
-void CScene::AddObject(CGameObject* _pRootObj, int _iLayerIdx)
+void CScene::AddObject(CGameObject* _pRootObj, int _iLayerIdx) const
 {
 	assert(0 <= _iLayerIdx && _iLayerIdx < MAX_LAYER);
-	assert(!_pRootObj->m_pParent);
+	assert(nullptr == _pRootObj->m_pParent);
 
 	m_arrLayer[_iLayerIdx]->RegisterObjectAsRoot(_pRootObj);
 
 	// 자식오브젝트들도 해당 레이어의 인덱스를 알려준다.
-	list<CGameObject*> queue;
+	list<CGameObject*> queue{};
 	queue.push_back(_pRootObj);
-
 	// 부모 오브젝트 포함, 자식들 모두 해당 레이어의 인덱스를 알려준다(특정 레이어 소속이 아닌경우에)
-	while (!queue.empty())
+	while (false == queue.empty())
 	{
 		CGameObject* pTargetObj = queue.front();
 		queue.pop_front();
 
 		if (-1 == pTargetObj->m_iLayerIdx)
-			pTargetObj->m_iLayerIdx = _iLayerIdx;
-
-		const vector<CGameObject*>& vecChild = pTargetObj->GetChild();
-		for (size_t i = 0; i < vecChild.size(); ++i)
 		{
-			queue.push_back(vecChild[i]);
+			pTargetObj->m_iLayerIdx = _iLayerIdx;
+		}
+		const vector<CGameObject*>& vecChild = pTargetObj->GetChild();
+		for (const auto& pChild : vecChild)
+		{
+			queue.push_back(pChild);
 		}
 	}
 }
 
-CLayer* CScene::GetLayer(const wstring& _strLayerName)
+CLayer* CScene::GetLayer(const wstring& _strLayerName) const
 {
-	for (UINT i = 0; i < MAX_LAYER; ++i)
-	{
-		if (_strLayerName == m_arrLayer[i]->GetName())
-		{
-			return m_arrLayer[i];
-		}
-	}
+	const auto iter = std::find_if(std::begin(m_arrLayer),
+	                               std::end(m_arrLayer),
+	                               [_strLayerName](const CLayer* pLayer)
+	                               {
+		                               return pLayer->GetName() == _strLayerName;
+	                               });
 
+	if (iter != std::end(m_arrLayer))
+	{
+		return m_arrLayer[std::distance(std::begin(m_arrLayer), iter)];
+	}
 	return nullptr;
 }
 
-Ptr<CSceneFile> CScene::GetSceneFile()
+CLayer* CScene::GetLayer(int _iLayerIndex) const
+{
+	assert(0<=_iLayerIndex && _iLayerIndex<MAX_LAYER);
+	return m_arrLayer[_iLayerIndex];
+}
+
+Ptr<CSceneFile> CScene::GetSceneFile() const
 {
 	return CResMgr::GetInst()->FindRes<CSceneFile>(m_strResKey);
 }
@@ -138,7 +143,9 @@ Ptr<CSceneFile> CScene::GetSceneFile()
 void CScene::SetSceneState(SCENE_STATE _eState)
 {
 	if (m_eSceneState == _eState)
+	{
 		return;
+	}
 
 	if (SCENE_STATE::STOP == m_eSceneState)
 	{
@@ -148,7 +155,6 @@ void CScene::SetSceneState(SCENE_STATE _eState)
 			start();
 		}
 	}
-
 	else if (SCENE_STATE::PLAY == m_eSceneState)
 	{
 		if (SCENE_STATE::PAUSE == _eState)
@@ -166,15 +172,11 @@ void CScene::SetSceneState(SCENE_STATE _eState)
 
 bool CScene::SwapLayer(int _LayerIdx_1, int _LayerIdx_2)
 {
+	CLayer* Left  = GetLayer(_LayerIdx_1);
+	CLayer* Right = GetLayer(_LayerIdx_2);
 
-	assert(!(_LayerIdx_1 < 0 || MAX_LAYER <= _LayerIdx_1));
-	assert(!(_LayerIdx_2 < 0 || MAX_LAYER <= _LayerIdx_2));
-
-	CLayer* Left = m_arrLayer[_LayerIdx_1];
-	CLayer* Right = m_arrLayer[_LayerIdx_2];
-	CLayer* Empty = nullptr;
-
-	Empty = Left;
+	CLayer* Empty           = nullptr;
+	Empty                   = Left;
 	m_arrLayer[_LayerIdx_1] = Right;
 	m_arrLayer[_LayerIdx_2] = Empty;
 
@@ -183,4 +185,3 @@ bool CScene::SwapLayer(int _LayerIdx_1, int _LayerIdx_2)
 
 	return true;
 }
-

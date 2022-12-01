@@ -11,22 +11,18 @@ CPrefab::LoadFunc CPrefab::m_pLoadFunc = nullptr;
 
 CPrefab::CPrefab()
 	: CRes(RES_TYPE::PREFAB)
-	, m_pProtoObj(nullptr)
-{
-}
+	, m_pProtoObj(nullptr) {}
 
 CPrefab::CPrefab(CGameObject* _pProtoObj)
 	: CRes(RES_TYPE::PREFAB)
-	, m_pProtoObj(_pProtoObj)
-{
-}
+	, m_pProtoObj(_pProtoObj) {}
 
 CPrefab::~CPrefab()
 {
 	SAFE_DELETE(m_pProtoObj);
 }
 
-CGameObject* CPrefab::Instantiate()
+CGameObject* CPrefab::Instantiate() const
 {
 	return m_pProtoObj->Clone();
 }

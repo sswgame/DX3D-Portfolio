@@ -14,9 +14,7 @@ CComputeShader::CComputeShader()
 	, m_iGroupPerThreadCountX(0)
 	, m_iGroupPerThreadCountY(0)
 	, m_iGroupPerThreadCountZ(0)
-	, m_Param{}
-{
-}
+	, m_Param{} {}
 
 CComputeShader::CComputeShader(UINT _iGroupPerThreadX, UINT _iGroupPerThreadY, UINT _iGroupPerThreadZ)
 	: CShader(RES_TYPE::COMPUTE_SHADER)
@@ -26,13 +24,9 @@ CComputeShader::CComputeShader(UINT _iGroupPerThreadX, UINT _iGroupPerThreadY, U
 	, m_iGroupPerThreadCountX(_iGroupPerThreadX)
 	, m_iGroupPerThreadCountY(_iGroupPerThreadY)
 	, m_iGroupPerThreadCountZ(_iGroupPerThreadZ)
-	, m_Param{}
-{
-}
+	, m_Param{} {}
 
-CComputeShader::~CComputeShader()
-{
-}
+CComputeShader::~CComputeShader() = default;
 
 void CComputeShader::Excute()
 {
@@ -81,22 +75,25 @@ int CComputeShader::CreateComputeShader(const wstring& _strRelativePath, const s
 	static UINT g_iFlag = 0;
 #endif
 
-	wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 
 	// 컴퓨트 쉐이더(HLSL) 컴파일
-	HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
-	                                nullptr,
-	                                D3D_COMPILE_STANDARD_FILE_INCLUDE,
-	                                _strFunc.c_str(),
-	                                "cs_5_0",
-	                                g_iFlag,
-	                                0,
-	                                m_CSBlob.GetAddressOf(),
-	                                m_ErrBlob.GetAddressOf());
+	const HRESULT hr = D3DCompileFromFile(wstring(strContentPath + _strRelativePath).c_str(),
+	                                      nullptr,
+	                                      D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	                                      _strFunc.c_str(),
+	                                      "cs_5_0",
+	                                      g_iFlag,
+	                                      0,
+	                                      m_CSBlob.GetAddressOf(),
+	                                      m_ErrBlob.GetAddressOf());
 
 	if (FAILED(hr))
 	{
-		MessageBoxA(nullptr, (char*)m_ErrBlob->GetBufferPointer(), "Compute Shader Compile Failed!!", MB_OK);
+		MessageBoxA(nullptr,
+		            static_cast<char*>(m_ErrBlob->GetBufferPointer()),
+		            "Compute Shader Compile Failed!!",
+		            MB_OK);
 		assert(nullptr);
 		return E_FAIL;
 	}

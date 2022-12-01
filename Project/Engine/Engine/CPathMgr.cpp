@@ -1,41 +1,26 @@
 #include "pch.h"
 #include "CPathMgr.h"
 
-CPathMgr::CPathMgr()
-	:
-	m_strContentPath{}
-  , m_strRelativePath{} {}
+CPathMgr::CPathMgr() = default;
 
-CPathMgr::~CPathMgr() {}
+CPathMgr::~CPathMgr() = default;
 
 void CPathMgr::init()
 {
-	// Content 폴더 경로를 찾아낸다.
-	GetCurrentDirectory(256, m_strContentPath);
-
-	// 부모 폴더 경로를 알아낸다( OutputFile 폴더 )
-	int iLen = (int)wcslen(m_strContentPath);
-
-	for (int i = iLen - 1; 0 <= i; --i)
-	{
-		if (L'\\' == m_strContentPath[i])
-		{
-			m_strContentPath[i] = L'\0';
-			break;
-		}
-	}
-
-	// content 폴더 경로를 붙인다.
-	wcscat_s(m_strContentPath, L"\\bin\\content\\");
+	const std::filesystem::path currentDirectory = std::filesystem::current_path();
+	const std::filesystem::path parentDirectory  = currentDirectory.parent_path();
+	m_strContentPath                             = parentDirectory.wstring() + L"\\bin\\content\\";
 }
 
-const wchar_t* CPathMgr::GetRelativePath(const wstring& _strFilePath)
+std::wstring CPathMgr::GetRelativePath(const wstring& _strFilePath) const
 {
-	size_t iPos = _strFilePath.find(m_strContentPath, 0);
-	iPos += wcsnlen_s(m_strContentPath, 256);
-
-	wstring strRelativePath = _strFilePath.substr(iPos, _strFilePath.length());
-	wcscpy_s(m_strRelativePath, strRelativePath.data());
-
-	return m_strRelativePath;
+	const size_t iPos = _strFilePath.rfind(m_strContentPath);
+	if (iPos != _strFilePath.npos)
+	{
+		//iPos는 0이어야한다.(콘텐츠 폴더 경로를 시작으로 찾기 때문
+		assert(iPos==0);
+		return _strFilePath.substr(m_strContentPath.length());
+	}
+	assert(nullptr && "NOT CONTAIN RELATIVE PATH");
+	return std::wstring{};
 }

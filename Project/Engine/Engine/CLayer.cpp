@@ -3,53 +3,57 @@
 
 #include "CGameObject.h"
 
+namespace LAYER
+{
+	constexpr int INVALID_INDEX = -1;
+}
 
 CLayer::CLayer()
-	:
-	m_iLayerIdx(-1) {}
+	: m_iLayerIdx(LAYER::INVALID_INDEX) {}
 
 CLayer::~CLayer()
 {
 	Safe_Del_Vec(m_vecRoot);
 }
 
-
-
 void CLayer::start()
 {
-	for (size_t i = 0; i < m_vecRoot.size(); ++i)
+	for (const auto& pRootObject : m_vecRoot)
 	{
-		m_vecRoot[i]->start();
+		pRootObject->start();
 	}
 }
 
 void CLayer::update()
 {
-	for (size_t i = 0; i < m_vecRoot.size(); ++i)
+	for (const auto& pRootObject : m_vecRoot)
 	{
-		if (m_vecRoot[i]->IsActive())
-			m_vecRoot[i]->update();
+		if (pRootObject->IsActive())
+		{
+			pRootObject->update();
+		}
 	}
 }
 
 void CLayer::lateupdate()
 {
-	for (size_t i = 0; i < m_vecRoot.size(); ++i)
+	for (const auto& pRootObject : m_vecRoot)
 	{
-		if (m_vecRoot[i]->IsActive())
-			m_vecRoot[i]->lateupdate();
+		if (pRootObject->IsActive())
+		{
+			pRootObject->lateupdate();
+		}
 	}
 }
 
 void CLayer::finalupdate()
 {
-	vector<CGameObject*>::iterator iter = m_vecRoot.begin();
-
-	for (; iter != m_vecRoot.end();)
+	for (auto iter = m_vecRoot.begin(); iter != m_vecRoot.end();)
 	{
-		(*iter)->finalupdate();
+		CGameObject* pGameObject = *iter;
+		pGameObject->finalupdate();
 
-		if ((*iter)->IsDead())
+		if (pGameObject->IsDead())
 		{
 			iter = m_vecRoot.erase(iter);
 		}
@@ -60,70 +64,59 @@ void CLayer::finalupdate()
 	}
 }
 
-void CLayer::DeregisterObject(CGameObject* _pObj)
+void CLayer::DeregisterObject(CGameObject* _pGameObject)
 {
-	//if (_pObj->GetParent())
-		//return;
-
-	if (_pObj->GetParent()) 
+	if (_pGameObject->GetParent())
 	{
-		_pObj->DisconnectBetweenParent();
-		ClearObjectLayerIndex(_pObj);
-
+		_pGameObject->DisconnectBetweenParent();
+		ClearObjectLayerIndex(_pGameObject);
 	}
 
-	vector<CGameObject*>::iterator iter = m_vecRoot.begin();
-	for (; iter != m_vecRoot.end(); ++iter)
+	const auto iter = std::find(m_vecRoot.begin(), m_vecRoot.end(), _pGameObject);
+	if (iter != m_vecRoot.end())
 	{
-		if ((*iter) == _pObj)
-		{
-			m_vecRoot.erase(iter);
-			ClearObjectLayerIndex(_pObj); // Layer Index = -1;
-			return;
-		}
+		m_vecRoot.erase(iter);
+		ClearObjectLayerIndex(_pGameObject); // Layer Index = -1;
 	}
 }
 
 CGameObject* CLayer::FindRootObject(wstring _wstrNames) const
 {
-	for (int i = 0; i < m_vecRoot.size(); ++i)
+	const auto iter = std::find_if(m_vecRoot.begin(),
+	                               m_vecRoot.end(),
+	                               [&_wstrNames](const CGameObject* pGameObject)
+	                               {
+		                               return pGameObject->GetName() == _wstrNames;
+	                               });
+	if (iter != m_vecRoot.end())
 	{
-		if (_wstrNames == m_vecRoot[i]->GetName())
-		{
-			return m_vecRoot[i];
-		}
+		return *iter;
 	}
-
 	return nullptr;
 }
 
-void CLayer::RenewLayerIdx(int _LayerIdx)
+void CLayer::RenewLayerIdx(int _iLayerIndex)
 {
+	assert(0<=_iLayerIndex && _iLayerIndex<MAX_LAYER);
 
-	assert(!(_LayerIdx < 0 || MAX_LAYER <= _LayerIdx));
-
-	m_iLayerIdx = _LayerIdx;
-	for (int i = 0; i < m_vecRoot.size(); ++i)
+	m_iLayerIdx = _iLayerIndex;
+	for (const auto& pRootObject : m_vecRoot)
 	{
-		m_vecRoot[i]->m_iLayerIdx = _LayerIdx;
-		// 자식 오브젝트 
-		vector<CGameObject*> vecChildObj = m_vecRoot[i]->GetChild();
-		for (int k = 0; k < vecChildObj.size(); ++k)
+		pRootObject->m_iLayerIdx             = _iLayerIndex;
+		const vector<CGameObject*>& vecChild = pRootObject->GetChild();
+		for (const auto& pChild : vecChild)
 		{
-			vecChildObj[k]->RenewLayerIndex(_LayerIdx);
+			pChild->RenewLayerIndex(_iLayerIndex);
 		}
 	}
-
 }
 
-void CLayer::ClearObjectLayerIndex(CGameObject* _pObj)
+void CLayer::ClearObjectLayerIndex(CGameObject* _pObject)
 {
-	_pObj->m_iLayerIdx = -1;
-
-	vector<CGameObject*> vecChild = _pObj->GetChild();
-	for (int i = 0; i < vecChild.size(); ++i)
+	_pObject->m_iLayerIdx                = LAYER::INVALID_INDEX;
+	const vector<CGameObject*>& vecChild = _pObject->GetChild();
+	for (const auto& pChild : vecChild)
 	{
-		ClearObjectLayerIndex(vecChild[i]);
-
+		ClearObjectLayerIndex(pChild);
 	}
 }

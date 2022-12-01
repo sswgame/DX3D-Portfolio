@@ -16,13 +16,13 @@
 #include "CMRT.h"
 
 CRenderMgr::CRenderMgr()
-	: m_pEditorCam(nullptr)
+	: m_pEditorCamera(nullptr)
 	, m_pUICamera{nullptr}
 	, m_pLight2DBuffer(nullptr)
 	, m_pLight3DBuffer(nullptr)
 	, m_arrMRT{}
 	, m_pMergeShader(nullptr)
-	, m_pMergeMtrl(nullptr)
+	, m_pMergeMaterial(nullptr)
 {
 	m_pLight2DBuffer = new CStructuredBuffer;
 	m_pLight2DBuffer->Create(sizeof(tLightInfo), 2, SB_TYPE::READ_ONLY, true, nullptr);
@@ -39,14 +39,22 @@ CRenderMgr::~CRenderMgr()
 	Safe_Del_Arr(m_arrMRT);
 
 	SAFE_DELETE(m_pMergeShader);
-	SAFE_DELETE(m_pMergeMtrl);
+	SAFE_DELETE(m_pMergeMaterial);
 }
 
-void CRenderMgr::update()
-{
-}
+void CRenderMgr::update() {}
 
 void CRenderMgr::render()
+{
+	RenderBegin();
+
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	pCurScene->GetSceneState() == SCENE_STATE::PLAY ? render_play() : render_editor();
+
+	RenderEnd();
+}
+
+void CRenderMgr::RenderBegin()
 {
 	// Rendering 시작	
 	ClearMRT();
@@ -63,199 +71,168 @@ void CRenderMgr::render()
 	pGlobalCB->SetData(&g_global, sizeof(tGlobal));
 	pGlobalCB->UpdateData();
 	pGlobalCB->UpdateData_CS();
+}
 
-
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-
-	if (pCurScene->GetSceneState() == SCENE_STATE::PLAY)
-	{
-		render_play();
-	}
-
-	else
-	{
-		render_editor();
-	}
-
+void CRenderMgr::RenderEnd()
+{
 	m_vecLight2D.clear();
 	m_vecLight3D.clear();
 }
 
 void CRenderMgr::render_play()
 {
-	if (m_vecCam.empty())
-		return;
-
-	// 메인 카메라 시점으로 렌더링
-	CCamera* pMainCam = m_vecCam[0];
-
-	// Sub 카메라 시점으로 렌더링
-	for (int i = 0; i < m_vecCam.size(); ++i)
+	if (m_vecCamera.empty())
 	{
-		if (nullptr == m_vecCam[i])
+		return;
+	}
+
+	//카메라 시점으로 렌더링
+	for (const auto& pCamera : m_vecCamera)
+	{
+		if (nullptr == pCamera)
+		{
 			continue;
+		}
 
-		m_vecCam[i]->SortGameObject();
-
+		pCamera->SortGameObject();
 		// Directional Light ShadowMap 만들기
 		render_shadowmap();
 
-		g_transform.matView    = m_vecCam[i]->GetViewMat();
-		g_transform.matViewInv = m_vecCam[i]->GetViewInvMat();
-		g_transform.matProj    = m_vecCam[i]->GetProjMat();
+		g_transform.matView    = pCamera->GetViewMat();
+		g_transform.matViewInv = pCamera->GetViewInvMat();
+		g_transform.matProj    = pCamera->GetProjMat();
 
 		// Deferred 물체 렌더링			
-		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
-		m_vecCam[i]->render_deferred();
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
+		pCamera->render_deferred();
+
+
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED_DECAL)]->OMSet();
+		pCamera->render_deferred_decal();
 
 		// Particle 물체 렌더링	
-		m_arrMRT[(UINT)MRT_TYPE::PARTICLE]->OMSet();
-		pMainCam->render_particle();
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::PARTICLE)]->OMSet();
+		pCamera->render_particle();
 
-		m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
-		m_vecCam[i]->render_deferred_decal();
 
 		// 광원 렌더링
 		render_lights();
 
 		// Merge
-		m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
-
+		m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
 		Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-		int        a         = 0;
-		m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
-		m_pMergeMtrl->UpdateData();
+		m_pMergeMaterial->UpdateData();
 		pRectMesh->render(0);
 
-		// Foward 물체 렌더링
-		m_vecCam[i]->render_forward();
-
-		// Masked 물체 렌더링
-		m_vecCam[i]->render_masked();
-
-		// Foward Decal 렌더링
-		m_vecCam[i]->render_forward_decal();
-
-		// Alpha 물체 렌더링
-		m_vecCam[i]->render_translucent();
-
-		// PostProcess 물체 렌더링
-		m_vecCam[i]->render_postprocess();
-
-		// Debug Object Render
-		m_vecCam[i]->render_debug();
+		//포워드 렌더링
+		pCamera->render_forward();
+		pCamera->render_masked();
+		pCamera->render_forward_decal();
+		pCamera->render_translucent();
+		pCamera->render_debug();
+		pCamera->render_postprocess();
 	}
 }
 
 void CRenderMgr::render_editor()
 {
-	if (nullptr == m_pEditorCam)
+	if (nullptr == m_pEditorCamera)
+	{
 		return;
+	}
 
-	// 에디터 카메라 시점으로 렌더링
 	// Camera 가 찍는 Layer 의 오브젝트들을 Shader Domain 에 따라 분류해둠
-	m_pEditorCam->SortGameObject();
+	m_pEditorCamera->SortGameObject();
 
 	// Directional Light ShadowMap 만들기
 	render_shadowmap();
 
-	g_transform.matView    = m_pEditorCam->GetViewMat();
-	g_transform.matViewInv = m_pEditorCam->GetViewInvMat();
-	g_transform.matProj    = m_pEditorCam->GetProjMat();
+	g_transform.matView    = m_pEditorCamera->GetViewMat();
+	g_transform.matViewInv = m_pEditorCamera->GetViewInvMat();
+	g_transform.matProj    = m_pEditorCamera->GetProjMat();
 
 	// Deferred 물체 렌더링			
-	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
-	m_pEditorCam->render_deferred();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
+	m_pEditorCamera->render_deferred();
 
-	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->OMSet();
-	m_pEditorCam->render_deferred_decal();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED_DECAL)]->OMSet();
+	m_pEditorCamera->render_deferred_decal();
 
 	// Particle 물체 렌더링			
-	m_arrMRT[(UINT)MRT_TYPE::PARTICLE]->OMSet();
-	m_pEditorCam->render_particle();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::PARTICLE)]->OMSet();
+	m_pEditorCamera->render_particle();
 
 	// 광원 렌더링
 	render_lights();
 
 	// Merge
-	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
-
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
 	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-	int        a         = 0;
-	m_pMergeMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &a);
-	m_pMergeMtrl->UpdateData();
+	m_pMergeMaterial->UpdateData();
 	pRectMesh->render(0);
 
-	// Foward 물체 렌더링	
-	m_pEditorCam->render_forward();
-
-	// Masked 물체 렌더링
-	m_pEditorCam->render_masked();
-
-	// Foward Decal 렌더링
-	m_pEditorCam->render_forward_decal();
-
-	// Alpha 물체 렌더링
-	m_pEditorCam->render_translucent();
-
-	// PostProcess 물체 렌더링
-	m_pEditorCam->render_postprocess();
-
-	// Debug Object 렌더링 
-	m_pEditorCam->render_debug();
+	//포워드 렌더링
+	m_pEditorCamera->render_forward();
+	m_pEditorCamera->render_masked();
+	m_pEditorCamera->render_forward_decal();
+	m_pEditorCamera->render_translucent();
+	m_pEditorCamera->render_debug();
+	m_pEditorCamera->render_postprocess();
 }
 
-void CRenderMgr::render_shadowmap()
+void CRenderMgr::render_shadowmap() const
 {
-	m_arrMRT[(UINT)MRT_TYPE::SHADOWMAP]->OMSet();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::SHADOWMAP)]->OMSet();
 
-	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+	for (const auto& pLight3D : m_vecLight3D)
 	{
-		if (LIGHT_TYPE::DIRECTIONAL == m_vecLight3D[i]->GetLightType())
-			m_vecLight3D[i]->render_shadowmap();
+		if (LIGHT_TYPE::DIRECTIONAL == pLight3D->GetLightType())
+		{
+			pLight3D->render_shadowmap();
+		}
 	}
 }
 
-void CRenderMgr::render_lights()
+void CRenderMgr::render_lights() const
 {
-	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->OMSet();
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
 
-	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+	for (const auto& pLight3D : m_vecLight3D)
 	{
-		m_vecLight3D[i]->render();
+		pLight3D->render();
 	}
 }
 
-void CRenderMgr::RegisterCamera(CCamera* _pCam)
+void CRenderMgr::RegisterCamera(CCamera* _pCamera)
 {
 	// 카메라가 RenderMgr에 최초 등록 되는 경우
-	if (-1 == _pCam->m_iCamIdx)
+	if (-1 == _pCamera->m_iCamIdx)
 	{
-		m_vecCam.push_back(_pCam);
-		int iIdx         = (int)m_vecCam.size() - 1;
-		_pCam->m_iCamIdx = iIdx;
+		m_vecCamera.push_back(_pCamera);
+		const int cameraIndex = static_cast<int>(m_vecCamera.size() - 1);
+		_pCamera->m_iCamIdx   = cameraIndex;
 	}
 	else
 	{
-		if (m_vecCam.size() <= _pCam->m_iCamIdx)
+		if (m_vecCamera.size() <= _pCamera->m_iCamIdx)
 		{
-			m_vecCam.resize((size_t)_pCam->m_iCamIdx + 1);
+			m_vecCamera.resize(static_cast<size_t>(_pCamera->m_iCamIdx + 1));
 		}
 
-		m_vecCam[_pCam->m_iCamIdx] = _pCam;
+		m_vecCamera[_pCamera->m_iCamIdx] = _pCamera;
 	}
 }
 
-void CRenderMgr::SwapCameraIndex(CCamera* _pCam, int _iChangeIdx)
+void CRenderMgr::SwapCameraIndex(CCamera* _pTargetCamera, int _iCameraIndexToChange) const
 {
-	for (size_t i = 0; i < m_vecCam.size(); ++i)
+	for (size_t cameraIndex = 0; cameraIndex < m_vecCamera.size(); ++cameraIndex)
 	{
-		if (_pCam == m_vecCam[i])
+		if (_pTargetCamera == m_vecCamera[cameraIndex])
 		{
-			if (nullptr != m_vecCam[_iChangeIdx])
+			if (nullptr != m_vecCamera[_iCameraIndexToChange])
 			{
-				m_vecCam[_iChangeIdx]->m_iCamIdx = (int)i;
-				_pCam->m_iCamIdx                 = _iChangeIdx;
+				m_vecCamera[_iCameraIndexToChange]->m_iCamIdx = static_cast<int>(cameraIndex);
+				_pTargetCamera->m_iCamIdx                     = _iCameraIndexToChange;
 
 				return;
 			}
@@ -273,81 +250,86 @@ void CRenderMgr::CopyTargetToPostProcess()
 	CONTEXT->CopyResource(pPostProcess->GetTex2D().Get(), pRenderTarget->GetTex2D().Get());
 }
 
-void CRenderMgr::UpdateLight2D()
+void CRenderMgr::UpdateLight2D() const
 {
+	//구조화버퍼로 값을 넘기므로, 크기가 작다면 재 생성
 	if (m_pLight2DBuffer->GetElementCount() < m_vecLight2D.size())
 	{
-		m_pLight2DBuffer->Create((UINT)sizeof(tLightInfo),
-		                         (UINT)m_vecLight2D.size(),
+		m_pLight2DBuffer->Create(static_cast<UINT>(sizeof(tLightInfo)),
+		                         static_cast<UINT>(m_vecLight2D.size()),
 		                         SB_TYPE::READ_ONLY,
 		                         true,
 		                         nullptr);
 	}
 
-	static vector<tLightInfo> vecLight2DInfo;
+	//구조화 버퍼에 값을 갱신
+	static vector<tLightInfo> vecLight2DInfo{};
 	vecLight2DInfo.clear();
 
-	for (size_t i = 0; i < m_vecLight2D.size(); ++i)
+	for (const auto& pLight2D : m_vecLight2D)
 	{
-		vecLight2DInfo.push_back(m_vecLight2D[i]->GetLightInfo());
+		vecLight2DInfo.push_back(pLight2D->GetLightInfo());
 	}
-	m_pLight2DBuffer->SetData(vecLight2DInfo.data(), (UINT)vecLight2DInfo.size());
-	m_pLight2DBuffer->UpdateData(PIPELINE_STAGE::PS, 60);
+	m_pLight2DBuffer->SetData(vecLight2DInfo.data(), static_cast<UINT>(vecLight2DInfo.size()));
+	m_pLight2DBuffer->UpdateData(PS, 60);
 
-	g_global.Light2DCount = (int)m_vecLight2D.size();
+	//글로벌 데이터 갱신
+	g_global.Light2DCount = static_cast<int>(m_vecLight2D.size());
 }
 
-void CRenderMgr::UpdateLight3D()
+void CRenderMgr::UpdateLight3D() const
 {
+	//구조화버퍼로 값을 넘기므로, 크기가 작다면 재 생성
 	if (m_pLight3DBuffer->GetElementCount() < m_vecLight3D.size())
 	{
-		m_pLight3DBuffer->Create((UINT)sizeof(tLightInfo),
-		                         (UINT)m_vecLight3D.size(),
+		m_pLight3DBuffer->Create(static_cast<UINT>(sizeof(tLightInfo)),
+		                         static_cast<UINT>(m_vecLight3D.size()),
 		                         SB_TYPE::READ_ONLY,
 		                         true,
 		                         nullptr);
 	}
 
-	static vector<tLightInfo> vecLight3DInfo;
+	//구조화버퍼에 값을 세팅
+	static vector<tLightInfo> vecLight3DInfo{};
 	vecLight3DInfo.clear();
 
-	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+	for (const auto& pLight3D : m_vecLight3D)
 	{
-		vecLight3DInfo.push_back(m_vecLight3D[i]->GetLightInfo());
+		vecLight3DInfo.push_back(pLight3D->GetLightInfo());
 	}
-	m_pLight3DBuffer->SetData(vecLight3DInfo.data(), (UINT)vecLight3DInfo.size());
-	m_pLight3DBuffer->UpdateData(PIPELINE_STAGE::PS, 61);
+	m_pLight3DBuffer->SetData(vecLight3DInfo.data(), static_cast<UINT>(vecLight3DInfo.size()));
+	m_pLight3DBuffer->UpdateData(PS, 61);
 
-	g_global.Light3DCount = (int)m_vecLight3D.size();
+	//글로벌 데이터 갱신
+	g_global.Light3DCount = static_cast<int>(m_vecLight3D.size());
 }
 
 // 현재 시점 카메라 가져오기
-CCamera* CRenderMgr::GetMainCam()
+CCamera* CRenderMgr::GetMainCam() const
 {
 	if (SCENE_STATE::PLAY == CSceneMgr::GetInst()->GetCurScene()->GetSceneState())
 	{
-		if (m_vecCam.empty())
+		if (m_vecCamera.empty())
+		{
 			return nullptr;
+		}
+		return m_vecCamera[0];
+	}
 
-		return m_vecCam[0];
-	}
-	else
-	{
-		return m_pEditorCam;
-	}
+	return m_pEditorCamera;
 }
 
 CCamera* CRenderMgr::GetUICamera()
 {
 	if (nullptr == m_pUICamera)
 	{
-		const auto iter = std::find_if(m_vecCam.begin(),
-		                               m_vecCam.end(),
+		const auto iter = std::find_if(m_vecCamera.begin(),
+		                               m_vecCamera.end(),
 		                               [](const CCamera* pCamera)
 		                               {
 			                               return pCamera->GetOwner()->GetName() == L"UICamera";
 		                               });
-		if (iter != m_vecCam.end())
+		if (iter != m_vecCamera.end())
 		{
 			m_pUICamera = *iter;
 			return m_pUICamera;

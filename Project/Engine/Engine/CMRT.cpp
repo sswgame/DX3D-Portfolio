@@ -5,26 +5,25 @@
 
 CMRT::CMRT()
 	: m_arrRT{}
-	  , m_iRTCount(0)
-	  , m_pDSTex(nullptr)
-	  , m_arrClearColor{
-			Vec4(0.f, 0.f, 0.f, 1.f),
-			Vec4(0.f, 0.f, 0.f, 1.f),
-			Vec4(0.f, 0.f, 0.f, 1.f),
-			Vec4(0.f, 0.f, 0.f, 1.f),
-			Vec4(0.f, 0.f, 0.f, 1.f),
-			Vec4(0.f, 0.f, 0.f, 1.f),
-			Vec4(0.f, 0.f, 0.f, 1.f),
-			Vec4(0.f, 0.f, 0.f, 1.f)
-		}
-	  , m_tViewPort{} 
-{}
+	, m_iRTCount(0)
+	, m_pDSTex(nullptr)
+	, m_arrClearColor{
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f),
+		Vec4(0.f, 0.f, 0.f, 1.f)
+	}
+	, m_tViewPort{} {}
 
 CMRT::~CMRT() {}
 
-void CMRT::Create(int _iRTCount, Ptr<CTexture>* _ppTex, Ptr<CTexture> _pDSTex)
+void CMRT::Create(int _iRenderTargetCount, Ptr<CTexture>* _ppTex, Ptr<CTexture> _pDSTex)
 {
-	m_iRTCount = _iRTCount;
+	m_iRTCount = _iRenderTargetCount;
 
 	for (int i = 0; i < m_iRTCount; ++i)
 	{
@@ -36,12 +35,18 @@ void CMRT::Create(int _iRTCount, Ptr<CTexture>* _ppTex, Ptr<CTexture> _pDSTex)
 	// ViewPort ¼³Á¤	
 	m_tViewPort.TopLeftX = 0;
 	m_tViewPort.TopLeftY = 0;
-
-	m_tViewPort.Width  = m_arrRT[0]->Width();
-	m_tViewPort.Height = m_arrRT[0]->Height();
-
+	m_tViewPort.Width    = m_arrRT[0]->Width();
+	m_tViewPort.Height   = m_arrRT[0]->Height();
 	m_tViewPort.MinDepth = 0;
 	m_tViewPort.MaxDepth = 1;
+}
+
+void CMRT::SetClearColor(int _iCount, const Vec4* _pColor)
+{
+	for (int i = 0; i < _iCount; ++i)
+	{
+		m_arrClearColor[i] = _pColor[i];
+	}
 }
 
 void CMRT::OMSet()

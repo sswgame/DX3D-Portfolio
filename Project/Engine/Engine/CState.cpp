@@ -4,30 +4,22 @@
 
 
 CState::CState(wstring _sState)
-	: m_sStateType(_sState)
-	, m_bTimePlay(true)
-	, m_pOwner(nullptr)
-{
+	: m_pOwner(nullptr)
+	, m_fTimer{0}
+	, m_sStateType(_sState)
+	, m_bTimePlay(true) {}
 
-}
-
-CState::~CState()
-{
-
-}
-
+CState::~CState() = default;
 
 void CState::Update()
 {
 	if (m_bTimePlay)
+	{
 		m_fTimer += DT;
-
+	}
 }
 
-void CState::LateUpdate()
-{
-}
-
+void CState::LateUpdate() {}
 
 void CState::PlayTimer()
 {
@@ -42,7 +34,5 @@ void CState::StopTimer()
 void CState::ResetTimer()
 {
 	m_bTimePlay = true;
-	m_fTimer = 0.f;
-
+	m_fTimer    = 0.f;
 }
-

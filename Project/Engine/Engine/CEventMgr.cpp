@@ -12,13 +12,9 @@
 #include "CMgrScript.h"
 
 CEventMgr::CEventMgr()
-	: m_bObjEvn(false)
-{
-}
+	: m_bObjEvn(false) {}
 
-CEventMgr::~CEventMgr()
-{
-}
+CEventMgr::~CEventMgr() {}
 
 void CEventMgr::update()
 {
@@ -104,7 +100,10 @@ void CEventMgr::update()
 				if (iParent_LayerIdx != iChild_LayerIdx)
 				{
 					CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-					pCurScene->GetLayer(iChild_LayerIdx)->DeregisterObject(pChild);
+					if (iChild_LayerIdx != -1)
+					{
+						pCurScene->GetLayer(iChild_LayerIdx)->DeregisterObject(pChild);
+					}
 					pChild->RenewLayerIndex(iParent_LayerIdx);
 				}
 
@@ -256,6 +255,6 @@ void CEventMgr::update()
 	if (false == CSingletonScript::s_vecFunc.empty())
 	{
 		CSingletonScript::FireScriptEvents();
-		m_bObjEvn = true;
+		//m_bObjEvn = true;
 	}
 }

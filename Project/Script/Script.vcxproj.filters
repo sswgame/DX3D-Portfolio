@@ -209,7 +209,11 @@
     <ClInclude Include="MissileScript.h">
       <Filter>Script\MIssile</Filter>
     </ClInclude>
-    <ClInclude Include="TestScript.h" />
+    <ClInclude Include="MagmaScript.h" />
+    <ClInclude Include="SwordTrailScript.h" />
+    <ClInclude Include="UITestScript.h">
+      <Filter>Script\UI</Filter>
+    </ClInclude>
     <ClInclude Include="MagmaScript.h" />
     <ClInclude Include="SwordTrailScript.h" />
     <ClInclude Include="ColumnFlameScript.h">
@@ -416,7 +420,11 @@
     <ClCompile Include="MissileScript.cpp">
       <Filter>Script\MIssile</Filter>
     </ClCompile>
-    <ClCompile Include="TestScript.cpp" />
+    <ClCompile Include="MagmaScript.cpp" />
+    <ClCompile Include="SwordTrailScript.cpp" />
+    <ClCompile Include="UITestScript.cpp">
+      <Filter>Script\UI</Filter>
+    </ClCompile>
     <ClCompile Include="MagmaScript.cpp" />
     <ClCompile Include="SwordTrailScript.cpp" />
     <ClCompile Include="ColumnFlameScript.cpp">

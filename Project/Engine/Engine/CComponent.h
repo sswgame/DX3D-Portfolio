@@ -5,8 +5,8 @@
 
 #define GET_OTHER_COMPONENT(Type) C##Type* Type() { return GetOwner()->Type(); }
 
-
-class CComponent : public CEntity
+class CComponent
+	: public CEntity
 {
 public:
 	static CComponent* MakeComponent(const std::wstring& name);
@@ -20,53 +20,35 @@ protected:
 	CGameObject* m_pDebugObj;
 
 public:
-	virtual void start()
-	{
-	}
-
-	virtual void update()
-	{
-	}
-
-	virtual void lateupdate()
-	{
-	}
-
+	virtual void start() { }
+	virtual void update() { }
+	virtual void lateupdate() { }
 	virtual void finalupdate() = 0;
-
-	virtual void finalupdate_debug()
-	{
-	};
-
-	virtual void render_debug()
-	{
-	};
-
-	virtual void finalupdate_module()
-	{
-	};
+	virtual void finalupdate_debug() { };
+	virtual void finalupdate_module() { };
+	virtual void render_debug() { };
 
 	void Activate();
 	void Deactivate();
 
-	bool IsActive() { return m_bActive; }
+	bool IsActive() const { return m_bActive; }
 
 	void         SetDebugObj(CGameObject* _pObj) { m_pDebugObj = _pObj; }
 	CGameObject* GetDebugObj() { return m_pDebugObj; }
 
-	void ActiateDebugObj()
+	void ActiateDebugObj() const
 	{
 		assert(m_pDebugObj);
 		m_pDebugObj->Activate();
 	}
 
-	void DeactivateDebugObj()
+	void DeactivateDebugObj() const
 	{
 		assert(m_pDebugObj);
 		m_pDebugObj->Deactivate();
 	}
 
-	bool IsActivateDebugObj()
+	bool IsActivateDebugObj() const
 	{
 		assert(m_pDebugObj);
 		return m_pDebugObj->IsActive();
@@ -93,7 +75,7 @@ public:
 	GET_OTHER_COMPONENT(Collider3D);
 	GET_OTHER_COMPONENT(FSM);
 
-	CComponent* Clone() = 0;
+	CComponent* Clone() override = 0;
 
 protected:
 	virtual void active() { m_bActive = true; };

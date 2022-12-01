@@ -27,7 +27,9 @@ class ButtonScript final
 	: public CScript
 {
 private:
-	float                             m_clickTerm;
+	float m_clickTerm;
+	float m_elapsedTime;
+
 	std::bitset<(int)MOUSE_TYPE::END> m_prevClick;
 
 	using ClickFunc = std::array<std::function<void()>, (int)CLICK_TYPE::END>;
@@ -53,7 +55,12 @@ public:
 	}
 
 public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
+
+public:
 	CLONE(ButtonScript);
 	ButtonScript();
+	ButtonScript(const ButtonScript& _origin);
 	virtual ~ButtonScript();
 };

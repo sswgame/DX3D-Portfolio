@@ -17,33 +17,35 @@
 
 #include "CScript.h"
 
+namespace GAMEOBJECT
+{
+	constexpr int INVALID_INDEX = -1;
+}
 
 CGameObject::CGameObject()
 	: m_arrCom{}
 	, m_pRenderComponent(nullptr)
 	, m_pParent(nullptr)
-	, m_iLayerIdx(-1)
+	, m_iLayerIdx(GAMEOBJECT::INVALID_INDEX)
 	, m_bDead(false)
 	, m_bActive(true)
 	, m_bDynamicShadow(false)
-	, m_bFrustumCulling(false)
-{
-}
+	, m_bFrustumCulling(false) {}
 
 CGameObject::CGameObject(const CGameObject& _origin)
 	: CEntity(_origin)
 	, m_arrCom{}
 	, m_pRenderComponent(nullptr)
 	, m_pParent(nullptr)
-	, m_iLayerIdx(-1)
+	, m_iLayerIdx(GAMEOBJECT::INVALID_INDEX)
 	, m_bDead(false)
 	, m_bActive(true)
 {
-	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	for (auto& pComponent : _origin.m_arrCom)
 	{
-		if (nullptr != _origin.m_arrCom[i])
+		if (nullptr != pComponent)
 		{
-			AddComponent(_origin.m_arrCom[i]->Clone());
+			AddComponent(pComponent->Clone());
 		}
 	}
 
@@ -51,9 +53,9 @@ CGameObject::CGameObject(const CGameObject& _origin)
 	{
 		AddComponent(pScript->Clone());
 	}
-	for (size_t i = 0; i < _origin.m_vecChild.size(); ++i)
+	for (const auto& pChild : _origin.m_vecChild)
 	{
-		AddChild(_origin.m_vecChild[i]->Clone());
+		AddChild(pChild->Clone());
 	}
 }
 
@@ -68,7 +70,7 @@ void CGameObject::CheckLayerRecursive(const CGameObject* _pInnerChild)
 {
 	for (const auto& pInner : _pInnerChild->m_vecChild)
 	{
-		if (pInner->m_iLayerIdx == -1)
+		if (pInner->m_iLayerIdx == GAMEOBJECT::INVALID_INDEX)
 		{
 			pInner->m_iLayerIdx = _pInnerChild->m_iLayerIdx;
 		}
@@ -78,84 +80,98 @@ void CGameObject::CheckLayerRecursive(const CGameObject* _pInnerChild)
 
 void CGameObject::start()
 {
-	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	for (const auto& pComponent : m_arrCom)
 	{
-		if (nullptr != m_arrCom[i])
-			m_arrCom[i]->start();
+		if (nullptr != pComponent)
+		{
+			pComponent->start();
+		}
 	}
 
-	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	for (const auto& pScript : m_vecScript)
 	{
-		m_vecScript[i]->start();
+		pScript->start();
 	}
 
-
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	for (const auto& pChild : m_vecChild)
 	{
-		m_vecChild[i]->start();
+		pChild->start();
 	}
 }
 
 void CGameObject::update()
 {
-	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	for (const auto& pComponent : m_arrCom)
 	{
-		if (nullptr != m_arrCom[i] && m_arrCom[i]->IsActive())
-			m_arrCom[i]->update();
+		if (nullptr != pComponent && pComponent->IsActive())
+		{
+			pComponent->update();
+		}
 	}
 
-	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	for (const auto& pScript : m_vecScript)
 	{
-		if (m_vecScript[i]->IsActive())
-			m_vecScript[i]->update();
+		if (pScript->IsActive())
+		{
+			pScript->update();
+		}
 	}
 
-
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	for (const auto& pChild : m_vecChild)
 	{
-		if (m_vecChild[i]->IsActive())
-			m_vecChild[i]->update();
+		if (pChild->IsActive())
+		{
+			pChild->update();
+		}
 	}
 }
 
 void CGameObject::lateupdate()
 {
-	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	for (const auto& pComponent : m_arrCom)
 	{
-		if (nullptr != m_arrCom[i] && m_arrCom[i]->IsActive())
-			m_arrCom[i]->lateupdate();
+		if (nullptr != pComponent && pComponent->IsActive())
+		{
+			pComponent->lateupdate();
+		}
 	}
 
-	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	for (const auto& pScript : m_vecScript)
 	{
-		if (m_vecScript[i]->IsActive())
-			m_vecScript[i]->lateupdate();
+		if (pScript->IsActive())
+		{
+			pScript->lateupdate();
+		}
 	}
 
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	for (const auto& pChild : m_vecChild)
 	{
-		if (m_vecChild[i]->IsActive())
-			m_vecChild[i]->lateupdate();
+		if (pChild->IsActive())
+		{
+			pChild->lateupdate();
+		}
 	}
 }
 
 void CGameObject::finalupdate()
 {
-	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	for (const auto& pComponent : m_arrCom)
 	{
-		if (nullptr != m_arrCom[i])
+		if (nullptr != pComponent)
 		{
-			m_arrCom[i]->finalupdate();
-			if (nullptr != m_arrCom[i] && nullptr != m_arrCom[i]->GetDebugObj())
+			pComponent->finalupdate();
+			if (nullptr != pComponent && nullptr != pComponent->GetDebugObj())
 			{
-				m_arrCom[i]->finalupdate_debug();
+				pComponent->finalupdate_debug();
 			}
 		}
 	}
 
 	// Layer가 없으면 넘어간다 (ex-DebugObj)
-	if (m_iLayerIdx == -1)
+	if (m_iLayerIdx == GAMEOBJECT::INVALID_INDEX)
+	{
 		return;
+	}
 
 	// Layer 에 등록
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
@@ -163,23 +179,25 @@ void CGameObject::finalupdate()
 	pLayer->RegisterObject(this);
 
 	// 자식 object final update
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	for (const auto& pChild : m_vecChild)
 	{
-		m_vecChild[i]->finalupdate();
+		pChild->finalupdate();
 	}
 }
 
 void CGameObject::finalupdate_module()
 {
-	for (UINT i = 0; i < (UINT)COMPONENT_TYPE::END; ++i)
+	for (const auto& pComponent : m_arrCom)
 	{
-		if (nullptr != m_arrCom[i])
-			m_arrCom[i]->finalupdate_module();
+		if (nullptr != pComponent)
+		{
+			pComponent->finalupdate_module();
+		}
 	}
 
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	for (const auto& pChild : m_vecChild)
 	{
-		m_vecChild[i]->finalupdate_module();
+		pChild->finalupdate_module();
 	}
 }
 
@@ -197,91 +215,114 @@ void CGameObject::render()
 	}
 }
 
-CScript* CGameObject::GetScript(UINT _iIdx)
+CScript* CGameObject::GetScript(UINT _iScriptIndex)
 {
-	auto iter = std::find_if(m_vecScript.begin(),
-	                         m_vecScript.end(),
-	                         [_iIdx](CScript* pScript)
-	                         {
-		                         return pScript->GetScriptType() == _iIdx;
-	                         });
+	const auto iter = std::find_if(m_vecScript.begin(),
+	                               m_vecScript.end(),
+	                               [_iScriptIndex](CScript* pScript)
+	                               {
+		                               return pScript->GetScriptType() == _iScriptIndex;
+	                               });
 	if (iter != m_vecScript.end())
 	{
 		return *iter;
 	}
 	return nullptr;
-	//return m_vecScript[_iIdx];
 }
 
-CScript* CGameObject::GetScriptByName(const wstring& _strName)
+CScript* CGameObject::GetScriptByName(const wstring& _strScriptName) const
 {
-	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	const auto iter = std::find_if(m_vecScript.begin(),
+	                               m_vecScript.end(),
+	                               [&_strScriptName](const CScript* pScript)
+	                               {
+		                               return pScript->GetName() == _strScriptName;
+	                               });
+	if (iter != m_vecScript.end())
 	{
-		if (m_vecScript[i]->GetName() == _strName)
-			return m_vecScript[i];
+		return *iter;
 	}
-
 	return nullptr;
 }
 
-void CGameObject::RenewLayerIndex(int _NewLayerIdx)
+void CGameObject::RenewLayerIndex(int _newLayerIndex)
 {
-	m_iLayerIdx = _NewLayerIdx;
-	for (int i = 0; i < m_vecChild.size(); ++i)
+	m_iLayerIdx = _newLayerIndex;
+	for (const auto& pChild : m_vecChild)
 	{
-		m_vecChild[i]->RenewLayerIndex(_NewLayerIdx);
+		pChild->RenewLayerIndex(_newLayerIndex);
 	}
 }
 
 
-void CGameObject::active()
+void CGameObject::active() const
 {
-	for (UINT i = 1; i < (UINT)COMPONENT_TYPE::END; ++i)
+	for (size_t i = 1; i < std::size(m_arrCom); ++i)
 	{
 		if (nullptr != m_arrCom[i])
+		{
 			m_arrCom[i]->active();
+		}
 	}
 
-	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	for (const auto& pScript : m_vecScript)
 	{
-		m_vecScript[i]->active();
+		pScript->active();
 	}
 
-
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	for (const auto& pChild : m_vecChild)
 	{
-		m_vecChild[i]->active();
+		pChild->active();
 	}
 }
 
-void CGameObject::deactive()
+void CGameObject::deactive() const
 {
-	for (UINT i = 1; i < (UINT)COMPONENT_TYPE::END; ++i)
+	for (size_t i = 1; i < std::size(m_arrCom); ++i)
 	{
 		if (nullptr != m_arrCom[i])
+		{
 			m_arrCom[i]->deactive();
+		}
 	}
 
-	for (size_t i = 0; i < m_vecScript.size(); ++i)
+	for (const auto& pScript : m_vecScript)
 	{
-		m_vecScript[i]->deactive();
+		pScript->deactive();
 	}
 
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
+	for (const auto& pChild : m_vecChild)
 	{
-		m_vecChild[i]->deactive();
+		pChild->deactive();
 	}
 }
 
+
+CGameObject* CGameObject::GetChild(const std::wstring& childName)
+{
+	const auto iter = std::find_if(m_vecChild.begin(),
+	                               m_vecChild.end(),
+	                               [&childName](const CGameObject* pChild)
+	                               {
+		                               return pChild->GetName() == childName;
+	                               });
+
+	if (iter != m_vecChild.end())
+	{
+		return *iter;
+	}
+	return nullptr;
+}
 
 void CGameObject::SortChild(std::function<bool(CGameObject*, CGameObject*)> func)
 {
 	std::sort(m_vecChild.begin(), m_vecChild.end(), func);
+	CEventMgr::GetInst()->SetOccurObjEvent();
 }
 
 void CGameObject::Deregister()
 {
-	if (-1 == m_iLayerIdx)
+	if (GAMEOBJECT::INVALID_INDEX == m_iLayerIdx)
 	{
 		return;
 	}
@@ -295,62 +336,52 @@ void CGameObject::DisconnectBetweenParent()
 {
 	assert(m_pParent);
 
-	vector<CGameObject*>::iterator iter = m_pParent->m_vecChild.begin();
-	for (; iter != m_pParent->m_vecChild.end(); ++iter)
+	const auto iter = std::find(m_pParent->m_vecChild.begin(), m_pParent->m_vecChild.end(), this);
+	if (iter != m_pParent->m_vecChild.end())
 	{
-		if ((*iter) == this)
-		{
-			m_pParent->m_vecChild.erase(iter);
-			m_pParent = nullptr;
-			return;
-		}
+		m_pParent->m_vecChild.erase(iter);
+		m_pParent = nullptr;
 	}
 }
 
 void CGameObject::Activate()
 {
-	tEventInfo info = {};
-
+	tEventInfo info{};
 	info.eType  = EVENT_TYPE::ACTIVATE_OBJECT;
 	info.lParam = (DWORD_PTR)this;
-
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
 void CGameObject::Deactivate()
 {
-	tEventInfo info = {};
-
+	tEventInfo info{};
 	info.eType  = EVENT_TYPE::DEACTIVATE_OBJECT;
 	info.lParam = (DWORD_PTR)this;
-
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
-bool CGameObject::IsAncestor(CGameObject* _pObj)
+bool CGameObject::IsAncestor(const CGameObject* _pObject) const
 {
-	CGameObject* pObj = m_pParent;
-
-	while (pObj)
+	const CGameObject* pTarget = m_pParent;
+	while (pTarget)
 	{
-		if (pObj == _pObj)
+		if (pTarget == _pObject)
+		{
 			return true;
-
-		pObj = pObj->m_pParent;
+		}
+		pTarget = pTarget->m_pParent;
 	}
-
 	return false;
 }
 
 void CGameObject::AddChild(CGameObject* _pChild)
 {
-	int iChildLayerOriginalIdx = _pChild->m_iLayerIdx;
+	const int iChildLayerOriginalIdx = _pChild->m_iLayerIdx;
 
 	// 자식으로 들어오는 오브젝트가 루트 오브젝트이고, 특정 레이어 소속이라면
-	if (nullptr == _pChild->GetParent() && -1 != iChildLayerOriginalIdx)
+	if (nullptr == _pChild->GetParent() && GAMEOBJECT::INVALID_INDEX != iChildLayerOriginalIdx)
 	{
-		// 레이어에서 루트 오브젝트로서 등록 해제
-		//여기서 본인의 레이어를 -1로 변경시킴
+		// 레이어에서 루트 오브젝트로서 등록 해제 여기서 본인의 레이어를 -1로 변경시킴
 		_pChild->Deregister();
 		//따라서 원래 레이어로 복귀하는 코드
 		_pChild->m_iLayerIdx = iChildLayerOriginalIdx;
@@ -362,9 +393,8 @@ void CGameObject::AddChild(CGameObject* _pChild)
 		_pChild->DisconnectBetweenParent();
 	}
 
-	//루트오브젝트가 아니고, 여전히 아무런 레이어에 속해있지 않다면, 
-	//부모의 레이어를 따라간다
-	if (-1 == _pChild->m_iLayerIdx)
+	//루트오브젝트가 아니고, 여전히 아무런 레이어에 속해있지 않다면, 부모의 레이어를 따라간다
+	if (GAMEOBJECT::INVALID_INDEX == _pChild->m_iLayerIdx)
 	{
 		_pChild->m_iLayerIdx = m_iLayerIdx;
 	}
@@ -373,18 +403,18 @@ void CGameObject::AddChild(CGameObject* _pChild)
 	CheckLayerRecursive(_pChild);
 }
 
-void CGameObject::AddComponent(CComponent* _component)
+void CGameObject::AddComponent(CComponent* _pComponent)
 {
-	COMPONENT_TYPE eType = _component->GetType();
+	COMPONENT_TYPE eType = _pComponent->GetType();
 
 	if (COMPONENT_TYPE::SCRIPT != eType)
 	{
 		assert(nullptr == m_arrCom[(UINT)eType]);
 
-		m_arrCom[(UINT)eType] = _component;
-		_component->m_pOwner  = this;
+		m_arrCom[static_cast<UINT>(eType)] = _pComponent;
+		_pComponent->m_pOwner              = this;
 
-		switch (_component->GetType())
+		switch (_pComponent->GetType())
 		{
 		case COMPONENT_TYPE::MESHRENDER:
 		case COMPONENT_TYPE::TILEMAP:
@@ -395,15 +425,15 @@ void CGameObject::AddComponent(CComponent* _component)
 			{
 				// 하나의 오브젝트에 Render 기능을 가진 컴포넌트는 2개이상 들어올 수 없다.
 				assert(!m_pRenderComponent);
-				m_pRenderComponent = (CRenderComponent*)_component;
+				m_pRenderComponent = static_cast<CRenderComponent*>(_pComponent);
 			}
 			break;
 		}
 	}
 	else
 	{
-		m_vecScript.push_back((CScript*)_component);
-		_component->m_pOwner = this;
+		m_vecScript.push_back(static_cast<CScript*>(_pComponent));
+		_pComponent->m_pOwner = this;
 	}
 }
 
@@ -430,27 +460,30 @@ void CGameObject::DeleteComponent(COMPONENT_TYPE _eType)
 
 void CGameObject::DeleteScript(UINT _ScriptID)
 {
-	for (int i = 0; i < m_vecScript.size(); ++i)
+	const auto iter = std::find_if(m_vecScript.begin(),
+	                               m_vecScript.end(),
+	                               [_ScriptID](CScript* pScript)
+	                               {
+		                               return pScript->GetScriptType() == _ScriptID;
+	                               });
+	if (iter != m_vecScript.end())
 	{
-		if (m_vecScript[i]->GetID() == _ScriptID)
-		{
-			SAFE_DELETE(m_vecScript[i]);
-			m_vecScript.erase(m_vecScript.begin() + i);
-			break;
-		}
+		CScript* pScript = *iter;
+		SAFE_DELETE(pScript);
+		m_vecScript.erase(iter);
 	}
 }
 
 void CGameObject::Destroy()
 {
 	if (m_bDead)
+	{
 		return;
+	}
 
 	tEventInfo info = {};
-
-	info.eType  = EVENT_TYPE::DELETE_OBJ;
-	info.lParam = (DWORD_PTR)this;
-
+	info.eType      = EVENT_TYPE::DELETE_OBJ;
+	info.lParam     = (DWORD_PTR)this;
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
@@ -512,30 +545,22 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CCollider2D);
 			Collider2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR2D))
 		{
 			AddComponent(new CAnimator2D);
 			Animator2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT2D))
 		{
 			AddComponent(new CLight2D);
 			Light2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D)) { }
 
 
-		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::MESHRENDER))
 		{
 			AddComponent(new CMeshRender);
@@ -551,32 +576,27 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CTileMap);
 			TileMap()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE))
-		{
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL)) { }
 	}
 }
 
 void CGameObject::Serialize(YAML::Emitter& emitter)
 {
 	emitter << YAML::Key << "NAME" << YAML::Value << ToString(GetName());
-	emitter << YAML::Key << "m_bActive" << YAML::Value << m_bActive;
-	emitter << YAML::Key << "m_bDynamicShadow" << YAML::Value << m_bDynamicShadow;
-	emitter << YAML::Key << "m_bFrustumCulling" << YAML::Value << m_bFrustumCulling;
-
+	emitter << YAML::Key << NAME_OF(m_bActive) << YAML::Value << m_bActive;
+	emitter << YAML::Key << NAME_OF(m_bDynamicShadow) << YAML::Value << m_bDynamicShadow;
+	emitter << YAML::Key << NAME_OF(m_bFrustumCulling) << YAML::Value << m_bFrustumCulling;
 
 	// Component 저장
 	emitter << YAML::Key << "COMPONENTS";
 	emitter << YAML::Value << YAML::BeginSeq;
-	for (int i = 0; i < (int)COMPONENT_TYPE::END; ++i)
+	for (size_t i = 0; i < std::size(m_arrCom); ++i)
 	{
 		if (nullptr != m_arrCom[i])
 		{
 			emitter << YAML::BeginMap;
-			emitter << YAML::Key << ToString((COMPONENT_TYPE)i);
+			emitter << YAML::Key << ToString(static_cast<COMPONENT_TYPE>(i));
 			emitter << YAML::Value << YAML::BeginMap;
 			m_arrCom[i]->Serialize(emitter);
 			emitter << YAML::EndMap;
@@ -590,9 +610,9 @@ void CGameObject::Deserialize(const YAML::Node& node)
 {
 	const std::string name = node["NAME"].as<std::string>();
 	SetName(ToWString(name));
-	m_bActive         = node["m_bActive"].as<bool>();
-	m_bDynamicShadow  = node["m_bDynamicShadow"].as<bool>();
-	m_bFrustumCulling = node["m_bFrustumCulling"].as<bool>();
+	m_bActive         = node[NAME_OF(m_bActive)].as<bool>();
+	m_bDynamicShadow  = node[NAME_OF(m_bDynamicShadow)].as<bool>();
+	m_bFrustumCulling = node[NAME_OF(m_bFrustumCulling)].as<bool>();
 
 	const YAML::Node& components = node["COMPONENTS"];
 	for (size_t i = 0; i < components.size(); ++i)

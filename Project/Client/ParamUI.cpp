@@ -33,7 +33,7 @@ float ParamUI::Param_Float(const string& _strName, const float* _pInOut)
 	sprintf_s(szKey, 255, "##Param%d", KeyCount++);
 
 	float data = *_pInOut;
-	ImGui::InputFloat(szKey, &data);
+	ImGui::InputFloat(szKey, &data, 0.1f);
 
 	return data;
 }
@@ -70,16 +70,43 @@ Vec4 ParamUI::Param_Vec4(const string& _strName, const Vec4* _pInOut)
 	return data;
 }
 
-void ParamUI::Param_String(const string& _strName, const string* _pIn)
+std::string ParamUI::Param_String(const string& _strName, const char* _pIn)
 {
 	// 파라미터 이름
 	ImGui::Text(_strName.c_str());
 	ImGui::SameLine(100);
 
+	char szBuffer[256]{};
+	strcpy_s(szBuffer, _pIn);
+
+	// 문자열 표시
+	if (ImGui::InputText(string("##ParamString" + _strName).c_str(),
+	                     szBuffer,
+	                     static_cast<int>(std::size(szBuffer)),
+	                     ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		szBuffer[strlen(szBuffer)] = '\0';
+		return szBuffer;
+	}
+
+	return std::string{};
+}
+
+void ParamUI::Param_String_ReadOnly(const std::string& _strName, const char* _pIn)
+{
+	// 파라미터 이름
+	ImGui::Text(_strName.c_str());
+	ImGui::SameLine(100);
+
+	char      szBuffer[256]{};
+	const int length = static_cast<int>(strlen(_pIn));
+	strcpy_s(szBuffer, _pIn);
+	szBuffer[length] = '\0';
+
 	// 문자열 표시
 	ImGui::InputText(string("##ParamString" + _strName).c_str(),
-	                 (char*)_pIn->c_str(),
-	                 255,
+	                 szBuffer,
+	                 length,
 	                 ImGuiInputTextFlags_ReadOnly);
 }
 
@@ -155,4 +182,53 @@ bool ParamUI::Param_Tex(const string& _strName, CTexture* _pCurTex, UI* _pInst, 
 	}
 
 	return false;
+}
+
+int ParamUI::Param_Int_DropDown(const string& _strName, const int* _pInOut, const std::vector<std::string>& vecList)
+{
+	ImGui::Text(_strName.c_str());
+	ImGui::SameLine();
+
+	int               selectedIndex = *_pInOut;
+	const std::string hiddenName    = "##" + _strName;
+	if (ImGui::BeginCombo(hiddenName.c_str(), vecList[selectedIndex].c_str()))
+	{
+		for (size_t i = 0; i < vecList.size(); ++i)
+		{
+			if (ImGui::Selectable(vecList[i].c_str()))
+			{
+				selectedIndex = static_cast<int>(i);
+			}
+		}
+		ImGui::EndCombo();
+	}
+	return selectedIndex;
+}
+
+int ParamUI::Param_Int_CheckBox(const string& _strName, const int* _pInOut)
+{
+	ImGui::Text(_strName.c_str());
+	ImGui::SameLine();
+
+	const std::string hiddenName = "##" + _strName;
+	ImGui::Checkbox(hiddenName.c_str(), (bool*)_pInOut);
+	return *_pInOut;
+}
+
+Vec4 ParamUI::Param_Vec4_ColorPicker(const std::string& _strName, const Vec4* _pInOut)
+{
+	ImGui::Text(_strName.c_str());
+	ImGui::SameLine();
+
+	static float noAlpha[3]{};
+	noAlpha[0] = _pInOut->x;
+	noAlpha[1] = _pInOut->y;
+	noAlpha[2] = _pInOut->z;
+
+	const std::string hiddenName = "##" + _strName;
+	if (ImGui::ColorPicker3(hiddenName.c_str(), noAlpha))
+	{
+		return Vec4{noAlpha[0], noAlpha[1], noAlpha[2], 1.f};
+	}
+	return *_pInOut;
 }

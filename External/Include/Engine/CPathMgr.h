@@ -5,15 +5,12 @@ class CPathMgr
 {
 	SINGLE(CPathMgr);
 private:
-	wchar_t m_strContentPath[256];
-	wchar_t m_strRelativePath[256];
+	std::wstring m_strContentPath;
 
 public:
 	void init();
 
 public:
-	const wchar_t* GetContentPath() { return m_strContentPath; }
-	const wchar_t* GetRelativePath(const wstring& _strFilePath);
-
+	const std::wstring& GetContentPath() const { return m_strContentPath; }
+	std::wstring        GetRelativePath(const wstring& _strFilePath) const;
 };
-

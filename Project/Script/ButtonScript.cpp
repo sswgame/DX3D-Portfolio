@@ -11,8 +11,19 @@ namespace BUTTON
 ButtonScript::ButtonScript()
 	: CScript{(int)SCRIPT_TYPE::BUTTONSCRIPT}
 	, m_clickTerm{BUTTON::DEFAULT_TERM}
+	, m_elapsedTime{0.f}
 	, m_pUIBase{nullptr}
 {
+	AddScriptParam("CLICK TERM", SCRIPTPARAM_TYPE::FLOAT, &m_clickTerm);
+}
+
+ButtonScript::ButtonScript(const ButtonScript& _origin)
+	: CScript{_origin}
+	, m_clickTerm{_origin.m_clickTerm}
+	, m_elapsedTime{0.f}
+	, m_pUIBase{nullptr}
+{
+	RenewScalarParam("CLICK TERM", &m_clickTerm);
 }
 
 ButtonScript::~ButtonScript() = default;
@@ -26,7 +37,7 @@ void ButtonScript::start()
 
 void ButtonScript::lateupdate()
 {
-	m_clickTerm -= DT;
+	m_elapsedTime += DT;
 
 	if (m_pUIBase->IsMouseHovered())
 	{
@@ -35,10 +46,25 @@ void ButtonScript::lateupdate()
 		HandleReleaseEvent();
 	}
 
-	if (m_clickTerm <= 0.f)
+	if (m_clickTerm <= m_elapsedTime)
 	{
+		m_elapsedTime -= m_clickTerm;
 		m_prevClick.reset();
 	}
+}
+
+void ButtonScript::Serialize(YAML::Emitter& emitter)
+{
+	CScript::Serialize(emitter);
+	emitter << YAML::Key << NAME_OF(m_clickTerm) << YAML::Value << m_clickTerm;
+}
+
+void ButtonScript::Deserialize(const YAML::Node& node)
+{
+	CScript::Deserialize(node);
+	m_clickTerm = node[NAME_OF(m_clickTerm)].as<float>();
+	RemoveScalarParam("CLICK TERM");
+	AddScriptParam("CLICK TERM", SCRIPTPARAM_TYPE::FLOAT, &m_clickTerm);
 }
 
 bool ButtonScript::DoubleClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)

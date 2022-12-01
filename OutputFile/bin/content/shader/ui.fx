@@ -21,7 +21,7 @@ struct VTX_OUT
 // =========================
 // UIShader
 // g_tex_0 : UI Texture
-// g_int_0 : UI_TYPE
+// g_int_0 : ShowAlpha
 // g_int_1 : UseInfo
 // g_int_2 : UseProgressBar
 // g_int_3 : ProgressBarDirection
@@ -35,13 +35,14 @@ struct VTX_OUT
 // =========================
 
 #define UITexture g_tex_0
-#define UIType g_int_0
+#define ShowAlpha g_int_0
 #define UseInfo g_int_1
 #define TextureSize g_vec2_0
 #define DrawInfo g_vec4_0
 #define UseProgressBar g_int_2
 #define ProgressBarDirection g_int_3
 #define Percentage g_float_0
+#define Anisotropy g_sam_0
 
 #define	PROGRESSBAR_RIGHTTOLEFT	0
 #define	PROGRESSBAR_LEFTTORIGHT	1
@@ -116,13 +117,13 @@ VTX_OUT VS_UI(VTX_IN input)
     
     output.vPosition = mul(float4(input.vPos, 1.f), g_matWVP);
     output.vWorldPos = mul(float4(input.vPos, 1.f), g_matWorld).xyz;
-	output.vUV = input.vUV;
+    output.vUV = input.vUV;
 
-    if (g_int_1)
+    if (UseInfo)
     {
-        float2 pos = DrawInfo.xy / TextureSize;
-        float2 size = DrawInfo.zw / TextureSize;
-        output.vUV = ComputeUV(input.vUV, pos, size);
+        float2 spritePosition = DrawInfo.xy / TextureSize;
+        float2 imageSizeUV = DrawInfo.zw / TextureSize;
+        output.vUV = ComputeUV(input.vUV, spritePosition, imageSizeUV);
     }
 
     return output;
@@ -130,7 +131,7 @@ VTX_OUT VS_UI(VTX_IN input)
 
 float4 PS_UI(VTX_OUT input) : SV_Target
 {
-    float4 vOutColor = (float4) 0.f;
+    float4 outputColor = (float4) 0.f;
     if (g_btex_0)
     {
         if (UseProgressBar)
@@ -141,23 +142,33 @@ float4 PS_UI(VTX_OUT input) : SV_Target
             {
                 discard;
             }
-            vOutColor = UITexture.Sample(g_sam_0, UV);
+            outputColor = UITexture.Sample(Anisotropy, UV);
         }
         else
         {
-            vOutColor = UITexture.Sample(g_sam_0, input.vUV);
+            outputColor = UITexture.Sample(Anisotropy, input.vUV);
         }
     }
     else
     {
-        vOutColor = float4(1.f, 0.f, 1.f, 1.f);
+        if(false ==ShowAlpha)
+        {
+            discard;
+        }
+        else
+        {
+			outputColor = float4(1.f, 0.f, 1.f, 1.f);
+        }
     }
     
-    if (vOutColor.a <= 0.f)
+    if (outputColor.a <= 0.f)
     {
-        discard;
+        if (ShowAlpha)
+            outputColor = float4(1.f, 0.f, 1.f, 1.f);
+        else
+            discard;
     }
     
-    return vOutColor;
+    return outputColor;
 }
 #endif

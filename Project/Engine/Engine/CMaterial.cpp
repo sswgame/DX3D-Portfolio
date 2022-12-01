@@ -14,28 +14,24 @@ CMaterial::CMaterial()
 	, m_Param{}
 	, m_arrTex{}
 	, m_pShader(nullptr)
-	, m_pMasterMtrl(nullptr)
-{
-}
+	, m_pMasterMtrl(nullptr) {}
 
-CMaterial::~CMaterial()
-{
-}
+CMaterial::~CMaterial() {}
 
 
 void CMaterial::UpdateData()
 {
-	for (UINT i = 0; i < (UINT)TEX_PARAM::END; ++i)
+	for (size_t i = 0; i < std::size(m_arrTex); ++i)
 	{
 		if (nullptr != m_arrTex[i])
 		{
-			m_arrTex[i]->UpdateData((int)PIPELINE_STAGE::ALL, i);
-			m_Param.bTex[i] = 1;
+			m_arrTex[i]->UpdateData(ALL, static_cast<UINT>(i));
+			m_Param.bTex[i] = true;
 		}
 		else
 		{
-			CTexture::Clear(i);
-			m_Param.bTex[i] = 0;
+			CTexture::Clear(static_cast<UINT>(i));
+			m_Param.bTex[i] = false;
 		}
 	}
 
@@ -76,31 +72,35 @@ void CMaterial::SetScalarParam(SCALAR_PARAM _eType, void* _pData)
 	case SCALAR_PARAM::INT_1:
 	case SCALAR_PARAM::INT_2:
 	case SCALAR_PARAM::INT_3:
-		m_Param.iArr[(UINT)_eType - (UINT)SCALAR_PARAM::INT_0] = *((int*)_pData);
+		m_Param.iArr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::INT_0)] = *static_cast<int*>(_pData);
 		break;
 	case SCALAR_PARAM::FLOAT_0:
 	case SCALAR_PARAM::FLOAT_1:
 	case SCALAR_PARAM::FLOAT_2:
 	case SCALAR_PARAM::FLOAT_3:
-		m_Param.fArr[(UINT)_eType - (UINT)SCALAR_PARAM::FLOAT_0] = *((float*)_pData);
+		m_Param.fArr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::FLOAT_0)] = *static_cast<float*>(
+			_pData);
 		break;
 	case SCALAR_PARAM::VEC2_0:
 	case SCALAR_PARAM::VEC2_1:
 	case SCALAR_PARAM::VEC2_2:
 	case SCALAR_PARAM::VEC2_3:
-		m_Param.v2Arr[(UINT)_eType - (UINT)SCALAR_PARAM::VEC2_0] = *((Vec2*)_pData);
+		m_Param.v2Arr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::VEC2_0)] = *static_cast<Vec2*>(
+			_pData);
 		break;
 	case SCALAR_PARAM::VEC4_0:
 	case SCALAR_PARAM::VEC4_1:
 	case SCALAR_PARAM::VEC4_2:
 	case SCALAR_PARAM::VEC4_3:
-		m_Param.v4Arr[(UINT)_eType - (UINT)SCALAR_PARAM::VEC4_0] = *((Vec4*)_pData);
+		m_Param.v4Arr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::VEC4_0)] = *static_cast<Vec4*>(
+			_pData);
 		break;
 	case SCALAR_PARAM::MAT_0:
 	case SCALAR_PARAM::MAT_1:
 	case SCALAR_PARAM::MAT_2:
 	case SCALAR_PARAM::MAT_3:
-		m_Param.matArr[(UINT)_eType - (UINT)SCALAR_PARAM::MAT_0] = *((Matrix*)_pData);
+		m_Param.matArr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::MAT_0)] = *static_cast<Matrix*>(
+			_pData);
 		break;
 	}
 
@@ -129,31 +129,31 @@ const void* CMaterial::GetScalarParam(SCALAR_PARAM _eType)
 	case SCALAR_PARAM::INT_1:
 	case SCALAR_PARAM::INT_2:
 	case SCALAR_PARAM::INT_3:
-		return &m_Param.iArr[(UINT)_eType - (UINT)SCALAR_PARAM::INT_0];
+		return &m_Param.iArr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::INT_0)];
 		break;
 	case SCALAR_PARAM::FLOAT_0:
 	case SCALAR_PARAM::FLOAT_1:
 	case SCALAR_PARAM::FLOAT_2:
 	case SCALAR_PARAM::FLOAT_3:
-		return &m_Param.fArr[(UINT)_eType - (UINT)SCALAR_PARAM::FLOAT_0];
+		return &m_Param.fArr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::FLOAT_0)];
 		break;
 	case SCALAR_PARAM::VEC2_0:
 	case SCALAR_PARAM::VEC2_1:
 	case SCALAR_PARAM::VEC2_2:
 	case SCALAR_PARAM::VEC2_3:
-		return &m_Param.v2Arr[(UINT)_eType - (UINT)SCALAR_PARAM::VEC2_0];
+		return &m_Param.v2Arr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::VEC2_0)];
 		break;
 	case SCALAR_PARAM::VEC4_0:
 	case SCALAR_PARAM::VEC4_1:
 	case SCALAR_PARAM::VEC4_2:
 	case SCALAR_PARAM::VEC4_3:
-		return &m_Param.v4Arr[(UINT)_eType - (UINT)SCALAR_PARAM::VEC4_0];
+		return &m_Param.v4Arr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::VEC4_0)];
 		break;
 	case SCALAR_PARAM::MAT_0:
 	case SCALAR_PARAM::MAT_1:
 	case SCALAR_PARAM::MAT_2:
 	case SCALAR_PARAM::MAT_3:
-		return &m_Param.matArr[(UINT)_eType - (UINT)SCALAR_PARAM::MAT_0];
+		return &m_Param.matArr[static_cast<UINT>(_eType) - static_cast<UINT>(SCALAR_PARAM::MAT_0)];
 		break;
 	}
 
@@ -174,7 +174,7 @@ Ptr<CTexture> CMaterial::GetTexParam(TEX_PARAM _eType)
 	case TEX_PARAM::TEX_CUBE_1:
 	case TEX_PARAM::TEX_ARR_0:
 	case TEX_PARAM::TEX_ARR_1:
-		return m_arrTex[(UINT)_eType];
+		return m_arrTex[static_cast<UINT>(_eType)];
 		break;
 	}
 
@@ -197,7 +197,7 @@ void CMaterial::SetTexParam(TEX_PARAM _eType, Ptr<CTexture> _pTex)
 	case TEX_PARAM::TEX_CUBE_1:
 	case TEX_PARAM::TEX_ARR_0:
 	case TEX_PARAM::TEX_ARR_1:
-		m_arrTex[(UINT)_eType] = _pTex;
+		m_arrTex[static_cast<UINT>(_eType)] = _pTex;
 		break;
 	}
 
@@ -241,7 +241,7 @@ int CMaterial::Save(const wstring& _strFilePath)
 
 	fwrite(&m_Param, sizeof(tScalarParam), 1, pFile);
 
-	for (UINT i = 0; i < (UINT)TEX_PARAM::END; ++i)
+	for (size_t i = 0; i < std::size(m_arrTex); ++i)
 	{
 		SaveResPtr(m_arrTex[i], pFile);
 	}
@@ -273,7 +273,7 @@ int CMaterial::Load(const wstring& _strFilePath)
 
 	fread(&m_Param, sizeof(tScalarParam), 1, pFile);
 
-	for (UINT i = 0; i < (UINT)TEX_PARAM::END; ++i)
+	for (size_t i = 0; i < std::size(m_arrTex); ++i)
 	{
 		LoadResPtr(m_arrTex[i], pFile);
 	}

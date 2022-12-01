@@ -3,14 +3,13 @@
 
 class CScene;
 
-class CSceneFile :
-    public CRes
-{    
+class CSceneFile
+	: public CRes
+{
 public:
-    virtual int Load(const wstring& _strFilePath) override;
-        
-public:
-    CSceneFile();
-    virtual ~CSceneFile();
-};
+	int Load(const wstring& _strFilePath) override;
 
+public:
+	CSceneFile();
+	virtual ~CSceneFile();
+};

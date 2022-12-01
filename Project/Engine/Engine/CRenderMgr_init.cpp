@@ -8,17 +8,18 @@
 #include "CGraphicsShader.h"
 #include "CMaterial.h"
 
+namespace { }
+
 void CRenderMgr::init()
 {
 	// PostProcess Texture 만들기
-	Vec2 vResolution = CDevice::GetInst()->GetRenderResolution();
-
-	Ptr<CTexture> pPostProcessTex = CResMgr::GetInst()->CreateTexture(L"PostProcessTex",
-	                                                                  (UINT)vResolution.x,
-	                                                                  (UINT)vResolution.y,
-	                                                                  DXGI_FORMAT_R8G8B8A8_UNORM,
-	                                                                  D3D11_BIND_SHADER_RESOURCE,
-	                                                                  true);
+	const Vec2    scrreenResolution = CDevice::GetInst()->GetRenderResolution();
+	Ptr<CTexture> pPostProcessTex   = CResMgr::GetInst()->CreateTexture(L"PostProcessTex",
+	                                                                    static_cast<UINT>(scrreenResolution.x),
+	                                                                    static_cast<UINT>(scrreenResolution.y),
+	                                                                    DXGI_FORMAT_R8G8B8A8_UNORM,
+	                                                                    D3D11_BIND_SHADER_RESOURCE,
+	                                                                    true);
 
 	CreateMRT();
 	CreateMaterial();
@@ -26,178 +27,209 @@ void CRenderMgr::init()
 
 void CRenderMgr::CreateMRT()
 {
-	// =============
-	// SwapChain MRT
-	// =============
-	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN] = new CMRT;
-
-	Ptr<CTexture> pRTTex = CResMgr::GetInst()->FindRes<CTexture>(L"RenderTargetTex");
-	Ptr<CTexture> pDSTex = CResMgr::GetInst()->FindRes<CTexture>(L"DepthStencilTex");
-
-	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Create(1, &pRTTex, pDSTex);
-
-	Vec2 vResolution = CDevice::GetInst()->GetRenderResolution();
-
-	// ============
-	// Deferred MRT
-	// ============
-	{
-		Ptr<CTexture> arrTex[8]
-			= {
-				CResMgr::GetInst()->CreateTexture(L"ColorTargetTex",
-				                                  (UINT)vResolution.x,
-				                                  (UINT)vResolution.y,
-				                                  DXGI_FORMAT_R8G8B8A8_UNORM,
-				                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-				                                  true),
-
-				CResMgr::GetInst()->CreateTexture(L"NormalTargetTex",
-				                                  (UINT)vResolution.x,
-				                                  (UINT)vResolution.y,
-				                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
-				                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-				                                  true),
-
-				CResMgr::GetInst()->CreateTexture(L"PositionTargetTex",
-				                                  (UINT)vResolution.x,
-				                                  (UINT)vResolution.y,
-				                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
-				                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-				                                  true),
-
-				CResMgr::GetInst()->CreateTexture(L"DataTargetTex",
-				                                  (UINT)vResolution.x,
-				                                  (UINT)vResolution.y,
-				                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
-				                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-				                                  true),
-
-			};
-
-		m_arrMRT[(UINT)MRT_TYPE::DEFERRED] = new CMRT;
-		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Create(4, arrTex, pDSTex);
-	}
-
-	// =====================
-	// Particle Emissive MRT
-	// =====================
-	{
-		Ptr<CTexture> arrTex[8]
-			= {
-				CResMgr::GetInst()->CreateTexture(L"ParticleTargetTex",
-												  (UINT)vResolution.x,
-												  (UINT)vResolution.y,
-												  DXGI_FORMAT_R32G32B32A32_FLOAT,
-												  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-												  true),
-
-				CResMgr::GetInst()->CreateTexture(L"EmissiveTargetTex",
-												  (UINT)vResolution.x,
-												  (UINT)vResolution.y,
-												  DXGI_FORMAT_R32G32B32A32_FLOAT,
-												  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-												  true)
-		};
-		m_arrMRT[(UINT)MRT_TYPE::PARTICLE] = new CMRT;
-		m_arrMRT[(UINT)MRT_TYPE::PARTICLE]->Create(2, arrTex, pDSTex);
-	}
-
-	// ==================
-	// Deferred Decal MRT
-	// ==================
-	{
-		Ptr<CTexture> arrTex[8] = {CResMgr::GetInst()->FindRes<CTexture>(L"ColorTargetTex")};
-
-		m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL] = new CMRT;
-		m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->Create(1, arrTex, nullptr);
-	}
-
-	// =========
-	// Light MRT
-	// =========
-	{
-		Ptr<CTexture> arrTex[8] = {
-			CResMgr::GetInst()->CreateTexture(L"DiffuseTargetTex",
-			                                  (UINT)vResolution.x,
-			                                  (UINT)vResolution.y,
-			                                  DXGI_FORMAT_R8G8B8A8_UNORM,
-			                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-			                                  true),
-
-			CResMgr::GetInst()->CreateTexture(L"SpecularTargetTex",
-			                                  (UINT)vResolution.x,
-			                                  (UINT)vResolution.y,
-			                                  DXGI_FORMAT_R8G8B8A8_UNORM,
-			                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-			                                  true),
-
-			CResMgr::GetInst()->CreateTexture(L"ShadowPowerTargetTex",
-			                                  (UINT)vResolution.x,
-			                                  (UINT)vResolution.y,
-			                                  DXGI_FORMAT_R32_FLOAT,
-			                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-			                                  true),
-		};
-
-		m_arrMRT[(UINT)MRT_TYPE::LIGHT] = new CMRT;
-		m_arrMRT[(UINT)MRT_TYPE::LIGHT]->Create(3, arrTex, nullptr);
-	}
-
-	// =============
-	// ShadowMap MRT
-	// =============
-	{
-		Ptr<CTexture> arrTex[8] = {
-			CResMgr::GetInst()->CreateTexture(L"ShadowMapTex",
-			                                  4096,
-			                                  4096,
-			                                  DXGI_FORMAT_R32_FLOAT,
-			                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-			                                  true),
-		};
-
-		// Depth Stencil Texture 만들기
-		Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->CreateTexture(L"ShadowMapDSTex",
-		                                                                   4096,
-		                                                                   4096,
-		                                                                   DXGI_FORMAT_D32_FLOAT,
-		                                                                   D3D11_BIND_DEPTH_STENCIL,
-		                                                                   true);
-
-		m_arrMRT[(UINT)MRT_TYPE::SHADOWMAP] = new CMRT;
-		m_arrMRT[(UINT)MRT_TYPE::SHADOWMAP]->Create(1, arrTex, pDepthStencilTex);
-	}
+	CreateSwapChainMRT();
+	CreateDefferedMRT();
+	CreateParticleMRT();
+	CreateDeferredDecalMRT();
+	CreateLightMRT();
+	CreateShadowMapMRT();
 }
 
 void CRenderMgr::CreateMaterial()
+{
+	CreateMergeMaterial();
+	CreateDirectionalLightMaterial();
+	CreatePointLightMaterial();
+	CreateSpotLightMaterial();
+	CreateShadowMapMaterial();
+	CreateGridMaterial();
+	CreateDefferedDecalMaterial();
+	CreateForwardDecalMaterial();
+}
+
+void CRenderMgr::ClearMRT() const
+{
+	for (auto& pMRT : m_arrMRT)
+	{
+		if (nullptr != pMRT)
+		{
+			pMRT->Clear();
+		}
+	}
+}
+
+void CRenderMgr::ClearTextureRegister()
+{
+	for (UINT i = 0; i < static_cast<UINT>(TEX_PARAM::END); ++i)
+	{
+		CTexture::Clear(i);
+	}
+}
+
+void CRenderMgr::CreateSwapChainMRT()
+{
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN] = new CMRT{};
+
+	Ptr<CTexture>       pRenderTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"RenderTargetTex");
+	const Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->FindRes<CTexture>(L"DepthStencilTex");
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Create(1, &pRenderTargetTex, pDepthStencilTex);
+}
+
+void CRenderMgr::CreateDefferedMRT()
+{
+	const Vec2          vResolution      = CDevice::GetInst()->GetRenderResolution();
+	const Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->FindRes<CTexture>(L"DepthStencilTex");
+	Ptr<CTexture>       arrTex[8]        = {
+		CResMgr::GetInst()->CreateTexture(L"ColorTargetTex",
+		                                  static_cast<UINT>(vResolution.x),
+		                                  static_cast<UINT>(vResolution.y),
+		                                  DXGI_FORMAT_R8G8B8A8_UNORM,
+		                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		                                  true),
+
+		CResMgr::GetInst()->CreateTexture(L"NormalTargetTex",
+		                                  static_cast<UINT>(vResolution.x),
+		                                  static_cast<UINT>(vResolution.y),
+		                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
+		                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		                                  true),
+
+		CResMgr::GetInst()->CreateTexture(L"PositionTargetTex",
+		                                  static_cast<UINT>(vResolution.x),
+		                                  static_cast<UINT>(vResolution.y),
+		                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
+		                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		                                  true),
+
+		CResMgr::GetInst()->CreateTexture(L"DataTargetTex",
+		                                  static_cast<UINT>(vResolution.x),
+		                                  static_cast<UINT>(vResolution.y),
+		                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
+		                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		                                  true),
+
+	};
+
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED] = new CMRT{};
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Create(4, arrTex, pDepthStencilTex);
+}
+
+void CRenderMgr::CreateParticleMRT()
+{
+	const Vec2          vResolution      = CDevice::GetInst()->GetRenderResolution();
+	const Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->FindRes<CTexture>(L"DepthStencilTex");
+	Ptr<CTexture>       arrTex[8]
+		= {
+			CResMgr::GetInst()->CreateTexture(L"ParticleTargetTex",
+			                                  static_cast<UINT>(vResolution.x),
+			                                  static_cast<UINT>(vResolution.y),
+			                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
+			                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+			                                  true),
+
+			CResMgr::GetInst()->CreateTexture(L"EmissiveTargetTex",
+			                                  static_cast<UINT>(vResolution.x),
+			                                  static_cast<UINT>(vResolution.y),
+			                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
+			                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+			                                  true)
+		};
+
+	m_arrMRT[(UINT)(MRT_TYPE::PARTICLE)] = new CMRT{};
+	m_arrMRT[(UINT)(MRT_TYPE::PARTICLE)]->Create(2, arrTex, pDepthStencilTex);
+}
+
+void CRenderMgr::CreateDeferredDecalMRT()
+{
+	const Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->FindRes<CTexture>(L"DepthStencilTex");
+
+	Ptr<CTexture> arrTex[8] = {CResMgr::GetInst()->FindRes<CTexture>(L"ColorTargetTex")};
+
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL] = new CMRT{};
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->Create(1, arrTex, pDepthStencilTex);
+}
+
+void CRenderMgr::CreateLightMRT()
+{
+	const Vec2 vResolution = CDevice::GetInst()->GetRenderResolution();
+
+	Ptr<CTexture> arrTex[8] = {
+		CResMgr::GetInst()->CreateTexture(L"DiffuseTargetTex",
+		                                  static_cast<UINT>(vResolution.x),
+		                                  static_cast<UINT>(vResolution.y),
+		                                  DXGI_FORMAT_R8G8B8A8_UNORM,
+		                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		                                  true),
+
+		CResMgr::GetInst()->CreateTexture(L"SpecularTargetTex",
+		                                  static_cast<UINT>(vResolution.x),
+		                                  static_cast<UINT>(vResolution.y),
+		                                  DXGI_FORMAT_R8G8B8A8_UNORM,
+		                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		                                  true),
+
+		CResMgr::GetInst()->CreateTexture(L"ShadowPowerTargetTex",
+		                                  static_cast<UINT>(vResolution.x),
+		                                  static_cast<UINT>(vResolution.y),
+		                                  DXGI_FORMAT_R32_FLOAT,
+		                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		                                  true),
+	};
+
+	m_arrMRT[(UINT)MRT_TYPE::LIGHT] = new CMRT{};
+	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->Create(3, arrTex, nullptr);
+}
+
+void CRenderMgr::CreateShadowMapMRT()
+{
+	constexpr int textureSize = 4096;
+	Ptr<CTexture> arrTex[8]   = {
+		CResMgr::GetInst()->CreateTexture(L"ShadowMapTex",
+		                                  textureSize,
+		                                  textureSize,
+		                                  DXGI_FORMAT_R32_FLOAT,
+		                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+		                                  true),
+	};
+
+	// Depth Stencil Texture 만들기
+	Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->CreateTexture(L"ShadowMapDSTex",
+	                                                                   textureSize,
+	                                                                   textureSize,
+	                                                                   DXGI_FORMAT_D32_FLOAT,
+	                                                                   D3D11_BIND_DEPTH_STENCIL,
+	                                                                   true);
+
+	m_arrMRT[(UINT)MRT_TYPE::SHADOWMAP] = new CMRT{};
+	m_arrMRT[(UINT)MRT_TYPE::SHADOWMAP]->Create(1, arrTex, pDepthStencilTex);
+}
+
+void CRenderMgr::CreateMergeMaterial()
 {
 	// Merge Shader
 	m_pMergeShader = new CGraphicsShader;
 	m_pMergeShader->CreateVertexShader(L"shader\\light.fx", "VS_Merge");
 	m_pMergeShader->CreatePixelShader(L"shader\\light.fx", "PS_Merge");
-
 	m_pMergeShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_NONE);
-
 	m_pMergeShader->SetRSType(RS_TYPE::CULL_BACK);
 	m_pMergeShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 	m_pMergeShader->SetBSType(BS_TYPE::DEFAULT);
 
 	// Merge Material
-	m_pMergeMtrl = new CMaterial;
-	m_pMergeMtrl->SetShader(m_pMergeShader);
+	m_pMergeMaterial = new CMaterial;
+	m_pMergeMaterial->SetShader(m_pMergeShader);
+	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"ColorTargetTex"));
+	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_1, CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex"));
+	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_2, CResMgr::GetInst()->FindRes<CTexture>(L"SpecularTargetTex"));
+	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_3, CResMgr::GetInst()->FindRes<CTexture>(L"ShadowPowerTargetTex"));
+	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_4, CResMgr::GetInst()->FindRes<CTexture>(L"ParticleTargetTex"));
+	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_5, CResMgr::GetInst()->FindRes<CTexture>(L"EmissiveTargetTex"));
+}
 
-	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"ColorTargetTex"));
-	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_1, CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex"));
-	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_2, CResMgr::GetInst()->FindRes<CTexture>(L"SpecularTargetTex"));
-	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_3, CResMgr::GetInst()->FindRes<CTexture>(L"ShadowPowerTargetTex"));
-	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_4, CResMgr::GetInst()->FindRes<CTexture>(L"ParticleTargetTex"));
-	m_pMergeMtrl->SetTexParam(TEX_PARAM::TEX_5, CResMgr::GetInst()->FindRes<CTexture>(L"EmissiveTargetTex"));
-
-	Ptr<CGraphicsShader> pShader = nullptr;
-	Ptr<CMaterial>       pMtrl   = nullptr;
-
+void CRenderMgr::CreateDirectionalLightMaterial()
+{
 	// Directional Light Shader
-	pShader = new CGraphicsShader;
+	Ptr<CGraphicsShader> pShader = new CGraphicsShader;
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
 	pShader->CreateVertexShader(L"Shader\\light.fx", "VS_Directional");
 	pShader->CreatePixelShader(L"Shader\\light.fx", "PS_Directional");
@@ -208,23 +240,25 @@ void CRenderMgr::CreateMaterial()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"DirLightShader", pShader.Get(), true);
 
 	// Directional Light Material
-	pMtrl = new CMaterial;
+	Ptr<CMaterial> pMtrl = new CMaterial;
 	pMtrl->SetShader(pShader);
-
 	pMtrl->SetTexParam(TEX_PARAM::TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex"));
 	pMtrl->SetTexParam(TEX_PARAM::TEX_1, CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex"));
 	pMtrl->SetTexParam(TEX_PARAM::TEX_2, CResMgr::GetInst()->FindRes<CTexture>(L"ShadowMapTex"));
 
 	Ptr<CTexture> pShadowMapTex  = CResMgr::GetInst()->FindRes<CTexture>(L"ShadowMapTex");
-	Vec2          vShadowMapSize = Vec2{pShadowMapTex->Width(), pShadowMapTex->Height()};
+	auto          vShadowMapSize = Vec2{pShadowMapTex->Width(), pShadowMapTex->Height()};
 	pMtrl->SetScalarParam(SCALAR_PARAM::VEC2_0, &vShadowMapSize);
 	float fEpsilon = 0.001f;
 	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, &fEpsilon);
 
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\DirLightMtrl.mtrl", pMtrl.Get(), true);
+}
 
+void CRenderMgr::CreatePointLightMaterial()
+{
 	// Point Light Shader
-	pShader = new CGraphicsShader;
+	Ptr<CGraphicsShader> pShader = new CGraphicsShader;
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
 	pShader->CreateVertexShader(L"Shader\\light.fx", "VS_Point");
 	pShader->CreatePixelShader(L"Shader\\light.fx", "PS_Point");
@@ -236,16 +270,18 @@ void CRenderMgr::CreateMaterial()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"PointLightShader", pShader.Get(), true);
 
 	// Point Light Material
-	pMtrl = new CMaterial;
+	Ptr<CMaterial> pMtrl = new CMaterial;
 	pMtrl->SetShader(pShader);
-
 	pMtrl->SetTexParam(TEX_PARAM::TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex"));
 	pMtrl->SetTexParam(TEX_PARAM::TEX_1, CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex"));
 
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\PointLightMtrl.mtrl", pMtrl.Get(), true);
+}
 
+void CRenderMgr::CreateSpotLightMaterial()
+{
 	// Spot Light Shader
-	pShader = new CGraphicsShader;
+	Ptr<CGraphicsShader> pShader = new CGraphicsShader;
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
 	pShader->CreateVertexShader(L"Shader\\light.fx", "VS_Spot");
 	pShader->CreatePixelShader(L"Shader\\light.fx", "PS_Spot");
@@ -257,16 +293,18 @@ void CRenderMgr::CreateMaterial()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"SpotLightShader", pShader.Get(), true);
 
 	// Spot Light Material
-	pMtrl = new CMaterial;
+	Ptr<CMaterial> pMtrl = new CMaterial;
 	pMtrl->SetShader(pShader);
 
 	pMtrl->SetTexParam(TEX_PARAM::TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex"));
 	pMtrl->SetTexParam(TEX_PARAM::TEX_1, CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex"));
 
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\SpotLightMtrl.mtrl", pMtrl.Get(), true);
+}
 
-	// ShadowMap Material
-	pShader = new CGraphicsShader;
+void CRenderMgr::CreateShadowMapMaterial()
+{
+	Ptr<CGraphicsShader> pShader = new CGraphicsShader;
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_NONE);
 	pShader->CreateVertexShader(L"Shader\\light.fx", "VS_ShadowMap");
 	pShader->CreatePixelShader(L"Shader\\light.fx", "PS_ShadowMap");
@@ -278,13 +316,15 @@ void CRenderMgr::CreateMaterial()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"ShadowMapShader", pShader.Get(), true);
 
 	// ShadowMap Material
-	pMtrl = new CMaterial;
+	Ptr<CMaterial> pMtrl = new CMaterial;
 	pMtrl->SetShader(pShader);
 
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\ShadowMap.mtrl", pMtrl.Get(), true);
+}
 
-	// Grid Shader
-	pShader = new CGraphicsShader;
+void CRenderMgr::CreateGridMaterial()
+{
+	Ptr<CGraphicsShader> pShader = new CGraphicsShader;
 	pShader->CreateVertexShader(L"Shader\\tool.fx", "VS_Grid");
 	pShader->CreatePixelShader(L"Shader\\tool.fx", "PS_Grid");
 
@@ -306,15 +346,17 @@ void CRenderMgr::CreateMaterial()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"GridShader", pShader.Get(), true);
 
 	// Grid Material
-	pMtrl = new CMaterial;
+	Ptr<CMaterial> pMtrl = new CMaterial;
 	pMtrl->SetShader(pShader);
 
 	pMtrl->SetTexParam(TEX_PARAM::TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex"));
 
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\GridMtrl.mtrl", pMtrl.Get(), true);
+}
 
-	// Deferred Decal Shader
-	pShader = new CGraphicsShader;
+void CRenderMgr::CreateDefferedDecalMaterial()
+{
+	Ptr<CGraphicsShader> pShader = new CGraphicsShader;
 
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_DEFERRED_DECAL);
 	pShader->CreateVertexShader(L"Shader\\std3d_deferred.fx", "VS_Deferred_Decal");
@@ -326,13 +368,16 @@ void CRenderMgr::CreateMaterial()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"DeferredDecalShader", pShader.Get(), true);
 
 	// Deferred Decal Material
-	pMtrl = new CMaterial;
+	Ptr<CMaterial> pMtrl = new CMaterial;
 	pMtrl->SetShader(pShader);
 	pMtrl->SetTexParam(TEX_PARAM::TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex"));
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\DeferredDecalMtrl.mtrl", pMtrl.Get(), true);
+}
 
+void CRenderMgr::CreateForwardDecalMaterial()
+{
 	// Forward Decal Shader
-	pShader = new CGraphicsShader;
+	Ptr<CGraphicsShader> pShader = new CGraphicsShader;
 
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_FORWARD_DECAL);
 	pShader->CreateVertexShader(L"Shader\\std3d_deferred.fx", "VS_Deferred_Decal");
@@ -344,25 +389,8 @@ void CRenderMgr::CreateMaterial()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"ForwardDecalShader", pShader.Get(), true);
 
 	// Forward Decal Material
-	pMtrl = new CMaterial;
+	Ptr<CMaterial> pMtrl = new CMaterial;
 	pMtrl->SetShader(pShader);
 	pMtrl->SetTexParam(TEX_PARAM::TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex"));
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\ForwardDecalMtrl.mtrl", pMtrl.Get(), true);
-}
-
-void CRenderMgr::ClearMRT()
-{
-	for (UINT i = 0; i < (UINT)MRT_TYPE::END; ++i)
-	{
-		if (nullptr != m_arrMRT[i])
-			m_arrMRT[i]->Clear();
-	}
-}
-
-void CRenderMgr::ClearTextureRegister()
-{
-	for (UINT i = 0; i < (UINT)TEX_PARAM::END; ++i)
-	{
-		CTexture::Clear(i);
-	}
 }

@@ -2,58 +2,47 @@
 #include "CComponent.h"
 #include "CState.h"
 
-class CFSM 
+class CFSM
 	: public CComponent
 {
 private:
-	// [ STATE INFO ]
-	map<wstring, CState*>	m_mapState;
+	std::map<wstring, CState*> m_mapState;
 
-	CState*					m_pCurState;
+	CState* m_pCurState;
 
-	wstring					m_sPrevStateType;
-	wstring					m_sCurStateType;
-	wstring					m_sNextStateType;
+	wstring m_sPrevStateName;
+	wstring m_sNextStateName;
 
 public:
-	void DeleteState(wstring _eStateType);
-	void AddState(wstring _sStateType, CState* _pState);
-	void ChangeState(wstring _sStateType);
-	
+	void DeleteState(const wstring& _eStateType);
+	void AddState(const wstring& _stateName, CState* _pState);
+	void ChangeState(const wstring& _sStateType);
+
 public:
 	// [ GET PART ]
-	CState* GetCurState()		{ return m_pCurState; }
-	wstring GetPrevStateType()	{ return m_sPrevStateType; }
-	wstring GetCurStateType()	{ return m_sCurStateType; }
-	wstring GetNextStateType()	{ return m_sNextStateType; }
-	CState* GetState(wstring _stateTypeName);
-	int		GetStateCount()		{ return m_mapState.size(); }
+	CState*        GetCurState() const { return m_pCurState; }
+	const wstring& GetPrevStateType() const { return m_sPrevStateName; }
+	const wstring& GetCurStateType() const { return m_pCurState->GetStateType(); }
+	const wstring& GetNextStateType() const { return m_sNextStateName; }
+
+	CState*                      GetState(const wstring& _stateName);
+	int                          GetStateCount() const { return static_cast<int>(m_mapState.size()); }
 	const map<wstring, CState*>& GetAllStates() { return m_mapState; }
 
-	// [ SET PART ]
 	void SetCurState(CState* _pCurState) { m_pCurState = _pCurState; }
-	void SetCurState(wstring _wstrName)
-	{
-		for (auto state : m_mapState)
-		{
-			if (_wstrName == state.first)
-			{
-				m_pCurState = state.second;
-				return;
-			}
-		}
-	}
+	void SetCurState(const wstring& _wstrName);
 
 public:
-	virtual void finalupdate() override;
-	virtual void update() override;
-	virtual void lateupdate() override;
+	void finalupdate() override;
+	void update() override;
+	void lateupdate() override;
 
 public:
-	friend class CEventMgr;
 	CLONE_DISABLE(CFSM);
 	CFSM();
 	virtual ~CFSM();
+
+	friend class CEventMgr;
 };
 
 //#define BIND_FN(func) std::bind(func,this,std::placeholders::_1)

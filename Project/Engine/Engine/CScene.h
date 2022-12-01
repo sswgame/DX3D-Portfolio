@@ -6,13 +6,13 @@
 class CLayer;
 class CGameObject;
 
-class CScene : public CEntity
+class CScene
+	: public CEntity
 {
 private:
 	CLayer*     m_arrLayer[MAX_LAYER];
 	SCENE_STATE m_eSceneState;
 	wstring     m_strResKey;
-
 
 public:
 	void start();
@@ -20,31 +20,24 @@ public:
 	void lateupdate();
 	void finalupdate();
 
-
 public:
-	void SetLayerName(int _iLayerIdx, const wstring& _strName);
-	void AddObject(CGameObject* _pRootObj, const wstring& _strLayerName);
-	void AddObject(CGameObject* _pRootObj, int _iLayerIdx);
-	bool SwapLayer(int _LayerIdx_1, int _LayerIdx_2);
+	void AddObject(CGameObject* _pRootObj, const wstring& _strLayerName) const;
+	void AddObject(CGameObject* _pRootObj, int _iLayerIdx) const;
 
-	CLayer* GetLayer(int _iIdx)
-	{
-		assert(!(_iIdx < 0 || MAX_LAYER <= _iIdx));
-		return m_arrLayer[_iIdx];
-	}
-
-	CLayer* GetLayer(const wstring& _strLayerName);
+	bool    SwapLayer(int _LayerIdx_1, int _LayerIdx_2);
+	void    SetLayerName(int _iLayerIdx, const wstring& _strName) const;
+	int     GetLayerIdxFromName(const wstring& _strName) const;
+	CLayer* GetLayer(const wstring& _strLayerName) const;
+	CLayer* GetLayer(int _iLayerIndex) const;
 
 	void            SetResKey(const wstring& _strKey) { m_strResKey = _strKey; }
-	Ptr<CSceneFile> GetSceneFile();
+	Ptr<CSceneFile> GetSceneFile() const;
 
-	SCENE_STATE GetSceneState() { return m_eSceneState; }
+	SCENE_STATE GetSceneState() const { return m_eSceneState; }
 	void        SetSceneState(SCENE_STATE _eState);
-	
-	int GetLayerIdxFromName(const wstring& _strName);
 
-	CLONE(CScene)
 public:
+	CLONE(CScene)
 	CScene();
 	virtual ~CScene();
 };

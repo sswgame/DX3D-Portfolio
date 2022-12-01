@@ -13,7 +13,6 @@ class CSingletonScript
 protected:
 	inline static CGameObject*                       s_pInstance = nullptr;
 	inline static std::vector<std::function<void()>> s_vecFunc{};
-
 public:
 	template <typename T, typename...Args>
 	static void AddScriptEvent(T* pInstance, void (T::*callback)(Args ...), Args ...args)
@@ -37,9 +36,7 @@ public:
 
 public:
 	CSingletonScript()
-		: CScript{std::numeric_limits<int>::max()}
-	{
-	}
+		: CScript{std::numeric_limits<int>::max()} { }
 
 	virtual ~CSingletonScript() { s_pInstance = nullptr; }
 	CLONE(CSingletonScript);

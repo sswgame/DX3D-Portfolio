@@ -184,7 +184,7 @@ void CSceneSaveLoad::SaveGameObject(CGameObject* pGameObject, YAML::Emitter& emi
 
 	emitter << YAML::Key << "CHILDREN";
 	emitter << YAML::Value << YAML::BeginSeq;
-	const std::vector<CGameObject*> vecChild = pGameObject->GetChild();
+	const std::vector<CGameObject*>& vecChild = pGameObject->GetChild();
 	for (auto& pChild : vecChild)
 	{
 		SaveGameObject(pChild, emitter);

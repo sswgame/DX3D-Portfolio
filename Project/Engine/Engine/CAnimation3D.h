@@ -5,14 +5,16 @@ class CAnimator3D;
 
 enum class ANIMATION_STATE
 {
-	BEFORE_PLAY	// 재생 이전 
-	, PLAY		// 재생 
-	, STOP		// 일시 정지 
-	, FINISH	// 끝 
-	, END
+	BEFORE_PLAY,	// 재생 이전 
+	PLAY,			// 재생 
+	STOP,			// 일시 정지 
+	FINISH,			// 끝 
+
+	END
 };
 
-class CAnimation3D : public CEntity
+class CAnimation3D
+	: public CEntity
 {
 private:
 	CAnimator3D* m_pOwner;
@@ -46,34 +48,13 @@ private:
 	bool                                           m_fired       = false;
 	std::unordered_map<int, std::function<void()>> m_mapCallback;
 public:
-	void SetCallback(std::function<void()> func, int frameIndex)
-	{
-		auto iter = m_mapCallback.find(frameIndex);
-		if (iter == m_mapCallback.end())
-		{
-			m_hasCallback = true;
-			m_mapCallback.insert({frameIndex, func});
-		}
-		else
-		{
-			assert(nullptr &&"EXIST CALLBAC AT THE FRAME INDEX");
-		}
-	}
-
-	void FireCallback(int frameIndex)
-	{
-		auto iter = m_mapCallback.find(frameIndex);
-		if (iter != m_mapCallback.end())
-		{
-			iter->second();
-			m_fired = true;
-		}
-	}
+	void SetCallback(std::function<void()> func, int frameIndex);
+	void FireCallback(int frameIndex);
 
 public:
-	void         finalupdate();
-	virtual void UpdateData() override;
-	void         ClearData();
+	void finalupdate();
+	void UpdateData() override;
+	void ClearData() const;
 
 
 public:
@@ -82,7 +63,7 @@ public:
 	void Reset();
 	void ResetStartEndFrameIdx();
 	void ResetStartEndFrameTime();
-	void CopyInfo(CAnimation3D** _pCopyAnim); // Copy될 Animation의 이중포인터를 넘겨라 
+	void CopyInfo(CAnimation3D** _pCopyAnim) const; // Copy될 Animation의 이중포인터를 넘겨라 
 
 
 public:
@@ -127,33 +108,33 @@ public:
 
 public:
 	// [ GET PART ]
-	bool            IsPlay() { return m_bPlay; }
-	bool            IsFinish() { return m_bFinish; }
-	int             GetClipNum() { return m_iCurClip; }
-	float           GetSpeed() { return m_fSpeed; }
-	ANIMATION_STATE GetState() { return m_eCurState; }
+	bool            IsPlay() const { return m_bPlay; }
+	bool            IsFinish() const { return m_bFinish; }
+	int             GetClipNum() const { return m_iCurClip; }
+	float           GetSpeed() const { return m_fSpeed; }
+	ANIMATION_STATE GetState() const { return m_eCurState; }
 	// - GET INDEX -
-	int GetCurFrameIdx() { return m_iCurFrameIdx; }
-	int GetStartFrameIdx() { return m_tClip.iStartFrame; }
-	int GetEndFrameIdx() { return m_tClip.iEndFrame; }
-	int GetMaxFrameIdx();
-	int GetPlayCnt() { return m_iPlayCnt; }
+	int GetCurFrameIdx() const { return m_iCurFrameIdx; }
+	int GetStartFrameIdx() const { return m_tClip.iStartFrame; }
+	int GetEndFrameIdx() const { return m_tClip.iEndFrame; }
+	int GetMaxFrameIdx() const;
+	int GetPlayCnt() const { return m_iPlayCnt; }
 
 
 	// - GET TIME -
-	float  GetLerpTime() { return m_fLerpTime; }
-	double GetStartTime() { return m_tClip.dStartTime; }
-	double GetEndTime() { return m_tClip.dEndTime; }
-	double GetAccTime() { return m_vecClipUpdateTime[m_iCurClip]; }
+	float  GetLerpTime() const { return m_fLerpTime; }
+	double GetStartTime() const { return m_tClip.dStartTime; }
+	double GetEndTime() const { return m_tClip.dEndTime; }
+	double GetAccTime() const { return m_vecClipUpdateTime[m_iCurClip]; }
 
 
 private:
-	void check_mesh(Ptr<CMesh> _pMesh);
+	void check_mesh(Ptr<CMesh> _pMesh) const;
 
 
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 	CLONE(CAnimation3D)
 
 	void Serialize(YAML::Emitter& emitter) override;
@@ -161,7 +142,7 @@ public:
 public:
 	CAnimation3D();
 	CAnimation3D(const CAnimation3D& _origin);
-	~CAnimation3D();
+	virtual ~CAnimation3D();
 
 	friend class CAnimator3D;
 };

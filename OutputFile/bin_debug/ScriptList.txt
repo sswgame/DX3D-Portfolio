@@ -17,9 +17,9 @@ PlayerCamScript
 PlayerScript
 RigidBodyScript
 SwordTrailScript
-TestScript
 TrailScript
 UIImageScript
 UIPanelScript
 UIProgressBarScript
+UITestScript
 UITextScript

@@ -3,16 +3,16 @@
 
 class TreeUI;
 
-class ResourceUI : public UI
+class ResourceUI
+	: public UI
 {
 private:
-	TreeUI* m_TreeUI;
-
+	TreeUI*         m_TreeUI;
 	vector<wstring> m_vecResPath;
 
 public:
-	virtual void update() override;
-	virtual void render_update() override;
+	void update() override;
+	void render_update() override;
 
 public:
 	void Reset();

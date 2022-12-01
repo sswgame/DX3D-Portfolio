@@ -11,7 +11,10 @@ Ptr<T> LoadAs(const YAML::Node& node)
 	{
 		keyValue.push_back(data.as<std::string>());
 	}
-
+	if (keyValue[0].empty())
+	{
+		return nullptr;
+	}
 	return CResMgr::GetInst()->Load<T>(ToWString(keyValue[0]), ToWString(keyValue[1]));
 }
 
@@ -22,7 +25,6 @@ inline std::pair<std::wstring, std::wstring> GetResourceInfo(const YAML::Node& n
 	{
 		keyValue.push_back(data.as<std::string>());
 	}
-
 	return {ToWString(keyValue[0]), ToWString(keyValue[1])};
 }
 
@@ -33,7 +35,6 @@ namespace YAML
 	struct convert<CRes>
 	{
 		static Node encode(const CRes& resource);
-
 		static bool decode(const Node& node, CRes& resource);
 	};
 
@@ -47,7 +48,6 @@ namespace YAML
 	struct convert<Vec2>
 	{
 		static Node encode(const Vec2& vec);
-
 		static bool decode(const Node& node, Vec2& vec);
 	};
 
@@ -61,7 +61,6 @@ namespace YAML
 	struct convert<Vec3>
 	{
 		static Node encode(const Vec3& vec);
-
 		static bool decode(const Node& node, Vec3& vec);
 	};
 
@@ -75,7 +74,6 @@ namespace YAML
 	struct convert<Vec4>
 	{
 		static Node encode(const Vec4& vec);
-
 		static bool decode(const Node& node, Vec4& vec);
 	};
 
@@ -89,7 +87,6 @@ namespace YAML
 	struct convert<Matrix>
 	{
 		static Node encode(const Matrix& mat);
-
 		static bool decode(const Node& node, Matrix& mat);
 	};
 

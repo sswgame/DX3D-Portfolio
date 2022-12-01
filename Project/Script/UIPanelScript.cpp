@@ -4,17 +4,26 @@
 #include "CObjectManager.h"
 
 UIPanelScript::UIPanelScript()
-	: CUIBase{SCRIPT_TYPE::UIPANELSCRIPT, UI_TYPE::PANEL}
+	: CUIBase{SCRIPT_TYPE::UIPANELSCRIPT}
 	, m_isSorted{false}
 {
+	AddScriptParam("TEXTURE NAME", SCRIPTPARAM_TYPE::TEXTURE, &m_textureName);
+}
+
+UIPanelScript::UIPanelScript(const UIPanelScript& _origin)
+	: CUIBase{_origin}
+	, m_isSorted{false}
+	, m_textureName{_origin.m_textureName}
+{
+	RenewScalarParam("TEXTURE NAME", &m_textureName);
 }
 
 UIPanelScript::~UIPanelScript() = default;
 
 void UIPanelScript::start()
 {
+	CUIBase::start();
 	Transform()->SetRelativePos(0.f, 0.f, 500.f);
-	//CObjectManager::GetInst()->AddScriptEvent(this, &UIPanelScript::SortGameObject);
 }
 
 void UIPanelScript::update()
@@ -33,19 +42,25 @@ void UIPanelScript::update()
 
 void UIPanelScript::lateupdate()
 {
+	if (nullptr == MeshRender() || nullptr == MeshRender()->GetMaterial(0) || nullptr == MeshRender()->GetMesh())
+	{
+		return;
+	}
 	CUIBase::lateupdate();
-	const Ptr<CTexture> pTexture = CResMgr::GetInst()->FindRes<CTexture>(m_textureName);
-	assert(nullptr != pTexture);
-	MeshRender()->GetDynamicMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
+	const Ptr<CTexture> pTexture = CResMgr::GetInst()->FindRes<CTexture>(ToWString(m_textureName));
+	if (nullptr != pTexture)
+	{
+		MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
+	}
 }
 
 void UIPanelScript::SortGameObject()
 {
 	auto func = [](CGameObject* pLeft, CGameObject* pRight)
 	{
-		CUIBase* pLeftUI = pLeft->GetScript<CUIBase>();
+		const CUIBase* pLeftUI = pLeft->GetScript<CUIBase>();
 		assert(pLeftUI);
-		CUIBase* pRightUI = pRight->GetScript<CUIBase>();
+		const CUIBase* pRightUI = pRight->GetScript<CUIBase>();
 		assert(pRightUI);
 
 		return pLeftUI->GetOrderZ() > pRightUI->GetOrderZ();
@@ -78,4 +93,17 @@ bool UIPanelScript::CollisionMouse()
 		return false;
 	}
 	return false;
+}
+
+void UIPanelScript::Serialize(YAML::Emitter& emitter)
+{
+	CUIBase::Serialize(emitter);
+	emitter << YAML::Key << NAME_OF(m_textureName) << m_textureName;
+}
+
+void UIPanelScript::Deserialize(const YAML::Node& node)
+{
+	CUIBase::Deserialize(node);
+	m_textureName = node[NAME_OF(m_textureName)].as<std::string>();
+	RenewScalarParam("TEXTURE NAME", &m_textureName);
 }

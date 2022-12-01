@@ -19,17 +19,6 @@ enum class ANCHOR_VERTICAL
 	END
 };
 
-enum class UI_TYPE
-{
-	BUTTON,
-	PROGRESS_BAR,
-	PANEL,
-	TEXT,
-	IMAGE,
-
-	END
-};
-
 class CUIBase
 	: public CScript
 {
@@ -37,7 +26,6 @@ class CUIBase
 private:
 	UIPanelScript* m_pPanel;
 
-	const UI_TYPE         m_eUIType;
 	int                   m_orderZ;
 	float                 m_opacity;
 	bool                  m_isMouseHovered;
@@ -48,7 +36,8 @@ private:
 	ANCHOR_HORIZONTAL m_anchorH;
 
 	Vec2 m_offsetPos;
-	bool m_showDebugRect;
+	int  m_showDebugRect;
+
 private:
 	float AdjustWithCamera(ANCHOR_HORIZONTAL type) const;
 	float AdjustWithCamera(ANCHOR_VERTICAL type) const;
@@ -61,7 +50,7 @@ private:
 
 public:
 	virtual bool CollisionMouse();
-public:
+
 	void           SetPanel(UIPanelScript* pPanel) { m_pPanel = pPanel; }
 	UIPanelScript* GetPanel() const { return m_pPanel; }
 
@@ -98,7 +87,12 @@ public:
 public:
 	void update() override;
 	void lateupdate() override;
+
 public:
-	CUIBase(SCRIPT_TYPE type, UI_TYPE eUIType);
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
+public:
+	CUIBase(SCRIPT_TYPE type);
+	CUIBase(const CUIBase& _origin);
 	virtual ~CUIBase();
 };

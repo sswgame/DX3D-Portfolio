@@ -3,6 +3,11 @@
 
 #include "CResMgr.h"
 
+namespace SOUND
+{
+	constexpr int INVALID_INDEX = -1;
+}
+
 FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL*              channelcontrol,
                              FMOD_CHANNELCONTROL_TYPE          controltype,
                              FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
@@ -12,9 +17,8 @@ FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL*              channelcontrol,
 FMOD::System* CSound::g_pFMOD = nullptr;
 
 CSound::CSound()
-	:
-	CRes(RES_TYPE::SOUND)
-  , m_pSound(nullptr) {}
+	: CRes(RES_TYPE::SOUND)
+	, m_pSound(nullptr) {}
 
 CSound::~CSound()
 {
@@ -27,7 +31,7 @@ CSound::~CSound()
 
 int CSound::Play(int _iRoopCount, float _fVolume, bool _bOverlap)
 {
-	if (_iRoopCount <= -1)
+	if (_iRoopCount < 0)
 	{
 		assert(nullptr);
 	}
@@ -35,75 +39,64 @@ int CSound::Play(int _iRoopCount, float _fVolume, bool _bOverlap)
 	// 재생되고 있는 채널이 있는데, 중복재생을 허용하지 않았다 -> 재생 안함
 	if (!_bOverlap && !m_listChannel.empty())
 	{
-		return -1;
+		return SOUND::INVALID_INDEX;
 	}
+	--_iRoopCount;
 
-	_iRoopCount -= 1;
-
-	FMOD::Channel* pChannel = nullptr;
+	FMOD::Channel* pChannel{};
 	g_pFMOD->playSound(m_pSound, nullptr, false, &pChannel);
 
 	pChannel->setVolume(_fVolume);
-
 	pChannel->setCallback(CHANNEL_CALLBACK);
 	pChannel->setUserData(this);
-
 	pChannel->setMode(FMOD_LOOP_NORMAL);
 	pChannel->setLoopCount(_iRoopCount);
 
 	m_listChannel.push_back(pChannel);
 
-	int iIdx = -1;
-	pChannel->getIndex(&iIdx);
+	int iIndex = SOUND::INVALID_INDEX;
+	pChannel->getIndex(&iIndex);
 
-	return iIdx;
+	return iIndex;
 }
 
-void CSound::Stop()
+void CSound::Stop() const
 {
-	list<FMOD::Channel*>::iterator iter;
-
-	while (!m_listChannel.empty())
+	for (const auto& pChannel : m_listChannel)
 	{
-		iter = m_listChannel.begin();
-		(*iter)->stop();
+		pChannel->stop();
 	}
 }
 
-void CSound::SetVolume(float _f, int _iChannelIdx)
+void CSound::SetVolume(float _volume, int _iChannelIndex)
 {
-	list<FMOD::Channel*>::iterator iter = m_listChannel.begin();
+	const auto iter = std::find_if(m_listChannel.begin(),
+	                               m_listChannel.end(),
+	                               [_iChannelIndex](FMOD::Channel* pChannel)
+	                               {
+		                               int iIndex{};
+		                               pChannel->getIndex(&iIndex);
+		                               return _iChannelIndex == iIndex;
+	                               });
 
-	int iIdx = -1;
-	for (; iter != m_listChannel.end(); ++iter)
+	if (iter != m_listChannel.end())
 	{
-		(*iter)->getIndex(&iIdx);
-		if (_iChannelIdx == iIdx)
-		{
-			(*iter)->setVolume(_f);
-			return;
-		}
+		(*iter)->setVolume(_volume);
 	}
 }
 
-void CSound::RemoveChannel(FMOD::Channel* _pTargetChannel)
+void CSound::RemoveChannel(const FMOD::Channel* _pTargetChannel)
 {
-	list<FMOD::Channel*>::iterator iter = m_listChannel.begin();
-	for (; iter != m_listChannel.end(); ++iter)
+	const auto iter = std::find(m_listChannel.begin(), m_listChannel.end(), _pTargetChannel);
+	if (iter != m_listChannel.end())
 	{
-		if (*iter == _pTargetChannel)
-		{
-			m_listChannel.erase(iter);
-			return;
-		}
+		m_listChannel.erase(iter);
 	}
 }
 
 int CSound::Load(const wstring& _strFilePath)
 {
-	string path = ToString(_strFilePath);
-
-	if (FMOD_OK != g_pFMOD->createSound(path.c_str(), FMOD_DEFAULT, nullptr, &m_pSound))
+	if (FMOD_OK != g_pFMOD->createSound(ToString(_strFilePath).c_str(), FMOD_DEFAULT, nullptr, &m_pSound))
 	{
 		assert(nullptr);
 	}
@@ -111,24 +104,20 @@ int CSound::Load(const wstring& _strFilePath)
 	return S_OK;
 }
 
-
-// =========
-// Call Back
-// =========
 FMOD_RESULT CHANNEL_CALLBACK(FMOD_CHANNELCONTROL*              channelcontrol,
                              FMOD_CHANNELCONTROL_TYPE          controltype,
                              FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
                              void*                             commanddata1,
                              void*                             commanddata2)
 {
-	FMOD::Channel* cppchannel = (FMOD::Channel*)channelcontrol;
+	FMOD::Channel* cppchannel = reinterpret_cast<FMOD::Channel*>(channelcontrol);
 	CSound*        pSound     = nullptr;
 
 	switch (controltype)
 	{
 	case FMOD_CHANNELCONTROL_CALLBACK_END:
 		{
-			cppchannel->getUserData((void**)&pSound);
+			cppchannel->getUserData(reinterpret_cast<void**>(&pSound));
 			pSound->RemoveChannel(cppchannel);
 		}
 		break;

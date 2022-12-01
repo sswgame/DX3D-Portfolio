@@ -23,7 +23,6 @@ private:
 
 	std::string m_text;
 	float       m_fontSize;
-	int         m_textCapacity;
 
 	ComPtr<IDWriteTextFormat>    m_pFont;
 	ComPtr<IDWriteTextLayout>    m_pLayout;
@@ -33,8 +32,8 @@ private:
 	bool                         m_alphaEnable;
 	Vec4                         m_color;
 
-	TEXT_ALIGN_HORIZONTAL m_alignH;
-	TEXT_ALIGN_VERTICAL   m_alignV;
+	TEXT_ALIGN_HORIZONTAL m_alignTextH;
+	TEXT_ALIGN_VERTICAL   m_alignTextV;
 
 private:
 	void CreateTextLayout();
@@ -65,7 +64,11 @@ public:
 	void SetColor(const Vec4& color);
 
 public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
+public:
 	CLONE(UITextScript);
 	UITextScript();
+	UITextScript(const UITextScript& _origin);
 	virtual ~UITextScript();
 };

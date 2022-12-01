@@ -40,9 +40,7 @@ BossJugCombatMgrScript::BossJugCombatMgrScript()
 	AddScriptParam("PHASE INFO", SCRIPTPARAM_TYPE::TEXT, &m_strCurState);
 }
 
-BossJugCombatMgrScript::~BossJugCombatMgrScript()
-{
-}
+BossJugCombatMgrScript::~BossJugCombatMgrScript() {}
 
 void BossJugCombatMgrScript::SpawnStage()
 {
@@ -194,9 +192,7 @@ void BossJugCombatMgrScript::update()
 	CheckPhase();
 }
 
-void BossJugCombatMgrScript::lateupdate()
-{
-}
+void BossJugCombatMgrScript::lateupdate() {}
 
 void BossJugCombatMgrScript::Serialize(YAML::Emitter& emitter)
 {

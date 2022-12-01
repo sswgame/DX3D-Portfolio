@@ -3,8 +3,8 @@
 
 class CGameObject;
 
-
-class CPrefab : public CRes
+class CPrefab
+	: public CRes
 {
 private:
 	CGameObject* m_pProtoObj;
@@ -16,13 +16,13 @@ public:
 	static LoadFunc m_pLoadFunc;
 
 public:
-	CGameObject* Instantiate();
-	CGameObject* GetProto() { return m_pProtoObj; }
+	CGameObject* Instantiate() const;
+	CGameObject* GetProto() const { return m_pProtoObj; }
 	void         SetProto(CGameObject* _pProto) { m_pProtoObj = _pProto; }
 
 public:
-	virtual int Save(const wstring& _strFilePath);
-	virtual int Load(const wstring& _strFilePath);
+	int Save(const wstring& _strFilePath) override;
+	int Load(const wstring& _strFilePath) override;
 
 public:
 	CPrefab();

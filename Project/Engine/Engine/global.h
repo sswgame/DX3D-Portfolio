@@ -35,18 +35,16 @@ using std::vector;
 using std::list;
 
 #include <map>
+
 using std::map;
 using std::make_pair;
 
 #include <locale>
 
 #include <assert.h>
-
-// FileSystem
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
-using namespace std::experimental;
-using namespace std::experimental::filesystem;
+#include <filesystem>
+#include <bitset>
+#include <array>
 
 // Fbx Loader
 #include <FBXLoader/fbxsdk.h>

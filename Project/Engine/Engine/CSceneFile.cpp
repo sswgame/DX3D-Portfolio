@@ -2,11 +2,9 @@
 #include "CSceneFile.h"
 
 CSceneFile::CSceneFile()
-	:
-	CRes(RES_TYPE::SCENEFILE) {}
+	: CRes(RES_TYPE::SCENEFILE) {}
 
-CSceneFile::~CSceneFile() {}
-
+CSceneFile::~CSceneFile() = default;
 
 int CSceneFile::Load(const wstring& _strFilePath)
 {

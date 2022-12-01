@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "CResMgr.h"
 
+#include "CTestShader.h"
+#include "CParticleUpdateShader.h"
+#include "CAnimation3DShader.h"
+
 namespace
 {
 	void MakeGameShader()
@@ -38,9 +42,7 @@ namespace
 		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIMtrl.mtrl", pMtrl);
 	}
 
-	void MakeGameCompute()
-	{
-	}
+	void MakeGameCompute() { }
 }
 
 void CResMgr::init()
@@ -59,7 +61,6 @@ void CResMgr::update()
 {
 	CSound::g_pFMOD->update();
 }
-
 
 void CResMgr::CreateEngineMesh()
 {
@@ -162,7 +163,7 @@ void CResMgr::CreateEngineMesh()
 
 	Vec2 vUV_RT   = Vec2(1.f, 0.f);
 	Vec2 vUV_RB   = Vec2(1.f, 1.f);
-	Vec2 vUV_Dist = Vec2(1.f, 1.f) / iPolyGonCnt;
+	Vec2 vUV_Dist = Vec2(1.f, 1.f) / (float)iPolyGonCnt;
 
 	for (int i = 0; i < iVtxCnt; ++i)
 	{
@@ -652,7 +653,7 @@ void CResMgr::CreateEngineMesh()
 void CResMgr::CreateEngineTexture()
 {
 	Ptr<CTexture> pNoise01    = Load<CTexture>(L"texture\\noise\\noise_01.png", L"texture\\noise\\noise_01.png", true);
-	Ptr<CTexture> pNoise02    = Load<CTexture>(L"texturenoise\\noise_02.png", L"texture\\noise\\noise_02.png", true);
+	Ptr<CTexture> pNoise02    = Load<CTexture>(L"texture\\noise\\noise_02.png", L"texture\\noise\\noise_02.png", true);
 	Ptr<CTexture> pNoiseCloud = Load<CTexture>(L"texture\\noise\\noise_cloud.jpg",
 	                                           L"texture\\noise\\noise_cloud.jpg",
 	                                           true);
@@ -1020,10 +1021,6 @@ void CResMgr::CreateEngineMaterial()
 	MakeGameMaterial();
 }
 
-#include "CTestShader.h"
-#include "CParticleUpdateShader.h"
-#include "CAnimation3DShader.h"
-
 void CResMgr::CreateEngineComputeShader()
 {
 	CComputeShader* pCS = nullptr;
@@ -1045,7 +1042,6 @@ void CResMgr::CreateEngineComputeShader()
 
 	MakeGameCompute();
 }
-
 
 void CResMgr::MakeInputLayoutInfo()
 {
@@ -1134,7 +1130,6 @@ void CResMgr::MakeInputLayoutInfo()
 
 	CGraphicsShader::AddInputLayout(tInputDesc);
 }
-
 
 void CResMgr::InitSound()
 {

@@ -13,8 +13,7 @@
 
 
 CMeshData::CMeshData()
-	:
-	CRes(RES_TYPE::MESHDATA) {}
+	: CRes(RES_TYPE::MESHDATA) {}
 
 CMeshData::~CMeshData() {}
 
@@ -69,12 +68,12 @@ vector<CMeshData*> CMeshData::LoadFromFBX(const wstring& _strPath)
 	{
 		// 메쉬 가져오기
 		CMesh* pMesh = nullptr;
-		pMesh = CMesh::CreateFromContainer(loader, ContainerNum);
+		pMesh        = CMesh::CreateFromContainer(loader, ContainerNum);
 
 
 		// ResMgr 에 메쉬 등록
 		wstring strMeshName = L"mesh\\";
-		strMeshName += path(strFullPath).stem();
+		strMeshName += std::filesystem::path(strFullPath).stem();
 		string strNum = std::to_string(ContainerNum);
 		strMeshName += wstring(strNum.begin(), strNum.end());
 		strMeshName += L".mesh";
@@ -97,13 +96,13 @@ vector<CMeshData*> CMeshData::LoadFromFBX(const wstring& _strPath)
 		}
 
 		CMeshData* pMeshData = new CMeshData;
-		pMeshData->m_pMesh = pMesh;
+		pMeshData->m_pMesh   = pMesh;
 		pMeshData->m_vecMtrl = vecMtrl;
 
 		vecMeshData.push_back(pMeshData);
 	}
 	//폴더 삭제 위치를 여기로 옮긴 것
-	path fmbFolderPath = path{ strFullPath }.replace_extension(L".fbm");
+	std::filesystem::path fmbFolderPath = std::filesystem::path{strFullPath}.replace_extension(L".fbm");
 	remove_all(fmbFolderPath);
 	return vecMeshData;
 }
@@ -112,8 +111,8 @@ int CMeshData::Save(const wstring& _strFilePath)
 {
 	SetRelativePath(CPathMgr::GetInst()->GetRelativePath(_strFilePath));
 
-	FILE* pFile = nullptr;
-	errno_t err = _wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
+	FILE*   pFile = nullptr;
+	errno_t err   = _wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
 	assert(pFile);
 
 	// Mesh 를 파일로 저장
@@ -130,7 +129,7 @@ int CMeshData::Save(const wstring& _strFilePath)
 	UINT iMtrlCount = static_cast<UINT>(m_vecMtrl.size());
 	fwrite(&iMtrlCount, sizeof(UINT), 1, pFile);
 
-	UINT    i = 0;
+	UINT    i           = 0;
 	wstring strMtrlPath = CPathMgr::GetInst()->GetContentPath();
 
 	for (; i < iMtrlCount; ++i)

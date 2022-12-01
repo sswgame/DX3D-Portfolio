@@ -15,10 +15,8 @@
 #include "ParticleTool.h"
 
 
-
 CImGuiMgr::CImGuiMgr()
-	:
-	m_hNotify{nullptr} {}
+	: m_hNotify{nullptr} {}
 
 CImGuiMgr::~CImGuiMgr()
 {
@@ -48,16 +46,20 @@ void CImGuiMgr::init(HWND _hwnd)
 
 	// 한글 폰트 추가
 	wstring wstrFilePath = CPathMgr::GetInst()->GetContentPath();
-	string  strFontPath = ToString(wstrFilePath) + "font\\Pretendard-Medium.ttf";
+	string  strFontPath  = ToString(wstrFilePath) + "font\\Pretendard-Medium.ttf";
 	io.Fonts->AddFontFromFileTTF(strFontPath.c_str(), 15.f, NULL, io.Fonts->GetGlyphRangesKorean());
 
 	// Font Awesome Icon 추가
-	string strFontAwesomeIcon = ToString(wstrFilePath) + "font/fa-solid-900.ttf";
+	string       strFontAwesomeIcon = ToString(wstrFilePath) + "font/fa-solid-900.ttf";
 	ImFontConfig config;
-	config.MergeMode = true;
-	config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
-	static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-	io.Fonts->AddFontFromFileTTF(strFontAwesomeIcon.c_str(), 13.0f, &config, icon_ranges);    // outputs a paint brush icon and 'Paint' as a string.
+	config.MergeMode                   = true;
+	config.GlyphMinAdvanceX            = 13.0f; // Use if you want to make the icon monospaced
+	static const ImWchar icon_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
+	io.Fonts->
+	   AddFontFromFileTTF(strFontAwesomeIcon.c_str(),
+	                      13.0f,
+	                      &config,
+	                      icon_ranges);    // outputs a paint brush icon and 'Paint' as a string.
 	io.Fonts->Build();
 
 
@@ -69,17 +71,13 @@ void CImGuiMgr::init(HWND _hwnd)
 	ImGuiStyle& style = ImGui::GetStyle();
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
-		style.WindowRounding				= 5.f;
-		style.Colors[ImGuiCol_WindowBg]		= ImVec4(0.2f, 0.2f, 0.2f, 0.9f);
-		style.FramePadding					= ImVec2(1.5f, 1.5f);
-		style.FrameRounding					= 1.f;
-		
-
-	
+		style.WindowRounding            = 5.f;
+		style.Colors[ImGuiCol_WindowBg] = ImVec4(0.2f, 0.2f, 0.2f, 0.9f);
+		style.FramePadding              = ImVec2(1.5f, 1.5f);
+		style.FrameRounding             = 1.f;
 	}
 
 
-	
 	//io.Fonts->AddFontDefault();
 
 	// Setup Platform/Renderer backends
@@ -195,7 +193,6 @@ void CImGuiMgr::CreateUI()
 	ParticleTool* pParticleTool = new ParticleTool;
 	pParticleTool->Deactivate();
 	m_mapUI.insert(make_pair(pParticleTool->GetName(), pParticleTool));
-
 }
 
 

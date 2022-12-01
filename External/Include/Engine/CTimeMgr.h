@@ -1,6 +1,5 @@
 #pragma once
 
-
 class CTimeMgr
 	: public CSingleton<CTimeMgr>
 {
@@ -13,15 +12,13 @@ private:
 	UINT  m_iFPS; // Frame per second
 	float m_fDT;  // delta seconds, 1 프레임에 걸린 시간
 	float m_fAddTime;
-
 	float m_fCurTime;
-
 
 public:
 	void init();
 	void update();
 
 public:
-	float GetDT() { return m_fDT; }
-	float GetCurTime() { return m_fCurTime; }
+	float GetDT() const { return m_fDT; }
+	float GetCurTime() const { return m_fCurTime; }
 };
