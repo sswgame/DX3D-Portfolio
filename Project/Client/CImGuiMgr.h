@@ -2,7 +2,7 @@
 
 #include "UI.h"
 
-typedef void (UI::*PARAM_1)(DWORD_PTR);
+using PARAM_1 = void(UI::*)(DWORD_PTR);
 
 struct tUIDelegate
 {

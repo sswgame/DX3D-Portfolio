@@ -786,10 +786,9 @@ IMGUIZMO_NAMESPACE
 	struct Context
 	{
 		Context()
-			:
-			mbUsing(false)
-		  , mbEnable(true)
-		  , mbUsingBounds(false) { }
+			: mbUsing(false)
+			, mbEnable(true)
+			, mbUsingBounds(false) { }
 
 		ImDrawList* mDrawList;
 		Style       mStyle;

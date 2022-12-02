@@ -6,6 +6,7 @@ using namespace Microsoft::WRL;
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXPackedVector.h>
+#include <DirectXCollision.h>
 
 using namespace::DirectX;
 using namespace::DirectX::PackedVector;

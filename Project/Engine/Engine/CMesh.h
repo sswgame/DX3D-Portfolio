@@ -33,9 +33,10 @@ private:
 
 
 public:
-	int  GetVtxCount() const { return m_iVtxCount; }
-	Vtx* GetVtxSysMem() const { return static_cast<Vtx*>(m_pVtxSys); }
-	UINT GetSubsetCount() const { return static_cast<UINT>(m_vecIdxInfo.size()); }
+	int               GetVtxCount() const { return m_iVtxCount; }
+	Vtx*              GetVtxSysMem() const { return static_cast<Vtx*>(m_pVtxSys); }
+	UINT              GetSubsetCount() const { return static_cast<UINT>(m_vecIdxInfo.size()); }
+	const tIndexInfo& GetIndexInfo(int index) const { return m_vecIdxInfo[index]; }
 
 	const vector<tMTBone>*     GetBones() const { return &m_vecBones; }
 	UINT                       GetBoneCount() const { return static_cast<UINT>(m_vecBones.size()); }

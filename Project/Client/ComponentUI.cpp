@@ -10,6 +10,7 @@
 #include "IconsFontAwesome5.h"
 #include "CImGuiMgr.h"
 #include "InspectorUI.h"
+#include "TransformUI.h"
 
 
 ComponentUI::ComponentUI(const string& _strName, COMPONENT_TYPE _eComType)
@@ -44,9 +45,17 @@ void ComponentUI::render_update()
 	ImGui::PopStyleColor(3);
 	ImGui::PopID();
 
+
 	// Component 활성화 체크
 	CComponent* pComponent = m_pTargetObject->GetComponent(m_eComType);
-
+	if (pComponent->GetType() == COMPONENT_TYPE::TRANSFORM)
+	{
+		const TransformUI* pTransfomUI = (TransformUI*)(this);
+		ImGui::SameLine();
+		bool enableGuizmo = pTransfomUI->IsGuizmoEnabled();
+		ImGui::Checkbox("ENABLE GUIZMO", &enableGuizmo);
+		pTransfomUI->SetEnableGuizmo(enableGuizmo);
+	}
 	if (pComponent->GetType() != COMPONENT_TYPE::TRANSFORM)
 	{
 		bool IsActive = pComponent->IsActive();

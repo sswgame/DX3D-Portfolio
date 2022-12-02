@@ -3,9 +3,9 @@
 
 struct tEventInfo
 {
-	EVENT_TYPE	eType;
-	DWORD_PTR	lParam;
-	DWORD_PTR	wParam;
+	EVENT_TYPE eType;
+	DWORD_PTR  lParam;
+	DWORD_PTR  wParam;
 };
 
 
@@ -27,20 +27,18 @@ struct Vertex
 typedef Vertex Vtx;
 
 
-
 // =======
 // TileMap
 // =======
 struct tTileData
 {
-	int		iImgIdx;
-	Vec2	vLTUV;
-	int		iPadding;
+	int  iImgIdx;
+	Vec2 vLTUV;
+	int  iPadding;
 
 	tTileData()
 		: iImgIdx(-1)
-		, iPadding(0)
-	{}
+		, iPadding(0) {}
 };
 
 
@@ -61,12 +59,11 @@ struct tMtrlData
 // ===========
 struct tAnim2DFrame
 {
-	Vec2	vLT;
-	Vec2	vSlice;
-	Vec2	vOffset;
-	float	fDuration;
+	Vec2  vLT;
+	Vec2  vSlice;
+	Vec2  vOffset;
+	float fDuration;
 };
-
 
 
 // ============
@@ -74,46 +71,45 @@ struct tAnim2DFrame
 // ============
 struct tFrameTrans
 {
-	Vec4	vTranslate;
-	Vec4	vScale;
-	Vec4	qRot;
+	Vec4 vTranslate;
+	Vec4 vScale;
+	Vec4 qRot;
 };
 
 struct tMTKeyFrame
 {
-	double	dTime;
-	int		iFrame;
-	Vec3	vTranslate;
-	Vec3	vScale;
-	Vec4	qRot;
+	double dTime;
+	int    iFrame;
+	Vec3   vTranslate;
+	Vec3   vScale;
+	Vec4   qRot;
 };
 
 
 struct tMTBone
 {
-	wstring				strBoneName;
-	int					iDepth;
-	int					iParentIndx;
-	Matrix				matOffset;	// Offset 행렬(뼈 -> 루트 까지의 행렬)
-	Matrix				matBone;   // 이거 안씀
-	vector<tMTKeyFrame>	vecKeyFrame;
+	wstring             strBoneName;
+	int                 iDepth;
+	int                 iParentIndx;
+	Matrix              matOffset;	// Offset 행렬(뼈 -> 루트 까지의 행렬)
+	Matrix              matBone;   // 이거 안씀
+	vector<tMTKeyFrame> vecKeyFrame;
 };
 
 struct tMTAnimClip
 {
-	wstring			strAnimName;
-	int				iStartFrame;
-	int				iEndFrame;
-	int				iFrameLength;
+	wstring strAnimName;
+	int     iStartFrame;
+	int     iEndFrame;
+	int     iFrameLength;
 
-	double			dStartTime;
-	double			dEndTime;
-	double			dTimeLength;
-	float			fUpdateTime; // 이거 안씀
+	double dStartTime;
+	double dEndTime;
+	double dTimeLength;
+	float  fUpdateTime; // 이거 안씀
 
-	FbxTime::EMode	eMode;
+	FbxTime::EMode eMode;
 };
-
 
 
 //===============
@@ -121,37 +117,37 @@ struct tMTAnimClip
 //===============
 struct tFbxMaterial
 {
-	tMtrlData	tMtrl;
-	wstring     strMtrlName;
-	wstring     strDiff;
-	wstring		strNormal;
-	wstring		strSpec;
+	tMtrlData tMtrl;
+	wstring   strMtrlName;
+	wstring   strDiff;
+	wstring   strNormal;
+	wstring   strSpec;
 };
 
 struct tWeightsAndIndices
 {
-	int		iBoneIdx;
-	double	dWeight;
+	int    iBoneIdx;
+	double dWeight;
 };
 
 struct tContainer
 {
-	wstring								strName;
-	vector<Vec3>						vecPos;
-	vector<Vec3>						vecTangent;
-	vector<Vec3>						vecBinormal;
-	vector<Vec3>						vecNormal;
-	vector<Vec2>						vecUV;
+	wstring      strName;
+	vector<Vec3> vecPos;
+	vector<Vec3> vecTangent;
+	vector<Vec3> vecBinormal;
+	vector<Vec3> vecNormal;
+	vector<Vec2> vecUV;
 
-	vector<Vec4>						vecIndices;
-	vector<Vec4>						vecWeights;
+	vector<Vec4> vecIndices;
+	vector<Vec4> vecWeights;
 
-	vector<vector<UINT>>				vecIdx;
-	vector<tFbxMaterial>				vecMtrl;
+	vector<vector<UINT>> vecIdx;
+	vector<tFbxMaterial> vecMtrl;
 
 	// Animation 관련 정보
-	bool								bAnimation;
-	vector<vector<tWeightsAndIndices>>	vecWI;
+	bool                               bAnimation;
+	vector<vector<tWeightsAndIndices>> vecWI;
 
 	void Resize(UINT _iSize)
 	{
@@ -168,30 +164,28 @@ struct tContainer
 
 struct tKeyFrame
 {
-	FbxAMatrix  matTransform;
-	double		dTime;
+	FbxAMatrix matTransform;
+	double     dTime;
 };
 
 struct tBone
 {
-	wstring				strBoneName;
-	int					iDepth;			// 계층구조 깊이
-	int					iParentIndx;	// 부모 Bone 의 인덱스
-	FbxAMatrix			matOffset;		// Offset 행렬( -> 뿌리 -> Local)
-	FbxAMatrix			matBone;
-	vector<tKeyFrame>	vecKeyFrame;
+	wstring           strBoneName;
+	int               iDepth;			// 계층구조 깊이
+	int               iParentIndx;	// 부모 Bone 의 인덱스
+	FbxAMatrix        matOffset;		// Offset 행렬( -> 뿌리 -> Local)
+	FbxAMatrix        matBone;
+	vector<tKeyFrame> vecKeyFrame;
 };
 
 struct tAnimClip
 {
-	wstring		strName;
-	FbxTime		tStartTime;
-	FbxTime		tEndTime;
-	FbxLongLong	llTimeLength;
+	wstring        strName;
+	FbxTime        tStartTime;
+	FbxTime        tEndTime;
+	FbxLongLong    llTimeLength;
 	FbxTime::EMode eMode;
 };
-
-
 
 
 // ========
@@ -199,20 +193,20 @@ struct tAnimClip
 // ========
 struct tParticle
 {
-	Vec3	vPos;
-	Vec3	vScale;
-	Vec3	vDir;
-	Vec4	vColor;
+	Vec3 vPos;
+	Vec3 vScale;
+	Vec3 vDir;
+	Vec4 vColor;
 
-	int		Alive;
-	float   m_fCurTime; // 생존 시간
-	float	m_fMaxTime; // 최대 생명 시간
+	int   Alive;
+	float m_fCurTime; // 생존 시간
+	float m_fMaxTime; // 최대 생명 시간
 };
 
 struct tParticleData
 {
-	int		iAliveCount;
-	Vec3	vPadding;
+	int  iAliveCount;
+	Vec3 vPadding;
 };
 
 
@@ -226,12 +220,12 @@ struct tLightColor
 struct tLightInfo
 {
 	tLightColor color;
-	Vec3		vLightDir;
-	int			iLightType;
-	Vec3		vWorldPos;
-	float		fAngle;
-	float		fRange;
-	Vec3		vPadding;
+	Vec3        vLightDir;
+	int         iLightType;
+	Vec3        vWorldPos;
+	float       fAngle;
+	float       fRange;
+	Vec3        vPadding;
 };
 
 // 광선 구조체
@@ -276,35 +270,41 @@ struct tScalarParam
 {
 	tMtrlData mtrl;
 
-	int iArr[4];
-	float fArr[4];
-	Vec2 v2Arr[4];
-	Vec4 v4Arr[4];
+	int    iArr[4];
+	float  fArr[4];
+	Vec2   v2Arr[4];
+	Vec4   v4Arr[4];
 	Matrix matArr[4];
 
 	int bTex[10];
-	int	arrAnimData[2];	// 3D Animation 정보
+	int arrAnimData[2];	// 3D Animation 정보
 };
 
 struct tAnim2D
 {
-	Vec2	vLT;
-	Vec2	vSlice;
-	Vec2	vBackgroundSize;
-	Vec2    vOffset;
+	Vec2 vLT;
+	Vec2 vSlice;
+	Vec2 vBackgroundSize;
+	Vec2 vOffset;
 
-	int     useAnim2D;
-	float   Atlas_Width;
-	float   Atlas_Height;
-	float	Anim2D_Padding;
+	int   useAnim2D;
+	float Atlas_Width;
+	float Atlas_Height;
+	float Anim2D_Padding;
 };
 
 struct tGlobal
 {
-	Vec2	vResolution; // RenderTarget Resolution
-	Vec2    vNoiseResolution; // NoiseTexture Resolution
-	float	fDT;
-	float	fAccTime;
-	int		Light2DCount;
-	int     Light3DCount;
+	Vec2  vResolution; // RenderTarget Resolution
+	Vec2  vNoiseResolution; // NoiseTexture Resolution
+	float fDT;
+	float fAccTime;
+	int   Light2DCount;
+	int   Light3DCount;
+};
+
+struct SB_PcikingData
+{
+	UINT objectID;
+	Vec3 objectPos;
 };

@@ -21,11 +21,9 @@ TreeNode::TreeNode()
 	, m_pParent(nullptr)
 	, m_bLeaf(true)
 	, m_bSelected(false)
-	, m_bCheckOn(false)
 	, m_dwData(0)
 	, m_eNodeType(NODE_TYPE::NONE)
-{
-}
+	, m_bCheckOn(false) {}
 
 TreeNode::TreeNode(const string& _strName, DWORD_PTR _dwData)
 	: m_pTreeUI(nullptr)
@@ -33,9 +31,7 @@ TreeNode::TreeNode(const string& _strName, DWORD_PTR _dwData)
 	, m_bLeaf(true)
 	, m_bSelected(false)
 	, m_strName(_strName)
-	, m_dwData(_dwData)
-{
-}
+	, m_dwData(_dwData) {}
 
 TreeNode::~TreeNode()
 {
@@ -48,16 +44,18 @@ void TreeNode::RenderSelectedMark(ImU32 _color)
 	if (m_eNodeType == NODE_TYPE::ENGINE_RESOURCE)
 		return;
 
-	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
+	auto pInspectorUI = static_cast<InspectorUI*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
 	// [ 원 - 출력 ] / [원본] - ImGui::Bullet()
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 	if (window->SkipItems)
 		return;
 
-	ImGuiContext& g = *GImGui;
-	const ImGuiStyle& style = g.Style;
-	const float line_height = ImMax(ImMin(window->DC.CurrLineSize.y, g.FontSize + style.FramePadding.y * 2), g.FontSize);
-	const ImRect bb(window->DC.CursorPos, ImVec2(window->DC.CursorPos.x + g.FontSize, window->DC.CursorPos.y + line_height));
+	ImGuiContext&     g           = *GImGui;
+	const ImGuiStyle& style       = g.Style;
+	const float       line_height = ImMax(ImMin(window->DC.CurrLineSize.y, g.FontSize + style.FramePadding.y * 2),
+	                                      g.FontSize);
+	const ImRect bb(window->DC.CursorPos,
+	                ImVec2(window->DC.CursorPos.x + g.FontSize, window->DC.CursorPos.y + line_height));
 	ImGui::ItemSize(bb);
 	if (!ImGui::ItemAdd(bb, 0))
 	{
@@ -65,12 +63,14 @@ void TreeNode::RenderSelectedMark(ImU32 _color)
 		return;
 	}
 	ImU32 text_col = _color;
-	ImGui::RenderBullet(window->DrawList, ImVec2(bb.Min.x + style.FramePadding.x + g.FontSize * 0.5f, bb.Min.y + line_height * 0.5f), text_col);
+	ImGui::RenderBullet(window->DrawList,
+	                    ImVec2(bb.Min.x + style.FramePadding.x + g.FontSize * 0.5f, bb.Min.y + line_height * 0.5f),
+	                    text_col);
 	ImGui::SameLine(0, style.FramePadding.x * 0.5f);
 
 	// [ 파일 아이콘 - 출력 ]
 	if ((m_dwData == (DWORD_PTR)pInspectorUI->GetTargetScene() ||
-		m_dwData == (DWORD_PTR)pInspectorUI->GetTargetLayer()))
+	     m_dwData == (DWORD_PTR)pInspectorUI->GetTargetLayer()))
 	{
 		ImGui::Text("%s", ICON_FA_FOLDER_OPEN);
 		ImGui::SameLine(0, style.FramePadding.x * 0.5f);
@@ -83,22 +83,20 @@ void TreeNode::RenderSelectedMark(ImU32 _color)
 
 	// [ 레이어 인덱스 - 출력 ]
 	if (NODE_TYPE::ENGINE_LAYER == m_eNodeType &&
-		m_dwData == (DWORD_PTR)pInspectorUI->GetTargetLayer())
+	    m_dwData == (DWORD_PTR)pInspectorUI->GetTargetLayer())
 	{
-		CLayer* pLayer = (CLayer*)m_dwData;
-		int LayerIdx = pLayer->GetLayerIdx();
-		ImVec4 color = ImVec4(204.f / 255.f, 255.f / 255.f, 255.f / 255.f, 0.8f);
+		auto pLayer   = (CLayer*)m_dwData;
+		int  LayerIdx = pLayer->GetLayerIdx();
+		auto color    = ImVec4(204.f / 255.f, 255.f / 255.f, 255.f / 255.f, 0.8f);
 		ImGui::TextColored(color, std::to_string(LayerIdx).c_str());
 		ImGui::SameLine(0, style.FramePadding.x * 0.5f);
-
-
 	}
 	else if (NODE_TYPE::ENGINE_LAYER == m_eNodeType &&
-		m_dwData != (DWORD_PTR)pInspectorUI->GetTargetLayer())
+	         m_dwData != (DWORD_PTR)pInspectorUI->GetTargetLayer())
 	{
-		CLayer* pLayer = (CLayer*)m_dwData;
-		int LayerIdx = pLayer->GetLayerIdx();
-		ImVec4 color = ImVec4(200.f, 200.f, 200.f, 255.f);
+		auto pLayer   = (CLayer*)m_dwData;
+		int  LayerIdx = pLayer->GetLayerIdx();
+		auto color    = ImVec4(200.f, 200.f, 200.f, 255.f);
 		ImGui::TextColored(color, std::to_string(LayerIdx).c_str());
 		ImGui::SameLine(0, style.FramePadding.x * 0.5f);
 	}
@@ -106,8 +104,6 @@ void TreeNode::RenderSelectedMark(ImU32 _color)
 
 void TreeNode::update()
 {
-
-
 	// update 작성
 
 
@@ -117,9 +113,9 @@ void TreeNode::update()
 		m_vecChild[i]->update();
 	}
 }
+
 void TreeNode::render_update()
 {
-
 	// ImGuiTreeNodeFlags_	
 	ImGuiTreeNodeFlags eFlag = 0;
 
@@ -132,18 +128,23 @@ void TreeNode::render_update()
 
 
 	// ==================================== Todo =========================================
-	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
+	auto pInspectorUI = static_cast<InspectorUI*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
 	if ((m_dwData == (DWORD_PTR)pInspectorUI->GetTargetScene() ||
-		m_dwData == (DWORD_PTR)pInspectorUI->GetTargetLayer() ||
-		m_dwData == (DWORD_PTR)pInspectorUI->GetTargetObject()))
+	     m_dwData == (DWORD_PTR)pInspectorUI->GetTargetLayer() ||
+	     m_dwData == (DWORD_PTR)pInspectorUI->GetTargetObject()))
 		RenderSelectedMark(IM_COL32(102.f, 255.f, 255.f, 255.f));
 	else
 		RenderSelectedMark(IM_COL32(70.f, 70.f, 70.f, 255.f));
 	// ===================================================================================
 
 
+	if (m_bCheckOn)
+	{
+		ImGui::SetNextItemOpen(true);
+	}
 	if (ImGui::TreeNodeEx(m_strName.c_str(), eFlag))
 	{
+		m_bCheckOn = false;
 
 		// 노드의 클릭체크
 		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
@@ -162,8 +163,7 @@ void TreeNode::render_update()
 		{
 			if (ImGui::BeginDragDropSource())
 			{
-				ImGui::SetDragDropPayload(m_pTreeUI->GetParentUI()->GetName().c_str()
-					, &m_dwData, sizeof(DWORD_PTR));
+				ImGui::SetDragDropPayload(m_pTreeUI->GetParentUI()->GetName().c_str(), &m_dwData, sizeof(DWORD_PTR));
 				ImGui::Text(m_strName.c_str());
 				ImGui::EndDragDropSource();
 
@@ -175,8 +175,9 @@ void TreeNode::render_update()
 			{
 				if (ImGui::BeginDragDropTarget())
 				{
-					DWORD_PTR dwData = 0;
-					const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(m_pTreeUI->GetParentUI()->GetName().c_str());
+					DWORD_PTR           dwData  = 0;
+					const ImGuiPayload* payload =
+						ImGui::AcceptDragDropPayload(m_pTreeUI->GetParentUI()->GetName().c_str());
 					if (nullptr != payload)
 					{
 						memcpy(&dwData, payload->Data, sizeof(DWORD_PTR));
@@ -197,12 +198,7 @@ void TreeNode::render_update()
 
 		ImGui::TreePop();
 	}
-
-
-
 }
-
-
 
 
 // ======
@@ -282,7 +278,7 @@ void TreeUI::render_update()
 
 	// Drag Drop Check
 	if ((m_pDragNode && m_pDropNode)
-		|| m_pDragNode && KEY_AWAY(KEY::LBTN))
+	    || m_pDragNode && KEY_AWAY(KEY::LBTN))
 	{
 		if (m_pDADInst && m_DADFunc)
 		{
@@ -294,12 +290,10 @@ void TreeUI::render_update()
 			{
 				(m_pDADInst->*m_DADFunc)(m_pDragNode->GetData(), m_pDropNode->GetData());
 			}
-
 		}
 		m_pDragNode = nullptr;
 		m_pDropNode = nullptr;
 	}
-
 
 
 	// KeyBinding 호출
@@ -317,7 +311,7 @@ void TreeUI::render_update()
 
 TreeNode* TreeUI::AddTreeNode(TreeNode* _pParentNode, const string& _strName, DWORD_PTR _dwData)
 {
-	TreeNode* pNewNode = new TreeNode(_strName, _dwData);
+	auto pNewNode       = new TreeNode(_strName, _dwData);
 	pNewNode->m_pTreeUI = this;
 
 	// 부모를 지정함
@@ -332,7 +326,7 @@ TreeNode* TreeUI::AddTreeNode(TreeNode* _pParentNode, const string& _strName, DW
 		if (nullptr != m_pRootNode)
 			m_pRootNode->AddChild(pNewNode);
 
-		// 루트노드가 존재하지 않음
+			// 루트노드가 존재하지 않음
 		else
 			m_pRootNode = pNewNode;
 	}
@@ -343,19 +337,45 @@ TreeNode* TreeUI::AddTreeNode(TreeNode* _pParentNode, const string& _strName, DW
 
 void TreeUI::SetKeyBinding(KEY _eKey, UI* _pInst, KEY_FUNC _Func)
 {
-	m_vecKeyBind.push_back(tTreeKey{ _eKey, _pInst, _Func });
+	m_vecKeyBind.push_back(tTreeKey{_eKey, _pInst, _Func});
 }
 
 void TreeUI::Clear()
 {
 	SAFE_DELETE(m_pRootNode);
-	m_pRootNode = nullptr;
+	m_pRootNode     = nullptr;
 	m_pSelectedNode = nullptr;
 
 	if (m_bUseDummyRoot)
 	{
 		AddTreeNode(nullptr, "DummyRoot");
 	}
+}
+
+#include <queue>
+
+TreeNode* TreeUI::FindNode(const std::string& _nodeName)
+{
+	std::queue<TreeNode*> queueSearch{};
+
+	queueSearch.push(m_pRootNode);
+
+	while (false == queueSearch.empty())
+	{
+		TreeNode* pNode = queueSearch.front();
+		queueSearch.pop();
+
+		if (pNode->m_strName == _nodeName)
+		{
+			return pNode;
+		}
+
+		for (auto& pChildNode : pNode->m_vecChild)
+		{
+			queueSearch.push(pChildNode);
+		}
+	}
+	return nullptr;
 }
 
 void TreeUI::SetSelectedNode(TreeNode* _pNode)
@@ -365,7 +385,7 @@ void TreeUI::SetSelectedNode(TreeNode* _pNode)
 		m_pSelectedNode->m_bSelected = false;
 	}
 
-	m_pSelectedNode = _pNode;
+	m_pSelectedNode              = _pNode;
 	m_pSelectedNode->m_bSelected = true;
 
 

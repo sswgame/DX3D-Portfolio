@@ -18,6 +18,11 @@ private:
 	CGameObject* m_pSelectedGameObject;
 
 	bool m_bOverwritePrefab = false;
+	bool m_bEnablePicking   = false;
+
+public:
+	void RenderGuizmo();
+
 private:
 	void RenderAddObject();
 	void RenderAddLayer();
@@ -26,15 +31,15 @@ private:
 	void SelectPrefab(DWORD_PTR _param);
 	void CreateGameObject();
 
+	void ObjectPicking();
 public:
 	TreeNode* AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestNode);
 	TreeNode* AddSceneToTree(CScene* _pScene, TreeNode* _pDestNode);
 	TreeNode* AddLayerToTree(CLayer* _pLayer, TreeNode* _pDestNode);
 
-
 public:
-	virtual void update() override;
-	virtual void render_update() override;
+	void update() override;
+	void render_update() override;
 
 public:
 	void Reset();
@@ -49,5 +54,5 @@ public:
 
 public:
 	SceneOutliner();
-	~SceneOutliner();
+	virtual ~SceneOutliner();
 };

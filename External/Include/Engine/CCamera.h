@@ -25,7 +25,7 @@ private:
 	vector<CGameObject*> m_vecPostProcess;   // 후 처리 물체
 
 	vector<CGameObject*> m_vecDynamicShadow; // 동적 그림자 물체
-	vector<CComponent*> m_vecComponentDebug;		 // 디버그 오브젝트
+	vector<CComponent*>  m_vecComponentDebug;		 // 디버그 오브젝트
 
 protected:
 	CFrustum m_Frustum;
@@ -35,7 +35,7 @@ protected:
 	Matrix m_matProj;
 	Matrix m_matProjInv;
 
-	tRay	m_ray;      // 마우스 방향을 향하는 직선
+	tRay m_ray;      // 마우스 방향을 향하는 직선
 
 	PROJ_TYPE m_eProjType;
 
@@ -58,22 +58,22 @@ public:
 	void SetFar(float _Far) { m_fFar = _Far; }
 	void SetShowFrustum(bool _bShow) { m_Frustum.SetShowFrustum(_bShow); }
 
-	float GetWidth() { return m_fWidth; }
-	float GetAspectRatio() { return m_fAspectRatio; }
-	float GetFOV() { return m_fFOV; }
-	float GetFar() { return m_fFar; }
-	bool  GetShowFrustum() { return m_Frustum.GetShowFrustum(); }
-	const tRay& GetRay() { return m_ray; }
-	PROJ_TYPE GetProjType() { return m_eProjType; }
+	float       GetWidth() const { return m_fWidth; }
+	float       GetAspectRatio() const { return m_fAspectRatio; }
+	float       GetFOV() const { return m_fFOV; }
+	float       GetFar() const { return m_fFar; }
+	bool        GetShowFrustum() { return m_Frustum.GetShowFrustum(); }
+	const tRay& GetRay() const { return m_ray; }
+	PROJ_TYPE   GetProjType() const { return m_eProjType; }
 
 	void CheckLayerMask(int _iLayerIdx);
 	void CheckLayerMask(const wstring& _strLayerName);
 	void CheckLayerMaskAll() { m_iLayerMask = 0xffffffff; }
 
-	const Matrix& GetViewMat() { return m_matView; }
-	const Matrix& GetViewInvMat() { return m_matViewInv; }
-	const Matrix& GetProjMat() { return m_matProj; }
-	const Matrix& GetProjInvMat() { return m_matProjInv; }
+	const Matrix& GetViewMat() const { return m_matView; }
+	const Matrix& GetViewInvMat() const { return m_matViewInv; }
+	const Matrix& GetProjMat() const { return m_matProj; }
+	const Matrix& GetProjInvMat() const { return m_matProjInv; }
 
 private:
 	void SortGameObject(); // Shader Domain 에 따른 물체 분류
@@ -84,23 +84,23 @@ public:
 	void SortShadowObject();
 
 public:
-	virtual void finalupdate() override;
-	virtual void finalupdate_module() override;
-	void         render_deferred();
-	void         render_deferred_decal();
-	void         render_particle();
-	void         render_forward();
-	void         render_forward_decal();
-	void         render_masked();
-	void         render_translucent();
-	void         render_postprocess();
+	void finalupdate() override;
+	void finalupdate_module() override;
+	void render_deferred();
+	void render_deferred_decal();
+	void render_particle();
+	void render_forward();
+	void render_forward_decal();
+	void render_masked();
+	void render_translucent();
+	void render_postprocess();
 
-	void		 render_shadowmap();
-	void		 render_debug();
+	void render_shadowmap();
+	void render_debug() override;
 
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 	CLONE(CCamera)
 
 public:

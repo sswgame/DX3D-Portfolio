@@ -9,13 +9,9 @@
 
 CEditorCamScript::CEditorCamScript()
 	: CScript(-1)
-	, m_fSpeed(200.f)
-{
-}
+	, m_fSpeed(200.f) {}
 
-CEditorCamScript::~CEditorCamScript()
-{
-}
+CEditorCamScript::~CEditorCamScript() {}
 
 void CEditorCamScript::update()
 {
@@ -51,6 +47,17 @@ void CEditorCamScript::update()
 		{
 			Vec3 vRight = Transform()->GetWorldRightDir();
 			vPos += DT * vRight * fSpeed;
+		}
+
+		if (KEY_PRESSED(KEY::Q))
+		{
+			Vec3 vUp = Transform()->GetWorldUpDir();
+			vPos -= DT * vUp * fSpeed;
+		}
+		if (KEY_PRESSED(KEY::E))
+		{
+			Vec3 vUp = Transform()->GetWorldUpDir();
+			vPos += DT * vUp * fSpeed;
 		}
 	}
 

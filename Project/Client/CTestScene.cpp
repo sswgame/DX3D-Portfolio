@@ -399,6 +399,29 @@ namespace
 		}
 	}
 
+	void TestObjectPicking(CScene* _pScene)
+	{
+		Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
+		                                                            L"texture\\tile\\TILE_01.tga");
+		CGameObject* pObject = new CGameObject;
+		pObject->SetName(L"CUBE");
+
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CMeshRender);
+
+		pObject->Transform()->SetRelativePos(0.f, 0.f, 2000.f);
+		pObject->Transform()->SetRelativeScale(600.f, 600.f, 600.f);
+		pObject->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+
+		const Ptr<CMesh>     pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
+		const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3D_DeferredMtrl.mtrl");
+		pObject->MeshRender()->SetMesh(pMesh);
+		pObject->MeshRender()->SetSharedMaterial(pMaterial, 0);
+		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
+
+		_pScene->AddObject(pObject, L"BG_OBJ");
+	}
+
 	void CreateScene()
 	{
 		auto pCurScene = new CScene;
@@ -419,7 +442,8 @@ namespace
 		//AddPlayer(pCurScene, pCamObj);
 		//AddBoss(pCurScene);
 
-		TestUI(pCurScene);
+		//TestUI(pCurScene);
+		TestObjectPicking(pCurScene);
 
 		// 충돌 레이어 설정
 		CCollisionMgr::GetInst()->CollisionCheck(1, 1);

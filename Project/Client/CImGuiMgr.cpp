@@ -13,6 +13,7 @@
 #include "ParamUI.h"
 #include "IconsFontAwesome5.h"
 #include "ParticleTool.h"
+#include "ImGuizmo/ImGuizmo.h"
 
 
 CImGuiMgr::CImGuiMgr()
@@ -101,6 +102,7 @@ void CImGuiMgr::progress()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 
 	// Param Init
 	ParamUI::KeyCount = 0;
@@ -132,9 +134,12 @@ void CImGuiMgr::progress()
 	ObserveContent();
 }
 
+#include "SceneOutliner.h"
 
 void CImGuiMgr::render()
 {
+	SceneOutliner* pTest = (SceneOutliner*)FindUI("SceneOutliner");
+	pTest->RenderGuizmo();
 	// Rendering
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -160,8 +165,8 @@ void CImGuiMgr::clear()
 #include "MenuUI.h"
 #include "InspectorUI.h"
 #include "ResourceUI.h"
-#include "SceneOutliner.h"
 #include "ListUI.h"
+#include "SceneOutliner.h"
 
 void CImGuiMgr::CreateUI()
 {

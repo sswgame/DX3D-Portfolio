@@ -9,14 +9,19 @@
 #include <Engine/CTransform.h>
 
 #include <Engine/CEventMgr.h>
+#include <Engine/CRenderComponent.h>
+#include <Engine/CRenderMgr.h>
+#include <Engine/CCamera.h>
+#include <Engine/CDevice.h>
 
 #include "TreeUI.h"
 #include "CImGuiMgr.h"
 #include "InspectorUI.h"
 #include "IconsFontAwesome5.h"
-#include "CImGuiMgr.h"
 #include "ListUI.h"
+#include "TransformUI.h"
 
+#include "ImGuizmo/ImGuizmo.h"
 
 SceneOutliner::SceneOutliner()
 	: UI("SceneOutliner")
@@ -32,13 +37,13 @@ SceneOutliner::SceneOutliner()
 	AddChild(m_TreeUI);
 
 	// Clicked Delegate 등록
-	m_TreeUI->SetClickedDelegate(this, (CLICKED)&SceneOutliner::ObjectClicked);
+	m_TreeUI->SetClickedDelegate(this, static_cast<CLICKED>(&SceneOutliner::ObjectClicked));
 
 	// Drag and Drop Delegate 등록
-	m_TreeUI->SetDragAndDropDelegate(this, (DRAG_DROP)&SceneOutliner::DragAndDropDelegate);
+	m_TreeUI->SetDragAndDropDelegate(this, static_cast<DRAG_DROP>(&SceneOutliner::DragAndDropDelegate));
 
 	// Key Delegate 등록
-	m_TreeUI->SetKeyBinding(KEY::DEL, this, (CLICKED)&SceneOutliner::PressDelete);
+	m_TreeUI->SetKeyBinding(KEY::DEL, this, static_cast<CLICKED>(&SceneOutliner::PressDelete));
 
 
 	Reset();
@@ -136,7 +141,7 @@ void SceneOutliner::Reset()
 	ResetTreeUI();
 
 	// InspectorUI 를 얻어옴
-	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
+	auto pInspectorUI = static_cast<InspectorUI*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
 	pInspectorUI->SetTargetObject(nullptr);
 	pInspectorUI->SetTargetLayer(nullptr);
 	pInspectorUI->SetTargetScene(nullptr);
@@ -176,18 +181,18 @@ void SceneOutliner::ResetTreeUI()
 
 void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 {
-	TreeNode* pNode = (TreeNode*)_dw;
+	auto pNode = (TreeNode*)_dw;
 
-	string       strKey       = pNode->GetName();
-	NODE_TYPE    NodeType     = pNode->GetNodeType();
-	DWORD_PTR    pData        = pNode->GetData();
-	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
+	string    strKey       = pNode->GetName();
+	NODE_TYPE NodeType     = pNode->GetNodeType();
+	DWORD_PTR pData        = pNode->GetData();
+	auto      pInspectorUI = static_cast<InspectorUI*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
 
 	switch (NodeType)
 	{
 	case NODE_TYPE::ENGINE_SCENE:
 		{
-			CScene* pScene = (CScene*)pData;
+			auto pScene = (CScene*)pData;
 			assert(pScene);
 			pInspectorUI->SetTargetScene(pScene);
 			pInspectorUI->SetTargetLayer(nullptr);
@@ -200,7 +205,7 @@ void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 		break;
 	case NODE_TYPE::ENGINE_LAYER:
 		{
-			CLayer* pLayer = (CLayer*)pData;
+			auto pLayer = (CLayer*)pData;
 			assert(pLayer);
 			pInspectorUI->SetTargetLayer(pLayer);
 			pInspectorUI->SetTargetObject(nullptr);
@@ -211,7 +216,7 @@ void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 		break;
 	case NODE_TYPE::ENGINE_GAMEOBJECT:
 		{
-			CGameObject* pObj = (CGameObject*)pData;
+			auto pObj = (CGameObject*)pData;
 			assert(pObj);
 			pInspectorUI->SetTargetObject(pObj);
 
@@ -233,6 +238,17 @@ void SceneOutliner::RenderAddObject()
 		ImGui::OpenPopup("Create New Obj");
 	}
 	ImGui::PopStyleColor(2);
+
+	ImGui::SameLine();
+	ImGui::Checkbox("Enable Picking", &m_bEnablePicking);
+
+	if (m_bEnablePicking
+	    && KEY_TAP(KEY::LBTN)
+	    && CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
+	{
+		ObjectPicking();
+	}
+
 
 	bool unused_open = true;
 	if (ImGui::BeginPopupModal("Create New Obj", &unused_open))
@@ -266,7 +282,7 @@ void SceneOutliner::RenderAddObject()
 		{
 			// ListUI 활성화한다.
 			const map<wstring, CRes*>& mapRes  = CResMgr::GetInst()->GetResList(RES_TYPE::PREFAB);
-			ListUI*                    pListUI = (ListUI*)CImGuiMgr::GetInst()->FindUI("##ListUI");
+			auto                       pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 			pListUI->Clear();
 			pListUI->SetTitle("Prefab List");
 
@@ -276,7 +292,7 @@ void SceneOutliner::RenderAddObject()
 			}
 
 			pListUI->Activate();
-			pListUI->SetDBCEvent(this, (DBCLKED)&::SceneOutliner::SelectPrefab);
+			pListUI->SetDBCEvent(this, static_cast<DBCLKED>(&SceneOutliner::SelectPrefab));
 		}
 
 
@@ -285,10 +301,10 @@ void SceneOutliner::RenderAddObject()
 
 		if (ImGui::Button("Complete"))
 		{
-			string  name    = buf;
-			wstring newName = wstring(name.begin(), name.end());
+			string name    = buf;
+			auto   newName = wstring(name.begin(), name.end());
 
-			CGameObject* NewObj = new CGameObject;
+			auto NewObj = new CGameObject;
 			NewObj->SetName(newName);
 
 			// Create GameObject
@@ -325,6 +341,71 @@ void SceneOutliner::RenderAddObject()
 
 void SceneOutliner::RenderAddLayer() {}
 
+void SceneOutliner::RenderGuizmo()
+{
+	if (nullptr == m_pSelectedGameObject || false == TransformUI::IsGuizmoEnabled())
+	{
+		return;
+	}
+
+	const CCamera* pCamera = CRenderMgr::GetInst()->GetMainCam();
+	ImGuizmo::SetOrthographic(pCamera->GetProjType() == PROJ_TYPE::ORTHOGRAPHIC);
+
+	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+	ImGuizmo::SetRect(ImGui::GetWindowPos().x,
+	                  ImGui::GetWindowPos().y,
+	                  ImGui::GetWindowViewport()->Size.x,
+	                  ImGui::GetWindowViewport()->Size.y);
+
+	Matrix modifiedMatrix = m_pSelectedGameObject->Transform()->GetWorldMat();
+	Manipulate((float*)pCamera->GetViewMat().m,
+	           (float*)pCamera->GetProjMat().m,
+	           static_cast<ImGuizmo::OPERATION>(TransformUI::GetGuizmoType()),
+	           ImGuizmo::LOCAL,
+	           (float*)modifiedMatrix.m);
+
+	if (ImGuizmo::IsUsing())
+	{
+		Vec3       modifiedTranslation{};
+		Quaternion modifiedRotation{};
+		Vec3       modifiedScale{};
+		modifiedMatrix.Decompose(modifiedScale, modifiedRotation, modifiedTranslation);
+
+		Vec3       originTranslation{};
+		Quaternion originRotation{};
+		Vec3       originScale{};
+		Matrix     origin = m_pSelectedGameObject->Transform()->GetWorldMat();
+		origin.Decompose(originScale, originRotation, originTranslation);
+
+
+		switch (TransformUI::GetGuizmoType())
+		{
+		case GUIZMO_TYPE::TRANSLATE:
+			{
+				m_pSelectedGameObject->Transform()->SetRelativePos(modifiedTranslation);
+				break;
+			}
+		case GUIZMO_TYPE::ROTATE:
+			{
+				const Vec3 originEuler   = DecomposeRotMat(Matrix::CreateFromQuaternion(originRotation));
+				Vec3       modifiedEuler = DecomposeRotMat(Matrix::CreateFromQuaternion(modifiedRotation));
+				modifiedEuler -= originEuler;
+
+				const Vec3 relativeRotation = m_pSelectedGameObject->Transform()->GetRelativeRotation();
+
+				m_pSelectedGameObject->Transform()->SetRelativeRotation(relativeRotation + modifiedEuler);
+				break;
+			}
+		case GUIZMO_TYPE::SCALE:
+			{
+				m_pSelectedGameObject->Transform()->SetRelativeScale(modifiedScale);
+				break;
+			}
+		default: assert(nullptr && "INVALID GUIZMO TYPE");
+		}
+	}
+}
+
 bool SceneOutliner::MakePrefab()
 {
 	if (nullptr == m_pSelectedGameObject)
@@ -359,11 +440,11 @@ bool SceneOutliner::MakePrefab()
 void SceneOutliner::SelectPrefab(DWORD_PTR _param)
 {
 	string  strSelectedName = (char*)_param;
-	wstring strPrefabKey    = wstring(strSelectedName.begin(), strSelectedName.end());
+	auto    strPrefabKey    = wstring(strSelectedName.begin(), strSelectedName.end());
 	wstring strContent      = CPathMgr::GetInst()->GetContentPath();
 	wstring FullPath        = strContent + strPrefabKey;
 
-	CPrefab* pPrefab = new CPrefab;
+	auto pPrefab = new CPrefab;
 	pPrefab->Load(FullPath);
 
 	assert(pPrefab);
@@ -383,8 +464,8 @@ void SceneOutliner::CreateGameObject()
 {
 	if (m_pSelectedLayer)
 	{
-		CScene*      pCurScene   = CSceneMgr::GetInst()->GetCurScene();
-		CGameObject* pDefaultObj = new CGameObject;
+		CScene* pCurScene   = CSceneMgr::GetInst()->GetCurScene();
+		auto    pDefaultObj = new CGameObject;
 
 		pDefaultObj->SetName(L"New_GameObject");
 		pDefaultObj->AddComponent(new CTransform);
@@ -392,7 +473,113 @@ void SceneOutliner::CreateGameObject()
 
 		Reset();
 	}
-	else { }
+	else {}
+}
+
+void SceneOutliner::ObjectPicking()
+{
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
+	{
+		return;
+	}
+	static std::vector<CGameObject*> vecPickObjects{};
+	vecPickObjects.clear();
+
+	static std::vector<std::pair<float, CGameObject*>> vecIntersect{};
+	vecIntersect.clear();
+
+	for (int i = 0; i < MAX_LAYER; ++i)
+	{
+		CLayer*     pLayer     = CSceneMgr::GetInst()->GetCurScene()->GetLayer(i);
+		const auto& vecObjects = pLayer->GetObjects();
+		for (auto& pGameObject : vecObjects)
+		{
+			CRenderComponent* pRenderComponent = pGameObject->GetRenderComponent();
+			if (nullptr == pRenderComponent
+			    || nullptr == pRenderComponent->GetMesh()
+			    || nullptr == pRenderComponent->GetMaterial(0)
+			    || nullptr == pRenderComponent->GetMaterial(0)->GetShader())
+			{
+				continue;
+			}
+			vecPickObjects.push_back(pGameObject);
+		}
+	}
+	const tRay& cameraRay = CRenderMgr::GetInst()->GetMainCam()->GetRay();
+
+	for (const auto& pGameObject : vecPickObjects)
+	{
+		CRenderComponent* pRenderComponent = pGameObject->GetRenderComponent();
+
+		const Matrix& matInverseWorld = pGameObject->Transform()->GetWorldInvMat();
+
+		Vec3 rayLocalPosForMesh = XMVector3TransformCoord(cameraRay.vStart, matInverseWorld);
+		Vec3 rayLocalDirForMesh = XMVector3TransformNormal(cameraRay.vDir, matInverseWorld);
+		rayLocalDirForMesh.Normalize();
+
+		const Vtx* pVertexData      = pRenderComponent->GetMesh()->GetVtxSysMem();
+		const int  indexBufferCount = pRenderComponent->GetMesh()->GetSubsetCount();
+
+		std::vector<float> vecDistance{};
+		for (int i = 0; i < indexBufferCount; ++i)
+		{
+			Ptr<CMesh>  pMesh         = pRenderComponent->GetMesh();
+			const UINT* pIndexData    = static_cast<UINT*>(pMesh->GetIndexInfo(i).pIdxSysMem);
+			const UINT  indexCount    = pMesh->GetIndexInfo(i).iIdxCount;
+			const UINT  triangleCount = indexCount / 3;
+
+			for (int j = 0; j < triangleCount; ++j)
+			{
+				// Indices for this triangle.
+				const UINT index_0 = pIndexData[j * 3 + 0];
+				const UINT index_1 = pIndexData[j * 3 + 1];
+				const UINT index_2 = pIndexData[j * 3 + 2];
+
+				// Vertices for this triangle.
+				Vec3 vertex_0 = pVertexData[index_0].vPos;
+				Vec3 vertex_1 = pVertexData[index_1].vPos;
+				Vec3 vertex_2 = pVertexData[index_2].vPos;
+
+				// We have to iterate over all the triangles in order to find the nearest intersection.
+
+				float distance = 0.0f;
+				if (TriangleTests::Intersects(rayLocalPosForMesh,
+				                              rayLocalDirForMesh,
+				                              vertex_0,
+				                              vertex_1,
+				                              vertex_2,
+				                              distance))
+				{
+					vecDistance.push_back(distance);
+				}
+			}
+		}
+		std::sort(vecDistance.begin(), vecDistance.end());
+		if (vecDistance.size() > 0)
+		{
+			vecIntersect.push_back({vecDistance[0], pGameObject});
+		}
+	}
+	if (vecIntersect.size() > 0)
+	{
+		std::sort(vecIntersect.begin(),
+		          vecIntersect.end(),
+		          [](const auto& left, const auto& right)
+		          {
+			          return left.first < right.first;
+		          });
+
+		m_pSelectedGameObject   = vecIntersect[0].second;
+		TreeNode* pSelectedNode = m_TreeUI->FindNode(ToString(m_pSelectedGameObject->GetName()));
+
+		TreeNode* pParentNode = pSelectedNode->GetParent();
+		while (pParentNode)
+		{
+			pParentNode->SetCheckOn();
+			pParentNode = pParentNode->GetParent();
+		}
+		m_TreeUI->SetSelectedNode(pSelectedNode);
+	}
 }
 
 TreeNode* SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _pDestNode)
@@ -430,17 +617,17 @@ TreeNode* SceneOutliner::AddLayerToTree(CLayer* _pLayer, TreeNode* _pDestNode)
 
 void SceneOutliner::PressDelete(DWORD_PTR _dw)
 {
-	TreeNode* pNode = (TreeNode*)_dw;
+	auto pNode = (TreeNode*)_dw;
 
 	if (nullptr == pNode)
 		return;
 
-	CGameObject* pTargetObj = (CGameObject*)pNode->GetData();
+	auto pTargetObj = (CGameObject*)pNode->GetData();
 	pTargetObj->Destroy();
 
 	// InspectorUI 를 찾아서 Object 를 nullptr 로 세팅한다.
 
-	InspectorUI* pInspectorUI = (InspectorUI*)CImGuiMgr::GetInst()->FindUI("Inspector");
+	auto pInspectorUI = static_cast<InspectorUI*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
 	pInspectorUI->SetTargetObject(nullptr);
 }
 
@@ -457,8 +644,8 @@ void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 	if (eDragNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT &&
 	    eDropNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT)
 	{
-		CGameObject* pDrag = (CGameObject*)_dwDrag; // Child 
-		CGameObject* pDrop = (CGameObject*)_dwDrop; // Parent
+		auto pDrag = (CGameObject*)_dwDrag; // Child 
+		auto pDrop = (CGameObject*)_dwDrop; // Parent
 
 		if (pDrop != nullptr)
 		{
@@ -485,8 +672,8 @@ void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 	else if (eDragNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT &&
 	         eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
 	{
-		CGameObject* pDrag = (CGameObject*)_dwDrag; // Object 
-		CLayer*      pDrop = (CLayer*)_dwDrop;		// Layer
+		auto pDrag = (CGameObject*)_dwDrag; // Object 
+		auto pDrop = (CLayer*)_dwDrop;		// Layer
 
 		CSceneMgr::GetInst()->ChangeObjectLayerIndex(pDrag, pDrop->GetLayerIdx());
 	}
@@ -494,8 +681,8 @@ void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 	else if (eDragNode_Type == NODE_TYPE::ENGINE_LAYER &&
 	         eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
 	{
-		CLayer* pDrag = (CLayer*)_dwDrag;		// Layer 
-		CLayer* pDrop = (CLayer*)_dwDrop;		// Layer
+		auto pDrag = (CLayer*)_dwDrag;		// Layer 
+		auto pDrop = (CLayer*)_dwDrop;		// Layer
 
 		CSceneMgr::GetInst()->SwapLayer(pDrag->GetLayerIdx(), pDrop->GetLayerIdx());
 	}
