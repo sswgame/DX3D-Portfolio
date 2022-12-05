@@ -756,6 +756,21 @@ void CResMgr::CreateEngineShader()
 
 	AddRes<CGraphicsShader>(L"Std3D_DeferredShader", pShader, true);
 
+	// Std3D fog Shader
+	pShader = new CGraphicsShader;
+	pShader->CreateVertexShader(L"shader\\std3d_deferred.fx", "VS_Std3D_fog");
+	pShader->CreatePixelShader(L"shader\\std3d_deferred.fx", "PS_Std3D_fog");
+
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_TRANSLUCENT);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::NO_WRITE);
+	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
+
+	pShader->AddTexParamInfo(L"Output Texture", TEX_PARAM::TEX_0);
+	pShader->AddTexParamInfo(L"Depth Texture", TEX_PARAM::TEX_1);
+
+	AddRes<CGraphicsShader>(L"Std3D_fog", pShader, true);
+
 	// Trail Shader 
 	pShader = new CGraphicsShader;
 	pShader->CreateVertexShader(L"shader\\trail.fx", "VS_Trail");
@@ -907,6 +922,21 @@ void CResMgr::CreateEngineShader()
 
 	AddRes<CGraphicsShader>(L"FlamePostProcessShader", pShader, true);
 
+	// Fog PostProcess Shader
+	pShader = new CGraphicsShader;
+
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
+	pShader->CreateVertexShader(L"Shader\\postprocess.fx", "VS_FogPostProcess");
+	pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_FogPostProcess");
+
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+
+	pShader->AddTexParamInfo(L"Render Target", TEX_PARAM::TEX_0);
+	pShader->AddTexParamInfo(L"Position Target", TEX_PARAM::TEX_1);
+
+	AddRes<CGraphicsShader>(L"FogPostProcessShader", pShader, true);
+
 	// Tessellation Test Shader
 	pShader = new CGraphicsShader;
 
@@ -1013,10 +1043,20 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"FlamePostProcessShader"));
 	AddRes<CMaterial>(L"material\\FlamePostProcessMtrl.mtrl", pMtrl);
 
+	// Fog PostProcess Mtrl
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"FogPostProcessShader"));
+	AddRes<CMaterial>(L"material\\FogPostProcessMtrl.mtrl", pMtrl);
+
 	// Tessellation Test Material
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"TessShader"));
 	AddRes<CMaterial>(L"material\\TessMtrl.mtrl", pMtrl);
+
+	// fog Test Material
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"Std3D_fog"));
+	AddRes<CMaterial>(L"material\\fog.mtrl", pMtrl);
 
 	MakeGameMaterial();
 }

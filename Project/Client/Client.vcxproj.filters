@@ -128,6 +128,9 @@
     <ClCompile Include="ParticleTool.cpp">
       <Filter>ImGui\UI\05. ParticleTool</Filter>
     </ClCompile>
+    <ClCompile Include="FogTool.cpp">
+      <Filter>ImGui\UI\06. FogTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -277,6 +280,9 @@
     <ClInclude Include="ParticleTool.h">
       <Filter>ImGui\UI\05. ParticleTool</Filter>
     </ClInclude>
+    <ClInclude Include="FogTool.h">
+      <Filter>ImGui\UI\06. FogTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">
@@ -394,6 +400,9 @@
     </Filter>
     <Filter Include="ImGui\UI\05. ParticleTool">
       <UniqueIdentifier>{21efe5ad-b5d4-40e1-89f7-703eb53da463}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\UI\06. FogTool">
+      <UniqueIdentifier>{1b812a83-3bf0-4676-83b4-bd01bff39d25}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

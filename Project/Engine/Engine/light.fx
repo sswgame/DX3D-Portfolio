@@ -295,7 +295,6 @@ float4 PS_Merge(VS_MERGE_OUT _in) : SV_Target0
     {
         uv = t + float2(fWeightOnePixel * i, 0.f);
         vBloomColor += Weight4[12 + i] * g_tex_0.Sample(g_sam_0, uv);
-
     }
 
     for (int i = -12; i < 12; ++i)

@@ -11,8 +11,6 @@
 // Blend    : AlphaBlend
 // DepthStencil : Less
 // Rasterizer : CULL_NONE
-// g_tex_0 : particle target Texture
-// g_tex_1 : Emissive target Texture
 
 // Parameter
 #define POS_INHERIT     g_int_0
@@ -20,6 +18,11 @@
 #define APPLY_LIGHTING  g_int_2
 
 #define EMISSIVE_USE    g_int_3
+
+#define LINEAR_PARTICLE      g_float_0
+#define SOFT_PARTICLE      g_float_1
+
+#define POSITION_TEXTURE   g_tex_1
 
 #define EMISSIVE_COLOR g_vec4_0
 // ====================
@@ -94,6 +97,31 @@ void GS_ParticleRender(point VTX_OUT _in[1], inout TriangleStream<GS_OUT> _outpu
         float3(vViewPos.x + vScale.x / 2.f, vViewPos.y - vScale.y / 2.f, vViewPos.z),
         float3(vViewPos.x - vScale.x / 2.f, vViewPos.y - vScale.y / 2.f, vViewPos.z)
     };
+
+    if (1.f == g_float_0)
+    {
+        // dir view로 변환
+        float3 newDir = mul(float4(ParticleBuffer[ID].vDir, 0.f), g_matView).xyz;
+        newDir = normalize(newDir);
+
+        // 카메라와 newDir을 외적하여 화면상의 회전된 upvector를 구한다.
+        // 카메라와 -> 파티클 벡터 구하기.
+        float3 vZVec = vViewPos;
+        float3 vFront = normalize(cross(newDir, float3(0.f, 1.f, 0.f)));
+        float3 vUP = normalize(cross(vFront, newDir));
+
+        float diagonal = sqrt((vScale.x / 2.f) * (vScale.x / 2.f) + (vScale.y / 2.f) * (vScale.y / 2.f));
+
+        float3 arrCalcRect[4] =
+        {
+              vViewPos + (newDir * vScale.x * -0.5f) + vUP * vScale.y * 0.5f,
+              vViewPos + (newDir * vScale.x * 0.5f) + vUP * vScale.y * 0.5f,
+              vViewPos + (newDir * vScale.x * 0.5f) + vUP * vScale.y * -0.5f,
+              vViewPos + (newDir * vScale.x * -0.5f) + vUP * vScale.y * -0.5f
+        };
+
+        arrRect = arrCalcRect;
+    }
     
     GS_OUT output[4] = { (GS_OUT) 0.f, (GS_OUT) 0.f, (GS_OUT) 0.f, (GS_OUT) 0.f };
     
@@ -155,12 +183,34 @@ PS_OUT PS_ParticleRender(GS_OUT _in)
                         + (output.vParticle.rgb * lightColor.vAmb.rgb);
     }    
 
-   /* if (1 == EMISSIVE_USE)
+    if (1.f == SOFT_PARTICLE)
+    {
+
+        float4 projPos = mul(float4(_in.vViewPos, 1.f), g_matProj);
+        float2 vScreenUV;
+
+        vScreenUV.x = (projPos.x / projPos.w) * 0.5f + 0.5f;
+        vScreenUV.y = (projPos.y / projPos.w) * -0.5f + 0.5f;
+
+        float2 vFullUV = float2(_in.vPosition.x / vResolution.x, _in.vPosition.y / vResolution.y);
+        float3 vTargetViewPos = g_tex_1.Sample(g_sam_0, vFullUV).xyz;
+
+        float diff = vTargetViewPos.z - _in.vViewPos.z;
+
+        float fAlpha = diff / 100.f;
+
+        fAlpha = clamp(fAlpha, 0.1f, 1.f);
+
+        if (diff < 100.f && 0.f <= diff)
+        {
+            output.vParticle *= fAlpha;
+        }
+    }
+
+    if (1 == EMISSIVE_USE)
     {
         output.vEmissive = EMISSIVE_COLOR;
-    }*/
-
-    output.vEmissive = float4(0.f, 1.f, 1.f, 1.f);
+    }
     
     return output;
 }

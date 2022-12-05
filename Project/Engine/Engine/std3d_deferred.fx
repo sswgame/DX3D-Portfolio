@@ -111,6 +111,64 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
 }
 
 
+// =========================
+// Std3D_fog
+// g_tex_0 : Output Texture
+
+// DOMAIN : Deferred
+// Rasterizer : CULL_BACK
+// DepthStencilState : LESS
+// BlendState : DEFAULT
+
+#define TEXTURE             g_tex_0
+#define POSITION_TEXTURE    g_tex_1
+
+// =========================
+VTX_OUT VS_Std3D_fog(VTX_IN _in)
+{
+    VTX_OUT output = (VTX_OUT)0.f;
+
+    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+
+    output.vViewPos = mul(float4(_in.vPos, 1.f), g_matWV).xyz;
+    output.vViewTangent = normalize(mul(float4(_in.vTangent, 0.f), g_matWV)).xyz;
+    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV)).xyz;
+    output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV)).xyz;
+    output.vUV = _in.vUV;
+
+    return output;
+}
+
+float4 PS_Std3D_fog(VTX_OUT _in) : SV_Target
+{
+    float4 vOutColor = (float4) 0.f;
+
+    if (g_btex_0)
+    {
+        vOutColor = g_tex_0.Sample(g_sam_0, _in.vUV);
+    }
+
+    if (vOutColor.a <= 0.2f)
+        discard;
+
+    float4 projPos = mul(float4(_in.vViewPos, 1.f), g_matProj);
+    float2 vScreenUV;
+
+    vScreenUV.x = (projPos.x / projPos.w) * 0.5f + 0.5f;
+    vScreenUV.y = (projPos.y / projPos.w) * -0.5f + 0.5f;
+
+    float2 vFullUV = float2(_in.vPosition.x / vResolution.x, _in.vPosition.y / vResolution.y);
+    float3 vTargetViewPos = g_tex_2.Sample(g_sam_0, vFullUV).xyz;
+
+    float diff = vTargetViewPos.z - _in.vViewPos.z;
+    float fAlpha = diff / 100.f;
+
+    fAlpha = clamp(fAlpha, 0.1f, 1.f);
+
+    return vOutColor;
+}
+
+
 // =====================
 // Deferred Decal Shader
 // Mesh     : Cube / Sphere

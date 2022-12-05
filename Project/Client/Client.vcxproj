@@ -175,6 +175,7 @@
     <ClInclude Include="CTestScene.h" />
     <ClInclude Include="CToolObjMgr.h" />
     <ClInclude Include="DecalUI.h" />
+    <ClInclude Include="FogTool.h" />
     <ClInclude Include="IconsFontAwesome5.h" />
     <ClInclude Include="ImGuizmo\GraphEditor.h" />
     <ClInclude Include="ImGuizmo\ImCurveEdit.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="CTestScene.cpp" />
     <ClCompile Include="CToolObjMgr.cpp" />
     <ClCompile Include="DecalUI.cpp" />
+    <ClCompile Include="FogTool.cpp" />
     <ClCompile Include="ImGuizmo\GraphEditor.cpp" />
     <ClCompile Include="ImGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="ImGuizmo\ImGradient.cpp" />

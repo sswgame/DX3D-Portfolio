@@ -29,6 +29,8 @@ CParticleSystem::CParticleSystem()
 	, m_vEndEmissiveColor(Vec4(0.f, 0.f, 0.f, 1.f))
 	, m_fAngle(360.f)
 	, m_iSpeedDetail_Func(0)
+	, m_bLinearParicle(false)
+	, m_bUseSoftParticle(false)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -66,6 +68,8 @@ CParticleSystem::CParticleSystem(const CParticleSystem& _origin)
 	, m_vEndEmissiveColor(_origin.m_vEndEmissiveColor)
 	, m_fAngle(_origin.m_fAngle)
 	, m_iSpeedDetail_Func(_origin.m_iSpeedDetail_Func)
+	, m_bLinearParicle(_origin.m_bLinearParicle)
+	, m_bUseSoftParticle(_origin.m_bUseSoftParticle)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);

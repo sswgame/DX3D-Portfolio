@@ -39,6 +39,9 @@ private:
 	float	m_fAngle;				// 파티클 사출 각도
 	int m_iSpeedDetail_Func;
 
+	bool	m_bLinearParicle;
+	bool	m_bUseSoftParticle;
+
 	int m_iEmissive; // 파티클 발광여부
 	int m_iLighting; // 광원 적용 여부
 
@@ -88,6 +91,12 @@ public:
 
 	void SetSpeedDetailFunc(int _funcNum) { m_iSpeedDetail_Func = _funcNum; }
 	int GetSpeedDetailFunc() { return m_iSpeedDetail_Func; }
+
+	void SetLinearParticle(bool _TorF) { m_bLinearParicle = _TorF; }
+	bool GetLinearParticle() { return m_bLinearParicle; }
+
+	void SetSoftParticle(bool _TorF) { m_bUseSoftParticle = _TorF; }
+	bool GetSoftParticle() { return m_bUseSoftParticle; }
 
 	void SetMaterial(wstring _mtrl);
 

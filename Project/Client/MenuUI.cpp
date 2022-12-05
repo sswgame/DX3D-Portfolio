@@ -12,16 +12,18 @@
 #include "CImGuiMgr.h"
 #include "SceneOutliner.h"
 #include "ParticleTool.h"
+#include "FogTool.h"
 
 MenuUI::MenuUI()
 	:
 	UI("Menu")
-  , m_bPackaging(false)
-  , m_bSceneSave(false)
-  , m_bSceneLoad(false)
-  , m_bScenePlayPause(false)
-  , m_bSceneStop(false)
+	, m_bPackaging(false)
+	, m_bSceneSave(false)
+	, m_bSceneLoad(false)
+	, m_bScenePlayPause(false)
+	, m_bSceneStop(false)
 	, m_bParticleTool(false)
+	, m_bFogTool(false)
 {}
 
 MenuUI::~MenuUI() {}
@@ -56,8 +58,8 @@ void MenuUI::render_update()
 		ImGui::MenuItem("Scene Save", nullptr, &m_bSceneSave);
 		ImGui::MenuItem("Scene Load", nullptr, &m_bSceneLoad);
 
-		CScene*     pCurScene = CSceneMgr::GetInst()->GetCurScene();
-		SCENE_STATE eState    = pCurScene->GetSceneState();
+		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		SCENE_STATE eState = pCurScene->GetSceneState();
 
 		if (SCENE_STATE::PLAY == eState)
 			m_strPlayPause = "Pause";
@@ -107,9 +109,12 @@ void MenuUI::render_update()
 	{
 
 		ImGui::MenuItem("Particle Tool", nullptr, &m_bParticleTool);
+		ImGui::MenuItem("Fog Tool", nullptr, &m_bFogTool);
 
 		ImGui::EndMenu();
 	}
+
+
 }
 
 
@@ -121,20 +126,20 @@ void MenuUI::Task()
 
 		OPENFILENAME ofn = {};
 
-		ofn.lStructSize    = sizeof(OPENFILENAME);
-		ofn.hwndOwner      = CCore::GetInst()->GetMainHwnd();
-		ofn.lpstrFile      = szName;
-		ofn.nMaxFile       = sizeof(szName);
-		ofn.lpstrFilter    = L"ALL\0*.*\0Scene\0*.scene\0";
-		ofn.nFilterIndex   = 0;
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+		ofn.lpstrFile = szName;
+		ofn.nMaxFile = sizeof(szName);
+		ofn.lpstrFilter = L"ALL\0*.*\0Scene\0*.scene\0";
+		ofn.nFilterIndex = 0;
 		ofn.lpstrFileTitle = nullptr;
-		ofn.nMaxFileTitle  = 0;
+		ofn.nMaxFileTitle = 0;
 
 		wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
 		strTileFolder += L"scene";
 
 		ofn.lpstrInitialDir = strTileFolder.c_str();
-		ofn.Flags           = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 		// Modal
 		if (GetSaveFileName(&ofn))
@@ -151,20 +156,20 @@ void MenuUI::Task()
 
 		OPENFILENAME ofn = {};
 
-		ofn.lStructSize    = sizeof(OPENFILENAME);
-		ofn.hwndOwner      = CCore::GetInst()->GetMainHwnd();
-		ofn.lpstrFile      = szName;
-		ofn.nMaxFile       = sizeof(szName);
-		ofn.lpstrFilter    = L"ALL\0*.*\0Tile\0*.tile\0";
-		ofn.nFilterIndex   = 0;
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+		ofn.lpstrFile = szName;
+		ofn.nMaxFile = sizeof(szName);
+		ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
+		ofn.nFilterIndex = 0;
 		ofn.lpstrFileTitle = nullptr;
-		ofn.nMaxFileTitle  = 0;
+		ofn.nMaxFileTitle = 0;
 
 		wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
 		strTileFolder += L"tile";
 
 		ofn.lpstrInitialDir = strTileFolder.c_str();
-		ofn.Flags           = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 		// Modal
 		if (GetOpenFileName(&ofn))
@@ -182,8 +187,8 @@ void MenuUI::Task()
 
 	if (m_bScenePlayPause)
 	{
-		CScene*     pCurScene = CSceneMgr::GetInst()->GetCurScene();
-		SCENE_STATE eState    = pCurScene->GetSceneState();
+		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		SCENE_STATE eState = pCurScene->GetSceneState();
 
 		if (SCENE_STATE::STOP == eState)
 		{
@@ -199,8 +204,8 @@ void MenuUI::Task()
 
 	if (m_bSceneStop)
 	{
-		CScene*     pCurScene = CSceneMgr::GetInst()->GetCurScene();
-		SCENE_STATE eState    = pCurScene->GetSceneState();
+		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		SCENE_STATE eState = pCurScene->GetSceneState();
 
 		if (SCENE_STATE::STOP != eState)
 		{
@@ -208,7 +213,7 @@ void MenuUI::Task()
 			CSceneFile* pSceneFile = pCurScene->GetSceneFile().Get();
 
 			wstring strFilePath = CPathMgr::GetInst()->GetContentPath() + pSceneFile->GetRelativePath();
-			CScene* pNewScene   = CSceneSaveLoad::LoadScene(strFilePath);
+			CScene* pNewScene = CSceneSaveLoad::LoadScene(strFilePath);
 			CSceneMgr::GetInst()->ChangeScene(pNewScene);
 		}
 
@@ -226,5 +231,15 @@ void MenuUI::Task()
 			return;
 		pParticleToolUI->Activate();
 		m_bParticleTool = false;
+	}
+
+	if (m_bFogTool)
+	{
+		FogTool* pFogToolUI = (FogTool*)CImGuiMgr::GetInst()->FindUI("##FogTool");
+		pFogToolUI->SetTitle("Fog Tool");
+		if (nullptr == pFogToolUI)
+			return;
+		pFogToolUI->Activate();
+		m_bFogTool = false;
 	}
 }

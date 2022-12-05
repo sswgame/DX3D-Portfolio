@@ -12,7 +12,6 @@
 #include "UI.h"
 #include "ParamUI.h"
 #include "IconsFontAwesome5.h"
-#include "ParticleTool.h"
 #include "ImGuizmo/ImGuizmo.h"
 
 
@@ -167,6 +166,8 @@ void CImGuiMgr::clear()
 #include "ResourceUI.h"
 #include "ListUI.h"
 #include "SceneOutliner.h"
+#include "ParticleTool.h"
+#include "FogTool.h"
 
 void CImGuiMgr::CreateUI()
 {
@@ -198,6 +199,11 @@ void CImGuiMgr::CreateUI()
 	ParticleTool* pParticleTool = new ParticleTool;
 	pParticleTool->Deactivate();
 	m_mapUI.insert(make_pair(pParticleTool->GetName(), pParticleTool));
+
+	// Fog Tool UI »ý¼º
+	FogTool* pFogTool = new FogTool;
+	pFogTool->Deactivate();
+	m_mapUI.insert(make_pair(pFogTool->GetName(), pFogTool));
 }
 
 

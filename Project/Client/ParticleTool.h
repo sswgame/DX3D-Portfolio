@@ -9,6 +9,7 @@ class ParticleTool :
 private:
     Ptr<CTexture> m_pParticleTarget;
     Ptr<CTexture> m_pEmissiveTarget;
+    Ptr<CTexture> m_pDepthTarget;
 
     vector<CGameObject*> m_vecParticleSystem;
     CGameObject* m_pTargetParticle;
@@ -33,6 +34,8 @@ private:
 
     bool	m_bShaderUseEmissive;
     bool    m_bShaderUseSpeedDetail;
+    bool    m_bLinerParticle;
+    bool    m_bUseSoftParticle;
 
     int m_iParticleComboIDX;
 

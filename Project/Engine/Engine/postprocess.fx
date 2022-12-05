@@ -114,5 +114,46 @@ float4 PS_FlamePostProcess(VTX_OUT _in) : SV_Target
 
 
 
+// =====================================
+// PostProcess Depth of Feild Shader
+// Domain       : Post Process
+// Mesh         : RectMesh
+// Blend        : Default
+// DepthStencil : NoTest NoWrite
+#define PostProcessTarget   g_tex_0
+#define PositionTarget      g_tex_1
+// =====================================
+VTX_OUT VS_FogPostProcess(VTX_IN _in)
+{
+    VTX_OUT output = (VTX_OUT)0.f;
+
+    //output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+    output.vPosition = float4(_in.vPos * 2.f, 1.f);
+    output.vUV = _in.vUV;
+
+    return output;
+}
+
+float4 PS_FogPostProcess(VTX_OUT _in) : SV_Target
+{
+    float4 vOutColor = (float4) 0.f;
+
+    // _in.vPosition; ÇÈ¼¿ ÁÂÇ¥
+    float2 vScreenUV = _in.vPosition.xy / vResolution;
+    vOutColor = PostProcessTarget.Sample(g_sam_1, vScreenUV);
+    float4 fcolor = { 0.5, 0.5, 0.5, 1 };
+
+    float3 vTargetViewPos = PositionTarget.Sample(g_sam_0, vScreenUV).xyz;
+
+    float fAlpha = vTargetViewPos.z / 3000.f;
+    fAlpha = clamp(fAlpha, 0.001f, 0.5f);
+
+    fAlpha = 1.f - fAlpha;
+
+    vOutColor = (lerp(fcolor, vOutColor, fAlpha));
+
+    return vOutColor;
+}
+
 
 #endif

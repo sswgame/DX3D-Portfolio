@@ -13,6 +13,7 @@ private:
 	bool m_bScenePlayPause;
 	bool m_bSceneStop;
 	bool	m_bParticleTool;
+	bool	m_bFogTool;
 
 public:
 	virtual void update() override;

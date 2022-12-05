@@ -19,27 +19,33 @@
 #include "ParticleSystemUI.h"
 
 ParticleTool::ParticleTool()
-	: UI("##ParticleToolUI")
+	:UI("##ParticleToolUI")
 	, m_pParticleTarget(nullptr)
 	, m_pEmissiveTarget(nullptr)
 	, m_vecParticleSystem()
 	, m_pTargetParticle(nullptr)
 	, m_strvecParticleName()
 	, m_vecTargetResolution(0.f)
-	, m_iMaxCount{5}
-	, m_bPosInherit{false}
-	, m_iAliveCount{1}
-	, m_fArrMinMaxTime{{0.f}, {5.f}}
-	, m_fArrMinMaxSpeed{{10.f}, {100.f}}
-	, m_fRange{10.f}
-	, m_fTerm{3.f}
+	, m_iMaxCount{ 5 }
+	, m_bPosInherit{ false }
+	, m_iAliveCount{ 1 }
+	, m_fArrMinMaxTime{ {0.f}, {5.f} }
+	, m_fArrMinMaxSpeed{ {10.f}, {100.f} }
+	, m_fRange{ 10.f }
+	, m_fTerm{ 3.f }
 	, m_fAngle(180.f)
-	, m_bShaderUseEmissive{false}
+	, m_bShaderUseEmissive{ false }
 	, m_bShaderUseSpeedDetail(false)
-	, m_fArrDirection{{1.f}, {0.f}}
-	, m_iParticleComboIDX(0) {}
+	, m_fArrDirection{ {1.f}, {0.f} }
+	, m_iParticleComboIDX(0)
+	, m_bLinerParticle(false)
+	, m_bUseSoftParticle(false)
+{
+}
 
-ParticleTool::~ParticleTool() {}
+ParticleTool::~ParticleTool()
+{
+}
 
 void ParticleTool::ParticleOptionSetting()
 {
@@ -47,6 +53,9 @@ void ParticleTool::ParticleOptionSetting()
 	ImGui::Text("PARTICLE OPTION SETTING");
 
 	CParticleSystem* pTargetParticleSystem = m_pTargetParticle->ParticleSystem();
+
+	if (nullptr == pTargetParticleSystem)
+		return;
 
 	ImGui::PushItemWidth(200); // Float3 위젯 간격 설정
 
@@ -95,12 +104,37 @@ void ParticleTool::ParticleOptionSetting()
 			{
 				if (ImGui::Selectable(s_arrSpeedDetailName[i]))
 				{
-					pTargetParticleSystem->SetSpeedDetailFunc(static_cast<int>(i));
+					pTargetParticleSystem->SetSpeedDetailFunc(i);
 				}
 			}
 			ImGui::EndCombo();
 		}
 	}
+
+	CParticleSystem* pCurPSys = m_pTargetParticle->ParticleSystem();
+
+	ImGui::BulletText("Liner Particle Use");
+	ImGui::SameLine(200);
+	ImGui::Checkbox("##LINER_PARTICLE_USE", &m_bLinerParticle);
+	float liner = (float)m_bLinerParticle;
+	pCurPSys->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &liner);
+	pTargetParticleSystem->SetLinearParticle(m_bLinerParticle);
+
+	ImGui::BulletText("Soft Particle Use");
+	ImGui::SameLine(200);
+	ImGui::Checkbox("##SOFT_PARTICLE_USE", &m_bUseSoftParticle);
+	float soft = (float)m_bUseSoftParticle;
+	pCurPSys->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::FLOAT_1, &soft);
+	pTargetParticleSystem->SetSoftParticle(m_bUseSoftParticle);
+	if (m_bUseSoftParticle)
+	{
+		if (nullptr == m_pDepthTarget)
+		{
+			m_pDepthTarget = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex");
+		}
+		pCurPSys->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1, m_pDepthTarget);
+	}
+
 
 	ImGui::BulletText("Start Color");
 	ImGui::SameLine(200);
@@ -113,7 +147,6 @@ void ParticleTool::ParticleOptionSetting()
 	ImGui::BulletText("Emissive");
 	ImGui::SameLine(200);
 	ImGui::ColorEdit4("##EMISSIVE", m_vArrStartEndEmissive[0]);
-	CParticleSystem* pCurPSys = m_pTargetParticle->ParticleSystem();
 	pCurPSys->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, m_vArrStartEndEmissive[0]);
 	pTargetParticleSystem->SetStartEndEmissiveColor(m_vArrStartEndEmissive[0], m_vArrStartEndEmissive[0]);
 
@@ -137,11 +170,9 @@ void ParticleTool::ParticleOptionSetting()
 
 	ImGui::BulletText("Direction");
 	ImGui::Indent();
-	ImGui::BulletText("Dir X  :");
-	ImGui::SameLine(200);
+	ImGui::BulletText("Dir X  :"); 	ImGui::SameLine(200);
 	ImGui::DragFloat("##PARTICLE_DIR_X", &m_fArrDirection[0], 0.1f, -1.0f, 1.0f, "%.1f");
-	ImGui::BulletText("Dir Y  :");
-	ImGui::SameLine(200);
+	ImGui::BulletText("Dir Y  :"); 	ImGui::SameLine(200);
 	ImGui::DragFloat("##PARTICLE_DIR_Y", &m_fArrDirection[1], 0.1f, -1.0f, 1.0f, "%.1f");
 	ImGui::Unindent();
 
@@ -170,8 +201,8 @@ void ParticleTool::ParticleOptionSetting()
 	if (ImGui::Button("##PARTICLE_TEXTURE_BUTTON", Vec2(15, 15)))
 	{
 		// ListUI 활성화한다.
-		const auto& mapRes  = CResMgr::GetInst()->GetResList(RES_TYPE::TEXTURE);
-		ListUI*     pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
+		const auto& mapRes = CResMgr::GetInst()->GetResList(RES_TYPE::TEXTURE);
+		ListUI* pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 		pListUI->Clear();
 		pListUI->SetTitle("TEXTURE_LIST");
 
@@ -183,27 +214,29 @@ void ParticleTool::ParticleOptionSetting()
 		pListUI->Activate();
 		pListUI->SetDBCEvent(this, (DBCLKED)&ParticleTool::TextureSelect);
 	}
+
+
 }
 
 void ParticleTool::SaveParticle()
 {
-	wchar_t      szName[256] = {};
-	OPENFILENAME ofn         = {};
+	wchar_t szName[256] = {};
+	OPENFILENAME ofn = {};
 
-	ofn.lStructSize    = sizeof(OPENFILENAME);
-	ofn.hwndOwner      = CCore::GetInst()->GetMainHwnd();
-	ofn.lpstrFile      = szName;
-	ofn.nMaxFile       = sizeof(szName);
-	ofn.lpstrFilter    = L"ALL\0*.*\0Particle\0*.prtcl\0";
-	ofn.nFilterIndex   = 0;
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Particle\0*.prtcl\0";
+	ofn.nFilterIndex = 0;
 	ofn.lpstrFileTitle = nullptr;
-	ofn.nMaxFileTitle  = 0;
+	ofn.nMaxFileTitle = 0;
 
 	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
 	strTileFolder += L"prtcl";
 
 	ofn.lpstrInitialDir = strTileFolder.c_str();
-	ofn.Flags           = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	// Modal
 	if (GetSaveFileName(&ofn))
@@ -227,20 +260,20 @@ void ParticleTool::LoadParticle(CGameObject* _load)
 
 	OPENFILENAME ofn = {};
 
-	ofn.lStructSize    = sizeof(OPENFILENAME);
-	ofn.hwndOwner      = CCore::GetInst()->GetMainHwnd();
-	ofn.lpstrFile      = szName;
-	ofn.nMaxFile       = sizeof(szName);
-	ofn.lpstrFilter    = L"ALL\0*.*\0Particle\0*.prtcl\0";
-	ofn.nFilterIndex   = 0;
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Particle\0*.prtcl\0";
+	ofn.nFilterIndex = 0;
 	ofn.lpstrFileTitle = nullptr;
-	ofn.nMaxFileTitle  = 0;
+	ofn.nMaxFileTitle = 0;
 
 	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
 	strTileFolder += L"prtcl";
 
 	ofn.lpstrInitialDir = strTileFolder.c_str();
-	ofn.Flags           = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	// Modal
 	if (GetOpenFileName(&ofn))
@@ -267,43 +300,48 @@ void ParticleTool::SetData()
 
 	CParticleSystem* pTargetParticleSystem = m_pTargetParticle->ParticleSystem();
 
-	m_iMaxCount   = pTargetParticleSystem->GetMaxParticleCount();
+	if (nullptr == pTargetParticleSystem)
+		return;
+
+	m_iMaxCount = pTargetParticleSystem->GetMaxParticleCount();
 	m_bPosInherit = pTargetParticleSystem->PosInherit();
 	m_iAliveCount = pTargetParticleSystem->GetAliveCount();
 
 	const Vec2& vLifeTime = pTargetParticleSystem->GetMinMaxLifeTime();
-	m_fArrMinMaxTime[0]   = vLifeTime.x;
-	m_fArrMinMaxTime[1]   = vLifeTime.y;
+	m_fArrMinMaxTime[0] = vLifeTime.x;
+	m_fArrMinMaxTime[1] = vLifeTime.y;
 
 	const Vec2& vMinMaxSpeed = pTargetParticleSystem->GetMinMaxSpeed();
-	m_fArrMinMaxSpeed[0]     = vMinMaxSpeed.x;
-	m_fArrMinMaxSpeed[1]     = vMinMaxSpeed.y;
+	m_fArrMinMaxSpeed[0] = vMinMaxSpeed.x;
+	m_fArrMinMaxSpeed[1] = vMinMaxSpeed.y;
 
 	const std::pair<Vec4, Vec4>& pairColor = pTargetParticleSystem->GetStartEndColor();
-	m_vArrStartEndColor[0]                 = pairColor.first;
-	m_vArrStartEndColor[1]                 = pairColor.second;
+	m_vArrStartEndColor[0] = pairColor.first;
+	m_vArrStartEndColor[1] = pairColor.second;
 
 	const std::pair<Vec4, Vec4>& pairEColor = pTargetParticleSystem->GetStartEndEmissiveColor();
-	m_vArrStartEndEmissive[0]               = pairEColor.first;
-	m_vArrStartEndEmissive[1]               = pairEColor.second;
+	m_vArrStartEndEmissive[0] = pairEColor.first;
+	m_vArrStartEndEmissive[1] = pairEColor.second;
 
 	const std::pair<Vec3, Vec3>& pairScale = pTargetParticleSystem->GetStartEndScale();
-	m_vArrStartEndScale[0]                 = pairScale.first;
-	m_vArrStartEndScale[1]                 = pairScale.second;
+	m_vArrStartEndScale[0] = pairScale.first;
+	m_vArrStartEndScale[1] = pairScale.second;
 
 	m_fAngle = pTargetParticleSystem->GetAngle();
 
-	Vec2 dir           = pTargetParticleSystem->GetDirection();
+	Vec2 dir = pTargetParticleSystem->GetDirection();
 	m_fArrDirection[0] = dir.x;
 	m_fArrDirection[1] = dir.y;
 
+	m_bLinerParticle = pTargetParticleSystem->GetLinearParticle();
+
 	m_fRange = pTargetParticleSystem->GetRange();
-	m_fTerm  = pTargetParticleSystem->GetTerm();
+	m_fTerm = pTargetParticleSystem->GetTerm();
 }
 
 void ParticleTool::TextureSelect(void* _pTextureName)
 {
-	const std::wstring  key      = ToWString(static_cast<char*>(_pTextureName));
+	const std::wstring  key = ToWString(static_cast<char*>(_pTextureName));
 	const Ptr<CTexture> pTexture = CResMgr::GetInst()->FindRes<CTexture>(key);
 
 	CParticleSystem* pCurPSys = m_pTargetParticle->ParticleSystem();
@@ -314,7 +352,7 @@ void ParticleTool::TextureSelect(void* _pTextureName)
 		pCurPSys->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
 
 		CMaterial* curMaterial = pCurPSys->GetMaterial(0).Get();
-		wstring    contentPath = CPathMgr::GetInst()->GetContentPath();
+		wstring contentPath = CPathMgr::GetInst()->GetContentPath();
 		contentPath += curMaterial->GetKey();
 		pCurPSys->GetMaterial(0)->Save(contentPath);
 	}
@@ -332,14 +370,19 @@ void ParticleTool::ParticleCreate()
 	if (ImGui::BeginPopupModal("Set Particle Name", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		static char particleName[512];
-		ImGui::Text("Set Particle Name : ");
-		ImGui::SameLine();
+		ImGui::Text("Set Particle Name : "); ImGui::SameLine();
 		ImGui::InputText("Name", particleName, IM_ARRAYSIZE(particleName), ImGuiInputTextFlags_None);
 
 		if (ImGui::Button("CREATE", ImVec2(0, 0)))
 		{
+			if ('\0' == particleName[0])
+			{
+				ImGui::EndPopup();
+				return;
+			}
+
 			wstring name = L"";
-			int     i    = 0;
+			int i = 0;
 			while (true)
 			{
 				if ('\0' == particleName[i])
@@ -359,8 +402,9 @@ void ParticleTool::ParticleCreate()
 			CSceneMgr::GetInst()->SpawnObject(pParticle, L"BG");
 
 
-			CMaterial* pMtrl        = nullptr;
-			wstring    materialName = L"material\\";
+
+			CMaterial* pMtrl = nullptr;
+			wstring materialName = L"material\\";
 			materialName += name;
 			materialName += L".mtrl";
 
@@ -387,15 +431,20 @@ void ParticleTool::ParticleCreate()
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::EndPopup();
+
 	}
+
 }
 
 void ParticleTool::ParticleErase()
 {
 	if (ImGui::Button("Erase Particle", ImVec2(0, 0)))
 	{
+		if (nullptr == m_pTargetParticle)
+			return;
+
 		CGameObject* pDeleteParticle = m_pTargetParticle;
-		m_vecParticleSystem          = {};
+		m_vecParticleSystem = {};
 
 		vector<CGameObject*> pVecBGObj = CSceneMgr::GetInst()->GetCurScene()->GetLayer(0)->GetObjects();
 		for (size_t i = 0; i < pVecBGObj.size(); i++)
@@ -414,7 +463,7 @@ void ParticleTool::ParticleErase()
 		}
 		else
 		{
-			m_pTargetParticle   = m_vecParticleSystem[0];
+			m_pTargetParticle = m_vecParticleSystem[0];
 			m_iParticleComboIDX = 0;
 			SetData();
 		}
@@ -426,34 +475,43 @@ void ParticleTool::ParticleSaveNLoad()
 	if (ImGui::Button("SAVE - CUR PARTICLE"))
 	{
 		SaveParticle();
-	}
-	ImGui::SameLine(150);
+	} ImGui::SameLine(150);
 	if (ImGui::Button("LOAD"))
 	{
 		CGameObject* pLoadParticle = new CGameObject;
 		LoadParticle(pLoadParticle);
-		CSceneMgr::GetInst()->SpawnObject(pLoadParticle, L"BG");
-		AddParticleCombo(pLoadParticle);
+		if (pLoadParticle->GetName() == L"")
+		{
+			delete pLoadParticle;
+			return;
+		}
+		else
+		{
+			CSceneMgr::GetInst()->SpawnObject(pLoadParticle, L"BG");
+			AddParticleCombo(pLoadParticle);
+		}
 	}
 }
 
 void ParticleTool::AddParticleCombo(CGameObject* _newparti)
 {
 	m_vecParticleSystem.push_back(_newparti);
-	const string name = ToString(_newparti->GetName());
+	string name;
+	name.assign(_newparti->GetName().begin(), _newparti->GetName().end());
 	m_strvecParticleName.push_back(name);
 }
 
 void ParticleTool::MakeTargetParticleCombo()
 {
-	ImGui::Text("Change Target Particle : ");
-	ImGui::SameLine();
+	ImGui::Text("Change Target Particle : "); ImGui::SameLine();
 
 	m_strvecParticleName = {};
 	for (size_t i = 0; i < m_vecParticleSystem.size(); i++)
 	{
-		string particleName = ToString(m_vecParticleSystem[i]->GetName());
+		string particleName;
+		particleName.assign(m_vecParticleSystem[i]->GetName().begin(), m_vecParticleSystem[i]->GetName().end());
 		m_strvecParticleName.push_back(particleName);
+
 	}
 
 	const char* combo_preview_value;
@@ -475,13 +533,14 @@ void ParticleTool::MakeTargetParticleCombo()
 				if (ImGui::Selectable(m_strvecParticleName[n].c_str(), is_selected))
 				{
 					m_iParticleComboIDX = n;
-					m_pTargetParticle   = m_vecParticleSystem[m_iParticleComboIDX];
+					m_pTargetParticle = m_vecParticleSystem[m_iParticleComboIDX];
 
 					SetData();
 				}
 
 				if (is_selected)
 					ImGui::SetItemDefaultFocus();
+
 			}
 			ImGui::EndCombo();
 		}
@@ -527,6 +586,8 @@ void ParticleTool::update()
 			m_pTargetParticle = m_vecParticleSystem[0];
 		}
 	}
+
+
 }
 
 void ParticleTool::render_update()
@@ -539,9 +600,7 @@ void ParticleTool::render_update()
 
 	SetData();
 
-	ParticleCreate();
-	ImGui::SameLine();
-	ParticleErase();
+	ParticleCreate(); ImGui::SameLine(); ParticleErase();
 	ParticleSaveNLoad();
 	ImGui::Separator();
 
@@ -556,15 +615,14 @@ void ParticleTool::render_update()
 		"Particle + Emissive Target",
 	};
 	static int TargetTextureIDX = 0;
-	ImGui::Text("Set Particle Target");
-	ImGui::SameLine();
+	ImGui::Text("Set Particle Target"); ImGui::SameLine();
 	if (ImGui::BeginCombo("##PARTICLE_TARGET_COMBO", s_arrTargetTextureName[TargetTextureIDX]))
 	{
 		for (size_t i = 0; i < std::size(s_arrTargetTextureName); ++i)
 		{
 			if (ImGui::Selectable(s_arrTargetTextureName[i]))
 			{
-				TargetTextureIDX = static_cast<int>(i);
+				TargetTextureIDX = i;
 			}
 		}
 		ImGui::EndCombo();
@@ -572,23 +630,18 @@ void ParticleTool::render_update()
 
 	if (0 == TargetTextureIDX)
 	{
-		ImGui::Image(m_pParticleTarget.Get()->GetSRV().Get(),
-		             pTargetImageSize,
-		             ImVec2(0, 0),
-		             ImVec2(1, 1),
-		             ImVec4(1, 1, 1, 1),
-		             ImVec4(0, 0, 0, 0));
+		ImGui::Image(m_pParticleTarget.Get()->GetSRV().Get(), pTargetImageSize, ImVec2(0, 0)
+			, ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 	}
 	else if (1 == TargetTextureIDX)
 	{
-		ImGui::Image(m_pEmissiveTarget.Get()->GetSRV().Get(),
-		             pTargetImageSize,
-		             ImVec2(0, 0),
-		             ImVec2(1, 1),
-		             ImVec4(1, 1, 1, 1),
-		             ImVec4(0, 0, 0, 0));
+		ImGui::Image(m_pEmissiveTarget.Get()->GetSRV().Get(), pTargetImageSize, ImVec2(0, 0)
+			, ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 	}
-	else if (2 == TargetTextureIDX) { }
+	else if (2 == TargetTextureIDX)
+	{
+
+	}
 
 
 	if (nullptr == m_pTargetParticle)
@@ -597,11 +650,12 @@ void ParticleTool::render_update()
 	}
 	else
 	{
-		const string particleName = ToString(m_pTargetParticle->GetName());
-		ImGui::Text("Cur Target Particle : ");
-		ImGui::SameLine();
+		string particleName;
+		particleName.assign(m_pTargetParticle->GetName().begin(), m_pTargetParticle->GetName().end());
+		ImGui::Text("Cur Target Particle : "); ImGui::SameLine();
 		ImGui::Text(particleName.c_str());
 	}
 
 	MakeTargetParticleCombo();
+
 }
