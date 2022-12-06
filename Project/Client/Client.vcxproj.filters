@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>Default</Filter>
-    </ClCompile>
     <ClCompile Include="CImGuiMgr.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
@@ -128,24 +125,15 @@
     <ClCompile Include="ParticleTool.cpp">
       <Filter>ImGui\UI\05. ParticleTool</Filter>
     </ClCompile>
-    <ClCompile Include="FogTool.cpp">
+<<<<<<< .mine    <ClCompile Include="pch.cpp">
+      <Filter>Default</Filter>
+    </ClCompile>
+=======    <ClCompile Include="FogTool.cpp">
       <Filter>ImGui\UI\06. FogTool</Filter>
     </ClCompile>
-  </ItemGroup>
+>>>>>>> .theirs  </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>Default</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>Default</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Default</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Default</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
       <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="CImGuiMgr.h">
@@ -280,10 +268,13 @@
     <ClInclude Include="ParticleTool.h">
       <Filter>ImGui\UI\05. ParticleTool</Filter>
     </ClInclude>
-    <ClInclude Include="FogTool.h">
+<<<<<<< .mine    <ClInclude Include="pch.h">
+      <Filter>Default</Filter>
+    </ClInclude>
+=======    <ClInclude Include="FogTool.h">
       <Filter>ImGui\UI\06. FogTool</Filter>
     </ClInclude>
-  </ItemGroup>
+>>>>>>> .theirs  </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">
       <Filter>Default</Filter>

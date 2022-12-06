@@ -199,15 +199,12 @@
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="InspectorUI.h" />
     <ClInclude Include="ListUI.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="framework.h" />
     <ClInclude Include="MeshRenderUI.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceUI.h" />
     <ClInclude Include="SceneOutliner.h" />
     <ClInclude Include="ScriptUI.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="TextureUI.h" />
     <ClInclude Include="TransformUI.h" />
     <ClInclude Include="TreeUI.h" />

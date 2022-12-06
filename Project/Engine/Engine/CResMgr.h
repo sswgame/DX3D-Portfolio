@@ -44,7 +44,7 @@ public:
 	Ptr<T> Load(const wstring& _strKey, const wstring& _strRelativePath, bool _bEngineResource = false);
 
 
-	template<typename type>
+	template <typename type>
 	Ptr<type> FindRes(const wstring& _strKey);
 
 	vector<Ptr<CMeshData>> LoadFBX(const wstring& _strPath);
@@ -99,7 +99,7 @@ RES_TYPE CResMgr::GetResType() const
 		return RES_TYPE::TEXTURE;
 	if (std::is_same_v<T, CSceneFile>)
 		return RES_TYPE::SCENEFILE;
-	else if (info.hash_code() == typeid(CNaviMapData).hash_code())
+	if (std::is_same_v<T, CNaviMapData>)
 		return RES_TYPE::NAVIMAPDATA;
 
 	return RES_TYPE::END;

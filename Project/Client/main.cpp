@@ -1,24 +1,15 @@
 ﻿#include "pch.h"
-#include "framework.h"
-#include "main.h"
 
 #include <Engine/CCore.h>
 #include <Engine/CDevice.h>
 #include <Engine/CPrefab.h>
 
-#include <Script/CSceneSaveLoad.h>
-
 #include "CImGuiMgr.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "CToolObjMgr.h"
 
+#include <Script/CSceneSaveLoad.h>
 #include "CTestScene.h"
-
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <cstdlib>
-#include <crtdbg.h>
-#endif
 
 HINSTANCE hInst;
 HWND      g_hWnd;
@@ -35,8 +26,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 {
 #ifdef _DEBUG
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-	// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
-	// allocations to be of _CLIENT_BLOCK type
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #else
     #define DBG_NEW new
@@ -85,6 +74,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 
 			CImGuiMgr::GetInst()->progress();
 			CImGuiMgr::GetInst()->render();
+
 			CDevice::GetInst()->Present();
 		}
 	}
@@ -144,7 +134,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
@@ -169,7 +158,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			             SWP_NOZORDER | SWP_NOACTIVATE);
 		}
 		break;
-
 
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
