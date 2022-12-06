@@ -43,6 +43,7 @@ JugPhase_2::JugPhase_2(const JugPhase_2& _origin)
 	, m_bAttackProceeding(false)
 	, m_bRot(true)
 	, m_fAttackTime(_origin.m_fAttackTime)
+	, m_fDMG{80.f, 30.f, 0.f, 0.f}
 {
 }
 
@@ -119,8 +120,7 @@ void JugPhase_2::Update()
 	{
 		RotTowardPlayer();
 	}
-
-	m_iAttackPattern = 2;
+	
 	switch (m_iAttackPattern)
 	{
 	case 0:

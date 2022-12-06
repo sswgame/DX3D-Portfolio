@@ -16,6 +16,7 @@ public:
 	CGameObject* GetBossCombatMgr() const { return m_pBossCombatMgr; }
 
 	void SetBossCombatMgr(CGameObject* _pMgr) { m_pBossCombatMgr = _pMgr; }
+	void SetPlayer(CGameObject* _pObj) { m_pPlayer = _pObj; }
 
 public:
 	void start() override;

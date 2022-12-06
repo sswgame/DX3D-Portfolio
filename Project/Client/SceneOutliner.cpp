@@ -13,6 +13,7 @@
 #include <Engine/CRenderMgr.h>
 #include <Engine/CCamera.h>
 #include <Engine/CDevice.h>
+#include <Engine/CMesh.h>
 
 #include "TreeUI.h"
 #include "CImGuiMgr.h"
@@ -528,7 +529,7 @@ void SceneOutliner::ObjectPicking()
 			const UINT  indexCount    = pMesh->GetIndexInfo(i).iIdxCount;
 			const UINT  triangleCount = indexCount / 3;
 
-			for (int j = 0; j < triangleCount; ++j)
+			for (UINT j = 0; j < triangleCount; ++j)
 			{
 				// Indices for this triangle.
 				const UINT index_0 = pIndexData[j * 3 + 0];

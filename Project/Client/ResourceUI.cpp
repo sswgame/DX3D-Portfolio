@@ -152,6 +152,8 @@ void ResourceUI::Reload()
 				CResMgr::GetInst()->Load<CSceneFile>(m_vecResPath[i], m_vecResPath[i]);
 				break;
 			}
+		case RES_TYPE::NAVIMAPDATA:
+			break;
 		}
 	}
 
@@ -293,6 +295,11 @@ RES_TYPE ResourceUI::GetResTypeFromExt(const wstring& _strExt)
 	if (L".scene" == extension)
 	{
 		return RES_TYPE::SCENEFILE;
+	}
+
+	if (L".map" == extension)
+	{
+		return RES_TYPE::NAVIMAPDATA;
 	}
 
 	return RES_TYPE::END;

@@ -104,7 +104,7 @@ void ParticleTool::ParticleOptionSetting()
 			{
 				if (ImGui::Selectable(s_arrSpeedDetailName[i]))
 				{
-					pTargetParticleSystem->SetSpeedDetailFunc(i);
+					pTargetParticleSystem->SetSpeedDetailFunc(static_cast<UINT>(i));
 				}
 			}
 			ImGui::EndCombo();
@@ -496,9 +496,7 @@ void ParticleTool::ParticleSaveNLoad()
 void ParticleTool::AddParticleCombo(CGameObject* _newparti)
 {
 	m_vecParticleSystem.push_back(_newparti);
-	string name;
-	name.assign(_newparti->GetName().begin(), _newparti->GetName().end());
-	m_strvecParticleName.push_back(name);
+	m_strvecParticleName.push_back(ToString(_newparti->GetName()));
 }
 
 void ParticleTool::MakeTargetParticleCombo()
@@ -508,9 +506,7 @@ void ParticleTool::MakeTargetParticleCombo()
 	m_strvecParticleName = {};
 	for (size_t i = 0; i < m_vecParticleSystem.size(); i++)
 	{
-		string particleName;
-		particleName.assign(m_vecParticleSystem[i]->GetName().begin(), m_vecParticleSystem[i]->GetName().end());
-		m_strvecParticleName.push_back(particleName);
+		m_strvecParticleName.push_back(ToString(m_vecParticleSystem[i]->GetName()));
 
 	}
 
@@ -622,7 +618,7 @@ void ParticleTool::render_update()
 		{
 			if (ImGui::Selectable(s_arrTargetTextureName[i]))
 			{
-				TargetTextureIDX = i;
+				TargetTextureIDX = static_cast<int>(i);
 			}
 		}
 		ImGui::EndCombo();
@@ -650,10 +646,9 @@ void ParticleTool::render_update()
 	}
 	else
 	{
-		string particleName;
-		particleName.assign(m_pTargetParticle->GetName().begin(), m_pTargetParticle->GetName().end());
-		ImGui::Text("Cur Target Particle : "); ImGui::SameLine();
-		ImGui::Text(particleName.c_str());
+		ImGui::Text("Cur Target Particle : ");
+		ImGui::SameLine();
+		ImGui::Text(ToString(m_pTargetParticle->GetName()).c_str());
 	}
 
 	MakeTargetParticleCombo();

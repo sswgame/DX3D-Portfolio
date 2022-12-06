@@ -10,8 +10,8 @@ CMesh::CMesh()
 	, m_tVBDesc{}
 	, m_iVtxCount(0)
 	, m_pVtxSys(nullptr)
-	, m_pBoneFrameData{nullptr}
-	, m_pBoneOffset{nullptr} {}
+{
+}
 
 CMesh::~CMesh()
 {
@@ -244,25 +244,26 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _loader, int ContainerIdx)
 				vecFrameTrans[static_cast<UINT>(pMesh->m_vecBones.size()) * j + i]
 					= tFrameTrans
 					{
-						Vec4(pMesh->m_vecBones[i].vecKeyFrame[j].vTranslate, 0.f),
-						Vec4(pMesh->m_vecBones[i].vecKeyFrame[j].vScale, 0.f), pMesh->m_vecBones[i].vecKeyFrame[j].qRot
+						Vec4(pMesh->m_vecBones[i].vecKeyFrame[j].vTranslate, 0.f)
+						, Vec4(pMesh->m_vecBones[i].vecKeyFrame[j].vScale, 0.f)
+						, pMesh->m_vecBones[i].vecKeyFrame[j].qRot
 					};
 			}
 		}
 
 		pMesh->m_pBoneOffset = new CStructuredBuffer;
-		pMesh->m_pBoneOffset->Create(sizeof(Matrix),
-		                             static_cast<UINT>(vecOffset.size()),
-		                             SB_TYPE::READ_ONLY,
-		                             false,
-		                             vecOffset.data());
+		pMesh->m_pBoneOffset->Create(sizeof(Matrix)
+		                             , static_cast<UINT>(vecOffset.size())
+		                             , SB_TYPE::READ_ONLY
+		                             , false
+		                             , vecOffset.data());
 
 		pMesh->m_pBoneFrameData = new CStructuredBuffer;
-		pMesh->m_pBoneFrameData->Create(sizeof(tFrameTrans),
-		                                static_cast<UINT>(vecOffset.size()) * iFrameCount,
-		                                SB_TYPE::READ_ONLY,
-		                                false,
-		                                vecFrameTrans.data());
+		pMesh->m_pBoneFrameData->Create(sizeof(tFrameTrans)
+		                                , static_cast<UINT>(vecOffset.size()) * iFrameCount
+		                                , SB_TYPE::READ_ONLY
+		                                , false
+		                                , vecFrameTrans.data());
 	}
 
 	return pMesh;
@@ -301,7 +302,6 @@ int CMesh::Save(const wstring& _strFilePath)
 	errno_t err   = _wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
 
 	assert(pFile);
-
 
 	// 키값, 상대 경로	
 	SaveWStringToFile(GetName(), pFile);
@@ -490,26 +490,26 @@ int CMesh::Load(const wstring& _strFilePath)
 			{
 				vecFrameTrans[static_cast<UINT>(m_vecBones.size()) * j + i]
 					= tFrameTrans{
-						Vec4(m_vecBones[i].vecKeyFrame[j].vTranslate, 0.f),
-						Vec4(m_vecBones[i].vecKeyFrame[j].vScale, 0.f), Vec4(m_vecBones[i].vecKeyFrame[j].qRot)
+						Vec4(m_vecBones[i].vecKeyFrame[j].vTranslate, 0.f)
+						, Vec4(m_vecBones[i].vecKeyFrame[j].vScale, 0.f), Vec4(m_vecBones[i].vecKeyFrame[j].qRot)
 					};
 			}
 		}
 
 		m_pBoneOffset = new CStructuredBuffer;
-		m_pBoneOffset->Create(sizeof(Matrix),
-		                      static_cast<UINT>(vecOffset.size()),
-		                      SB_TYPE::READ_ONLY,
-		                      false,
-		                      vecOffset.data());
+		m_pBoneOffset->Create(sizeof(Matrix)
+		                      , static_cast<UINT>(vecOffset.size())
+		                      , SB_TYPE::READ_ONLY
+		                      , false
+		                      , vecOffset.data());
 
 		m_pBoneFrameData = new CStructuredBuffer;
-		m_pBoneFrameData->Create(sizeof(tFrameTrans),
-		                         static_cast<UINT>
-		                         (vecOffset.size()) * _iFrameCount,
-		                         SB_TYPE::READ_ONLY,
-		                         false,
-		                         vecFrameTrans.data());
+		m_pBoneFrameData->Create(sizeof(tFrameTrans)
+		                         , static_cast<UINT>
+		                           (vecOffset.size()) * _iFrameCount
+		                         , SB_TYPE::READ_ONLY
+		                         , false
+		                         , vecFrameTrans.data());
 	}
 
 	fclose(pFile);
@@ -517,29 +517,28 @@ int CMesh::Load(const wstring& _strFilePath)
 	return S_OK;
 }
 
-
 int CMesh::CreateBuffer_Dynamic(void* _pVtxSys, UINT _iVtxCount, void* _pIdxSys, UINT _iIdxCount)
 {
 	m_iVtxCount = _iVtxCount;
 
 	tIndexInfo IndexInfo = {};
-	IndexInfo.iIdxCount  = _iIdxCount;
+	IndexInfo.iIdxCount = _iIdxCount;
 
 	// 정점 데이터를 저장할 버텍스 버퍼를 생성한다.	
 	m_tVBDesc.ByteWidth = sizeof(Vertex) * _iVtxCount;
 
 	// 정점 버퍼는 처음 생성이후에 버퍼를 수정하지 않는다.
 	m_tVBDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	m_tVBDesc.Usage          = D3D11_USAGE_DYNAMIC;
+	m_tVBDesc.Usage = D3D11_USAGE_DYNAMIC;
 
 	// 정점을 저장하는 목적의 버퍼 임을 알림
-	m_tVBDesc.BindFlags           = D3D11_BIND_VERTEX_BUFFER;
-	m_tVBDesc.MiscFlags           = 0;
+	m_tVBDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tVBDesc.MiscFlags = 0;
 	m_tVBDesc.StructureByteStride = 0;
 
 	// 초기 데이터를 넘겨주기 위한 정보 구조체
 	D3D11_SUBRESOURCE_DATA tSubDesc = {};
-	tSubDesc.pSysMem                = _pVtxSys;
+	tSubDesc.pSysMem = _pVtxSys;
 
 	if (FAILED(DEVICE->CreateBuffer(&m_tVBDesc, &tSubDesc, m_VB.GetAddressOf())))
 	{
@@ -551,15 +550,15 @@ int CMesh::CreateBuffer_Dynamic(void* _pVtxSys, UINT _iVtxCount, void* _pIdxSys,
 
 	// 버퍼 생성 이후에도, 버퍼의 내용을 수정 할 수 있는 옵션
 	IndexInfo.tIBDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	IndexInfo.tIBDesc.Usage          = D3D11_USAGE_DYNAMIC;
+	IndexInfo.tIBDesc.Usage = D3D11_USAGE_DYNAMIC;
 
 	// 정점을 저장하는 목적의 버퍼 임을 알림
-	IndexInfo.tIBDesc.BindFlags           = D3D11_BIND_INDEX_BUFFER;
-	IndexInfo.tIBDesc.MiscFlags           = 0;
+	IndexInfo.tIBDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	IndexInfo.tIBDesc.MiscFlags = 0;
 	IndexInfo.tIBDesc.StructureByteStride = 0;
 
 	// 초기 데이터를 넘겨주기 위한 정보 구조체
-	tSubDesc         = {};
+	tSubDesc = {};
 	tSubDesc.pSysMem = _pIdxSys;
 
 	if (FAILED(DEVICE->CreateBuffer(&IndexInfo.tIBDesc, &tSubDesc, IndexInfo.pIB.GetAddressOf())))
@@ -581,12 +580,17 @@ int CMesh::CreateBuffer_Dynamic(void* _pVtxSys, UINT _iVtxCount, void* _pIdxSys,
 
 void CMesh::UpdateVertexBuffer_Dynamic()
 {
-	if (D3D11_USAGE_DYNAMIC == m_tVBDesc.Usage)
+	if (D3D11_USAGE::D3D11_USAGE_DYNAMIC == m_tVBDesc.Usage)
 	{
 		// 정점 버퍼 ( CPU -> GPU )
-		D3D11_MAPPED_SUBRESOURCE mappedResource{};
-		CONTEXT->Map(m_VB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-		memcpy(mappedResource.pData, m_pVtxSys, sizeof(Vtx) * m_iVtxCount);
-		CONTEXT->Unmap(m_VB.Get(), 0);
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+		CONTEXT->Map(m_VB.Get(), 0, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);		//  Disable GPU access to the vertex buffer data.
+		memcpy(mappedResource.pData, (Vtx*)m_pVtxSys, sizeof(Vtx) * m_iVtxCount);					//  Update the vertex buffer here.
+		CONTEXT->Unmap(m_VB.Get(), 0);																//  Reenable GPU access to the vertex buffer data.
+
+		return;
+
 	}
 }

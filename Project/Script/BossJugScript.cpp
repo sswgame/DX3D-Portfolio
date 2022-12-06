@@ -2,6 +2,7 @@
 #include "BossJugScript.h"
 
 // [ ENGINE PART ]
+#include <Engine/CGameObject.h>
 #include <Engine/CState.h>
 #include <Engine/CAnimator3D.h>
 #include <Engine/CAnimation3D.h>
@@ -20,6 +21,7 @@
 #include "Jug_WalkGround.h"
 #include "Jug_Fly.h"
 #include "Jug_Dead.h"
+#include "CObjectManager.h"
 
 
 BossJugScript::BossJugScript()
@@ -154,3 +156,4 @@ void BossJugScript::Deserialize(const YAML::Node& node)
 
 	CScript::Deserialize(node);
 }
+

@@ -23,16 +23,16 @@
 
 #define MAX_MIP 8
 
-using Vec2 = Vector2;
-using Vec3 = Vector3;
-using Vec4 = Vector4;
+typedef Vector2 Vec2;
+typedef Vector3 Vec3;
+typedef Vector4 Vec4;
 
 
 enum class SCENE_STATE
 {
 	PLAY,
 	STOP,
-	PAUSE
+	PAUSE,
 };
 
 enum class RES_TYPE
@@ -46,7 +46,7 @@ enum class RES_TYPE
 	TEXTURE,
 	SOUND,
 	SCENEFILE,
-
+	NAVIMAPDATA,
 	END
 };
 
@@ -56,41 +56,42 @@ enum class CB_TYPE
 	SCALAR_PARAM,	// b1
 	ANIM2D,			// b2
 	GLOBAL,			// b3
-
 	END
 };
 
+// Rasterizer option
 enum class RS_TYPE
 {
 	CULL_BACK,	// Default
 	CULL_FRONT,
 	CULL_NONE,
 	WIRE_FRAME,
-
-	END
+	END,
 };
 
+// DepthStencil Option
 enum class DS_TYPE
 {
 	LESS,
 	LESS_EQUAL,
 	GREATER,
 	GREATER_EQUAL,
-	NO_TEST,			// 깊이테스트 하지 않음, 깊이는 기록
-	NO_WRITE,			// 깊이테스트 진행, 깊이를 기록하지 않음
-	NO_TEST_NO_WRITE,	// 깊이테스트 하지 않음, 깊이 기록하지 않음
+	NO_TEST,	// 깊이테스트 하지 않음, 깊이는 기록
+	NO_WRITE,	// 깊이테스트 진행, 깊이를 기록하지 않음
 
-	END
+	NO_TEST_NO_WRITE, // 깊이테스트 하지 않음, 깊이 기록하지 않음
+	END,
 };
 
+// BlendState Option
 enum class BS_TYPE
 {
-	DEFAULT,			// SrcRGB * (1) + DestRGB * (0)
-	ALPHA_BLEND,		// SrcRGB * (SrcAlpha) + DestRGB * (1 - SrcAlpha)
+	DEFAULT,		// SrcRGB * (1) + DestRGB * (0)
+	ALPHA_BLEND,	// SrcRGB * (SrcAlpha) + DestRGB * (1 - SrcAlpha)
 	ONEONE_BLEND,		// SrcRGB * (1) + DestRGB * (1)
-	NO_ALPHA_COVERAGE,	// Alpha Blend 0.5 미만 이어도 적용되게 함  
-
-	END
+	NO_ALPHA_COVERAGE		// Alpha Blend 0.5 미만 이어도 적용되게 함  
+	,
+	END,
 };
 
 // 쉐이더의 렌더링 시점에 따른 분류
@@ -100,27 +101,40 @@ enum class SHADER_DOMAIN
 	DOMAIN_DEFERRED_DECAL,		// 데칼
 	DOMAIN_EMISSIVE_PARTICLE,	// 파티클
 	DOMAIN_LIGHT,				// 광원
+
 	DOMAIN_FORWARD,				// 불투명
 	DOMAIN_MASKED,				// 불투명, 투명
+
 	DOMAIN_FORWARD_DECAL,		// 데칼(광원 미적용)
+
 	DOMAIN_TRANSLUCENT,			// 반투명
-	DOMAIN_POSTPROCESS,			// 후 처리
+
+	DOMAIN_POSTPROCESS, // 후 처리
+
 	DOMAIN_TOOL,
-	DOMAIN_NONE
+	DOMAIN_NONE,
 };
 
 
 enum class COMPONENT_TYPE
 {
 	TRANSFORM,	// 위치, 크기, 회전 (Location)
+
 	CAMERA,		// 화면을 찍는 카메라 역할
+
 	COLLIDER2D, // 2D 충돌체
 	COLLIDER3D, // 3D 충돌체
+
 	ANIMATOR2D, // 2D Sprite Animation
 	ANIMATOR3D, // 3D Bone Skinning Animation
+
 	LIGHT2D,
 	LIGHT3D,
 	BOUNDINGBOX, // Picking, FrustumCulling
+	FINITE_STATE_MACHINE,
+	NAVIMAP,
+	NAVIAGENT,
+	//RIGIDBODY, 
 
 	// renderer
 	MESHRENDER,		// Mesh Renderer
@@ -129,12 +143,10 @@ enum class COMPONENT_TYPE
 	LANDSCAPE,		// 지형 렌더링
 	DECAL,			// 데칼 오브젝트
 	SKYBOX,
-
-	FINITE_STATE_MACHINE,
 	END,
 
 	// Update
-	SCRIPT// 로직
+	SCRIPT,			// 로직
 };
 
 enum class DIR_TYPE
@@ -142,8 +154,7 @@ enum class DIR_TYPE
 	RIGHT,
 	UP,
 	FRONT,
-
-	END
+	END,
 };
 
 
@@ -153,28 +164,23 @@ enum class SCALAR_PARAM
 	INT_1,
 	INT_2,
 	INT_3,
-
 	FLOAT_0,
 	FLOAT_1,
 	FLOAT_2,
 	FLOAT_3,
-
 	VEC2_0,
 	VEC2_1,
 	VEC2_2,
 	VEC2_3,
-
 	VEC4_0,
 	VEC4_1,
 	VEC4_2,
 	VEC4_3,
-
 	MAT_0,
 	MAT_1,
 	MAT_2,
 	MAT_3,
-
-	END
+	END,
 };
 
 enum class TEX_PARAM
@@ -189,8 +195,7 @@ enum class TEX_PARAM
 	TEX_CUBE_1,
 	TEX_ARR_0,
 	TEX_ARR_1,
-
-	END
+	END,
 };
 
 
@@ -202,7 +207,7 @@ enum PIPELINE_STAGE
 	GS = 0x08,
 	PS = 0x10,
 	NO_PS = VS | HS | DS | GS,
-	ALL = VS | HS | DS | GS | PS
+	ALL = VS | HS | DS | GS | PS,
 };
 
 
@@ -211,22 +216,22 @@ enum class EVENT_TYPE
 	CREATE_OBJ,				// lParam : Object Adress, wParam : Layer Index
 	DELETE_OBJ,				// lParam : Object Adress
 	ADD_CHILD,				// lParam : Parent Object, wParam : Child Object
-	DISCONNECT_PARENT,		// lParam : Object Adress
-	SET_CAMEAR_INDEX,		// lParam : Camera Component Adress, wParam : Camera Change Index
+	DISCONNECT_PARENT,				// lParam : Object Adress
+	SET_CAMEAR_INDEX,				// lParam : Camera Component Adress, wParam : Camera Change Index
 
-	ACTIVATE_OBJECT,		// lParam : Object Adress
-	DEACTIVATE_OBJECT,		// lParam : Object Adress
+	ACTIVATE_OBJECT,				// lParam : Object Adress
+	DEACTIVATE_OBJECT,				// lParam : Object Adress
 
-	ACTIVATE_COMPONENT,		// lParam : Component Adress
-	DEACTIVATE_COMOPNENT,	// lParam : Component Adress
+	ACTIVATE_COMPONENT,				// lParam : Component Adress
+	DEACTIVATE_COMOPNENT,				// lParam : Component Adress
 
-	SCENE_CHANGE,			// lParam : Next Stage Enum
-	CHANGE_FSM_STATE,		// lParam : FSM Adress, wParam : Next State Type
-	CHANGE_OBJ_LAYER_INDEX,	// lParam : Object Adress, wParam : Layer Index
+	SCENE_CHANGE,				// lParam : Next Stage Enum
+	CHANGE_FSM_STATE,				// lParam : FSM Adress, wParam : Next State Type
+	CHANGE_OBJ_LAYER_INDEX,				// lParam : Object Adress, wParam : Layer Index
 	SWAP_LAYER,				// lParam : Layer Index, wParam : Layer Index
 	DELETE_RES,				// lParam : ResAdress
 
-	END
+	END,
 };
 
 enum class LIGHT_TYPE
@@ -244,8 +249,7 @@ enum class MRT_TYPE
 	DEFERRED_DECAL,
 	LIGHT,
 	SHADOWMAP,
-
-	END
+	END,
 };
 
 
@@ -253,5 +257,5 @@ enum class LANDSCAPE_MOD
 {
 	HEIGHT_MAP,
 	SPLAT,
-	NONE
+	NONE,
 };

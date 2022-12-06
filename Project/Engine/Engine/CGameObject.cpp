@@ -13,6 +13,8 @@
 #include "CCollider3D.h"
 #include "CLight2D.h"
 #include "CRenderComponent.h"
+#include "CNaviMap.h"
+#include "CNaviAgent.h"
 
 
 #include "CScript.h"
@@ -30,7 +32,9 @@ CGameObject::CGameObject()
 	, m_bDead(false)
 	, m_bActive(true)
 	, m_bDynamicShadow(false)
-	, m_bFrustumCulling(false) {}
+	, m_bFrustumCulling(false)
+{
+}
 
 CGameObject::CGameObject(const CGameObject& _origin)
 	: CEntity(_origin)
@@ -298,7 +302,7 @@ void CGameObject::deactive() const
 }
 
 
-CGameObject* CGameObject::GetChild(const std::wstring& childName)
+CGameObject* CGameObject::GetChild(const std::wstring& childName) const
 {
 	const auto iter = std::find_if(m_vecChild.begin(),
 	                               m_vecChild.end(),
@@ -545,22 +549,30 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CCollider2D);
 			Collider2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D))
+		{
+		}
 		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR2D))
 		{
 			AddComponent(new CAnimator2D);
 			Animator2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D))
+		{
+		}
 		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT2D))
 		{
 			AddComponent(new CLight2D);
 			Light2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D))
+		{
+		}
 
 
-		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX))
+		{
+		}
 		else if (strComponentName == ToWString(COMPONENT_TYPE::MESHRENDER))
 		{
 			AddComponent(new CMeshRender);
@@ -576,8 +588,20 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CTileMap);
 			TileMap()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE)) { }
-		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE))
+		{
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL))
+		{
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::NAVIMAP))
+		{
+			AddComponent(new CNaviMap);
+		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::NAVIAGENT))
+		{
+			//AddComponent(new CNaviAgent);
+		}
 	}
 }
 

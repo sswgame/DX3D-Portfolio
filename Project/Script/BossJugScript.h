@@ -3,6 +3,7 @@
 
 class CAnimatior3D;
 class CState;
+class CGameObject;
 
 class BossJugScript
 	: public CScript
@@ -10,7 +11,7 @@ class BossJugScript
 private:
 	CFSM*        m_pBossFSM;
 	CAnimator3D* m_pBossAnimator;
-
+	
 	string m_strCurState;
 	string m_strCurAnimName;
 
@@ -20,24 +21,19 @@ private:
 	float m_fDamage;
 
 public:
-	// [ GET ]
 	float        GetHP() { return m_fHP; }
 	float        GetMaxHP() { return m_fMaxHP; }
 	CFSM*        GetBossFSM() { return m_pBossFSM; }
 	CAnimator3D* GetBossAnimator() { return m_pBossAnimator; }
 
-
-	// [ Set ]
 	void SetHP(float _hp) { m_fHP = _hp; }
 	void SetMaxHP(float _hp) { m_fMaxHP = _hp; }
 
-	// [ INIT ]
-	void Init();
-	void InitState();
-
-	// [ INTERACT ]
 	void GetHit(float _fDamage) { m_fHP -= _fDamage; }
 
+	void Init();
+	void InitState();
+	
 	virtual void start();
 	virtual void update();
 	virtual void lateupdate();

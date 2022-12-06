@@ -215,6 +215,9 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CMeshRender.h" />
     <ClInclude Include="CMgrScript.h" />
     <ClInclude Include="CMRT.h" />
+    <ClInclude Include="CNaviAgent.h" />
+    <ClInclude Include="CNaviMap.h" />
+    <ClInclude Include="CNaviMapData.h" />
     <ClInclude Include="CParticleUpdateShader.h" />
     <ClInclude Include="CParticleSystem.h" />
     <ClInclude Include="CPathMgr.h" />
@@ -287,6 +290,9 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CMeshData.cpp" />
     <ClCompile Include="CMeshRender.cpp" />
     <ClCompile Include="CMRT.cpp" />
+    <ClCompile Include="CNaviAgent.cpp" />
+    <ClCompile Include="CNaviMap.cpp" />
+    <ClCompile Include="CNaviMapData.cpp" />
     <ClCompile Include="CParticleUpdateShader.cpp" />
     <ClCompile Include="CParticleSystem.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
@@ -618,14 +624,16 @@ call EngineCopy.bat</Command>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="boss.fx">
+    <None Include="boss.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
-    </FxCompile>
-    <FxCompile Include="trail.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="trail.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
-    </FxCompile>
+      <FileType>Document</FileType>
+    </None>
     <None Include="ui.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>

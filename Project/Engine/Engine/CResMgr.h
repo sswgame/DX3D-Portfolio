@@ -13,6 +13,7 @@
 #include "CSceneFile.h"
 #include "CSound.h"
 #include "CMeshData.h"
+#include "CNaviMapData.h"
 
 class CResMgr
 	: public CSingleton<CResMgr>
@@ -42,10 +43,12 @@ public:
 	template <typename T>
 	Ptr<T> Load(const wstring& _strKey, const wstring& _strRelativePath, bool _bEngineResource = false);
 
-	template <typename T>
-	Ptr<T> FindRes(const wstring& _strKey);
+
+	template<typename type>
+	Ptr<type> FindRes(const wstring& _strKey);
 
 	vector<Ptr<CMeshData>> LoadFBX(const wstring& _strPath);
+	Ptr<CMesh>             LoadOBJ(const wstring& _strRelativePath);
 
 	const map<wstring, CRes*>& GetResList(RES_TYPE _eType) { return m_Res[static_cast<UINT>(_eType)]; }
 
@@ -96,6 +99,8 @@ RES_TYPE CResMgr::GetResType() const
 		return RES_TYPE::TEXTURE;
 	if (std::is_same_v<T, CSceneFile>)
 		return RES_TYPE::SCENEFILE;
+	else if (info.hash_code() == typeid(CNaviMapData).hash_code())
+		return RES_TYPE::NAVIMAPDATA;
 
 	return RES_TYPE::END;
 }

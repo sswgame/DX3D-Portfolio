@@ -2,11 +2,14 @@
 #include "CResMgr.h"
 #include "CPathMgr.h"
 
-CResMgr::CResMgr() = default;
+CResMgr::CResMgr()
+{
+
+}
 
 CResMgr::~CResMgr()
 {
-	for (size_t i = 0; i < std::size(m_Res); ++i)
+	for (UINT i = 0; i < (UINT)RES_TYPE::END; ++i)
 	{
 		Safe_Del_Map(m_Res[i]);
 	}
@@ -14,35 +17,32 @@ CResMgr::~CResMgr()
 
 void CResMgr::SaveChangedRes()
 {
-	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+	wstring strContent = CPathMgr::GetInst()->GetContentPath();
 
-	for (size_t i = 0; i < std::size(m_Res); ++i)
+	for (UINT i = 0; i < (UINT)RES_TYPE::END; ++i)
 	{
-		for (const auto& [key, pResource] : m_Res[i])
+		map<wstring, CRes*>::iterator iter = m_Res[i].begin();
+		for (; iter != m_Res[i].end(); ++iter)
 		{
-			if (pResource->IsChanged())
+			if (iter->second->IsChanged())
 			{
-				const std::wstring strFullPath = strContentPath + pResource->GetRelativePath();
-				pResource->Save(strFullPath);
+				iter->second->Save(strContent + iter->second->GetRelativePath());
 			}
 		}
 	}
 }
 
 
-Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey,
-                                     UINT           _iWidth,
-                                     UINT           _iHeight,
-                                     DXGI_FORMAT    _format,
-                                     UINT           _flag,
-                                     bool           _bEngineRes)
+Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight, DXGI_FORMAT _format, UINT _flag, bool _bEngineRes)
 {
 	assert(nullptr == FindRes<CTexture>(_strKey));
 
 	CTexture* pTexture = new CTexture;
+
 	pTexture->Create(_iWidth, _iHeight, _format, _flag);
 	pTexture->SetKey(_strKey);
 	pTexture->m_bEngineRes = _bEngineRes;
+
 	AddRes<CTexture>(_strKey, pTexture, _bEngineRes);
 
 	return pTexture;
@@ -52,10 +52,13 @@ Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey, ComPtr<ID3D11Textur
 {
 	assert(nullptr == FindRes<CTexture>(_strKey));
 
+
 	CTexture* pTexture = new CTexture;
+
 	pTexture->Create(_pTex2D);
 	pTexture->SetKey(_strKey);
 	pTexture->m_bEngineRes = _bEngineRes;
+
 	AddRes<CTexture>(_strKey, pTexture, _bEngineRes);
 
 	return pTexture;
@@ -69,7 +72,8 @@ Ptr<CTexture> CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRe
 		return pRes;
 	}
 
-	pRes                = new CTexture{};
+	pRes = new CTexture;
+
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
 	strFilePath += _strRelativePath;
 
@@ -80,48 +84,57 @@ Ptr<CTexture> CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRe
 
 	pRes->SetKey(_strKey);
 	pRes->SetRelativePath(_strRelativePath);
-	m_Res[(UINT)RES_TYPE::TEXTURE].insert({_strKey, pRes});
+
+	m_Res[(UINT)RES_TYPE::TEXTURE].insert(make_pair(_strKey, pRes));
 
 	return pRes;
 }
 
-
 vector<Ptr<CMeshData>> CResMgr::LoadFBX(const wstring& _strPath)
 {
-	const std::wstring strFileName     = std::filesystem::path(_strPath).stem();
-	const std::wstring strRelativePath = L"meshdata\\" + strFileName + L".mdat";
+	wstring strFileName = std::filesystem::path(_strPath).stem();
 
-	Ptr<CMeshData> pMeshData = FindRes<CMeshData>(strRelativePath);
+	wstring strName = L"meshdata\\";
+	strName += strFileName + L".mdat";
+
+	Ptr<CMeshData> pMeshData = FindRes<CMeshData>(strName);
+
 	//if (nullptr != pMeshData)
 	//	return pMeshData;
 
-	vector<Ptr<CMeshData>> vecResult{};
+	vector<CMeshData*> vecMeshData;
+	vector<Ptr<CMeshData>> ptrMeshData;
 
-	const vector<CMeshData*> vecMeshData = CMeshData::LoadFromFBX(_strPath);
-	for (size_t i = 0; i < vecMeshData.size(); ++i)
+	vecMeshData = CMeshData::LoadFromFBX(_strPath);
+	for (int i = 0; i < vecMeshData.size(); ++i)
 	{
-		wstring meshFileName = std::filesystem::path(_strPath).stem();
-		wstring strName      = L"meshdata\\" + meshFileName + std::to_wstring(i) + L".mdat";
+		ptrMeshData.push_back(vecMeshData[i]);
+		wstring strName     = L"meshdata\\";
+		wstring strFileName = std::filesystem::path(_strPath).stem();
+		string  strNum      = std::to_string(i);
+		strFileName += wstring(strNum.begin(), strNum.end());
+		strName += strFileName + L".mdat";
 
-		vecResult.push_back(vecMeshData[i]);
-		vecResult[i]->SetKey(strName);
-		vecResult[i]->SetRelativePath(strName);
-		m_Res[static_cast<UINT>(RES_TYPE::MESHDATA)].insert({strName, vecResult[i].Get()});
+		ptrMeshData[i]->SetKey(strName);
+		ptrMeshData[i]->SetRelativePath(strName);
+		m_Res[(UINT)RES_TYPE::MESHDATA].insert(make_pair(strName, ptrMeshData[i].Get()));
 	}
+	//pMeshData->m_bEngineRes = true;
 
-	return vecResult;
+
+	return ptrMeshData;
 }
 
 void CResMgr::DeleteRes(const wstring& _strKey)
 {
-	for (size_t i = 0; i < std::size(m_Res); ++i)
+	map<wstring, CRes*>::iterator iter;
+	for (UINT i = 0; i < (UINT)RES_TYPE::END; ++i)
 	{
-		const auto iter = m_Res[i].find(_strKey);
+		iter = m_Res[i].find(_strKey);
 		if (iter != m_Res[i].end())
 		{
 			SAFE_DELETE(iter->second);
 			m_Res[i].erase(iter);
-
 			return;
 		}
 	}

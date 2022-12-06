@@ -130,7 +130,6 @@
     <ClInclude Include="MonsterShieldScript.h">
       <Filter>Script\Monster\Deuxiemie\Shield</Filter>
     </ClInclude>
-    <ClInclude Include="Jug_Fly.h" />
     <ClInclude Include="HandStateMgrScript.h">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClInclude>
@@ -219,6 +218,10 @@
     <ClInclude Include="ColumnFlameScript.h">
       <Filter>Script\Boss\Jug\Attack</Filter>
     </ClInclude>
+    <ClInclude Include="Jug_Fly.h">
+      <Filter>Script\Boss\Jug\Jug\state</Filter>
+    </ClInclude>
+    <ClInclude Include="HammerScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -350,7 +353,6 @@
     <ClCompile Include="MonsterShieldScript.cpp">
       <Filter>Script\Monster\Deuxiemie\Shield</Filter>
     </ClCompile>
-    <ClCompile Include="Jug_Fly.cpp" />
     <ClCompile Include="HandStateMgrScript.cpp">
       <Filter>Script\Boss\Jug\Hand\HandStateMgr</Filter>
     </ClCompile>
@@ -430,6 +432,10 @@
     <ClCompile Include="ColumnFlameScript.cpp">
       <Filter>Script\Boss\Jug\Attack</Filter>
     </ClCompile>
+    <ClCompile Include="Jug_Fly.cpp">
+      <Filter>Script\Boss\Jug\Jug\state</Filter>
+    </ClCompile>
+    <ClCompile Include="HammerScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">

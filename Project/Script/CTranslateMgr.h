@@ -39,10 +39,11 @@ class CTranslateMgr :
     public CEntity
 {
 private:
-    CGameObject*        m_pOwner;               // Player 저장 
-    CGameObject*        m_pCamera;              // Cmaera 저장 
-    CScript*            m_pScript;              // PlayerScript 를 저장한다. 
-    CTransform*         m_pTransform;           // Player 의 Transform Component Pointer
+	CGameObject* m_pOwner;               // Player 저장 
+	CGameObject* m_pCamera;              // Cmaera 저장
+	CGameObject* m_pCurTri;              // 현재 PolyGon
+	CScript*     m_pScript;              // PlayerScript 를 저장한다. 
+	CTransform*  m_pTransform;           // Player 의 Transform Component Pointer
 
 
     tAxis               m_vCamAxis;             // 카메라       모든 방향 벡터  
@@ -50,7 +51,6 @@ private:
 
     tKey_Zip            m_tCurKeyInfo;          // 눌린 키 정보
     bool                m_bKeyUpdateFinish;     // 키 처리가 중복 되지 않기 위해 키 처리가 끝남을 알린다. 
-
 
 private:
     // [ 플레이어 회전 관련 정보 ]
@@ -124,7 +124,9 @@ public:
     void SetCurKeyInfo(tKey_Zip _keyInfo);
     void SetDefaultAngle(float _fAngle) { m_fDefaultAngle = _fAngle; }
 
-
+	// [ POLYGON]
+	void SetCurTri(CGameObject* _pObj) { m_pCurTri = _pObj; }
+    
     // [ GET PART ]
 public:
     // [ Scale ]

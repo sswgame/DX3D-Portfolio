@@ -147,7 +147,8 @@ std::wstring ToWString(RES_TYPE _type)
 		L"MESH",
 		L"TEXTURE",
 		L"SOUND",
-		L"SCENEFILE"
+		L"SCENEFILE",
+		L"NAVIMAP"
 	};
 
 	return szWString[static_cast<UINT>(_type)];

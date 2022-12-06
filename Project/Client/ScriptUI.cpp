@@ -9,6 +9,7 @@
 #include "InspectorUI.h"
 #include "CImGuiMgr.h"
 #include <Engine/CResMgr.h>
+#include <Engine/CTexture.h>
 
 ScriptUI::ScriptUI()
 	: UI("Script")

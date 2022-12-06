@@ -21,9 +21,12 @@ CTransform::~CTransform()
 
 void CTransform::finalupdate()
 {
+	m_vRelativePos += m_vecMovePosition;
 	// 크기 x 회전(자전) x 이동
 	Matrix matScale       = XMMatrixScaling(m_vRelativeScale.x, m_vRelativeScale.y, m_vRelativeScale.z);
-	Matrix matTranslation = XMMatrixTranslation(m_vRelativePos.x, m_vRelativePos.y, m_vRelativePos.z);
+	Matrix matTranslation = XMMatrixTranslation(m_vRelativePos.x,
+	                                            m_vRelativePos.y,
+	                                            m_vRelativePos.z);
 
 	Matrix matRotX   = XMMatrixRotationX(m_vRelativeRot.x);
 	Matrix matRotY   = XMMatrixRotationY(m_vRelativeRot.y);
@@ -70,6 +73,9 @@ void CTransform::finalupdate()
 
 	// 월드 역행렬
 	m_matWorldInv = XMMatrixInverse(nullptr, m_matWorld);
+
+	// m_vecMovePosition 초기화
+	m_vecMovePosition = Vec3(0.f, 0.f, 0.f);
 }
 
 void CTransform::finalupdate_module()

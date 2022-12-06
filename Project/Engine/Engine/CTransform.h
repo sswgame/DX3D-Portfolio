@@ -8,8 +8,8 @@ private:
 	Vec3 m_vRelativeScale;
 	Vec3 m_vRelativeRot;     // 축별 회전량
 
-	Vec3 m_arrRelativeDir[static_cast<UINT>(DIR_TYPE::END)]; // 상대 방향
-	Vec3 m_arrWorldDir[static_cast<UINT>(DIR_TYPE::END)];    // 최종 월드상에서의 방향
+	Vec3 m_arrRelativeDir[(UINT)DIR_TYPE::END]; // 상대 방향
+	Vec3 m_arrWorldDir[(UINT)DIR_TYPE::END];    // 최종 월드상에서의 방향
 
 	Matrix m_matRelativeRot;
 	Matrix m_matWorld;     // 위치변환 정보 행렬
@@ -17,6 +17,8 @@ private:
 
 	bool m_bIgnoreParentScale;
 	bool m_bIgnoreParent;
+
+	Vec3 m_vecMovePosition;
 
 public:
 	void SetRelativePos(const Vec3& _vPos) { m_vRelativePos = _vPos; }
@@ -28,19 +30,23 @@ public:
 	void SetRelativeRotation(const Vec3 _vRot) { m_vRelativeRot = _vRot; }
 	void SetRelativeRotation(float _x, float _y, float _z) { m_vRelativeRot = Vec3(_x, _y, _z); }
 
+	void SetMovePosition(const Vec3 _vPos) { m_vecMovePosition = _vPos; }
+	void SetMovePosition(float _x, float _y, float _z) { m_vecMovePosition = Vec3(_x, _y, _z); }
+	
+
 	const Vec3& GetRelativePos() { return m_vRelativePos; }
 	const Vec3& GetRelativeScale() { return m_vRelativeScale; }
 	const Vec3& GetRelativeRotation() { return m_vRelativeRot; };
 
-	const Vec3& GetRelativeDir(DIR_TYPE _eType) { return m_arrRelativeDir[static_cast<UINT>(_eType)]; }
-	const Vec3& GetRelativeRightDir() { return m_arrRelativeDir[static_cast<UINT>(DIR_TYPE::RIGHT)]; }
-	const Vec3& GetRelativeUpDir() { return m_arrRelativeDir[static_cast<UINT>(DIR_TYPE::UP)]; }
-	const Vec3& GetRelativeFrontDir() { return m_arrRelativeDir[static_cast<UINT>(DIR_TYPE::FRONT)]; }
+	const Vec3& GetRelativeDir(DIR_TYPE _eType) { return m_arrRelativeDir[(UINT)_eType]; }
+	const Vec3& GetRelativeRightDir() { return m_arrRelativeDir[(UINT)DIR_TYPE::RIGHT]; }
+	const Vec3& GetRelativeUpDir() { return m_arrRelativeDir[(UINT)DIR_TYPE::UP]; }
+	const Vec3& GetRelativeFrontDir() { return m_arrRelativeDir[(UINT)DIR_TYPE::FRONT]; }
 
-	const Vec3& GetWorldDir(DIR_TYPE _eType) { return m_arrWorldDir[static_cast<UINT>(_eType)]; }
-	const Vec3& GetWorldRightDir() { return m_arrWorldDir[static_cast<UINT>(DIR_TYPE::RIGHT)]; }
-	const Vec3& GetWorldUpDir() { return m_arrWorldDir[static_cast<UINT>(DIR_TYPE::UP)]; }
-	const Vec3& GetWorldFrontDir() { return m_arrWorldDir[static_cast<UINT>(DIR_TYPE::FRONT)]; }
+	const Vec3& GetWorldDir(DIR_TYPE _eType) { return m_arrWorldDir[(UINT)_eType]; }
+	const Vec3& GetWorldRightDir() { return m_arrWorldDir[(UINT)DIR_TYPE::RIGHT]; }
+	const Vec3& GetWorldUpDir() { return m_arrWorldDir[(UINT)DIR_TYPE::UP]; }
+	const Vec3& GetWorldFrontDir() { return m_arrWorldDir[(UINT)DIR_TYPE::FRONT]; }
 
 	Vec3   GetWorldPos() { return m_matWorld.Translation(); }
 	Vec3   GetWorldScale();
@@ -54,16 +60,16 @@ public:
 	void SetIgnoreParentScale(bool _bSet) { m_bIgnoreParentScale = _bSet; }
 	void SetIgnoreParent(bool _bSet) { m_bIgnoreParent = _bSet; }
 
-	void UpdateData() override;
-	void finalupdate() override;
-	void finalupdate_module() override;
+	virtual void UpdateData() override;
+	virtual void finalupdate() override;
+	virtual void finalupdate_module() override;
 
-	void active() override;
-	void deactive() override;
+	virtual void active();
+	virtual void deactive();
 
 public:
-	void SaveToScene(FILE* _pFile) override;
-	void LoadFromScene(FILE* _pFile) override;
+	virtual void SaveToScene(FILE* _pFile) override;
+	virtual void LoadFromScene(FILE* _pFile) override;
 
 	CLONE(CTransform)
 
@@ -73,5 +79,5 @@ public:
 
 public:
 	CTransform();
-	virtual ~CTransform();
+	~CTransform();
 };

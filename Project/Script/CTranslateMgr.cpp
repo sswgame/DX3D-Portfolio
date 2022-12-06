@@ -596,8 +596,6 @@ void CTranslateMgr::SetPosition(float x, float y, float z)
 
 }
 
-
-
 void CTranslateMgr::Translate(const Vec3& direction, float magnitude)
 {
 	Vec3 directionVec = XMVector3Normalize(direction);
@@ -610,7 +608,6 @@ void CTranslateMgr::Translate(const Vec3& direction, float magnitude)
 
 	m_pTransform->SetRelativePos(vNewPos);
 }
-
 
 
 Vec3 CTranslateMgr::GetScale() const
