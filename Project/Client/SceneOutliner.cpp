@@ -47,7 +47,7 @@ SceneOutliner::SceneOutliner()
 	m_TreeUI->SetKeyBinding(KEY::DEL, this, static_cast<CLICKED>(&SceneOutliner::PressDelete));
 
 
-	Reset();
+	//Reset();
 }
 
 SceneOutliner::~SceneOutliner() {}

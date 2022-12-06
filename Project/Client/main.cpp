@@ -46,8 +46,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 	CPrefab::m_pSaveFunc = &CSceneSaveLoad::SavePrefab;
 	CPrefab::m_pLoadFunc = &CSceneSaveLoad::LoadPrefab;
 
-	CTestScene::CreateTestScene();
-	CCore::GetInst()->progress();
+	/*CTestScene::CreateTestScene();
+	CCore::GetInst()->progress();*/
 
 	CToolObjMgr::GetInst()->init();
 

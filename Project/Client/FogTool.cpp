@@ -8,23 +8,16 @@
 #include <Engine/CSceneMgr.h>
 
 FogTool::FogTool()
-	:UI("##FogTool")
+	: UI("##FogTool")
 	, m_pFog(nullptr)
-	, m_bFogOn(true)
-{
-}
+	, m_bFogOn(true) {}
 
-FogTool::~FogTool()
-{
-}
+FogTool::~FogTool() {}
 
-void FogTool::SetData()
-{
-}
+void FogTool::SetData() {}
 
 void FogTool::update()
 {
-
 	if (nullptr == m_pFog)
 	{
 		m_pFog = new CGameObject;
@@ -32,8 +25,8 @@ void FogTool::update()
 		m_pFog->AddComponent(new CTransform);
 		m_pFog->AddComponent(new CMeshRender);
 
-		CMesh* pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
-		CMaterial* pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\FogPostProcessMtrl.mtrl").Get();
+		CMesh*        pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
+		CMaterial*    pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\FogPostProcessMtrl.mtrl").Get();
 		Ptr<CTexture> pPostProcTarget = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex").Get();
 		Ptr<CTexture> pPositionTarget = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex").Get();
 
@@ -43,7 +36,6 @@ void FogTool::update()
 		m_pFog->MeshRender()->SetMesh(pMesh);
 		m_pFog->MeshRender()->SetSharedMaterial(pMtrl, 0);
 		CSceneMgr::GetInst()->SpawnObject(m_pFog, L"BG");
-
 	}
 	else
 	{
@@ -61,14 +53,13 @@ void FogTool::update()
 				m_pFog->Deactivate();
 		}
 	}
-
-
 }
 
 void FogTool::render_update()
 {
 	SetData();
 
-	ImGui::Text("Turn On DoF : "); ImGui::SameLine();
+	ImGui::Text("Turn On DoF : ");
+	ImGui::SameLine();
 	ImGui::Checkbox("##DOF_OnOff", &m_bFogOn);
 }

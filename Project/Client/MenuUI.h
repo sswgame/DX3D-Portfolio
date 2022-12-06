@@ -1,8 +1,8 @@
 #pragma once
 #include "UI.h"
 
-
-class MenuUI : public UI
+class MenuUI final
+	: public UI
 {
 private:
 	string m_strPlayPause;
@@ -12,13 +12,14 @@ private:
 	bool m_bSceneLoad;
 	bool m_bScenePlayPause;
 	bool m_bSceneStop;
-	bool	m_bParticleTool;
-	bool	m_bFogTool;
+	bool m_bParticleTool;
+	bool m_bFogTool;
+	bool m_bUITool;
 
 public:
-	virtual void update() override;
-	virtual void render() override;
-	virtual void render_update() override;
+	void update() override;
+	void render() override;
+	void render_update() override;
 
 private:
 	void Task();

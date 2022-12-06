@@ -15,9 +15,7 @@
 //#include <Engine/CFSM.h>
 #include <Script/BossJugCombatMgrScript.h>
 
-CToolObjMgr::CToolObjMgr()
-{
-}
+CToolObjMgr::CToolObjMgr() {}
 
 CToolObjMgr::~CToolObjMgr()
 {
@@ -59,7 +57,6 @@ void CToolObjMgr::init()
 	pGridObj->GetScript<CGridScript>()->SetGridColor(Vec3(0.2f, 0.2f, 0.7f));
 
 	m_vecObj.push_back(pGridObj);
-
 }
 
 void CToolObjMgr::progress()

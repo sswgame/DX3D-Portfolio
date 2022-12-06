@@ -20,9 +20,7 @@
 
 
 CSceneMgr::CSceneMgr()
-	: m_pCurScene(nullptr)
-{
-}
+	: m_pCurScene(nullptr) {}
 
 CSceneMgr::~CSceneMgr()
 {
@@ -30,12 +28,15 @@ CSceneMgr::~CSceneMgr()
 }
 
 
-void CSceneMgr::init()
-{
-}
+void CSceneMgr::init() {}
 
 void CSceneMgr::progress()
 {
+	if (nullptr == m_pCurScene)
+	{
+		return;
+	}
+
 	SCENE_STATE eState = m_pCurScene->GetSceneState();
 
 	if (SCENE_STATE::PLAY == eState)
@@ -119,22 +120,20 @@ void CSceneMgr::DisconnectParent(CGameObject* _pObject)
 
 void CSceneMgr::ChangeObjectLayerIndex(CGameObject* _pObject, UINT _iLayerIdx)
 {
-
 	tEventInfo info = {};
-	info.eType = EVENT_TYPE::CHANGE_OBJ_LAYER_INDEX;
-	info.lParam = (DWORD_PTR)_pObject;
-	info.wParam = (DWORD_PTR)_iLayerIdx;
+	info.eType      = EVENT_TYPE::CHANGE_OBJ_LAYER_INDEX;
+	info.lParam     = (DWORD_PTR)_pObject;
+	info.wParam     = (DWORD_PTR)_iLayerIdx;
 
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
 void CSceneMgr::SwapLayer(UINT _iLayerIdx_1, UINT _iLayerIdx_2)
 {
-
 	tEventInfo info = {};
-	info.eType = EVENT_TYPE::SWAP_LAYER;
-	info.lParam = (DWORD_PTR)_iLayerIdx_1;
-	info.wParam = (DWORD_PTR)_iLayerIdx_2;
+	info.eType      = EVENT_TYPE::SWAP_LAYER;
+	info.lParam     = (DWORD_PTR)_iLayerIdx_1;
+	info.wParam     = (DWORD_PTR)_iLayerIdx_2;
 
 	CEventMgr::GetInst()->AddEvent(info);
 }
@@ -146,7 +145,6 @@ void CSceneMgr::ClearLayer()
 		m_pCurScene->GetLayer(i)->Clear();
 	}
 }
-
 
 
 void CSceneMgr::DeleteObject(CGameObject* _pDestroyObject)

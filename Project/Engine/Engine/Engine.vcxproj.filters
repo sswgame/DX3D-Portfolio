@@ -206,6 +206,9 @@
       <Filter>Engine\05. Component\FSM</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="CNaviAgent.h" />
+    <ClInclude Include="CNaviMap.h" />
+    <ClInclude Include="CNaviMapData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -401,6 +404,9 @@
       <Filter>Engine\05. Component\FSM</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="CNaviAgent.cpp" />
+    <ClCompile Include="CNaviMap.cpp" />
+    <ClCompile Include="CNaviMapData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -669,13 +675,7 @@
     <None Include="ui.fx">
       <Filter>Engine\HLSL</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="trail.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
-    </FxCompile>
-    <FxCompile Include="boss.fx">
-      <Filter>Engine\HLSL\GraphicsShader</Filter>
-    </FxCompile>
+    <None Include="boss.fx" />
+    <None Include="trail.fx" />
   </ItemGroup>
 </Project>

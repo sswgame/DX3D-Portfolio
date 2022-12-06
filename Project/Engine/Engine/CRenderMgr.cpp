@@ -48,7 +48,7 @@ void CRenderMgr::render()
 {
 	RenderBegin();
 
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	pCurScene->GetSceneState() == SCENE_STATE::PLAY ? render_play() : render_editor();
 
 	RenderEnd();

@@ -138,6 +138,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -163,6 +164,7 @@ call EngineCopy.bat</Command>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>
