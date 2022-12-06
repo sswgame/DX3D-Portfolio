@@ -47,10 +47,8 @@ using std::make_pair;
 #include <bitset>
 #include <array>
 
-#pragma warning (push,0)
 // Fbx Loader
 #include <FBXLoader/fbxsdk.h>
-#pragma warning (pop)
 
 #ifdef _DEBUG
 #pragma comment(lib, "FBXLoader/x64/debug/libfbxsdk-md.lib")
