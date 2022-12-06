@@ -48,7 +48,6 @@ public:
 	Ptr<type> FindRes(const wstring& _strKey);
 
 	vector<Ptr<CMeshData>> LoadFBX(const wstring& _strPath);
-	Ptr<CMesh>             LoadOBJ(const wstring& _strRelativePath);
 
 	const map<wstring, CRes*>& GetResList(RES_TYPE _eType) { return m_Res[static_cast<UINT>(_eType)]; }
 

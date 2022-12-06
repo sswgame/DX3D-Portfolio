@@ -2,10 +2,7 @@
 #include "CResMgr.h"
 #include "CPathMgr.h"
 
-CResMgr::CResMgr()
-{
-
-}
+CResMgr::CResMgr() {}
 
 CResMgr::~CResMgr()
 {
@@ -33,7 +30,12 @@ void CResMgr::SaveChangedRes()
 }
 
 
-Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight, DXGI_FORMAT _format, UINT _flag, bool _bEngineRes)
+Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey,
+                                     UINT           _iWidth,
+                                     UINT           _iHeight,
+                                     DXGI_FORMAT    _format,
+                                     UINT           _flag,
+                                     bool           _bEngineRes)
 {
 	assert(nullptr == FindRes<CTexture>(_strKey));
 
@@ -102,7 +104,7 @@ vector<Ptr<CMeshData>> CResMgr::LoadFBX(const wstring& _strPath)
 	//if (nullptr != pMeshData)
 	//	return pMeshData;
 
-	vector<CMeshData*> vecMeshData;
+	vector<CMeshData*>     vecMeshData;
 	vector<Ptr<CMeshData>> ptrMeshData;
 
 	vecMeshData = CMeshData::LoadFromFBX(_strPath);
