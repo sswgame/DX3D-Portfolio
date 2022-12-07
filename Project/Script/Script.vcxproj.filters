@@ -203,6 +203,42 @@
     <ClInclude Include="Jug_Fly.h">
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClInclude>
+    <ClInclude Include="Deux_Attack.h">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClInclude>
+    <ClInclude Include="Deux_Die.h">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClInclude>
+    <ClInclude Include="Deux_Hit.h">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClInclude>
+    <ClInclude Include="Deux_Idle.h">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClInclude>
+    <ClInclude Include="Deux_Walk.h">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldM_StateMgr.h">
+      <Filter>Script\Monster\Mgr&amp;Script</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldMonsteScript.h">
+      <Filter>Script\Monster\Mgr&amp;Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Homon_Attack.h">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClInclude>
+    <ClInclude Include="Homon_Die.h">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClInclude>
+    <ClInclude Include="Homon_Hit.h">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClInclude>
+    <ClInclude Include="Homon_Idle.h">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClInclude>
+    <ClInclude Include="Homon_Walk.h">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -398,6 +434,42 @@
     <ClCompile Include="Jug_Fly.cpp">
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClCompile>
+    <ClCompile Include="Deux_Attack.cpp">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClCompile>
+    <ClCompile Include="Deux_Die.cpp">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClCompile>
+    <ClCompile Include="Deux_Hit.cpp">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClCompile>
+    <ClCompile Include="Deux_Idle.cpp">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClCompile>
+    <ClCompile Include="Deux_Walk.cpp">
+      <Filter>Script\Monster\Deuxiemie</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldM_StateMgr.cpp">
+      <Filter>Script\Monster\Mgr&amp;Script</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldMonsteScript.cpp">
+      <Filter>Script\Monster\Mgr&amp;Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Homon_Attack.cpp">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClCompile>
+    <ClCompile Include="Homon_Die.cpp">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClCompile>
+    <ClCompile Include="Homon_Hit.cpp">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClCompile>
+    <ClCompile Include="Homon_Idle.cpp">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClCompile>
+    <ClCompile Include="Homon_Walk.cpp">
+      <Filter>Script\Monster\Homonculus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -534,6 +606,12 @@
     </Filter>
     <Filter Include="Script\Boss\Jug\Attack">
       <UniqueIdentifier>{3744aa0a-c8c1-4d78-b805-1d0d7ee56959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Homonculus">
+      <UniqueIdentifier>{c886cceb-7e74-4a76-864b-110194d98324}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Monster\Mgr&amp;Script">
+      <UniqueIdentifier>{a2b853d8-75fe-4752-b6e3-7e07dd227d6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
