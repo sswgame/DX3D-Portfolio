@@ -1,0 +1,5 @@
+Deux_Attack 365 407
+Deux_Idle 0 45
+Deux_Walk 90 128
+Deux_Death 306 364
+Deux_Hit 819 851

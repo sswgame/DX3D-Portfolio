@@ -4,6 +4,7 @@ BossJugScript
 CameraMoveScript
 ColumnFlameScript
 DestroyScript
+FieldMonsteScript
 GravityScript
 HandStateMgrScript
 MagmaScript

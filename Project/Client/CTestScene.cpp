@@ -32,6 +32,7 @@
 #include <Script/GravityScript.h>
 #include <Script/TrailScript.h>
 #include <Script/SwordTrailScript.h>
+#include <Script/FieldMonsteScript.h>
 
 //UI
 #include <Engine/CUIPanel.h>
@@ -349,6 +350,37 @@ namespace
 		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
 	}
 
+	void AddHomonculus(CScene* _pScene)
+	{
+		wstring sMeshName = L"meshdata//homonculus0.mdat";
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(sMeshName.c_str(),
+			sMeshName.c_str());
+
+		CGameObject* pMonster;
+		pMonster = pMeshData->Instantiate();
+		pMonster->SetName(L"Homonculus");
+		pMonster->AddComponent(new FieldMonsteScript);
+		pMonster->AddComponent(new CFSM);
+
+		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::HOMONCULUS);
+		_pScene->AddObject(pMonster, L"MONSTER");
+	}
+
+	void AddDeuxiemie(CScene* _pScene)
+	{
+		wstring sMeshName = L"meshdata//deuxiemie_SmallSword0.mdat";
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(sMeshName.c_str(),
+			sMeshName.c_str());
+
+		CGameObject* pMonster;
+		pMonster = pMeshData->Instantiate();
+		pMonster->SetName(L"Deuxiemie");
+		pMonster->AddComponent(new FieldMonsteScript);
+		pMonster->AddComponent(new CFSM);
+
+		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::DEUXIEMIE);
+		_pScene->AddObject(pMonster, L"MONSTER");
+	}
 
 	void LoadScene()
 	{
@@ -431,7 +463,9 @@ namespace
 
 		//AddPlayer(pCurScene, pCamObj);
 		//AddBoss(pCurScene);
-
+		//AddHomonculus(pCurScene);
+		//AddDeuxiemie(pCurScene);
+		
 		//TestUI(pCurScene);
 		TestObjectPicking(pCurScene);
 
