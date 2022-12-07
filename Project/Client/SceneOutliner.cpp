@@ -24,6 +24,9 @@
 
 #include "ImGuizmo/ImGuizmo.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "ImGui/imgui_internal.h"
+
 SceneOutliner::SceneOutliner()
 	: UI("SceneOutliner")
 {

@@ -20,7 +20,12 @@ void CRenderMgr::init()
 	                                                                    DXGI_FORMAT_R8G8B8A8_UNORM,
 	                                                                    D3D11_BIND_SHADER_RESOURCE,
 	                                                                    true);
-
+	Ptr<CTexture> pToolRenderTargetTex = CResMgr::GetInst()->CreateTexture(L"ToolRenderTargetTex",
+	                                                                       static_cast<UINT>(scrreenResolution.x),
+	                                                                       static_cast<UINT>(scrreenResolution.y),
+	                                                                       DXGI_FORMAT_R8G8B8A8_UNORM,
+	                                                                       D3D11_BIND_SHADER_RESOURCE,
+	                                                                       true);
 	CreateMRT();
 	CreateMaterial();
 }

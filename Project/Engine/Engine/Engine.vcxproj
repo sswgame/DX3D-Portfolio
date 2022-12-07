@@ -244,6 +244,12 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CTileMap.h" />
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="CTransform.h" />
+    <ClInclude Include="CUIBase.h" />
+    <ClInclude Include="CUIButton.h" />
+    <ClInclude Include="CUIImage.h" />
+    <ClInclude Include="CUIPanel.h" />
+    <ClInclude Include="CUIProgressBar.h" />
+    <ClInclude Include="CUIText.h" />
     <ClInclude Include="CWeightMapShader.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="extern.h" />
@@ -320,6 +326,12 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CTileMap.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="CTransform.cpp" />
+    <ClCompile Include="CUIBase.cpp" />
+    <ClCompile Include="CUIButton.cpp" />
+    <ClCompile Include="CUIImage.cpp" />
+    <ClCompile Include="CUIPanel.cpp" />
+    <ClCompile Include="CUIProgressBar.cpp" />
+    <ClCompile Include="CUIText.cpp" />
     <ClCompile Include="CWeightMapShader.cpp" />
     <ClCompile Include="extern.cpp" />
     <ClCompile Include="func.cpp" />

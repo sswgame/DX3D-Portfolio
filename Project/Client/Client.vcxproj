@@ -209,6 +209,7 @@
     <ClInclude Include="TransformUI.h" />
     <ClInclude Include="TreeUI.h" />
     <ClInclude Include="UI.h" />
+    <ClInclude Include="UITool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Anim3DSequencer.cpp" />
@@ -260,6 +261,7 @@
     <ClCompile Include="TransformUI.cpp" />
     <ClCompile Include="TreeUI.cpp" />
     <ClCompile Include="UI.cpp" />
+    <ClCompile Include="UITool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico" />

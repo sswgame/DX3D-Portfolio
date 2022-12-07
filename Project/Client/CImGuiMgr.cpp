@@ -12,6 +12,7 @@
 #include "UI.h"
 #include "ParamUI.h"
 #include "IconsFontAwesome5.h"
+#include "UITool.h"
 #include "ImGuizmo/ImGuizmo.h"
 
 
@@ -204,12 +205,16 @@ void CImGuiMgr::CreateUI()
 	FogTool* pFogTool = new FogTool;
 	pFogTool->Deactivate();
 	m_mapUI.insert(make_pair(pFogTool->GetName(), pFogTool));
+
+	UITool* pUITool = new UITool{};
+	pUITool->Deactivate();
+	m_mapUI.insert({pUITool->GetName(), pUITool});
 }
 
 
 UI* CImGuiMgr::FindUI(const string& _strKey)
 {
-	map<string, UI*>::iterator iter = m_mapUI.find(_strKey);
+	const auto iter = m_mapUI.find(_strKey);
 
 	if (m_mapUI.end() == iter)
 	{

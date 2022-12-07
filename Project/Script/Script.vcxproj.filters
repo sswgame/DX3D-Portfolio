@@ -175,24 +175,6 @@
     <ClInclude Include="CWalk_Gun.h">
       <Filter>Script\Monster\Deuxiemie\Gun\State</Filter>
     </ClInclude>
-    <ClInclude Include="UIProgressBarScript.h">
-      <Filter>Script\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UITextScript.h">
-      <Filter>Script\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIPanelScript.h">
-      <Filter>Script\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIImageScript.h">
-      <Filter>Script\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="ButtonScript.h">
-      <Filter>Script\UI\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="CUIBase.h">
-      <Filter>Script\UI\Common</Filter>
-    </ClInclude>
     <ClInclude Include="CObjectManager.h">
       <Filter>Script\Common</Filter>
     </ClInclude>
@@ -221,7 +203,6 @@
     <ClInclude Include="Jug_Fly.h">
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClInclude>
-    <ClInclude Include="HammerScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -389,24 +370,6 @@
     <ClCompile Include="CWalk_Gun.cpp">
       <Filter>Script\Monster\Deuxiemie\Gun\State</Filter>
     </ClCompile>
-    <ClCompile Include="UIProgressBarScript.cpp">
-      <Filter>Script\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UITextScript.cpp">
-      <Filter>Script\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIPanelScript.cpp">
-      <Filter>Script\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIImageScript.cpp">
-      <Filter>Script\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="ButtonScript.cpp">
-      <Filter>Script\UI\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="CUIBase.cpp">
-      <Filter>Script\UI\Common</Filter>
-    </ClCompile>
     <ClCompile Include="CObjectManager.cpp">
       <Filter>Script\Common</Filter>
     </ClCompile>
@@ -435,7 +398,6 @@
     <ClCompile Include="Jug_Fly.cpp">
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClCompile>
-    <ClCompile Include="HammerScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -563,9 +525,6 @@
     </Filter>
     <Filter Include="Script\UI">
       <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\UI\Common">
-      <UniqueIdentifier>{d33527f4-c655-4f19-b787-b14c9a1478ff}</UniqueIdentifier>
     </Filter>
     <Filter Include="Script\Camera">
       <UniqueIdentifier>{26ff9c4b-bb46-4786-aa05-4d7222b78d33}</UniqueIdentifier>

@@ -712,7 +712,7 @@ COMPONENTS:
       3: [material\yaak.mtrl, material\yaak.mtrl]
       m_bDynamicShadow: false
       m_bFrustumCulling: false
-  - FINITE_STATE_MACHINE:
+  - FSM:
       {}
 SCRIPTS:
   - RigidBodyScript:

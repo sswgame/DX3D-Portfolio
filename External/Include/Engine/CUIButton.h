@@ -1,5 +1,5 @@
 #pragma once
-#include <Engine/CScript.h>
+#include "CComponent.h"
 #include <bitset>
 
 class CUIBase;
@@ -23,8 +23,8 @@ enum class MOUSE_TYPE
 	END
 };
 
-class ButtonScript final
-	: public CScript
+class CUIButton final
+	: public CComponent
 {
 private:
 	float m_clickTerm;
@@ -35,8 +35,6 @@ private:
 	using ClickFunc = std::array<std::function<void()>, (int)CLICK_TYPE::END>;
 	std::array<ClickFunc, (int)MOUSE_TYPE::END> m_arrCallback;
 
-	CUIBase* m_pUIBase;
-
 private:
 	bool DoubleClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType);
 	bool OneClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType);
@@ -45,8 +43,7 @@ private:
 	void HandleDragEvent();
 	void HandleReleaseEvent();
 public:
-	void start() override;
-	void lateupdate() override;
+	void finalupdate() override;
 public:
 	template <typename T>
 	void SetCallback(T* pInstance, void (T::*func)(), MOUSE_TYPE mouseType, CLICK_TYPE clickType)
@@ -59,8 +56,8 @@ public:
 	void Deserialize(const YAML::Node& node) override;
 
 public:
-	CLONE(ButtonScript);
-	ButtonScript();
-	ButtonScript(const ButtonScript& _origin);
-	virtual ~ButtonScript();
+	CLONE(CUIButton);
+	CUIButton();
+	CUIButton(const CUIButton& _origin);
+	virtual ~CUIButton();
 };

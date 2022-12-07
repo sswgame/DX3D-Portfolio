@@ -56,9 +56,17 @@ void CCore::Frame_Clear() {}
 void CCore::progress()
 {
 	Frame_Init();
+
+	CScene* pGameScene = CSceneMgr::GetInst()->GetCurScene();
+	CSceneMgr::GetInst()->ChangeScene(CSceneMgr::GetInst()->GetToolScene());
 	CSceneMgr::GetInst()->progress();
-	CResMgr::GetInst()->update();
 	CRenderMgr::GetInst()->render();
+
+	CSceneMgr::GetInst()->ChangeScene(pGameScene);
+	CSceneMgr::GetInst()->progress();
+	CRenderMgr::GetInst()->render();
+
+	CResMgr::GetInst()->update();
 	CEventMgr::GetInst()->update();
 	Frame_Clear();
 }

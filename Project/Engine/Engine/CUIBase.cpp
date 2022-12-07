@@ -1,75 +1,69 @@
 #include "pch.h"
 #include "CUIBase.h"
 
-#include <Engine/CDevice.h>
-#include <Engine/CAnimator2D.h>
-#include <Engine/CCamera.h>
-#include <Engine/CKeyMgr.h>
-#include <Engine/CRenderMgr.h>
-#include <Engine/CTransform.h>
+#include "CDevice.h"
+#include "CAnimator2D.h"
+#include "CCamera.h"
+#include "CKeyMgr.h"
+#include "CMeshRender.h"
+#include "CRenderMgr.h"
+#include "CTransform.h"
+#include "CUIPanel.h"
 
-#include "UIPanelScript.h"
-
-CUIBase::CUIBase(SCRIPT_TYPE type)
-	: CScript{static_cast<int>(type)}
-	, m_pPanel{nullptr}
+CUIBase::CUIBase(COMPONENT_TYPE type)
+	: CComponent{type}
 	, m_orderZ{0}
 	, m_opacity{1.f}
 	, m_isMouseHovered{false}
 	, m_mouseCollisionEnable{true}
 	, m_anchorV{ANCHOR_VERTICAL::MIDDLE}
 	, m_anchorH{ANCHOR_HORIZONTAL::MIDDLE}
-	, m_showDebugRect{true}
-{
-	AddScriptParamAsCheckBox("SHOW RANGE",
-	                         &m_showDebugRect,
-	                         [this]()
-	                         {
-		                         if (this->MeshRender())
-			                         this->ShowDebugRect(m_showDebugRect);
-	                         });
-	AddScriptParamAsCheckBox("MOUSE COLLISION", (int*)&m_mouseCollisionEnable);
-	AddScriptParam("OFFSET", SCRIPTPARAM_TYPE::VEC2, &m_offsetPos);
-	AddScriptParam("Z ORDER", SCRIPTPARAM_TYPE::INT, &m_orderZ, [this]() { this->SetOrderZ(m_orderZ); });
-	AddScriptParam("OPACITY", SCRIPTPARAM_TYPE::FLOAT, &m_opacity, [this]() { this->SetOpacity(m_opacity); });
-	AddScriptParamAsDropDown("ALIGNMENT(HORIZONTAL)",
-	                         SCRIPTPARAM_TYPE::INT,
-	                         &m_anchorH,
-	                         {"LEFT", "MIDDLE", "RIGHT"});
-	AddScriptParamAsDropDown("ALIGNMENT(VERTICAL)",
-	                         SCRIPTPARAM_TYPE::INT,
-	                         &m_anchorV,
-	                         {"TOP", "MIDDLE", "BOTTOM"});
-}
+	, m_showDebugRect{true} {}
 
 CUIBase::CUIBase(const CUIBase& _origin)
-	: CScript{_origin}
-	, m_pPanel{nullptr}
+	: CComponent{_origin}
 	, m_orderZ{_origin.m_orderZ}
 	, m_opacity{_origin.m_opacity}
 	, m_isMouseHovered{false}
 	, m_mouseCollisionEnable{_origin.m_mouseCollisionEnable}
 	, m_anchorV{_origin.m_anchorV}
 	, m_anchorH{_origin.m_anchorH}
-	, m_showDebugRect{_origin.m_showDebugRect}
-{
-	RenewScalarParam("SHOW RANGE",
-	                 &m_showDebugRect,
-	                 [this]()
-	                 {
-		                 if (this->MeshRender())
-			                 this->ShowDebugRect(m_showDebugRect);
-	                 });
-	RenewScalarParam("MOUSE COLLISION", &m_mouseCollisionEnable);
-	RenewScalarParam("OFFSET", &m_offsetPos);
-	RenewScalarParam("Z ORDER", &m_orderZ, [this]() { this->SetOrderZ(m_orderZ); });
-	RenewScalarParam("OPACITY", &m_opacity, [this]() { this->SetOpacity(m_opacity); });
-	RenewScalarParam("ALIGNMENT(HORIZONTAL)", &m_anchorH);
-	RenewScalarParam("ALIGNMENT(VERTICAL)", &m_anchorV);
-}
+	, m_showDebugRect{_origin.m_showDebugRect} {}
 
 CUIBase::~CUIBase() = default;
 
+void CUIBase::finalupdate()
+{
+	m_opacity = ClampData(m_opacity, 0.f, 1.f);
+
+	Vec3 adjustPos = Transform()->GetRelativePos();
+	adjustPos.x    = AdjustPositionWithAnchor(m_anchorH);
+	adjustPos.y    = AdjustPositionWithAnchor(m_anchorV);
+	Transform()->SetRelativePos(adjustPos);
+
+	if (nullptr == GetOwner()->GetParent()->UIPanel())
+	{
+		m_isMouseHovered = CollisionMouse();
+		if (m_isMouseHovered && m_hoverCallback)
+		{
+			m_hoverCallback();
+		}
+	}
+
+	if (nullptr == MeshRender() || nullptr == MeshRender()->GetMaterial(0) || nullptr == MeshRender()->GetMesh())
+	{
+		return;
+	}
+
+	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &m_showDebugRect);
+
+	Ptr<CTexture> pTexture = MeshRender()->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
+	if (nullptr != pTexture)
+	{
+		Vec2 textureSize = {pTexture->Width(), pTexture->Height()};
+		MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_0, &textureSize);
+	}
+}
 
 bool CUIBase::CollisionMouse()
 {
@@ -108,9 +102,10 @@ void CUIBase::SetOrderZ(int iOrderZ)
 {
 	m_orderZ = iOrderZ;
 
-	if (m_pPanel)
+	CGameObject* pParent = GetOwner()->GetParent();
+	if (pParent && pParent->UIPanel())
 	{
-		m_pPanel->SetSorted(false);
+		pParent->UIPanel()->SetSorted(false);
 	}
 }
 
@@ -127,53 +122,12 @@ void CUIBase::FireCallback() const
 	}
 }
 
-void CUIBase::update()
-{
-	m_opacity = ClampData(m_opacity, 0.f, 1.f);
-
-	Vec3 adjustPos = Transform()->GetRelativePos();
-	adjustPos.x    = AdjustPositionWithAnchor(m_anchorH);
-	adjustPos.y    = AdjustPositionWithAnchor(m_anchorV);
-	Transform()->SetRelativePos(adjustPos);
-
-	if (nullptr == m_pPanel)
-	{
-		m_isMouseHovered = CollisionMouse();
-		if (m_isMouseHovered && m_hoverCallback)
-		{
-			m_hoverCallback();
-		}
-	}
-}
-
-void CUIBase::lateupdate()
-{
-	if (MeshRender() && false == MeshRender()->IsUsingDynamicMaterial(0))
-	{
-		MeshRender()->GetDynamicMaterial(0);
-	}
-
-	MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &m_showDebugRect);
-
-	Ptr<CTexture> pTexture = MeshRender()->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
-	if (nullptr != pTexture)
-	{
-		Vec2 textureSize = {pTexture->Width(), pTexture->Height()};
-		MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_0, &textureSize);
-	}
-}
-
 float CUIBase::AdjustPositionWithAnchor(ANCHOR_HORIZONTAL type)
 {
-	if (nullptr == GetOwner()->GetParent())
-	{
-		m_pPanel = nullptr;
-	}
-	else
-	{
-		Transform()->SetIgnoreParentScale(true);
-	}
-	if (nullptr == m_pPanel)
+	Transform()->SetIgnoreParentScale(true);
+
+	CGameObject* pParent = GetOwner()->GetParent();
+	if (nullptr == pParent || (pParent && nullptr == pParent->UIPanel()))
 	{
 		return AdjustWithCamera(type);
 	}
@@ -182,15 +136,10 @@ float CUIBase::AdjustPositionWithAnchor(ANCHOR_HORIZONTAL type)
 
 float CUIBase::AdjustPositionWithAnchor(ANCHOR_VERTICAL type)
 {
-	if (nullptr == GetOwner()->GetParent())
-	{
-		m_pPanel = nullptr;
-	}
-	else
-	{
-		Transform()->SetIgnoreParentScale(true);
-	}
-	if (nullptr == m_pPanel)
+	Transform()->SetIgnoreParentScale(true);
+
+	CGameObject* pParent = GetOwner()->GetParent();
+	if (nullptr == pParent || (pParent && nullptr == pParent->UIPanel()))
 	{
 		return AdjustWithCamera(type);
 	}
@@ -251,7 +200,7 @@ float CUIBase::AdjustWithPanel(ANCHOR_HORIZONTAL type) const
 {
 	//어차피 부모 윈도우 기준에서 자식 윈도우의 위치가 정해지므로(Transform에 의하여)
 	//거기서 얼마나 떨어져야 하는지를 지정해주기만 하면 된다.
-	const Vec3  panelScale        = m_pPanel->Transform()->GetRelativeScale();
+	const Vec3  panelScale        = GetOwner()->GetParent()->Transform()->GetRelativeScale();
 	const float panelHalfWidth    = panelScale.x * 0.5f;
 	const Vec3  widgetUIHalfScale = GetOwner()->Transform()->GetRelativeScale() * 0.5f;
 	switch (type)
@@ -269,7 +218,7 @@ float CUIBase::AdjustWithPanel(ANCHOR_HORIZONTAL type) const
 
 float CUIBase::AdjustWithPanel(ANCHOR_VERTICAL type) const
 {
-	const Vec3  panelScale        = m_pPanel->Transform()->GetRelativeScale();
+	const Vec3  panelScale        = GetOwner()->GetParent()->Transform()->GetRelativeScale();
 	const float halfHeight        = panelScale.y * 0.5f;
 	const Vec3  widgetUIHalfScale = GetOwner()->Transform()->GetRelativeScale() * 0.5f;
 
@@ -288,7 +237,6 @@ float CUIBase::AdjustWithPanel(ANCHOR_VERTICAL type) const
 
 void CUIBase::Serialize(YAML::Emitter& emitter)
 {
-	CScript::Serialize(emitter);
 	emitter << YAML::Key << NAME_OF(m_orderZ) << YAML::Value << m_orderZ;
 	emitter << YAML::Key << NAME_OF(m_opacity) << YAML::Value << m_opacity;
 	emitter << YAML::Key << NAME_OF(m_mouseCollisionEnable) << YAML::Value << m_mouseCollisionEnable;
@@ -299,7 +247,6 @@ void CUIBase::Serialize(YAML::Emitter& emitter)
 
 void CUIBase::Deserialize(const YAML::Node& node)
 {
-	CScript::Deserialize(node);
 	m_orderZ               = node[NAME_OF(m_orderZ)].as<int>();
 	m_opacity              = node[NAME_OF(m_opacity)].as<float>();
 	m_mouseCollisionEnable = node[NAME_OF(m_mouseCollisionEnable)].as<bool>();

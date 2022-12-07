@@ -1,6 +1,7 @@
 #pragma once
-#include <Engine/CScript.h>
-class UIPanelScript;
+#include "CComponent.h"
+
+class CUIPanel;
 enum class SCRIPT_TYPE;
 
 enum class ANCHOR_HORIZONTAL
@@ -20,12 +21,10 @@ enum class ANCHOR_VERTICAL
 };
 
 class CUIBase
-	: public CScript
+	: public CComponent
 {
-	friend class UIPanelScript;
+	friend class CUIPanel;
 private:
-	UIPanelScript* m_pPanel;
-
 	int                   m_orderZ;
 	float                 m_opacity;
 	bool                  m_isMouseHovered;
@@ -50,9 +49,6 @@ private:
 
 public:
 	virtual bool CollisionMouse();
-
-	void           SetPanel(UIPanelScript* pPanel) { m_pPanel = pPanel; }
-	UIPanelScript* GetPanel() const { return m_pPanel; }
 
 	void SetOffsetPos(const Vec2 offsetPos) { m_offsetPos = offsetPos; }
 	Vec2 GetOffsetPos() const { return m_offsetPos; }
@@ -85,14 +81,13 @@ public:
 	void FireCallback() const;
 
 public:
-	void update() override;
-	void lateupdate() override;
+	void finalupdate() override;
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
 public:
-	CUIBase(SCRIPT_TYPE type);
+	CUIBase(COMPONENT_TYPE type);
 	CUIBase(const CUIBase& _origin);
 	virtual ~CUIBase();
 };

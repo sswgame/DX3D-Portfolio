@@ -1,55 +1,36 @@
 #include "pch.h"
-#include "UITextScript.h"
+#include "CUIText.h"
 
-#include <Engine/CFontMgr.h>
-#include <Engine/CDevice.h>
-
-#include "CObjectManager.h"
+#include "CFontMgr.h"
+#include "CDevice.h"
+#include "CEventMgr.h"
+#include "CMeshRender.h"
+#include "CTransform.h"
 #include "CUIBase.h"
 
 
-UITextScript::UITextScript()
-	: CUIBase{SCRIPT_TYPE::UITEXTSCRIPT}
-	, m_pUIScript{nullptr}
+CUIText::CUIText()
+	: CUIBase{COMPONENT_TYPE::UITEXT}
 	, m_text{"EMPTY"}
 	, m_fontSize{16.f}
 	, m_alphaEnable{false}
 	, m_color{1.f, 1.f, 1.f, 1.f}
 	, m_alignTextH{TEXT_ALIGN_HORIZONTAL::MIDDLE}
-	, m_alignTextV{TEXT_ALIGN_VERTICAL::MIDDLE}
-{
-	AddScriptParamAsCheckBox("TEXT ALPHA ENABLE", (int*)&m_alphaEnable);
-	AddScriptParamAsColorPicker("COLOR", &m_color, [this]() { SetColor(m_color); });
-	AddScriptParamAsDropDown("TEXT ALIGN(HORIZONTAL)",
-	                         SCRIPTPARAM_TYPE::INT,
-	                         &m_alignTextH,
-	                         {"LEFT", "MIDDLE", "RIGHT"});
-	AddScriptParamAsDropDown("TEXT ALIGN(VERTICAL)", SCRIPTPARAM_TYPE::INT, &m_alignTextV, {"TOP", "MIDDLE", "BOTTOM"});
-	AddScriptParam("TEXT", SCRIPTPARAM_TYPE::TEXT, &m_text, [this]() { SetText(ToWString(m_text)); });
-}
+	, m_alignTextV{TEXT_ALIGN_VERTICAL::MIDDLE} {}
 
-UITextScript::UITextScript(const UITextScript& _origin)
+CUIText::CUIText(const CUIText& _origin)
 	: CUIBase{_origin}
-	, m_pUIScript{nullptr}
 	, m_text{_origin.m_text}
 	, m_fontSize{_origin.m_fontSize}
 	, m_alphaEnable{_origin.m_alphaEnable}
 	, m_color{_origin.m_color}
 	, m_alignTextH{_origin.m_alignTextH}
-	, m_alignTextV{_origin.m_alignTextV}
-{
-	RenewScalarParam("TEXT ALPHA ENABLE", &m_alphaEnable);
-	RenewScalarParam("COLOR", &m_color, [this]() { SetColor(m_color); });
-	RenewScalarParam("TEXT ALIGN(HORIZONTAL)", &m_alignTextH);
-	RenewScalarParam("TEXT ALIGN(VERTICAL)", &m_alignTextV);
-	RenewScalarParam("TEXT", &m_text, [this]() { SetText(ToWString(m_text)); });
-}
+	, m_alignTextV{_origin.m_alignTextV} {}
 
-UITextScript::~UITextScript() = default;
+CUIText::~CUIText() = default;
 
-void UITextScript::start()
+void CUIText::start()
 {
-	CUIBase::start();
 	m_pRTV2D      = CDevice::GetInst()->GetRtv2D();
 	m_pFont       = CFontMgr::GetInst()->LoadFontFromFile(L"font\\fa-solid-900.ttf");
 	m_pColorBrush = CFontMgr::GetInst()->GetBrush(m_color);
@@ -57,17 +38,17 @@ void UITextScript::start()
 	CreateTextLayout();
 }
 
-void UITextScript::lateupdate()
+void CUIText::finalupdate()
 {
 	if (nullptr == MeshRender() || nullptr == MeshRender()->GetMaterial(0))
 	{
 		return;
 	}
-	CUIBase::lateupdate();
-	CObjectManager::GetInst()->AddScriptEvent(this, &UITextScript::RenderText);
+	CUIBase::finalupdate();
+	RenderText();
 }
 
-void UITextScript::CreateTextLayout()
+void CUIText::CreateTextLayout()
 {
 	if (nullptr == m_pFont)
 	{
@@ -112,7 +93,7 @@ void UITextScript::CreateTextLayout()
 	}
 }
 
-void UITextScript::RenderText()
+void CUIText::RenderText()
 {
 	m_pRTV2D->BeginDraw();
 	const Vec3 worldPos       = Transform()->GetWorldPos();
@@ -139,29 +120,29 @@ void UITextScript::RenderText()
 	m_pRTV2D->EndDraw();
 }
 
-void UITextScript::AddText(const std::wstring& text)
+void CUIText::AddText(const std::wstring& text)
 {
 	m_text += ToString(text);
 	CreateTextLayout();
 }
 
-const std::string& UITextScript::GetText() const
+const std::string& CUIText::GetText() const
 {
 	return m_text;
 }
 
-void UITextScript::SetText(const std::wstring& text)
+void CUIText::SetText(const std::wstring& text)
 {
 	m_text = ToString(text);
 	CreateTextLayout();
 }
 
-int UITextScript::GetTextCount() const
+int CUIText::GetTextCount() const
 {
 	return static_cast<int>(m_text.size());
 }
 
-void UITextScript::PopBack()
+void CUIText::PopBack()
 {
 	if (false == m_text.empty())
 	{
@@ -170,40 +151,40 @@ void UITextScript::PopBack()
 	}
 }
 
-void UITextScript::ClearText()
+void CUIText::ClearText()
 {
 	m_text.clear();
 	CreateTextLayout();
 }
 
-void UITextScript::SetFontSize(float size)
+void CUIText::SetFontSize(float size)
 {
 	m_fontSize = size;
 	CreateTextLayout();
 }
 
-void UITextScript::SetAlphaEnable(bool enable)
+void CUIText::SetAlphaEnable(bool enable)
 {
 	m_alphaEnable = enable;
 }
 
-void UITextScript::SetFont(const std::wstring& fontKey)
+void CUIText::SetFont(const std::wstring& fontKey)
 {
 	m_pFont = CFontMgr::GetInst()->LoadFontFromFile(fontKey);
 	CreateTextLayout();
 }
 
-void UITextScript::SetAlignH(TEXT_ALIGN_HORIZONTAL alignment)
+void CUIText::SetAlignH(TEXT_ALIGN_HORIZONTAL alignment)
 {
 	m_alignTextH = alignment;
 }
 
-void UITextScript::SetAlignV(TEXT_ALIGN_VERTICAL alignment)
+void CUIText::SetAlignV(TEXT_ALIGN_VERTICAL alignment)
 {
 	m_alignTextV = alignment;
 }
 
-void UITextScript::SetColor(UINT r, UINT g, UINT b)
+void CUIText::SetColor(UINT r, UINT g, UINT b)
 {
 	m_color.x = r / 255.f;
 	m_color.y = g / 255.f;
@@ -212,13 +193,13 @@ void UITextScript::SetColor(UINT r, UINT g, UINT b)
 	m_pColorBrush = CFontMgr::GetInst()->GetBrush(m_color);
 }
 
-void UITextScript::SetColor(const Vec4& color)
+void CUIText::SetColor(const Vec4& color)
 {
 	m_color       = color;
 	m_pColorBrush = CFontMgr::GetInst()->GetBrush(m_color);
 }
 
-void UITextScript::Serialize(YAML::Emitter& emitter)
+void CUIText::Serialize(YAML::Emitter& emitter)
 {
 	CUIBase::Serialize(emitter);
 	emitter << YAML::Key << NAME_OF(m_text) << YAML::Value << m_text;
@@ -230,7 +211,7 @@ void UITextScript::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_alignTextV) << YAML::Value << static_cast<int>(m_alignTextV);
 }
 
-void UITextScript::Deserialize(const YAML::Node& node)
+void CUIText::Deserialize(const YAML::Node& node)
 {
 	CUIBase::Deserialize(node);
 	m_text        = node[NAME_OF(m_text)].as<std::string>();
@@ -240,6 +221,4 @@ void UITextScript::Deserialize(const YAML::Node& node)
 	m_color       = node[NAME_OF(m_color)].as<Vec4>();
 	m_alignTextH  = static_cast<TEXT_ALIGN_HORIZONTAL>(node[NAME_OF(m_alignTextH)].as<int>());
 	m_alignTextV  = static_cast<TEXT_ALIGN_VERTICAL>(node[NAME_OF(m_alignTextV)].as<int>());
-
-	RenewScalarParam("TEXT", &m_text, [this]() { SetText(ToWString(m_text)); });
 }

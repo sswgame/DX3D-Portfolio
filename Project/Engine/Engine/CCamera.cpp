@@ -50,9 +50,7 @@ CCamera::CCamera(const CCamera& _origin)
 	m_Frustum.m_pCam = this;
 }
 
-CCamera::~CCamera()
-{
-}
+CCamera::~CCamera() {}
 
 void CCamera::finalupdate()
 {
@@ -61,6 +59,10 @@ void CCamera::finalupdate()
 	m_Frustum.finalupdate();
 
 	CRenderMgr::GetInst()->RegisterCamera(this);
+	if (GetOwner()->GetName() == L"UICamera")
+	{
+		CRenderMgr::GetInst()->RegisterUICamera(this);
+	}
 }
 
 void CCamera::finalupdate_module()
@@ -137,10 +139,10 @@ void CCamera::SortGameObject()
 		if (!(m_iLayerMask & (1 << i)))
 			continue;
 
-		CLayer* pLayer = pCurScene->GetLayer(i);
+		CLayer*               pLayer = pCurScene->GetLayer(i);
 		vector<CGameObject*>& vecObj = pLayer->GetObjects();
 
-		
+
 		for (size_t j = 0; j < vecObj.size(); ++j)
 		{
 			// Register Component Debug Object
@@ -150,9 +152,9 @@ void CCamera::SortGameObject()
 			CRenderComponent* pRenderCom = vecObj[j]->GetRenderComponent();
 
 			if (nullptr == pRenderCom
-				|| nullptr == pRenderCom->GetMesh()
-				|| nullptr == pRenderCom->GetMaterial(0)
-				|| nullptr == pRenderCom->GetMaterial(0)->GetShader())
+			    || nullptr == pRenderCom->GetMesh()
+			    || nullptr == pRenderCom->GetMaterial(0)
+			    || nullptr == pRenderCom->GetMaterial(0)->GetShader())
 			{
 				continue;
 			}
@@ -160,8 +162,8 @@ void CCamera::SortGameObject()
 			// 오브젝트가 카메라 시야 밖에 있으면 제외
 			// TODO:바운딩 박스로 전환
 			if (pRenderCom->IsFrustumCulling()
-				&& !m_Frustum.SphereCheck(vecObj[j]->Transform()->GetWorldPos(),
-					vecObj[j]->Transform()->GetWorldScale().x / 2.f))
+			    && !m_Frustum.SphereCheck(vecObj[j]->Transform()->GetWorldPos(),
+			                              vecObj[j]->Transform()->GetWorldScale().x / 2.f))
 			{
 				continue;
 			}
@@ -231,7 +233,6 @@ void CCamera::SortDebugGameObject(CGameObject* _pObj)
 		if (nullptr != pComponents && nullptr != pComponents->GetDebugObj())
 			m_vecComponentDebug.push_back(pComponents);
 	}
-
 }
 
 void CCamera::render_deferred()

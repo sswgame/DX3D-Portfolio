@@ -15,12 +15,10 @@ enum class TEXT_ALIGN_VERTICAL
 	BOTTOM
 };
 
-class UITextScript final
+class CUIText final
 	: public CUIBase
 {
 private:
-	CUIBase* m_pUIScript;
-
 	std::string m_text;
 	float       m_fontSize;
 
@@ -40,7 +38,7 @@ private:
 	void RenderText();
 public:
 	void start() override;
-	void lateupdate() override;
+	void finalupdate() override;
 public:
 	void               AddText(const std::wstring& text);
 	const std::string& GetText() const;
@@ -55,20 +53,27 @@ public:
 	float GetFontSize() const { return m_fontSize; }
 
 	void SetAlphaEnable(bool enable);
-	void SetFont(const std::wstring& fontKey);
+	bool IsAlphaEnable() const { return m_alphaEnable; }
 
-	void SetAlignH(TEXT_ALIGN_HORIZONTAL alignment);
-	void SetAlignV(TEXT_ALIGN_VERTICAL alignment);
+	void               SetFont(const std::wstring& fontKey);
+	const std::string& GetFont() const { return m_fontName; }
+
+	void                  SetAlignH(TEXT_ALIGN_HORIZONTAL alignment);
+	TEXT_ALIGN_HORIZONTAL GetAlignH() const { return m_alignTextH; }
+
+	void                SetAlignV(TEXT_ALIGN_VERTICAL alignment);
+	TEXT_ALIGN_VERTICAL GetAlignV() const { return m_alignTextV; }
 
 	void SetColor(UINT r, UINT g, UINT b);
 	void SetColor(const Vec4& color);
+	Vec4 GetColor() const { return m_color; }
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
 public:
-	CLONE(UITextScript);
-	UITextScript();
-	UITextScript(const UITextScript& _origin);
-	virtual ~UITextScript();
+	CLONE(CUIText);
+	CUIText();
+	CUIText(const CUIText& _origin);
+	virtual ~CUIText();
 };

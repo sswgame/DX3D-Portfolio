@@ -52,6 +52,14 @@ void CRenderMgr::render()
 	pCurScene->GetSceneState() == SCENE_STATE::PLAY ? render_play() : render_editor();
 
 	RenderEnd();
+
+	if (pCurScene == CSceneMgr::GetInst()->GetToolScene())
+	{
+		Ptr<CTexture> pRenderTarget        = CResMgr::GetInst()->FindRes<CTexture>(L"RenderTargetTex");
+		Ptr<CTexture> pToolRenderTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"ToolRenderTargetTex");
+
+		CONTEXT->CopyResource(pToolRenderTargetTex->GetTex2D().Get(), pRenderTarget->GetTex2D().Get());
+	}
 }
 
 void CRenderMgr::RenderBegin()
@@ -319,22 +327,7 @@ CCamera* CRenderMgr::GetMainCam() const
 	return m_pEditorCamera;
 }
 
-CCamera* CRenderMgr::GetUICamera()
+CCamera* CRenderMgr::GetUICamera() const
 {
-	if (nullptr == m_pUICamera)
-	{
-		const auto iter = std::find_if(m_vecCamera.begin(),
-		                               m_vecCamera.end(),
-		                               [](const CCamera* pCamera)
-		                               {
-			                               return pCamera->GetOwner()->GetName() == L"UICamera";
-		                               });
-		if (iter != m_vecCamera.end())
-		{
-			m_pUICamera = *iter;
-			return m_pUICamera;
-		}
-		return nullptr;
-	}
 	return m_pUICamera;
 }

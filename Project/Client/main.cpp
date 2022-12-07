@@ -3,6 +3,7 @@
 #include <Engine/CCore.h>
 #include <Engine/CDevice.h>
 #include <Engine/CPrefab.h>
+#include <Engine/CSceneMgr.h>
 
 #include "CImGuiMgr.h"
 #include "ImGui/imgui_impl_win32.h"
@@ -46,8 +47,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 	CPrefab::m_pSaveFunc = &CSceneSaveLoad::SavePrefab;
 	CPrefab::m_pLoadFunc = &CSceneSaveLoad::LoadPrefab;
 
-	/*CTestScene::CreateTestScene();
-	CCore::GetInst()->progress();*/
+	CTestScene::CreateTestScene();
+	CCore::GetInst()->progress();
 
 	CToolObjMgr::GetInst()->init();
 
@@ -69,12 +70,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 		else
 		{
 			CCore::GetInst()->progress();
-
 			CToolObjMgr::GetInst()->progress();
-
 			CImGuiMgr::GetInst()->progress();
 			CImGuiMgr::GetInst()->render();
-
 			CDevice::GetInst()->Present();
 		}
 	}

@@ -1,56 +1,28 @@
 #include "pch.h"
-#include "UIImageScript.h"
+#include "CUIImage.h"
 
-UIImageScript::UIImageScript()
-	: CUIBase{SCRIPT_TYPE::UIIMAGESCRIPT}
+#include "CMeshRender.h"
+#include "CTransform.h"
+
+CUIImage::CUIImage()
+	: CUIBase{COMPONENT_TYPE::UIIMAGE}
 	, m_currentFrameName{"NO DATA"}
 	, m_useInfo{0}
 	, m_preserveRatio{false}
-	, m_ratio{1.f}
-{
-	AddScriptParamAsCheckBox("USE SPRITE", &m_useInfo, [this]() { SetUseInfo(m_useInfo); });
-	AddScriptParamAsCheckBox("PRESERVE RATIO", (int*)&m_preserveRatio);
-	AddScriptParam("TEXTURE NAME", SCRIPTPARAM_TYPE::TEXTURE, &m_textureName);
-}
+	, m_ratio{1.f} {}
 
-UIImageScript::UIImageScript(const UIImageScript& _origin)
+CUIImage::CUIImage(const CUIImage& _origin)
 	: CUIBase{_origin}
 	, m_currentInfo{_origin.m_currentInfo}
 	, m_currentFrameName{_origin.m_currentFrameName}
 	, m_useInfo{0}
 	, m_preserveRatio{false}
-	, m_ratio{1.f}
-	, m_textureName{_origin.m_textureName}
-{
-	RenewScalarParam("USE SPRITE", &m_useInfo, [this]() { SetUseInfo(m_useInfo); });
-	RenewScalarParam("PRESERVE RATIO", &m_preserveRatio);
-	RenewScalarParam("TEXTURE NAME", &m_textureName);
-}
+	, m_ratio{1.f} {}
 
-UIImageScript::~UIImageScript() = default;
+CUIImage::~CUIImage() = default;
 
-void UIImageScript::SetUseInfo(bool enable)
-{
-	if (enable)
-	{
-		AddScriptParam("CURRENT FRAME NAME", SCRIPTPARAM_TYPE::TEXT_READONLY, &m_currentFrameName);
-		AddScriptParam("CURRENT FRAME POS/SIZE",
-		               SCRIPTPARAM_TYPE::VEC4,
-		               &m_currentInfo,
-		               [this]()
-		               {
-			               const auto iter = FindImageInfo(ToWString(m_currentFrameName));
-			               iter->second    = m_currentInfo;
-		               });
-	}
-	else
-	{
-		RemoveScalarParam("CURRENT FRAME NAME");
-		RemoveScalarParam("CURRENT FRAME POS/SIZE");
-	}
-}
 
-void UIImageScript::update()
+void CUIImage::finalupdate()
 {
 	if (m_preserveRatio)
 	{
@@ -73,22 +45,12 @@ void UIImageScript::update()
 			}
 		}
 	}
-	CUIBase::update();
-}
-
-void UIImageScript::lateupdate()
-{
+	CUIBase::finalupdate();
 	if (nullptr == MeshRender() || nullptr == MeshRender()->GetMaterial(0) || nullptr == MeshRender()->GetMesh())
 	{
 		return;
 	}
-	CUIBase::lateupdate();
 
-	const Ptr<CTexture> pTexture = CResMgr::GetInst()->FindRes<CTexture>(ToWString(m_textureName));
-	if (nullptr != pTexture)
-	{
-		MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
-	}
 	if (m_useInfo)
 	{
 		MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_1, &m_useInfo);
@@ -96,39 +58,67 @@ void UIImageScript::lateupdate()
 	}
 }
 
-void UIImageScript::Clear()
+void CUIImage::Clear()
 {
 	m_mapInfo.clear();
 	m_useInfo = false;
 }
 
-void UIImageScript::AddImageInfo(const std::wstring& frameName, const Vec2& pos, const Vec2& size)
+void CUIImage::AddImageInfo(const std::wstring& frameName, const Vec2& pos, const Vec2& size)
 {
 	const auto iter = FindImageInfo(frameName);
-	assert(iter == m_mapInfo.end());
-	m_mapInfo.insert({frameName, tImageInfo{pos, size}});
+	if (iter != m_mapInfo.end())
+	{
+		iter->second.imagePos  = pos;
+		iter->second.imageSize = size;
+	}
+	else
+	{
+		m_mapInfo.insert({frameName, tImageInfo{pos, size}});
+	}
 }
 
-tImageInfo UIImageScript::GetImageInfo(const std::wstring& frameName)
+tImageInfo CUIImage::GetImageInfo(const std::wstring& frameName)
 {
 	const auto iter = FindImageInfo(frameName);
 	assert(iter != m_mapInfo.end());
 	return iter->second;
 }
 
-void UIImageScript::SetImageInfo(const std::wstring& frameName)
+void CUIImage::RemoveInfo(const std::wstring& frameName)
+{
+	const auto iter = FindImageInfo(frameName);
+	if (iter != m_mapInfo.end())
+	{
+		m_mapInfo.erase(iter);
+	}
+
+	if (m_mapInfo.empty())
+	{
+		m_currentInfo = {};
+		m_currentFrameName.clear();
+		m_useInfo = false;
+	}
+}
+
+void CUIImage::SetImageInfo(const std::wstring& frameName)
 {
 	m_currentInfo      = GetImageInfo(frameName);
 	m_currentFrameName = ToString(frameName);
 	m_useInfo          = true;
 }
 
-void UIImageScript::SetPreserveRatio(bool enable)
+void CUIImage::SetPreserveRatio(bool enable)
 {
 	m_preserveRatio = enable;
 }
 
-void UIImageScript::Serialize(YAML::Emitter& emitter)
+void CUIImage::SetUseInfo(bool enable)
+{
+	m_useInfo = enable;
+}
+
+void CUIImage::Serialize(YAML::Emitter& emitter)
 {
 	CUIBase::Serialize(emitter);
 	emitter << YAML::Key << "IMAGE INFO LIST" << YAML::Value << YAML::BeginMap;
@@ -146,10 +136,9 @@ void UIImageScript::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_currentInfo.imagePos) << YAML::Value << m_currentInfo.imagePos;
 	emitter << YAML::Key << NAME_OF(m_currentInfo.imageSize) << YAML::Value << m_currentInfo.imageSize;
 	emitter << YAML::Key << NAME_OF(m_preserveRatio) << YAML::Value << m_preserveRatio;
-	emitter << YAML::Key << NAME_OF(m_textureName) << YAML::Value << m_textureName;
 }
 
-void UIImageScript::Deserialize(const YAML::Node& node)
+void CUIImage::Deserialize(const YAML::Node& node)
 {
 	CUIBase::Deserialize(node);
 	for (auto& infoNameNode : node["IMAGE INFO LIST"])
@@ -168,7 +157,4 @@ void UIImageScript::Deserialize(const YAML::Node& node)
 	m_currentInfo.imagePos  = node[NAME_OF(m_currentInfo.imagePos)].as<Vec2>();
 	m_currentInfo.imageSize = node[NAME_OF(m_currentInfo.imageSize)].as<Vec2>();
 	m_preserveRatio         = node[NAME_OF(m_preserveRatio)].as<bool>();
-	m_textureName           = node[NAME_OF(m_textureName)].as<std::string>();
-	RenewScalarParam("TEXTURE NAME", &m_textureName);
-	SetUseInfo(m_useInfo);
 }

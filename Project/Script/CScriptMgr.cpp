@@ -5,7 +5,6 @@
 #include "BossJugCombatMgrScript.h"
 #include "BossJugHandScript.h"
 #include "BossJugScript.h"
-#include "ButtonScript.h"
 #include "CameraMoveScript.h"
 #include "ColumnFlameScript.h"
 #include "DestroyScript.h"
@@ -22,18 +21,13 @@
 #include "RigidBodyScript.h"
 #include "SwordTrailScript.h"
 #include "TrailScript.h"
-#include "UIImageScript.h"
-#include "UIPanelScript.h"
-#include "UIProgressBarScript.h"
 #include "UITestScript.h"
-#include "UITextScript.h"
 
 void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 {
 	_vec.push_back(L"BossJugCombatMgrScript");
 	_vec.push_back(L"BossJugHandScript");
 	_vec.push_back(L"BossJugScript");
-	_vec.push_back(L"ButtonScript");
 	_vec.push_back(L"CameraMoveScript");
 	_vec.push_back(L"ColumnFlameScript");
 	_vec.push_back(L"DestroyScript");
@@ -50,11 +44,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"RigidBodyScript");
 	_vec.push_back(L"SwordTrailScript");
 	_vec.push_back(L"TrailScript");
-	_vec.push_back(L"UIImageScript");
-	_vec.push_back(L"UIPanelScript");
-	_vec.push_back(L"UIProgressBarScript");
 	_vec.push_back(L"UITestScript");
-	_vec.push_back(L"UITextScript");
 }
 
 
@@ -66,8 +56,6 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new BossJugHandScript;
 	if (L"BossJugScript"== _strScriptName)
 		return new BossJugScript;
-	if (L"ButtonScript"== _strScriptName)
-		return new ButtonScript;
 	if (L"CameraMoveScript"== _strScriptName)
 		return new CameraMoveScript;
 	if (L"ColumnFlameScript"== _strScriptName)
@@ -100,16 +88,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new SwordTrailScript;
 	if (L"TrailScript"== _strScriptName)
 		return new TrailScript;
-	if (L"UIImageScript"== _strScriptName)
-		return new UIImageScript;
-	if (L"UIPanelScript"== _strScriptName)
-		return new UIPanelScript;
-	if (L"UIProgressBarScript"== _strScriptName)
-		return new UIProgressBarScript;
 	if (L"UITestScript"== _strScriptName)
 		return new UITestScript;
-	if (L"UITextScript"== _strScriptName)
-		return new UITextScript;
 	return nullptr;
 }
 
@@ -124,8 +104,6 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new BossJugHandScript;
 	case SCRIPT_TYPE::BOSSJUGSCRIPT:
 		return new BossJugScript;
-	case SCRIPT_TYPE::BUTTONSCRIPT:
-		return new ButtonScript;
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return new CameraMoveScript;
 	case SCRIPT_TYPE::COLUMNFLAMESCRIPT:
@@ -158,16 +136,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new SwordTrailScript;
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return new TrailScript;
-	case SCRIPT_TYPE::UIIMAGESCRIPT:
-		return new UIImageScript;
-	case SCRIPT_TYPE::UIPANELSCRIPT:
-		return new UIPanelScript;
-	case SCRIPT_TYPE::UIPROGRESSBARSCRIPT:
-		return new UIProgressBarScript;
 	case SCRIPT_TYPE::UITESTSCRIPT:
 		return new UITestScript;
-	case SCRIPT_TYPE::UITEXTSCRIPT:
-		return new UITextScript;
 	}
 	return nullptr;
 }
@@ -183,8 +153,6 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"BossJugHandScript";
 	case SCRIPT_TYPE::BOSSJUGSCRIPT:
 		return L"BossJugScript";
-	case SCRIPT_TYPE::BUTTONSCRIPT:
-		return L"ButtonScript";
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return L"CameraMoveScript";
 	case SCRIPT_TYPE::COLUMNFLAMESCRIPT:
@@ -217,16 +185,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"SwordTrailScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return L"TrailScript";
-	case SCRIPT_TYPE::UIIMAGESCRIPT:
-		return L"UIImageScript";
-	case SCRIPT_TYPE::UIPANELSCRIPT:
-		return L"UIPanelScript";
-	case SCRIPT_TYPE::UIPROGRESSBARSCRIPT:
-		return L"UIProgressBarScript";
 	case SCRIPT_TYPE::UITESTSCRIPT:
 		return L"UITestScript";
-	case SCRIPT_TYPE::UITEXTSCRIPT:
-		return L"UITextScript";
 		}
 	return nullptr;
 }

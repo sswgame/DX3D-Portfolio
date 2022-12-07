@@ -10,10 +10,6 @@
 #include "CEditorCamScript.h"
 #include "CGridScript.h"
 
-////TODO::TEST
-//#include <Script/MonsterGunScript.h>
-//#include <Engine/CFSM.h>
-#include <Script/BossJugCombatMgrScript.h>
 
 CToolObjMgr::CToolObjMgr() {}
 

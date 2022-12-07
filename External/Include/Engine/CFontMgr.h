@@ -29,6 +29,7 @@ private:
 	ComPtr<ID2D1SolidColorBrush> FindColor(const Vec4& _color);
 	UINT                         GetColorID(const Vec4& _color);
 public:
+	std::vector<std::wstring>    GetFonts() const;
 	void                         Init();
 	ComPtr<IDWriteTextFormat>    LoadFontFromFile(const std::wstring& _relativePath);
 	ComPtr<ID2D1SolidColorBrush> GetBrush(const Vec4& _color);

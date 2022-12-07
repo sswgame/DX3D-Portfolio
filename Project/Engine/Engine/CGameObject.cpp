@@ -15,7 +15,7 @@
 #include "CRenderComponent.h"
 #include "CNaviMap.h"
 #include "CNaviAgent.h"
-
+#include "CUIBase.h"
 
 #include "CScript.h"
 
@@ -33,8 +33,7 @@ CGameObject::CGameObject()
 	, m_bActive(true)
 	, m_bDynamicShadow(false)
 	, m_bFrustumCulling(false)
-{
-}
+	, m_pUIBase{nullptr} {}
 
 CGameObject::CGameObject(const CGameObject& _origin)
 	: CEntity(_origin)
@@ -44,6 +43,7 @@ CGameObject::CGameObject(const CGameObject& _origin)
 	, m_iLayerIdx(GAMEOBJECT::INVALID_INDEX)
 	, m_bDead(false)
 	, m_bActive(true)
+	, m_pUIBase{nullptr}
 {
 	for (auto& pComponent : _origin.m_arrCom)
 	{
@@ -420,6 +420,14 @@ void CGameObject::AddComponent(CComponent* _pComponent)
 
 		switch (_pComponent->GetType())
 		{
+		case COMPONENT_TYPE::UIIMAGE:
+		case COMPONENT_TYPE::UIPANEL:
+		case COMPONENT_TYPE::UITEXT:
+			{
+				assert(!m_pUIBase);
+				m_pUIBase = static_cast<CUIBase*>(_pComponent);
+			}
+			break;
 		case COMPONENT_TYPE::MESHRENDER:
 		case COMPONENT_TYPE::TILEMAP:
 		case COMPONENT_TYPE::PARTICLESYSTEM:
@@ -549,30 +557,22 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CCollider2D);
 			Collider2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR2D))
 		{
 			AddComponent(new CAnimator2D);
 			Animator2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT2D))
 		{
 			AddComponent(new CLight2D);
 			Light2D()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D)) { }
 
 
-		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::MESHRENDER))
 		{
 			AddComponent(new CMeshRender);
@@ -588,12 +588,8 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 			AddComponent(new CTileMap);
 			TileMap()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE))
-		{
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL))
-		{
-		}
+		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE)) { }
+		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL)) { }
 		else if (strComponentName == ToWString(COMPONENT_TYPE::NAVIMAP))
 		{
 			AddComponent(new CNaviMap);

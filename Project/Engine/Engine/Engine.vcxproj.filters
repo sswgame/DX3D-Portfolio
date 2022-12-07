@@ -209,6 +209,24 @@
     <ClInclude Include="CNaviAgent.h" />
     <ClInclude Include="CNaviMap.h" />
     <ClInclude Include="CNaviMapData.h" />
+    <ClInclude Include="CUIBase.h">
+      <Filter>Engine\05. Component\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIImage.h">
+      <Filter>Engine\05. Component\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIPanel.h">
+      <Filter>Engine\05. Component\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIText.h">
+      <Filter>Engine\05. Component\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIProgressBar.h">
+      <Filter>Engine\05. Component\UI\Extra</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIButton.h">
+      <Filter>Engine\05. Component\UI\Extra</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -407,6 +425,24 @@
     <ClCompile Include="CNaviAgent.cpp" />
     <ClCompile Include="CNaviMap.cpp" />
     <ClCompile Include="CNaviMapData.cpp" />
+    <ClCompile Include="CUIBase.cpp">
+      <Filter>Engine\05. Component\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIImage.cpp">
+      <Filter>Engine\05. Component\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIPanel.cpp">
+      <Filter>Engine\05. Component\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIText.cpp">
+      <Filter>Engine\05. Component\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIProgressBar.cpp">
+      <Filter>Engine\05. Component\UI\Extra</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIButton.cpp">
+      <Filter>Engine\05. Component\UI\Extra</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -606,6 +642,12 @@
     </Filter>
     <Filter Include="Engine\HLSL\GraphicsShader">
       <UniqueIdentifier>{41ccf228-a36e-4bea-ab99-d1e1e62190f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Component\UI">
+      <UniqueIdentifier>{73f605a3-4c21-45e7-a62b-99afe05ac1e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Component\UI\Extra">
+      <UniqueIdentifier>{457ffc07-2f80-4bc3-a46d-f97fbe2ba8aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

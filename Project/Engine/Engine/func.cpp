@@ -118,13 +118,20 @@ std::wstring ToWString(COMPONENT_TYPE _type)
 		L"LIGHT2D",
 		L"LIGHT3D",
 		L"BOUNDINGBOX",
+		L"FSM",
+		L"NAVIMAP",
+		L"NAVIAGENT",
+		L"UIPANEL",
+		L"UIIMAGE",
+		L"UITEXT",
+		L"UIPROGRESSBAR",
+		L"UIBUTTON",
 		L"MESHRENDER",
 		L"TILEMAP",
 		L"PARTICLESYSTEM",
 		L"LANDSCAPE",
 		L"DECAL",
 		L"SKYBOX",
-		L"FSM",
 	};
 
 	return szWString[static_cast<UINT>(_type)];

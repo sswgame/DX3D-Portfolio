@@ -13,6 +13,7 @@
 #include "SceneOutliner.h"
 #include "ParticleTool.h"
 #include "FogTool.h"
+#include "UITool.h"
 
 MenuUI::MenuUI()
 	: UI("Menu")
@@ -232,5 +233,17 @@ void MenuUI::Task()
 			return;
 		pFogToolUI->Activate();
 		m_bFogTool = false;
+	}
+
+	if (m_bUITool)
+	{
+		auto pUITool = static_cast<UITool*>(CImGuiMgr::GetInst()->FindUI("##UITool"));
+		pUITool->SetTitle("UI TOOL");
+
+		if (false == pUITool->IsActive())
+		{
+			pUITool->Activate();
+		}
+		m_bUITool = false;
 	}
 }

@@ -3,6 +3,7 @@
 
 #define GET_COMPONENT(type, TYPE)  class C##type* type() { return (C##type*)m_arrCom[(UINT)COMPONENT_TYPE::TYPE]; }
 
+class CUIBase;
 class CComponent;
 class CTransform;
 class CCollider2D;
@@ -23,6 +24,11 @@ class CCollider3D;
 class CFSM;
 class CNaviMap;
 class CNaviAgent;
+class CUIImage;
+class CUIText;
+class CUIPanel;
+class CUIProgressBar;
+class CUIButton;
 
 class CGameObject : public CEntity
 {
@@ -30,7 +36,7 @@ private:
 	vector<CGameObject*> m_vecChild;
 	vector<CScript*>     m_vecScript;
 
-	CComponent*       m_arrCom[(UINT)COMPONENT_TYPE::END];
+	CComponent*       m_arrCom[static_cast<UINT>(COMPONENT_TYPE::END)];
 	CRenderComponent* m_pRenderComponent;
 
 	CGameObject* m_pParent;
@@ -40,6 +46,9 @@ private:
 	bool m_bActive;
 	bool m_bDynamicShadow;  // 동적 그림자 생성
 	bool m_bFrustumCulling; // 절두체 컬링 사용 유무
+
+
+	CUIBase* m_pUIBase;
 
 private:
 	/**
@@ -80,8 +89,9 @@ public:
 	void AddChild(CGameObject* _pChild);
 	void AddComponent(CComponent* _component);
 
-	CComponent*       GetComponent(COMPONENT_TYPE _eType) { return m_arrCom[(UINT)_eType]; }
-	CRenderComponent* GetRenderComponent() { return m_pRenderComponent; }
+	CComponent*       GetComponent(COMPONENT_TYPE _eType) const { return m_arrCom[static_cast<UINT>(_eType)]; }
+	CRenderComponent* GetRenderComponent() const { return m_pRenderComponent; }
+	CUIBase*          GetUIBaseComponenent() const { return m_pUIBase; }
 
 	void DeleteComponent(COMPONENT_TYPE _eType);
 	void DeleteScript(UINT _ScriptID);
@@ -102,24 +112,29 @@ public:
 	GET_COMPONENT(Decal, DECAL)
 	GET_COMPONENT(LandScape, LANDSCAPE)
 	GET_COMPONENT(Collider3D, COLLIDER3D);
-	GET_COMPONENT(FSM, FINITE_STATE_MACHINE);
+	GET_COMPONENT(FSM, FSM);
 	GET_COMPONENT(NaviMap, NAVIMAP);
 	GET_COMPONENT(NaviAgent, NAVIAGENT);
+	GET_COMPONENT(UIImage, UIIMAGE);
+	GET_COMPONENT(UIButton, UIBUTTON);
+	GET_COMPONENT(UIPanel, UIPANEL);
+	GET_COMPONENT(UIProgressBar, UIPROGRESSBAR);
+	GET_COMPONENT(UIText, UITEXT);
 
 
 	const vector<CScript*>& GetScripts() { return m_vecScript; }
 	CScript*                GetScript(UINT _iIdx);
 	CScript*                GetScriptByName(const wstring& _strName) const;
 
-	int  GetLayerIndex() { return m_iLayerIdx; }
+	int  GetLayerIndex() const { return m_iLayerIdx; }
 	void RenewLayerIndex(int _NewLayerIdx);
 
 	template <typename T>
 	T* GetScript();
 
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 	CLONE(CGameObject)
 
 public:
@@ -137,7 +152,7 @@ public:
 };
 
 template <typename T>
-inline T* CGameObject::GetScript()
+T* CGameObject::GetScript()
 {
 	for (size_t i = 0; i < m_vecScript.size(); ++i)
 	{

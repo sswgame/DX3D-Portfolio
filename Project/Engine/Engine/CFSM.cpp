@@ -3,7 +3,7 @@
 #include "CEventMgr.h"
 
 CFSM::CFSM()
-	: CComponent{COMPONENT_TYPE::FINITE_STATE_MACHINE}
+	: CComponent{COMPONENT_TYPE::FSM}
 	, m_pCurState(nullptr) {}
 
 CFSM::~CFSM()

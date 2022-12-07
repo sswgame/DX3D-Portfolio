@@ -7,7 +7,7 @@ struct tImageInfo
 	Vec2 imageSize;
 };
 
-class UIImageScript final
+class CUIImage final
 	: public CUIBase
 {
 private:
@@ -18,31 +18,34 @@ private:
 	bool                               m_preserveRatio;
 	float                              m_ratio;
 
-	std::string m_textureName;
 private:
-	auto FindImageInfo(const std::wstring& frameName) { return m_mapInfo.find(frameName); };
 	void SetUseInfo(bool enable);
 public:
-	void update() override;
-	void lateupdate() override;
+	void finalupdate() override;
 public:
 	void Clear();
 
-	void SetTexture(const std::string& texturePath) { m_textureName = texturePath; }
-
-	void       AddImageInfo(const std::wstring& frameName, const Vec2& pos, const Vec2& size);
+	const std::map<std::wstring, tImageInfo>& GetInfoList() const { return m_mapInfo; }
+	void AddImageInfo(const std::wstring& frameName, const Vec2& pos, const Vec2& size);
 	tImageInfo GetImageInfo(const std::wstring& frameName);
+	auto FindImageInfo(const std::wstring& frameName) { return m_mapInfo.find(frameName); };
 
 	void SetImageInfo(const std::wstring& frameName);
-	void SetPreserveRatio(bool enable);
+	void RemoveInfo(const std::wstring& frameName);
 
+	const std::string& CurrentInfoName() const { return m_currentFrameName; }
+	bool               HasCurrentInfo() const { return false == m_mapInfo.empty(); }
+
+
+	void SetPreserveRatio(bool enable);
+	bool IsPreserveRatio() const { return m_preserveRatio; }
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
 
 public:
-	CLONE(UIImageScript);
-	UIImageScript();
-	UIImageScript(const UIImageScript& _origin);
-	virtual ~UIImageScript();
+	CLONE(CUIImage);
+	CUIImage();
+	CUIImage(const CUIImage& _origin);
+	virtual ~CUIImage();
 };

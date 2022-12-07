@@ -125,13 +125,16 @@
     <ClCompile Include="ParticleTool.cpp">
       <Filter>ImGui\UI\05. ParticleTool</Filter>
     </ClCompile>
-<<<<<<< .mine    <ClCompile Include="pch.cpp">
+    <ClCompile Include="pch.cpp">
       <Filter>Default</Filter>
     </ClCompile>
-=======    <ClCompile Include="FogTool.cpp">
+    <ClCompile Include="FogTool.cpp">
       <Filter>ImGui\UI\06. FogTool</Filter>
     </ClCompile>
->>>>>>> .theirs  </ItemGroup>
+    <ClCompile Include="UITool.cpp">
+      <Filter>ImGui\UI\07. UITool</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
       <Filter>Default</Filter>
@@ -268,13 +271,16 @@
     <ClInclude Include="ParticleTool.h">
       <Filter>ImGui\UI\05. ParticleTool</Filter>
     </ClInclude>
-<<<<<<< .mine    <ClInclude Include="pch.h">
+    <ClInclude Include="pch.h">
       <Filter>Default</Filter>
     </ClInclude>
-=======    <ClInclude Include="FogTool.h">
+    <ClInclude Include="FogTool.h">
       <Filter>ImGui\UI\06. FogTool</Filter>
     </ClInclude>
->>>>>>> .theirs  </ItemGroup>
+    <ClInclude Include="UITool.h">
+      <Filter>ImGui\UI\07. UITool</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">
       <Filter>Default</Filter>
@@ -394,6 +400,9 @@
     </Filter>
     <Filter Include="ImGui\UI\06. FogTool">
       <UniqueIdentifier>{1b812a83-3bf0-4676-83b4-bd01bff39d25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\UI\07. UITool">
+      <UniqueIdentifier>{866fc4a3-8adb-4139-82fa-20a404c25cb8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

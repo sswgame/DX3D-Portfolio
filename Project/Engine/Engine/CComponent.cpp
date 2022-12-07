@@ -18,6 +18,13 @@
 #include "CTransform.h"
 #include "CCollider3D.h"
 #include "CFSM.h"
+#include "CNaviAgent.h"
+#include "CNaviMap.h"
+#include "CUIButton.h"
+#include "CUIImage.h"
+#include "CUIPanel.h"
+#include "CUIProgressBar.h"
+#include "CUIText.h"
 
 CComponent::CComponent(COMPONENT_TYPE _eType)
 	: m_eComType(_eType)
@@ -66,7 +73,15 @@ CComponent* CComponent::MakeComponent(const std::wstring& name)
 	if (L"LANDSCAPE" == name) return new CLandScape{};
 	if (L"DECAL" == name) return new CDecal{};
 	if (L"SKYBOX" == name) return new CSkyBox{};
-	if (L"FINITE_STATE_MACHINE" == name) return new CFSM{};
+	if (L"FSM" == name) return new CFSM{};
+	if (L"NAVIMAP" == name) return new CNaviMap{};
+	if (L"NAVIAGENT" == name) return new CNaviAgent{};
+	if (L"UIPANEL" == name) return new CUIPanel{};
+	if (L"UIIMAGE" == name) return new CUIImage{};
+	if (L"UITEXT" == name) return new CUIText{};
+	if (L"UIPROGRESSBAR" == name) return new CUIProgressBar{};
+	if (L"UIBUTTON" == name) return new CUIButton{};
+
 
 	return nullptr;
 }

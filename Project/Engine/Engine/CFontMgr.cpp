@@ -1,13 +1,11 @@
 #include "pch.h"
 #include "CFontMgr.h"
 
-CFontMgr::CFontMgr()
-{
-}
+#include "CDevice.h"
 
-CFontMgr::~CFontMgr()
-{
-}
+CFontMgr::CFontMgr() {}
+
+CFontMgr::~CFontMgr() {}
 
 void CFontMgr::Init()
 {
@@ -27,6 +25,19 @@ ComPtr<IDWriteTextFormat> CFontMgr::LoadFontFromFile(const std::wstring& _relati
 	const std::wstring fontFace = GetFontFaceName(_relativePath);
 	assert(fontFace.empty() == false);
 	return CreateFontFromFile(_relativePath, fontFace);
+}
+
+std::vector<std::wstring> CFontMgr::GetFonts() const
+{
+	std::vector<std::wstring> vecFont{};
+	vecFont.reserve(m_mapFont.size());
+
+	for (auto& [fontName,pFont] : m_mapFont)
+	{
+		vecFont.push_back(fontName);
+	}
+
+	return vecFont;
 }
 
 void CFontMgr::CreateFontCollection(const std::wstring& _key, const std::wstring& _relativePath)

@@ -34,11 +34,11 @@
 #include <Script/SwordTrailScript.h>
 
 //UI
-#include <Script/UIPanelScript.h>
-#include <Script/UITextScript.h>
-#include <Script/UIImageScript.h>
-#include <Script/UIProgressBarScript.h>
-#include <Script/ButtonScript.h>
+#include <Engine/CUIPanel.h>
+#include <Engine/CUIText.h>
+#include <Engine/CUIImage.h>
+#include <Engine/CUIProgressBar.h>
+#include <Engine/CUIButton.h>
 #include <Script/UITestScript.h>
 
 namespace
@@ -57,15 +57,6 @@ namespace
 		_pScene->SetLayerName(9, L"CAMERA");
 		_pScene->SetLayerName(30, L"UI_STATIC");
 		_pScene->SetLayerName(31, L"UI_INTERACTIVE");
-	}
-
-	void LoadTextures()
-	{
-		// Texture 한장 로딩해보기
-
-		//Ptr<CTexture> pSkyTex_01 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky01.png", L"texture\\skybox\\Sky01.png");
-		//Ptr<CTexture> pSkyTex_02 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky02.jpg", L"texture\\skybox\\Sky02.jpg");
-		//Ptr<CTexture> pSkyTex_04 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyWater.dds",L"texture\\skybox\\SkyWater.dds");
 	}
 
 	CGameObject* AddCamera(CScene* _pScene)
@@ -427,7 +418,6 @@ namespace
 		auto pCurScene = new CScene;
 		CSceneMgr::GetInst()->ChangeScene(pCurScene);
 		SetLayer(pCurScene);
-		LoadTextures();
 
 		CGameObject* pCamObj = AddCamera(pCurScene);
 		AddDirectionalLight(pCurScene);

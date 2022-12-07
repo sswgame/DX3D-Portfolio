@@ -1,45 +1,31 @@
 #include "pch.h"
-#include "ButtonScript.h"
-
-#include "UIImageScript.h"
+#include "CUIButton.h"
+#include "CTimeMgr.h"
+#include "CUIImage.h"
+#include "CKeyMgr.h"
 
 namespace BUTTON
 {
 	inline constexpr float DEFAULT_TERM = 0.3f;
 }
 
-ButtonScript::ButtonScript()
-	: CScript{(int)SCRIPT_TYPE::BUTTONSCRIPT}
+CUIButton::CUIButton()
+	: CComponent{COMPONENT_TYPE::UIBUTTON}
 	, m_clickTerm{BUTTON::DEFAULT_TERM}
-	, m_elapsedTime{0.f}
-	, m_pUIBase{nullptr}
-{
-	AddScriptParam("CLICK TERM", SCRIPTPARAM_TYPE::FLOAT, &m_clickTerm);
-}
+	, m_elapsedTime{0.f} {}
 
-ButtonScript::ButtonScript(const ButtonScript& _origin)
-	: CScript{_origin}
+CUIButton::CUIButton(const CUIButton& _origin)
+	: CComponent{_origin}
 	, m_clickTerm{_origin.m_clickTerm}
-	, m_elapsedTime{0.f}
-	, m_pUIBase{nullptr}
-{
-	RenewScalarParam("CLICK TERM", &m_clickTerm);
-}
+	, m_elapsedTime{0.f} {}
 
-ButtonScript::~ButtonScript() = default;
+CUIButton::~CUIButton() = default;
 
-
-void ButtonScript::start()
-{
-	m_pUIBase = GetOwner()->GetScript<CUIBase>();
-	assert(m_pUIBase);
-}
-
-void ButtonScript::lateupdate()
+void CUIButton::finalupdate()
 {
 	m_elapsedTime += DT;
 
-	if (m_pUIBase->IsMouseHovered())
+	if (GetOwner()->GetUIBaseComponenent() && GetOwner()->GetUIBaseComponenent()->IsMouseHovered())
 	{
 		HandleClickEvent();
 		HandleDragEvent();
@@ -53,21 +39,17 @@ void ButtonScript::lateupdate()
 	}
 }
 
-void ButtonScript::Serialize(YAML::Emitter& emitter)
+void CUIButton::Serialize(YAML::Emitter& emitter)
 {
-	CScript::Serialize(emitter);
 	emitter << YAML::Key << NAME_OF(m_clickTerm) << YAML::Value << m_clickTerm;
 }
 
-void ButtonScript::Deserialize(const YAML::Node& node)
+void CUIButton::Deserialize(const YAML::Node& node)
 {
-	CScript::Deserialize(node);
 	m_clickTerm = node[NAME_OF(m_clickTerm)].as<float>();
-	RemoveScalarParam("CLICK TERM");
-	AddScriptParam("CLICK TERM", SCRIPTPARAM_TYPE::FLOAT, &m_clickTerm);
 }
 
-bool ButtonScript::DoubleClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
+bool CUIButton::DoubleClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 {
 	if (m_prevClick[static_cast<int>(mouseType)]
 	    && m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)])
@@ -78,7 +60,7 @@ bool ButtonScript::DoubleClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 	return false;
 }
 
-bool ButtonScript::OneClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
+bool CUIButton::OneClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 {
 	if (m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)])
 	{
@@ -88,7 +70,7 @@ bool ButtonScript::OneClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 	return false;
 }
 
-void ButtonScript::HandleClickEvent()
+void CUIButton::HandleClickEvent()
 {
 	if (KEY_TAP(KEY::LBTN))
 	{
@@ -128,7 +110,7 @@ void ButtonScript::HandleClickEvent()
 	}
 }
 
-void ButtonScript::HandleDragEvent()
+void CUIButton::HandleDragEvent()
 {
 	if (KEY_PRESSED(KEY::LBTN))
 	{
@@ -153,7 +135,7 @@ void ButtonScript::HandleDragEvent()
 	}
 }
 
-void ButtonScript::HandleReleaseEvent()
+void CUIButton::HandleReleaseEvent()
 {
 	if (KEY_AWAY(KEY::LBTN))
 	{
