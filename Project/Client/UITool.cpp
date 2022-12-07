@@ -20,25 +20,13 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "ListUI.h"
+#include "SceneOutliner.h"
 #include "ImGui/imgui_internal.h"
 
 UITool::UITool()
-	: UI{"##UITool"}
-{
-	m_pToolSceneTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"ToolRenderTargetTex");
+	: UI{"##UITool"} {}
 
-	m_pTree = new TreeUI{true};
-	m_pTree->SetTitle(u8"UI 계층도");
-	m_pTree->UseFrame(false);
-	m_pTree->ShowDummyRoot(false);
-	m_pTree->UseDragDropSelf(true);
-	m_pTree->SetClickedDelegate(this, static_cast<CLICKED>(&UITool::ItemClicked));
-}
-
-UITool::~UITool()
-{
-	SAFE_DELETE(m_pTree);
-}
+UITool::~UITool() {}
 
 void UITool::render_update()
 {
@@ -46,8 +34,6 @@ void UITool::render_update()
 	ImGui::SameLine();
 	if (ImGui::BeginChild("UI_INFO_SECTION"))
 	{
-		DrawHierarchy();
-		ImGui::SameLine();
 		DrawInfo();
 		ImGui::EndChild();
 	}
@@ -58,25 +44,30 @@ void UITool::render_update()
 		m_bOpenPopUp = false;
 	}
 	DrawWarning();
-
-	if (m_bOpenFrameTexture)
-	{
-		ImGui::OpenPopup("UI_FRAME_TEXTURE");
-		m_bOpenFrameTexture = false;
-	}
-	DrawOpenFrameTexture();
 }
 
 void UITool::DrawImage()
 {
+	if (nullptr == m_pFrameTexture)
+	{
+		return;
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
+	ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {0, 0});
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
 	const ImVec2 windowSize = ImGui::GetWindowSize();
-	ImGui::BeginChild(u8"UI_TOOL_SCENE",
-	                  {windowSize.x * 0.5f, windowSize.y},
-	                  true,
-	                  ImGuiWindowFlags_HorizontalScrollbar);
-	assert(nullptr != m_pToolSceneTargetTex);
-	ImGui::Image(m_pToolSceneTargetTex->GetSRV().Get(), windowSize * ImVec2{0.5f, 1.f});
-	ImGui::EndChild();
+	if (ImGui::BeginChild(u8"##UI_FRAME_TEXTURE",
+	                      windowSize,
+	                      true,
+	                      ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
+	{
+		ImGui::Image(m_pFrameTexture->GetSRV().Get(), windowSize);
+		CropImageByDrag();
+
+		ImGui::EndChild();
+	}
+	ImGui::PopStyleVar(3);
 }
 
 void UITool::CropImageByDrag()
@@ -114,18 +105,6 @@ void UITool::CropImageByDrag()
 	{
 		pDrawList->AddRect(m_startPos + windowPos, m_lastPos + windowPos, IM_COL32(0, 255, 0, 255));
 	}
-}
-
-void UITool::DrawHierarchy()
-{
-	const ImVec2 windowSize = ImGui::GetWindowSize();
-	const float  width      = windowSize.x * 0.5f;
-	const float  height     = windowSize.y * 0.25f;
-	ImGui::BeginChild(u8"UI_HIERARCHY", ImVec2{width, height}, true);
-
-	m_pTree->render_update();
-
-	ImGui::EndChild();
 }
 
 void UITool::DrawInfo()
@@ -192,21 +171,21 @@ void UITool::DrawInfo()
 			}
 			else
 			{
-				CGameObject*  pGameObject = pPrefab->Instantiate();
-				const CScene* pToolScene  = CSceneMgr::GetInst()->GetToolScene();
-				pToolScene->AddObject(pGameObject, L"UI_INTERACTIVE");
-				TreeRenew();
-
-				m_pSelectedNode = m_pTree->FindNode(ToString(pGameObject->GetName()));
-				m_pTree->SetSelectedNode(m_pSelectedNode);
+				CGameObject* pGameObject = pPrefab->Instantiate();
+				CSceneMgr::GetInst()->SpawnObject(pGameObject, L"UI_INTERACTIVE");
 			}
 		}
 	}
 
-	if (m_pSelectedNode)
+	SceneOutliner* pOutLiner = (SceneOutliner*)CImGuiMgr::GetInst()->FindUI("SceneOutliner");
+	m_pSelected              = pOutLiner->GetSelectedGameObject();
+	if (m_pSelected && nullptr == m_pSelected->GetUIBaseComponenent())
 	{
-		auto pGameObject = reinterpret_cast<CGameObject*>(m_pSelectedNode->GetData());
-		if (pGameObject->UIImage())
+		m_pSelected = nullptr;
+	}
+	if (m_pSelected)
+	{
+		if (m_pSelected->UIImage())
 		{
 			ImGui::Text(u8"드래그 정보");
 			ImGui::Text("LEFT TOP");
@@ -214,12 +193,10 @@ void UITool::DrawInfo()
 			ImGui::Text("SIZE");
 			ImGui::InputFloat2("##DRAG_SIZE", &m_size.x);
 
-			Ptr<CTexture> pTexture = pGameObject->MeshRender()->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
+			Ptr<CTexture> pTexture = m_pSelected->MeshRender()->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
 			if (nullptr != pTexture && ImGui::Button(u8"프레임 선택"))
 			{
-				m_pFrameTexture     = pTexture;
-				m_bShowFrameTexture = true;
-				m_bOpenFrameTexture = true;
+				m_pFrameTexture = pTexture;
 			}
 		}
 
@@ -270,10 +247,8 @@ void UITool::DrawInfo()
 					}
 				}
 				//ToolScene의 루트를 프리팹화
-				const CScene* pToolScene = CSceneMgr::GetInst()->GetToolScene();
-				CGameObject*  pRoot      = pToolScene->GetLayer(L"UI_INTERACTIVE")->GetRootObjects().at(0);
-				pPrefab                  = new CPrefab{};
-				pPrefab->SetProto(pRoot->Clone());
+				pPrefab = new CPrefab{};
+				pPrefab->SetProto(m_pSelected->Clone());
 				pPrefab->Save(szName);
 				CResMgr::GetInst()->AddRes<CPrefab>(relativePath, pPrefab.Get());
 			}
@@ -281,11 +256,9 @@ void UITool::DrawInfo()
 	}
 	ImGui::EndGroup();
 
-	if (m_pSelectedNode)
+	if (m_pSelected)
 	{
-		auto pGameObject = reinterpret_cast<CGameObject*>(m_pSelectedNode->GetData());
-
-		CUIBase* pUIBaseComponent = pGameObject->GetUIBaseComponenent();
+		CUIBase* pUIBaseComponent = m_pSelected->GetUIBaseComponenent();
 		if (pUIBaseComponent)
 		{
 			COMPONENT_TYPE type = pUIBaseComponent->GetType();
@@ -302,12 +275,12 @@ void UITool::DrawInfo()
 				break;
 			}
 		}
-		CComponent* pProgressBar = pGameObject->GetComponent(COMPONENT_TYPE::UIPROGRESSBAR);
+		CComponent* pProgressBar = m_pSelected->GetComponent(COMPONENT_TYPE::UIPROGRESSBAR);
 		if (nullptr != pProgressBar)
 		{
 			ShowProgressBarInfo(static_cast<CUIProgressBar*>(pProgressBar));
 		}
-		CComponent* pButton = pGameObject->GetComponent(COMPONENT_TYPE::UIBUTTON);
+		CComponent* pButton = m_pSelected->GetComponent(COMPONENT_TYPE::UIBUTTON);
 		if (nullptr != pButton)
 		{
 			ShowButtonInfo(static_cast<CUIButton*>(pButton));
@@ -326,7 +299,7 @@ void UITool::DrawWarning()
 				ImGui::Text(u8"선택한 프리팹은 UI 프리팹이 아닙니다");
 				ImGui::Text(u8"다시 선택하세요");
 			}
-			else if (nullptr == m_pSelectedNode)
+			else if (nullptr == m_pSelected)
 			{
 				ImGui::Text(u8"선택된 UI 객체가 없습니다");
 				ImGui::Text(u8"객체를 추가하고 Button/Progress bar를 축하세요");
@@ -358,77 +331,33 @@ void UITool::DrawWarning()
 	}
 }
 
-void UITool::DrawOpenFrameTexture()
-{
-	if (ImGui::BeginPopupModal("UI_FRAME_TEXTURE",
-	                           &m_bShowFrameTexture,
-	                           ImGuiWindowFlags_HorizontalScrollbar))
-	{
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
-		ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, {0, 0});
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
-		const ImVec2 windowSize = ImGui::GetWindowSize();
-		if (ImGui::BeginChild(u8"##UI_FRAME_TEXTURE",
-		                      windowSize,
-		                      true,
-		                      ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
-		{
-			ImGui::Image(m_pFrameTexture->GetSRV().Get(), windowSize);
-			CropImageByDrag();
-
-			ImGui::EndChild();
-		}
-		ImGui::PopStyleVar(3);
-		ImGui::EndPopup();
-	}
-}
-
-void UITool::TreeRenew()
-{
-	m_pTree->Clear();
-
-	CGameObject* pUIRoot = CSceneMgr::GetInst()->GetToolScene()->GetLayer(L"UI_INTERACTIVE")->GetRootObjects().at(0);
-
-	m_pTree->AddTreeNode(nullptr, ToString(pUIRoot->GetName()), (DWORD_PTR)pUIRoot);
-
-	for (auto& pChild : pUIRoot->GetChild())
-	{
-		const std::string parentUIName = (pChild->GetParent()) ? ToString(pChild->GetParent()->GetName()) : "";
-		TreeNode*         pParentNode  = parentUIName.empty() ? nullptr : m_pTree->FindNode(parentUIName);
-		m_pTree->AddTreeNode(pParentNode, ToString(pChild->GetName()), (DWORD_PTR)pChild);
-	}
-}
-
 void UITool::SelectTexture(DWORD_PTR _pTextureName)
 {
 	const auto          pTextureName = (const char*)_pTextureName;
 	const Ptr<CTexture> pTexture     = CResMgr::GetInst()->FindRes<CTexture>(ToWString(pTextureName));
-	const auto          pGameObject  = (CGameObject*)m_pSelectedNode->GetData();
-	pGameObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
+	m_pSelected->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
 }
 
 void UITool::SelectFontName(DWORD_PTR _pFontName)
 {
-	const auto pFontName   = (const char*)_pFontName;
-	const auto pGameObject = (CGameObject*)m_pSelectedNode->GetData();
-	pGameObject->UIText()->SetFont(ToWString(pFontName));
+	const auto pFontName = (const char*)_pFontName;
+	m_pSelected->UIText()->SetFont(ToWString(pFontName));
 }
 
 void UITool::AddObjectDelegate(DWORD_PTR _pGameObject)
 {
-	auto pGameObject = reinterpret_cast<CGameObject*>(_pGameObject);
+	const auto pGameObject = reinterpret_cast<CGameObject*>(_pGameObject);
 
-	if (nullptr == m_pSelectedNode)
+	if (nullptr == m_pSelected)
 	{
-		const CScene* pToolScene = CSceneMgr::GetInst()->GetToolScene();
 		pGameObject->Transform()->SetRelativePos({0.f, 0.f, 500.f});
-		pToolScene->AddObject(pGameObject, L"UI_INTERACTIVE");
+		CSceneMgr::GetInst()->SpawnObject(pGameObject, L"UI_INTERACTIVE");
 	}
 	else
 	{
-		auto            pParentUIObject = reinterpret_cast<CGameObject*>(m_pSelectedNode->GetData());
-		const CUIPanel* pPanelScript    = pParentUIObject->GetScript<CUIPanel>();
-		if (nullptr == pPanelScript)
+		const auto      pParent  = m_pSelected;
+		const CUIPanel* pUIPanel = pParent->UIPanel();
+		if (nullptr == pUIPanel)
 		{
 			m_bShowWarning = true;
 			m_bOpenPopUp   = true;
@@ -437,18 +366,11 @@ void UITool::AddObjectDelegate(DWORD_PTR _pGameObject)
 			return;
 		}
 
-		pParentUIObject->AddChild(pGameObject);
+		CSceneMgr::GetInst()->AddChild(m_pSelected, pGameObject);
 	}
-	TreeRenew();
 
-	m_pSelectedNode       = m_pTree->FindNode(ToString(pGameObject->GetName()));
-	TreeNode* pParentNode = m_pSelectedNode->GetParent();
-	while (pParentNode)
-	{
-		pParentNode->SetCheckOn();
-		pParentNode = pParentNode->GetParent();
-	}
-	m_pTree->SetSelectedNode(m_pSelectedNode);
+	SceneOutliner* pOutLiner = (SceneOutliner*)CImGuiMgr::GetInst()->FindUI("SceneOutliner");
+	pOutLiner->ShowHierarchyAll(pGameObject, true);
 }
 
 void UITool::AddUIObject(GAME_UI_TYPE type)
@@ -487,15 +409,14 @@ void UITool::AddUIObject(GAME_UI_TYPE type)
 
 void UITool::AddExtraFeature(UI_EXTRA_TYPE type)
 {
-	if (nullptr == m_pSelectedNode)
+	if (nullptr == m_pSelected)
 	{
 		m_bShowWarning = true;
 		m_bOpenPopUp   = true;
 		return;
 	}
 
-	auto pGameObject = (CGameObject*)m_pSelectedNode->GetData();
-	if (nullptr == pGameObject->GetUIBaseComponenent())
+	if (nullptr == m_pSelected->GetUIBaseComponenent())
 	{
 		m_bShowWarning   = true;
 		m_bOpenPopUp     = true;
@@ -507,7 +428,7 @@ void UITool::AddExtraFeature(UI_EXTRA_TYPE type)
 	{
 	case UI_EXTRA_TYPE::BUTTON:
 		{
-			if (pGameObject->UIText())
+			if (m_pSelected->UIText())
 			{
 				m_bShowWarning = true;
 				m_bAlreadyHas  = true;
@@ -515,13 +436,13 @@ void UITool::AddExtraFeature(UI_EXTRA_TYPE type)
 			}
 			else
 			{
-				pGameObject->AddComponent(new CUIButton{});
+				m_pSelected->AddComponent(new CUIButton{});
 			}
 			break;
 		}
 	case UI_EXTRA_TYPE::PROGRESS_BAR:
 		{
-			if (pGameObject->UIProgressBar())
+			if (m_pSelected->UIProgressBar())
 			{
 				m_bShowWarning = true;
 				m_bAlreadyHas  = true;
@@ -529,16 +450,11 @@ void UITool::AddExtraFeature(UI_EXTRA_TYPE type)
 			}
 			else
 			{
-				pGameObject->AddComponent(new CUIProgressBar{});
+				m_pSelected->AddComponent(new CUIProgressBar{});
 			}
 			break;
 		}
 	}
-}
-
-void UITool::ItemClicked(DWORD_PTR _dwUIGameObject)
-{
-	m_pSelectedNode = reinterpret_cast<TreeNode*>(_dwUIGameObject);
 }
 
 void UITool::CalculatePosAndSize()

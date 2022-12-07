@@ -41,7 +41,7 @@ void CUIBase::finalupdate()
 	adjustPos.y    = AdjustPositionWithAnchor(m_anchorV);
 	Transform()->SetRelativePos(adjustPos);
 
-	if (nullptr == GetOwner()->GetParent()->UIPanel())
+	if (nullptr == GetOwner()->GetParent() || nullptr == GetOwner()->GetParent()->UIPanel())
 	{
 		m_isMouseHovered = CollisionMouse();
 		if (m_isMouseHovered && m_hoverCallback)

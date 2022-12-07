@@ -176,6 +176,11 @@
     <ClInclude Include="CToolObjMgr.h" />
     <ClInclude Include="DecalUI.h" />
     <ClInclude Include="FogTool.h" />
+    <ClInclude Include="GameButtonUI.h" />
+    <ClInclude Include="GameImageUI.h" />
+    <ClInclude Include="GamePanelUI.h" />
+    <ClInclude Include="GameProgressBarUI.h" />
+    <ClInclude Include="GameTextUI.h" />
     <ClInclude Include="IconsFontAwesome5.h" />
     <ClInclude Include="ImGuizmo\GraphEditor.h" />
     <ClInclude Include="ImGuizmo\ImCurveEdit.h" />
@@ -226,6 +231,11 @@
     <ClCompile Include="CToolObjMgr.cpp" />
     <ClCompile Include="DecalUI.cpp" />
     <ClCompile Include="FogTool.cpp" />
+    <ClCompile Include="GameButtonUI.cpp" />
+    <ClCompile Include="GameImageUI.cpp" />
+    <ClCompile Include="GamePanelUI.cpp" />
+    <ClCompile Include="GameProgressBarUI.cpp" />
+    <ClCompile Include="GameTextUI.cpp" />
     <ClCompile Include="ImGuizmo\GraphEditor.cpp" />
     <ClCompile Include="ImGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="ImGuizmo\ImGradient.cpp" />

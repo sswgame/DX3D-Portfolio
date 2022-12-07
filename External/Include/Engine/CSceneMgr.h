@@ -12,16 +12,10 @@ private:
 
 private:
 	CScene* m_pCurScene;
-
-	CScene* m_pToolScene = nullptr;
-
-	std::vector<CScene*> m_vecScene;
 private:
 	void MakeToolScene();
 public:
 	CScene* GetCurScene() const { return m_pCurScene; }
-
-	CScene* GetToolScene() const { return m_pToolScene; }
 
 	void ChangeScene(CScene* _pNextScene);
 

@@ -27,12 +27,6 @@ private:
 	CGraphicsShader* m_pMergeShader;
 	CMaterial*       m_pMergeMaterial;
 
-public:
-	void     SetToolCamera(CCamera* pCamera, TOOL_SCENE type) { m_arrToolCamera[(UINT)type] = pCamera; }
-	CCamera* GetToolCamera(TOOL_SCENE type) const { return m_arrToolCamera[(UINT)type]; }
-private:
-	//툴 씬 전용
-	std::array<CCamera*, (UINT)TOOL_SCENE::END> m_arrToolCamera{};
 private:
 	void CreateSwapChainMRT();
 	void CreateDefferedMRT();
@@ -87,7 +81,7 @@ public:
 
 	// 현재 시점 카메라 가져오기
 	CCamera* GetMainCam() const;
-	CCamera* GetUICamera() const;
+	CCamera* GetUICamera();
 	CMRT*    GetMRT(MRT_TYPE _eType) const { return m_arrMRT[static_cast<UINT>(_eType)]; }
 
 

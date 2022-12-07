@@ -134,6 +134,19 @@
     <ClCompile Include="UITool.cpp">
       <Filter>ImGui\UI\07. UITool</Filter>
     </ClCompile>
+    <ClCompile Include="GameImageUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePanelUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameProgressBarUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTextUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameButtonUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -280,6 +293,19 @@
     <ClInclude Include="UITool.h">
       <Filter>ImGui\UI\07. UITool</Filter>
     </ClInclude>
+    <ClInclude Include="GameImageUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePanelUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameProgressBarUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTextUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameButtonUI.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">
@@ -403,6 +429,9 @@
     </Filter>
     <Filter Include="ImGui\UI\07. UITool">
       <UniqueIdentifier>{866fc4a3-8adb-4139-82fa-20a404c25cb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI">
+      <UniqueIdentifier>{bba3a2d9-3b6a-401e-876c-88669d2206b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

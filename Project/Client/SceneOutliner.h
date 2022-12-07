@@ -17,8 +17,9 @@ private:
 	CLayer*      m_pSelectedLayer;
 	CGameObject* m_pSelectedGameObject;
 
-	bool m_bOverwritePrefab = false;
-	bool m_bEnablePicking   = false;
+	bool         m_bOverwritePrefab = false;
+	bool         m_bEnablePicking   = false;
+	CGameObject* m_pObjectForShow   = nullptr;
 
 public:
 	void RenderGuizmo();
@@ -37,6 +38,9 @@ public:
 	TreeNode* AddSceneToTree(CScene* _pScene, TreeNode* _pDestNode);
 	TreeNode* AddLayerToTree(CLayer* _pLayer, TreeNode* _pDestNode);
 
+public:
+	CGameObject* GetSelectedGameObject() const { return m_pSelectedGameObject; }
+	void         ShowHierarchyAll(CGameObject* pGameObject, bool afterRenew = false);
 public:
 	void update() override;
 	void render_update() override;

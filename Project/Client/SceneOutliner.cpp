@@ -55,6 +55,29 @@ SceneOutliner::SceneOutliner()
 
 SceneOutliner::~SceneOutliner() {}
 
+void SceneOutliner::ShowHierarchyAll(CGameObject* pGameObject, bool afterRenew)
+{
+	if (afterRenew)
+	{
+		m_pObjectForShow = pGameObject;
+	}
+	m_pSelectedGameObject   = pGameObject;
+	TreeNode* pSelectedNode = m_TreeUI->FindNode(ToString(m_pSelectedGameObject->GetName()));
+	if (nullptr == pSelectedNode)
+	{
+		m_pSelectedGameObject = nullptr;
+		return;
+	}
+
+	TreeNode* pParentNode = pSelectedNode->GetParent();
+	while (pParentNode)
+	{
+		pParentNode->SetCheckOn();
+		pParentNode = pParentNode->GetParent();
+	}
+	m_TreeUI->SetSelectedNode(pSelectedNode);
+}
+
 void SceneOutliner::update()
 {
 	m_pSelectedScene = CSceneMgr::GetInst()->GetCurScene();
@@ -154,6 +177,12 @@ void SceneOutliner::Reset()
 	m_pSelectedScene      = nullptr;
 	m_pSelectedLayer      = nullptr;
 	m_pSelectedGameObject = nullptr;
+
+	if (m_pObjectForShow)
+	{
+		ShowHierarchyAll(m_pObjectForShow);
+		m_pObjectForShow = nullptr;
+	}
 }
 
 void SceneOutliner::ResetTreeUI()
@@ -573,16 +602,7 @@ void SceneOutliner::ObjectPicking()
 			          return left.first < right.first;
 		          });
 
-		m_pSelectedGameObject   = vecIntersect[0].second;
-		TreeNode* pSelectedNode = m_TreeUI->FindNode(ToString(m_pSelectedGameObject->GetName()));
-
-		TreeNode* pParentNode = pSelectedNode->GetParent();
-		while (pParentNode)
-		{
-			pParentNode->SetCheckOn();
-			pParentNode = pParentNode->GetParent();
-		}
-		m_TreeUI->SetSelectedNode(pSelectedNode);
+		ShowHierarchyAll(vecIntersect[0].second);
 	}
 }
 
