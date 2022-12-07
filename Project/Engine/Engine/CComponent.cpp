@@ -18,6 +18,7 @@
 #include "CTransform.h"
 #include "CCollider3D.h"
 #include "CFSM.h"
+#include "CRigidBody.h"
 #include "CNaviAgent.h"
 #include "CNaviMap.h"
 #include "CUIButton.h"
@@ -25,6 +26,7 @@
 #include "CUIPanel.h"
 #include "CUIProgressBar.h"
 #include "CUIText.h"
+#include "CSerializer.h"
 
 CComponent::CComponent(COMPONENT_TYPE _eType)
 	: m_eComType(_eType)

@@ -6,7 +6,7 @@
 #include <Engine/CSceneMgr.h>
 #include <Engine/CMeshData.h>
 #include <Engine/CFSM.h>
-
+#include <Engine/CSerializer.h>
 // [ SCRIPT PART ]
 #include "BossJugHandScript.h"
 
@@ -16,6 +16,7 @@
 #include "JugHand_None.h"
 #include "JugHand_Vanish.h"
 #include <random>
+#include <Engine/CSerializer.h>
 
 HandStateMgrScript::HandStateMgrScript()
 	: CScript{(int)SCRIPT_TYPE::HANDSTATEMGRSCRIPT}

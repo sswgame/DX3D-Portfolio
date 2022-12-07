@@ -5,7 +5,7 @@
 #include "CScene.h"
 
 #include "CTransform.h"
-
+#include "CSerializer.h"
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	: CComponent(_type)
 	, m_pMesh(nullptr)

@@ -18,7 +18,7 @@
 #include "CUIBase.h"
 
 #include "CScript.h"
-
+#include "CSerializer.h"
 namespace GAMEOBJECT
 {
 	constexpr int INVALID_INDEX = -1;

@@ -5,7 +5,7 @@
 
 #include "CTransform.h"
 #include "CResMgr.h"
-
+#include "CSerializer.h"
 CParticleSystem::CParticleSystem()
 	:
 	CRenderComponent(COMPONENT_TYPE::PARTICLESYSTEM)

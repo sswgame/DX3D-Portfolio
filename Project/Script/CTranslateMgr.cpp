@@ -6,6 +6,7 @@
 #include <Engine/CTransform.h>
 #include <Engine/CTimeMgr.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CRigidBody.h>
 
 
 #include "PlayerScript.h"
@@ -204,7 +205,8 @@ void CTranslateMgr::UpdateMovePlayer()
 	float fMoveSideDT = 0.f;
 
 	// TAP
-	RigidBodyScript* pRigid = (RigidBodyScript*)m_pOwner->GetScriptByName(L"RigidBodyScript");
+	//RigidBodyScript* pRigid = (RigidBodyScript*)m_pOwner->GetScriptByName(L"RigidBodyScript");
+	CRigidBody* pRigid = m_pOwner->RigidBody();
 
 	// ¾Õ
 	if (m_tCurKeyInfo.tKeyFlags_Zip.iKeyFlags_Tap & PLAYER_KEY_OPTION::FORWARD
@@ -290,7 +292,8 @@ void CTranslateMgr::UpdateMovePlayer()
 
 void CTranslateMgr::TranslateByRigidBody(const Vec3& direction, float magnitude)
 {
-	RigidBodyScript* pRigid = (RigidBodyScript*)m_pOwner->GetScriptByName(L"RigidBodyScript");
+	//RigidBodyScript* pRigid = (RigidBodyScript*)m_pOwner->GetScriptByName(L"RigidBodyScript");
+	CRigidBody* pRigid = m_pOwner->RigidBody();
 	if (pRigid != nullptr)
 	{
 		Vec3 directionVec = XMVector3Normalize(direction);

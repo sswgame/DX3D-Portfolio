@@ -9,7 +9,7 @@
 #include "CMesh.h"
 #include "CGameObject.h"
 #include "CComponent.h"
-
+#include "CSerializer.h"
 CAnimator3D::CAnimator3D()
 	: CComponent(COMPONENT_TYPE::ANIMATOR3D)
 	, m_pVecBones(nullptr)

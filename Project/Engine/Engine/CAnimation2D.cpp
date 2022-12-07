@@ -8,7 +8,7 @@
 #include "CConstBuffer.h"
 
 #include "Ptr.h"
-
+#include "CSerializer.h"
 
 CAnimation2D::CAnimation2D()
 	:

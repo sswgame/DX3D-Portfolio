@@ -14,6 +14,8 @@
 #include <Engine/CAnimator3D.h>
 #include <Engine/CFSM.h>
 #include <Engine/CMeshData.h>
+#include <Engine/CRigidBody.h>
+
 
 
 CPlayerJumpState::CPlayerJumpState()
@@ -129,9 +131,12 @@ void CPlayerJumpState::Jump(Vec3 _velocity)
 	if (m_iJumpCnt > 2)
 		return;
 
-	RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+	//RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+	CRigidBody* pRigid = GetOwner()->RigidBody();
+
 	if (pRigid)
 	{
+		pRigid->SetOnGround(false);
 		pRigid->SetVelocity(Vec3(0.f, 0.f, 0.f));
 		pRigid->AddVelocity(_velocity); // 위로 속도를 즉시 올린다. ( 빠르게 힘을 주면서 올라감 )
 		m_iJumpCnt++;					// 점프 횟수를 늘린다.
@@ -243,13 +248,21 @@ void CPlayerJumpState::UpdateJumpState()
 	{
 
 		// DOWN -> STATE::IDLE
-		GravityScript* pGravity = (GravityScript*)GetOwner()->GetScriptByName(L"GravityScript");
+		/*GravityScript* pGravity = (GravityScript*)GetOwner()->GetScriptByName(L"GravityScript");
 		if (pGravity != nullptr)
 		{
 			if (!pGravity->Isfalling())
 				GetOwner()->FSM()->ChangeState(L"IDLE");
-		}
+	
+	}*/
 
+		CRigidBody* pRigid = GetOwner()->RigidBody();
+		if (pRigid)
+		{
+			if(pRigid->IsOnGround())
+				GetOwner()->FSM()->ChangeState(L"IDLE");
+
+		}
 	}
 	break;
 	}

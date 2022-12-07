@@ -3,7 +3,7 @@
 
 #include "CRenderMgr.h"
 #include "CTransform.h"
-
+#include "CSerializer.h"
 CLight2D::CLight2D()
 	:
 	CComponent(COMPONENT_TYPE::LIGHT2D)

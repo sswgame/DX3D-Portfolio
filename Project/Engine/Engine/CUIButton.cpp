@@ -3,7 +3,7 @@
 #include "CTimeMgr.h"
 #include "CUIImage.h"
 #include "CKeyMgr.h"
-
+#include "CSerializer.h"
 namespace BUTTON
 {
 	inline constexpr float DEFAULT_TERM = 0.3f;

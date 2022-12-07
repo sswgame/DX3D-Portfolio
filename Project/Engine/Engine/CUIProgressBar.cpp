@@ -2,7 +2,7 @@
 #include "CUIProgressBar.h"
 
 #include "CMeshRender.h"
-
+#include "CSerializer.h"
 CUIProgressBar::CUIProgressBar()
 	: CComponent{COMPONENT_TYPE::UIPROGRESSBAR}
 	, m_percentage{1.f}

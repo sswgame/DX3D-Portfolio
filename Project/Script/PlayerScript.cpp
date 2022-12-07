@@ -178,7 +178,7 @@ void PlayerScript::UpdateCamera()
 	if (m_pCamera == nullptr)
 		return;
 
-	static PlayerCamScript* pCamScript = (PlayerCamScript*)m_pCamera->GetScriptByName(L"PlayerCamScript");
+	PlayerCamScript* pCamScript = (PlayerCamScript*)m_pCamera->GetScriptByName(L"PlayerCamScript");
 	if (pCamScript != nullptr)
 	{
 		// 카메라 스크립트에 플레이어의 위치 정보를 넘긴다 .  

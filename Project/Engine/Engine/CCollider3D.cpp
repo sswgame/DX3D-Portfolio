@@ -4,6 +4,8 @@
 #include "CConstBuffer.h"
 #include "CScript.h"
 #include "CTransform.h"
+#include "CDevice.h"
+#include "CSerializer.h"
 
 CCollider3D::CCollider3D()
 	: CComponent{COMPONENT_TYPE::COLLIDER3D}

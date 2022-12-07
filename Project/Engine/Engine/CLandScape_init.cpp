@@ -4,7 +4,7 @@
 #include "CSceneMgr.h"
 #include "CResMgr.h"
 #include "CEventMgr.h"
-
+#include "CStructuredBuffer.h"
 
 void CLandScape::Create()
 {

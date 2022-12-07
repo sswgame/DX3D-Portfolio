@@ -4,7 +4,7 @@
 #include "CAnimation2D.h"
 #include "CDevice.h"
 #include "CConstBuffer.h"
-
+#include "CSerializer.h"
 
 CAnimator2D::CAnimator2D()
 	:

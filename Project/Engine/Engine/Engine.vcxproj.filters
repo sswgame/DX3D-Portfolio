@@ -197,18 +197,15 @@
       <Filter>Engine\05. Component\04. Collider3D</Filter>
     </ClInclude>
     <ClInclude Include="CFSM.h">
-      <Filter>Engine\05. Component\FSM</Filter>
+      <Filter>Engine\05. Component\10. FSM</Filter>
     </ClInclude>
     <ClInclude Include="CSerializer.h">
       <Filter>Engine\01. Header</Filter>
     </ClInclude>
     <ClInclude Include="CState.h">
-      <Filter>Engine\05. Component\FSM</Filter>
+      <Filter>Engine\05. Component\10. FSM</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="CNaviAgent.h" />
-    <ClInclude Include="CNaviMap.h" />
-    <ClInclude Include="CNaviMapData.h" />
     <ClInclude Include="CUIBase.h">
       <Filter>Engine\05. Component\UI</Filter>
     </ClInclude>
@@ -226,6 +223,18 @@
     </ClInclude>
     <ClInclude Include="CUIButton.h">
       <Filter>Engine\05. Component\UI\Extra</Filter>
+    </ClInclude>
+    <ClInclude Include="CRigidBody.h">
+      <Filter>Engine\05. Component\11. RigidBody</Filter>
+    </ClInclude>
+    <ClInclude Include="CNaviAgent.h">
+      <Filter>Engine\05. Component\12. Navi</Filter>
+    </ClInclude>
+    <ClInclude Include="CNaviMap.h">
+      <Filter>Engine\05. Component\12. Navi</Filter>
+    </ClInclude>
+    <ClInclude Include="CNaviMapData.h">
+      <Filter>Engine\05. Component\12. Navi</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -413,18 +422,15 @@
       <Filter>Engine\05. Component\04. Collider3D</Filter>
     </ClCompile>
     <ClCompile Include="CFSM.cpp">
-      <Filter>Engine\05. Component\FSM</Filter>
+      <Filter>Engine\05. Component\10. FSM</Filter>
     </ClCompile>
     <ClCompile Include="CSerializer.cpp">
       <Filter>Engine\01. Header</Filter>
     </ClCompile>
     <ClCompile Include="CState.cpp">
-      <Filter>Engine\05. Component\FSM</Filter>
+      <Filter>Engine\05. Component\10. FSM</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="CNaviAgent.cpp" />
-    <ClCompile Include="CNaviMap.cpp" />
-    <ClCompile Include="CNaviMapData.cpp" />
     <ClCompile Include="CUIBase.cpp">
       <Filter>Engine\05. Component\UI</Filter>
     </ClCompile>
@@ -442,6 +448,18 @@
     </ClCompile>
     <ClCompile Include="CUIButton.cpp">
       <Filter>Engine\05. Component\UI\Extra</Filter>
+    </ClCompile>
+    <ClCompile Include="CRigidBody.cpp">
+      <Filter>Engine\05. Component\11. RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="CNaviAgent.cpp">
+      <Filter>Engine\05. Component\12. Navi</Filter>
+    </ClCompile>
+    <ClCompile Include="CNaviMap.cpp">
+      <Filter>Engine\05. Component\12. Navi</Filter>
+    </ClCompile>
+    <ClCompile Include="CNaviMapData.cpp">
+      <Filter>Engine\05. Component\12. Navi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -610,9 +628,6 @@
     <Filter Include="Engine\05. Component\06. Animator3D\Animation3D">
       <UniqueIdentifier>{778a100f-6dbe-471b-9720-29789dd0c5c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\05. Component\FSM">
-      <UniqueIdentifier>{7cbc60b2-a81f-4883-832f-41a1fca93c51}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\HLSL">
       <UniqueIdentifier>{56648531-ef52-40a1-87ec-2ab5bc787db1}</UniqueIdentifier>
     </Filter>
@@ -648,6 +663,24 @@
     </Filter>
     <Filter Include="Engine\05. Component\UI\Extra">
       <UniqueIdentifier>{457ffc07-2f80-4bc3-a46d-f97fbe2ba8aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Component\10. FSM">
+      <UniqueIdentifier>{7cbc60b2-a81f-4883-832f-41a1fca93c51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Component\11. RigidBody">
+      <UniqueIdentifier>{61fe881a-d398-4fcd-ac60-569558f95292}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Component\12. Navi">
+      <UniqueIdentifier>{82df659c-50cf-40ff-a468-5416347a4ce1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\11. RenderEffectMgr">
+      <UniqueIdentifier>{df61e5cb-1a5b-4d34-b519-90f7816c7b72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\11. RenderEffectMgr\NewFilter1">
+      <UniqueIdentifier>{adf29d51-ca65-4bd7-b500-70cdf42ab0cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\HLSL\GraphicsShader\RenderEffect">
+      <UniqueIdentifier>{9b21eaec-c2b5-4b08-813b-e69b3e40eedd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -717,7 +750,22 @@
     <None Include="ui.fx">
       <Filter>Engine\HLSL</Filter>
     </None>
-    <None Include="boss.fx" />
-    <None Include="trail.fx" />
+    <None Include="boss.fx">
+      <Filter>Engine\HLSL</Filter>
+    </None>
+    <None Include="trail.fx">
+      <Filter>Engine\HLSL\GraphicsShader</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="FullScreenTriangle.fx">
+      <Filter>Engine\HLSL\GraphicsShader\RenderEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="FXAA.fx">
+      <Filter>Engine\HLSL\GraphicsShader\RenderEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="SSAO.fx">
+      <Filter>Engine\HLSL\GraphicsShader\RenderEffect</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

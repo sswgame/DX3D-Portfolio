@@ -8,6 +8,7 @@
 #include <Engine/CTransform.h>
 #include <Engine/CTimeMgr.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CRigidBody.h>
 
 #include "PlayerScript.h"
 #include "RigidBodyScript.h"
@@ -134,7 +135,8 @@ void CPlayerSprintState::UpdateSprintState()
 	case SPRINT_TYPE::JUMP_DASH_ING:
 	{
 
-		RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+		//RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+		CRigidBody* pRigid = GetOwner()->RigidBody();
 		if (pRigid->GetVelocity().Length() <= 200.f)
 		{
 			m_eSprintType = SPRINT_TYPE::JUMP_DASH_END;
@@ -155,7 +157,8 @@ void CPlayerSprintState::UpdateSprintState()
 			if (pGravity->Isfalling() == false)
 			{
 				GetOwner()->FSM()->ChangeState(L"IDLE");
-				RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+				//RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+				CRigidBody* pRigid = GetOwner()->RigidBody();
 				Vec3 vCurVelocity = pRigid->GetVelocity();
 				pRigid->SetVelocity(Vec3(0.f, vCurVelocity.y, 0.f));
 			}
@@ -177,7 +180,8 @@ void CPlayerSprintState::UpdateSprintState()
 		if (m_pCurAnim != nullptr && m_pCurAnim->IsFinish() == true)
 		{
 			GetOwner()->FSM()->ChangeState(L"IDLE");
-			RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+			//RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+			CRigidBody* pRigid = GetOwner()->RigidBody();
 			Vec3 vCurVelocity = pRigid->GetVelocity();
 			pRigid->SetVelocity(Vec3(0.f, vCurVelocity.y, 0.f));
 
@@ -223,7 +227,8 @@ void CPlayerSprintState::Sprint(float _fForce)
 
 	Vec3 vObjForwardAxis = m_pTranslateMgr->GetForwardAxis(Vec3(0.f, -XM_PI, 0.f));
 	vObjForwardAxis.Normalize();
-	RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+	//RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
+	CRigidBody* pRigid = GetOwner()->RigidBody();
 	pRigid->AddVelocity(vObjForwardAxis * _fForce);
 
 }

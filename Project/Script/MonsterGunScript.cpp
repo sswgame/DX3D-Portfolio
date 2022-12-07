@@ -14,7 +14,7 @@
 #include "CWalk_Gun.h"
 #include "MonsterSearchScript.h"
 #include "PlayerScript.h"
-
+#include <Engine/CSerializer.h>
 MonsterGunScript::MonsterGunScript()
 	: CScript{(int)SCRIPT_TYPE::MONSTERGUNSCRIPT}
 	, m_hp{0}

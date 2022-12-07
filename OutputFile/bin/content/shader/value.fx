@@ -89,6 +89,37 @@ cbuffer GLOBAL : register(b3)
     int     iLight3DCount;
 }
 
+cbuffer SSAO_CHANGES_ON_RESIZE : register(b4)
+{
+    //
+    // SSAO를 위해
+    //
+    matrix g_ViewToTexSpace; // Proj * Texture
+    float4 g_FarPlanePoints[3]; // 원거리 삼각형(네 모서리를 덮음), 삼각형은 아래 참조
+    float2 g_TexelSize; // (1.0f/W, 1.0f/H)
+}
+
+cbuffer SSAO_CHANGES_RARELY : register(b5)
+{
+    // 방향으로 균일한 분포를 갖지만 길이는 무작위인 14개의 벡터
+    float4 g_OffsetVectors[14];
+
+    // 보는 공간의 좌표
+    float g_OcclusionRadius;
+    float g_OcclusionFadeStart;
+    float g_OcclusionFadeEnd;
+    float g_SurfaceEpsilon;
+
+    //
+    // SSAO_Blur용
+    //
+    float4 g_BlurWeights[3];
+    int g_BlurRadius;
+    float3 g_Pad;
+};
+
+
+
 Texture2D g_tex_0 : register(t0);
 Texture2D g_tex_1 : register(t1);
 Texture2D g_tex_2 : register(t2);
@@ -116,8 +147,27 @@ Texture2D g_noise_01 : register(t70);
 Texture2D g_noise_02 : register(t71);
 Texture2D g_noise_cloud : register(t72);
 
-SamplerState g_sam_0 : register(s0); // Anisotropic Filter
-SamplerState g_sam_1 : register(s1); // Point Filter
+// Sampler State Type 
+SamplerState g_sam_0 : register(s0); // ANISOTROPIC_2X_WRAP 
+SamplerState g_sam_1 : register(s1); // POINT_WRAP 
+
+SamplerState g_sam_LinearClamp : register(s2); // LINEAR_CLAMP 
+SamplerState g_sam_PointClamp : register(s3); // POINT_CLAMP 
+
+SamplerState g_sam_Anisotropic_2xClamp : register(s4); // ANISOTROPIC_2X_CLAMP 
+SamplerState g_sam_Anisotropic_4xClamp : register(s5); // ANISOTROPIC_4X_CLAMP 
+SamplerState g_sam_Anisotropic_8xClamp : register(s6); // ANISOTROPIC_8X_CLAMP 
+SamplerState g_sam_Anisotropic_16xClamp : register(s7); // ANISOTROPIC_16X_CLAMP 
+SamplerState g_sam_Anisotropic_16xWrap : register(s8); // ANISOTROPIC_16X_WRAP 
+
+SamplerState g_sam_LinearWrap : register(s9); // LINEAR_WRAP 
+SamplerState g_sam_ShadowPCF : register(s10); // SHADOW_PCF 
+
+SamplerState g_SamNormalDepth : register(s11); // ANISOTROPIC_8X_CLAMP 
+SamplerState g_SamRandomVec : register(s12); // ANISOTROPIC_16X_CLAMP 
+SamplerState g_SamBlur : register(s13); // ANISOTROPIC_16X_WRAP 
+
+
 
 
 #include "func.fx"

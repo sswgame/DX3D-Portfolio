@@ -3,6 +3,7 @@
 
 #include "CMeshRender.h"
 #include "CTransform.h"
+#include "CSerializer.h"
 
 CUIImage::CUIImage()
 	: CUIBase{COMPONENT_TYPE::UIIMAGE}

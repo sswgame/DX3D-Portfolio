@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CParticleUpdateShader.h"
+#include "CStructuredBuffer.h"
 
 
 CParticleUpdateShader::CParticleUpdateShader()

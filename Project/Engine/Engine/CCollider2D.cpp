@@ -8,7 +8,7 @@
 
 #include "CTransform.h"
 #include "CScript.h"
-
+#include "CSerializer.h"
 CCollider2D::CCollider2D()
 	:
 	CComponent(COMPONENT_TYPE::COLLIDER2D)

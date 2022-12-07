@@ -2,6 +2,7 @@
 #include "CUIPanel.h"
 
 #include "CTransform.h"
+#include "CSerializer.h"
 
 CUIPanel::CUIPanel()
 	: CUIBase{COMPONENT_TYPE::UIPANEL}

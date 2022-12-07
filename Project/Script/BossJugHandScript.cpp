@@ -11,7 +11,7 @@
 #include "PlayerScript.h"
 #include "CPlayerStat.h"
 #include "BossJugScript.h"
-
+#include <Engine/CSerializer.h>
 BossJugHandScript::BossJugHandScript()
 	: CScript{ (int)SCRIPT_TYPE::BOSSJUGHANDSCRIPT }
 	, m_vDirection(Vec3(0.f, 0.f, -1.f))

@@ -50,7 +50,7 @@ void Deux_Attack::Update()
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
 		}
-	}
+	}	
 	else
 	{
 		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();

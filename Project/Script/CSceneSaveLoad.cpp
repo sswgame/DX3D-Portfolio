@@ -10,6 +10,7 @@
 #include "CScriptMgr.h"
 
 #include <fstream>
+#include <Engine/CSerializer.h>
 
 bool CSceneSaveLoad::s_isBinary = false;
 

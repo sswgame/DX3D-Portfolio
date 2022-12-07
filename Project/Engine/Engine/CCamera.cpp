@@ -17,7 +17,7 @@
 #include "CMeshRender.h"
 
 #include "CMRT.h"
-
+#include "CSerializer.h"
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)

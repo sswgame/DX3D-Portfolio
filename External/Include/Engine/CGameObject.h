@@ -22,6 +22,7 @@ class CRenderComponent;
 class CLandScape;
 class CCollider3D;
 class CFSM;
+class CRigiBody;
 class CNaviMap;
 class CNaviAgent;
 class CUIImage;
@@ -113,6 +114,7 @@ public:
 	GET_COMPONENT(LandScape, LANDSCAPE)
 	GET_COMPONENT(Collider3D, COLLIDER3D);
 	GET_COMPONENT(FSM, FSM);
+	GET_COMPONENT(RigidBody, RIGIDBODY);
 	GET_COMPONENT(NaviMap, NAVIMAP);
 	GET_COMPONENT(NaviAgent, NAVIAGENT);
 	GET_COMPONENT(UIImage, UIIMAGE);

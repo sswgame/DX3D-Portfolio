@@ -9,7 +9,7 @@
 #include "CRenderMgr.h"
 #include "CTransform.h"
 #include "CUIPanel.h"
-
+#include "CSerializer.h"
 CUIBase::CUIBase(COMPONENT_TYPE type)
 	: CComponent{type}
 	, m_orderZ{0}

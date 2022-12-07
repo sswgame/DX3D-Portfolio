@@ -3,7 +3,7 @@
 #include "CObjKeyMgr.h"
 class CStateMgr;
 class PlayerScript;
-
+class CAnimation3D;
 
 enum class LIGHT_ATTACK_STATE
 {

@@ -2,7 +2,7 @@
 #include "CSkyBox.h"
 
 #include "CTransform.h"
-
+#include "CSerializer.h"
 
 CSkyBox::CSkyBox()
 	: CRenderComponent(COMPONENT_TYPE::SKYBOX)

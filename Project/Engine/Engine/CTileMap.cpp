@@ -7,7 +7,7 @@
 
 #include "CDevice.h"
 #include "CConstBuffer.h"
-
+#include "CSerializer.h"
 CTileMap::CTileMap()
 	:
 	CRenderComponent(COMPONENT_TYPE::TILEMAP)

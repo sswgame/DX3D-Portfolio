@@ -21,6 +21,11 @@
 #include <Engine/CAnimator3D.h>
 #include <Engine/CFSM.h>
 #include <Engine/CMeshData.h>
+#include <Engine/CRigidBody.h>
+#include <Engine/CMesh.h>
+#include <Engine/CMaterial.h>
+
+
 
 // [SCRIPT TYPE]
 #include <Script/PlayerScript.h>
@@ -245,10 +250,9 @@ namespace
 
 	void AddPlayer(CScene* _pScene, CGameObject* _pCamera)
 	{
-		Ptr<CMeshData> pMeshData = nullptr;
 		CGameObject*   pObj      = nullptr;
 
-		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat",
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat",
 		                                                L"meshdata\\player_sword0.mdat");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"player");
@@ -259,8 +263,9 @@ namespace
 		pObj->Animator3D()->SetPlayWithChild(true);
 
 		pObj->AddComponent(new CFSM);
-		pObj->AddComponent(new RigidBodyScript);
-		pObj->AddComponent(new GravityScript);
+		pObj->AddComponent(new CRigidBody);
+		//pObj->AddComponent(new RigidBodyScript);
+		//pObj->AddComponent(new GravityScript);
 		pObj->AddComponent(new TrailScript);
 		pObj->AddComponent(new CCollider3D);
 
@@ -461,13 +466,13 @@ namespace
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
 
-		//AddPlayer(pCurScene, pCamObj);
+		AddPlayer(pCurScene, pCamObj);
 		//AddBoss(pCurScene);
 		//AddHomonculus(pCurScene);
 		//AddDeuxiemie(pCurScene);
 		
 		//TestUI(pCurScene);
-		TestObjectPicking(pCurScene);
+		//TestObjectPicking(pCurScene);
 
 		// 충돌 레이어 설정
 		CCollisionMgr::GetInst()->CollisionCheck(1, 1);

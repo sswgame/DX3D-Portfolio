@@ -9,7 +9,7 @@
 #include "CNaviMap.h"
 #include "CNaviMapData.h"
 #include "CTransform.h"
-
+#include "CSerializer.h"
 
 CNaviAgent::CNaviAgent()
 	: CComponent{COMPONENT_TYPE::NAVIAGENT}

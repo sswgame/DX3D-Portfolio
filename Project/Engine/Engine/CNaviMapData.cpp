@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include "CResMgr.h"
-
+#include "CSerializer.h"
 
 CNaviCell::CNaviCell()
 	: m_iIDX(-1)

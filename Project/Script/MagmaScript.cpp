@@ -8,7 +8,7 @@
 #include <Engine/CSceneMgr.h>
 #include <Engine/CScene.h>
 #include <Engine/CParticleSystem.h>
-
+#include <Engine/CSerializer.h>
 MagmaScript::MagmaScript()
 	: CScript{ (int)SCRIPT_TYPE::MAGMASCRIPT }
 	, m_fLifeTime(0.f)

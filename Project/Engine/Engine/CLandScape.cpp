@@ -8,7 +8,7 @@
 #include "CCamera.h"
 
 #include "CStructuredBuffer.h"
-
+#include "CSerializer.h"
 
 CLandScape::CLandScape()
 	: CRenderComponent(COMPONENT_TYPE::LANDSCAPE)

@@ -10,6 +10,7 @@
 #include <Engine/CTransform.h>
 #include <Engine/CTimeMgr.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CAnimation3D.h>
 
 
 CPlayerLightAttackState::CPlayerLightAttackState()

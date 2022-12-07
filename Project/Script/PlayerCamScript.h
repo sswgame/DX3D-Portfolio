@@ -25,6 +25,7 @@ private:
     CGameObject*    m_pCam;                 // 카메라
     CAMERA_MODE     m_eCamMode;             // 카메라 촬영 모드 설정 
     CAMERA_OPTION   m_eCamOption;           // 카메라 촬영 옵션 설정 
+    CGameObject*    m_pPlayer;
 
 private:
     Vec3            m_vPos;                 // 카메라의 위치 

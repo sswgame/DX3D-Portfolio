@@ -5,7 +5,7 @@
 
 #include "CTransform.h"
 #include"CMeshRender.h"
-
+#include "CSerializer.h"
 CNaviMap::CNaviMap()
 	: CComponent{COMPONENT_TYPE::NAVIMAP}
 	, m_pNeviMapData(nullptr)

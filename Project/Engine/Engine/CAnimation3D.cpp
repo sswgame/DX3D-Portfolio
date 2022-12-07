@@ -8,7 +8,7 @@
 #include "CResMgr.h"
 
 #include "CAnimation3DShader.h"
-
+#include "CSerializer.h"
 CAnimation3D::CAnimation3D()
 	: m_pOwner(nullptr)
 	, m_tClip{}

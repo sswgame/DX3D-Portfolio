@@ -6,7 +6,7 @@
 #include <Engine/CUIPanel.h>
 #include <Engine/CUIText.h>
 #include "CObjectManager.h"
-
+#include <Engine/CSerializer.h>
 
 UITestScript::UITestScript()
 	: CScript{(int)SCRIPT_TYPE::UITESTSCRIPT}

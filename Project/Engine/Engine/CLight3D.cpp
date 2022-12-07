@@ -10,7 +10,7 @@
 #include "CCamera.h"
 #include "CEventMgr.h"
 #include "CLayer.h"
-
+#include "CSerializer.h"
 CLight3D::CLight3D()
 	: CComponent(COMPONENT_TYPE::LIGHT3D)
   , m_LightInfo{}

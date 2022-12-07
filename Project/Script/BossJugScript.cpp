@@ -7,7 +7,7 @@
 #include <Engine/CAnimator3D.h>
 #include <Engine/CAnimation3D.h>
 #include <Engine/CFSM.h>
-
+#include <Engine/CSerializer.h>
 // [ SCRIPT PART ] 
 #include "Jug_None.h"
 #include "Jug_Intro.h"

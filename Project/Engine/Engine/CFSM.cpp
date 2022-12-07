@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CFSM.h"
 #include "CEventMgr.h"
-
+#include "CSerializer.h"
 CFSM::CFSM()
 	: CComponent{COMPONENT_TYPE::FSM}
 	, m_pCurState(nullptr) {}

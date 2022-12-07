@@ -7,6 +7,7 @@
 #include "CMeshRender.h"
 #include "CTransform.h"
 #include "CUIBase.h"
+#include "CSerializer.h"
 
 
 CUIText::CUIText()

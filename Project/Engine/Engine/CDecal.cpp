@@ -3,7 +3,7 @@
 
 #include "CTransform.h"
 #include "CMeshRender.h"
-
+#include "CSerializer.h"
 
 CDecal::CDecal()
 	: CRenderComponent(COMPONENT_TYPE::DECAL)

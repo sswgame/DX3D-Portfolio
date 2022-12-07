@@ -119,6 +119,7 @@ std::wstring ToWString(COMPONENT_TYPE _type)
 		L"LIGHT3D",
 		L"BOUNDINGBOX",
 		L"FSM",
+		L"RIGIDBODY",
 		L"NAVIMAP",
 		L"NAVIAGENT",
 		L"UIPANEL",
