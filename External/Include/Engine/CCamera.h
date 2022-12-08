@@ -44,8 +44,8 @@ protected:
 	float m_fFOV;         // Filed Of View (시야각)
 	float m_fFar;         // 최대 시야 거리
 
-	UINT m_iLayerMask;
-	int  m_iCamIdx; // RenderMgr 상에서   
+	std::bitset<MAX_LAYER> m_iLayerMask;
+	int                    m_iCamIdx; // RenderMgr 상에서   
 
 
 public:
@@ -66,9 +66,9 @@ public:
 	const tRay& GetRay() const { return m_ray; }
 	PROJ_TYPE   GetProjType() const { return m_eProjType; }
 
-	void CheckLayerMask(int _iLayerIdx);
+	void CheckLayerMask(int _iLayerIdx, bool enable = true);
 	void CheckLayerMask(const wstring& _strLayerName);
-	void CheckLayerMaskAll() { m_iLayerMask = 0xffffffff; }
+	void CheckLayerMaskAll(bool enable = true) { m_iLayerMask = (enable) ? 0xFFFF'FFFF : 0; }
 
 	const Matrix& GetViewMat() const { return m_matView; }
 	const Matrix& GetViewInvMat() const { return m_matViewInv; }

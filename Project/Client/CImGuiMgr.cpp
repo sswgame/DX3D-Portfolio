@@ -48,7 +48,7 @@ void CImGuiMgr::init(HWND _hwnd)
 	// 한글 폰트 추가
 	wstring wstrFilePath = CPathMgr::GetInst()->GetContentPath();
 	string  strFontPath  = ToString(wstrFilePath) + "font\\Pretendard-Medium.ttf";
-	io.Fonts->AddFontFromFileTTF(strFontPath.c_str(), 15.f, NULL, io.Fonts->GetGlyphRangesKorean());
+	io.Fonts->AddFontFromFileTTF(strFontPath.c_str(), 15.f, nullptr, io.Fonts->GetGlyphRangesKorean());
 
 	// Font Awesome Icon 추가
 	string       strFontAwesomeIcon = ToString(wstrFilePath) + "font/fa-solid-900.ttf";
@@ -62,7 +62,6 @@ void CImGuiMgr::init(HWND _hwnd)
 	                      &config,
 	                      icon_ranges);    // outputs a paint brush icon and 'Paint' as a string.
 	io.Fonts->Build();
-
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();

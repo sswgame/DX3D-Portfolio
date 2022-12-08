@@ -52,7 +52,7 @@
     <IncludePath>$(SolutionDir)External\Include\;$(ProjectDir);$(SolutionDir)External\Include\FBXLoader\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Trash\$(ProjectName)\$(Configuration)\</IntDir>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ProjectDir)ImGui\;$(ProjectDir)ImGuizmo\</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -60,7 +60,7 @@
     <IncludePath>$(SolutionDir)External\Include\;$(ProjectDir);$(SolutionDir)External\Include\FBXLoader\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Trash\$(ProjectName)\$(Configuration)\</IntDir>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ProjectDir)ImGui\;$(ProjectDir)ImGuizmo\</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -71,9 +71,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -91,9 +92,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -76,4 +76,6 @@ public:
 	CUIText();
 	CUIText(const CUIText& _origin);
 	virtual ~CUIText();
+
+	friend class CEventMgr;
 };

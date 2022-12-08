@@ -2,6 +2,7 @@
 #include "CCollider3D.h"
 
 #include "CConstBuffer.h"
+#include "CDevice.h"
 #include "CScript.h"
 #include "CTransform.h"
 #include "CDevice.h"
@@ -33,13 +34,9 @@ CCollider3D::CCollider3D(const CCollider3D& _origin)
 	, m_iCollisionCount{0}
 	, m_eCollider3DType{_origin.m_eCollider3DType}
 	, m_pMesh{_origin.m_pMesh}
-	, m_pMaterial{_origin.m_pMaterial}
-{
-}
+	, m_pMaterial{_origin.m_pMaterial} {}
 
-CCollider3D::~CCollider3D()
-{
-}
+CCollider3D::~CCollider3D() {}
 
 void CCollider3D::SetCollider3DType(COLLIDER3D_TYPE _type)
 {

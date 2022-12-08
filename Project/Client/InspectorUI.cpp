@@ -19,6 +19,11 @@
 #include "DecalUI.h"
 #include "Animator3DUI.h"
 #include "Collider3DUI.h"
+#include "GameButtonUI.h"
+#include "GameImageUI.h"
+#include "GamePanelUI.h"
+#include "GameProgressBarUI.h"
+#include "GameTextUI.h"
 
 // etc UI
 #include "ListUI.h"
@@ -42,6 +47,11 @@
 #include <Engine/CLight3D.h>
 #include <Engine/CDecal.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CUIButton.h>
+#include <Engine/CUIImage.h>
+#include <Engine/CUIPanel.h>
+#include <Engine/CUIProgressBar.h>
+#include <Engine/CUIText.h>
 
 // Engine > etc
 #include <Engine/CMaterial.h>
@@ -86,6 +96,25 @@ InspectorUI::InspectorUI()
 	AddChild(pComUI);
 	m_arrComUI[(UINT)COMPONENT_TYPE::ANIMATOR3D] = pComUI;
 
+	pComUI = new GameButtonUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::UIBUTTON] = pComUI;
+
+	pComUI = new GameImageUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::UIIMAGE] = pComUI;
+
+	pComUI = new GamePanelUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::UIPANEL] = pComUI;
+
+	pComUI = new GameTextUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::UITEXT] = pComUI;
+
+	pComUI = new GameProgressBarUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::UIPROGRESSBAR] = pComUI;
 	// ==============
 	// ResInfoUI »ý¼º
 	// ==============
@@ -102,9 +131,7 @@ InspectorUI::InspectorUI()
 	m_arrResUI[(UINT)RES_TYPE::TEXTURE] = pResInfoUI;
 }
 
-InspectorUI::~InspectorUI()
-{
-}
+InspectorUI::~InspectorUI() {}
 
 
 void InspectorUI::update()

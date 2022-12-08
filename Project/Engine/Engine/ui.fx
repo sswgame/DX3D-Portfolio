@@ -13,7 +13,6 @@ struct VTX_IN
 struct VTX_OUT
 {
     float4 vPosition : SV_Position;
-    float3 vWorldPos : POSITION;
     float2 vUV : TEXCOORD;
 };
 
@@ -116,7 +115,6 @@ VTX_OUT VS_UI(VTX_IN input)
     VTX_OUT output = (VTX_OUT) 0.f;
     
     output.vPosition = mul(float4(input.vPos, 1.f), g_matWVP);
-    output.vWorldPos = mul(float4(input.vPos, 1.f), g_matWorld).xyz;
     output.vUV = input.vUV;
 
     if (UseInfo)

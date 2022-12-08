@@ -32,6 +32,7 @@ CUIBase::CUIBase(const CUIBase& _origin)
 
 CUIBase::~CUIBase() = default;
 
+
 void CUIBase::finalupdate()
 {
 	m_opacity = ClampData(m_opacity, 0.f, 1.f);
@@ -40,6 +41,10 @@ void CUIBase::finalupdate()
 	adjustPos.x    = AdjustPositionWithAnchor(m_anchorH);
 	adjustPos.y    = AdjustPositionWithAnchor(m_anchorV);
 	Transform()->SetRelativePos(adjustPos);
+
+	//ºôº¸µåÈ­
+	const Vec3 cameraRotation = CRenderMgr::GetInst()->GetMainCam()->Transform()->GetRelativeRotation();
+	Transform()->SetRelativeRotation(cameraRotation.x, cameraRotation.y, 0.f);
 
 	if (nullptr == GetOwner()->GetParent() || nullptr == GetOwner()->GetParent()->UIPanel())
 	{
@@ -121,6 +126,7 @@ void CUIBase::FireCallback() const
 		m_hoverCallback();
 	}
 }
+
 
 float CUIBase::AdjustPositionWithAnchor(ANCHOR_HORIZONTAL type)
 {

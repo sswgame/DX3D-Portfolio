@@ -75,6 +75,11 @@ void CUIImage::AddImageInfo(const std::wstring& frameName, const Vec2& pos, cons
 	}
 	else
 	{
+		if (m_mapInfo.empty())
+		{
+			m_currentFrameName = ToString(frameName);
+			m_currentInfo      = {pos, size};
+		}
 		m_mapInfo.insert({frameName, tImageInfo{pos, size}});
 	}
 }
@@ -88,10 +93,10 @@ tImageInfo CUIImage::GetImageInfo(const std::wstring& frameName)
 
 void CUIImage::RemoveInfo(const std::wstring& frameName)
 {
-	const auto iter = FindImageInfo(frameName);
+	auto iter = FindImageInfo(frameName);
 	if (iter != m_mapInfo.end())
 	{
-		m_mapInfo.erase(iter);
+		iter = m_mapInfo.erase(iter);
 	}
 
 	if (m_mapInfo.empty())
@@ -99,6 +104,11 @@ void CUIImage::RemoveInfo(const std::wstring& frameName)
 		m_currentInfo = {};
 		m_currentFrameName.clear();
 		m_useInfo = false;
+	}
+	else
+	{
+		m_currentFrameName = ToString(iter->first);
+		m_currentInfo      = iter->second;
 	}
 }
 

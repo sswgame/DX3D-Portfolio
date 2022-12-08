@@ -2,12 +2,13 @@
 #include "CParticleUpdateShader.h"
 #include "CStructuredBuffer.h"
 
+#include "CStructuredBuffer.h"
+
 
 CParticleUpdateShader::CParticleUpdateShader()
-	:
-	CComputeShader(32, 1, 1)
-  , m_ParticleBuffer(nullptr)
-  , m_ParticleDataBuffer{nullptr} {}
+	: CComputeShader(32, 1, 1)
+	, m_ParticleBuffer(nullptr)
+	, m_ParticleDataBuffer{nullptr} {}
 
 CParticleUpdateShader::~CParticleUpdateShader() {}
 

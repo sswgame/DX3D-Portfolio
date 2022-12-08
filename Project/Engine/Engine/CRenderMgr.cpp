@@ -355,6 +355,11 @@ CCamera* CRenderMgr::GetUICamera()
 {
 	if (nullptr == m_pUICamera)
 	{
+		if (CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
+		{
+			return m_pEditorCamera;
+		}
+
 		const auto iter = std::find_if(m_vecCamera.begin(),
 		                               m_vecCamera.end(),
 		                               [](const CCamera* pCamera)
@@ -366,7 +371,7 @@ CCamera* CRenderMgr::GetUICamera()
 			m_pUICamera = *iter;
 			return m_pUICamera;
 		}
-		return nullptr;
+		assert(m_pUICamera && "UI CAMERA NOT FOUND");
 	}
 	return m_pUICamera;
 }

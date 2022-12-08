@@ -19,6 +19,7 @@ public:
 	const D3D11_VIEWPORT& GetViewPort() const { return m_tViewPort; }
 	Ptr<CTexture>         GetArrRt(int _arrIDX) { return m_arrRT[_arrIDX]; }
 	void                  SetClearColor(int _iCount, const Vec4* _pColor);
+	int                   GetRenderTargetCount() const { return m_iRTCount; }
 
 	void OMSet();
 	void Clear();

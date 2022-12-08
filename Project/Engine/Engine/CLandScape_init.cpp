@@ -16,7 +16,6 @@ void CLandScape::Create()
 }
 
 
-
 void CLandScape::CreateMesh()
 {
 	// 지형 메쉬 설정
@@ -31,7 +30,7 @@ void CLandScape::CreateMesh()
 		pMesh = nullptr;
 	}
 
-	vector<Vtx> vecVtx;
+	vector<Vtx>  vecVtx;
 	vector<UINT> vecIdx;
 
 	Vtx v;
@@ -42,10 +41,10 @@ void CLandScape::CreateMesh()
 		for (UINT col = 0; col < m_iXFaceCount + 1; ++col)
 		{
 			v.vPos = Vec3((float)col, 0.f, (float)row);
-			v.vUV = Vec2(col, m_iZFaceCount - row);
+			v.vUV  = Vec2(col, m_iZFaceCount - row);
 
-			v.vNormal = Vec3(0.f, 1.f, 0.f);
-			v.vTangent = Vec3(1.f, 0.f, 0.f);
+			v.vNormal   = Vec3(0.f, 1.f, 0.f);
+			v.vTangent  = Vec3(1.f, 0.f, 0.f);
 			v.vBinormal = Vec3(0.f, 0.f, -1.f);
 
 			v.vColor = Vec4(1.f, 0.f, 1.f, 1.f);
@@ -157,10 +156,12 @@ void CLandScape::CreateTexture()
 {
 	// 높이맵 텍스쳐	
 	//m_pHeightMap = CResMgr::GetInst()->Load<CTexture>(L"HeightMap", L"texture\\landscape\\HeightMap_01.jpg");
-	m_pHeightMap = CResMgr::GetInst()->CreateTexture(L"HeightMap"
-		, 2048, 2048
-		, DXGI_FORMAT_R32_FLOAT
-		, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS, true);
+	m_pHeightMap = CResMgr::GetInst()->CreateTexture(L"HeightMap",
+	                                                 2048,
+	                                                 2048,
+	                                                 DXGI_FORMAT_R32_FLOAT,
+	                                                 D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS,
+	                                                 true);
 
 	Ptr<CMaterial> pMtrl = GetSharedMaterial(0);
 	pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &m_iXFaceCount);
@@ -173,7 +174,8 @@ void CLandScape::CreateTexture()
 
 	// 타일 텍스쳐(Color, Normal 혼합, 총 6장)
 	//m_pTileArrTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_ARR.dds", L"texture\\tile\\TILE_ARR.dds");
-	m_pTileArrTex = CResMgr::GetInst()->LoadTexture(L"texture\\tile\\TILE_ARRR.dds", L"texture\\tile\\TILE_ARRR.dds", 8);
+	m_pTileArrTex = CResMgr::GetInst()->
+		LoadTexture(L"texture\\tile\\TILE_ARRR.dds", L"texture\\tile\\TILE_ARRR.dds", 8);
 
 
 	// 브러쉬 텍스쳐
@@ -182,17 +184,16 @@ void CLandScape::CreateTexture()
 	m_pBrushArrTex = CResMgr::GetInst()->Load<CTexture>(L"BrushTex", L"texture\\brush\\Brush_02.png");
 
 
-
-
 	// 가중치 버퍼
-	m_iWeightWidth = 1024;
+	m_iWeightWidth  = 1024;
 	m_iWeightHeight = 1024;
 
 	m_pWeightMapBuffer = new CStructuredBuffer;
-	m_pWeightMapBuffer->Create(sizeof(tWeight_4), m_iWeightWidth * m_iWeightHeight, SB_TYPE::READ_WRITE, false, nullptr);
-
-
-
+	m_pWeightMapBuffer->Create(sizeof(tWeight_4),
+	                           m_iWeightWidth * m_iWeightHeight,
+	                           SB_TYPE::READ_WRITE,
+	                           false,
+	                           nullptr);
 }
 
 void CLandScape::Deserialize(const YAML::Node& node)

@@ -146,7 +146,9 @@
     <ClCompile Include="GameTextUI.cpp">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
     </ClCompile>
-    <ClCompile Include="GameButtonUI.cpp" />
+    <ClCompile Include="GameButtonUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -305,7 +307,9 @@
     <ClInclude Include="GameTextUI.h">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
     </ClInclude>
-    <ClInclude Include="GameButtonUI.h" />
+    <ClInclude Include="GameButtonUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">

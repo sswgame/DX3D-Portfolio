@@ -43,6 +43,7 @@ namespace YAML
 
 			return node;
 		}
+
 		inline static bool decode(const Node& node, CRes& resource)
 		{
 			if (false == node.IsSequence() || node.size() != 2)
@@ -79,6 +80,7 @@ namespace YAML
 
 			return node;
 		}
+
 		inline static bool decode(const Node& node, Vec2& vec)
 		{
 			if (false == node.IsSequence() || node.size() != 2)
@@ -115,6 +117,7 @@ namespace YAML
 
 			return node;
 		}
+
 		inline static bool decode(const Node& node, Vec3& vec)
 		{
 			if (false == node.IsSequence() || node.size() != 3)
@@ -152,6 +155,7 @@ namespace YAML
 
 			return node;
 		}
+
 		inline static bool decode(const Node& node, Vec4& vec)
 		{
 			if (false == node.IsSequence() || node.size() != 4)
@@ -204,7 +208,7 @@ namespace YAML
 
 			return node;
 		}
-		
+
 		inline static bool decode(const Node& node, Matrix& mat)
 		{
 			if (false == node.IsSequence() || node.size() != 16)

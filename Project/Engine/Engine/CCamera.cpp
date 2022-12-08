@@ -59,10 +59,6 @@ void CCamera::finalupdate()
 	m_Frustum.finalupdate();
 
 	CRenderMgr::GetInst()->RegisterCamera(this);
-	if (GetOwner()->GetName() == L"UICamera")
-	{
-		CRenderMgr::GetInst()->RegisterUICamera(this);
-	}
 }
 
 void CCamera::finalupdate_module()
@@ -136,8 +132,12 @@ void CCamera::SortGameObject()
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
 		// 카메라가 찍을 대상 레이어가 아니면 continue
-		if (!(m_iLayerMask & (1 << i)))
+		/*if (!(m_iLayerMask & (1 << i)))
+			continue;*/
+		if (false == m_iLayerMask[i])
+		{
 			continue;
+		}
 
 		CLayer*               pLayer = pCurScene->GetLayer(i);
 		vector<CGameObject*>& vecObj = pLayer->GetObjects();
@@ -366,22 +366,26 @@ void CCamera::SetCameraIndex(int _iIdx)
 	CEventMgr::GetInst()->AddEvent(tEvent);
 }
 
-void CCamera::CheckLayerMask(int _iLayerIdx)
+void CCamera::CheckLayerMask(int _iLayerIdx, bool enable)
 {
-	if (m_iLayerMask & 1 << _iLayerIdx)
+	/* 강사님 구현 방식
+	 *if (m_iLayerMask & 1 << _iLayerIdx)
 	{
 		m_iLayerMask &= ~(1 << _iLayerIdx);
 	}
 	else
 	{
 		m_iLayerMask |= 1 << _iLayerIdx;
-	}
+	}*/
+
+	//std::bitset 사용 버전
+	m_iLayerMask[_iLayerIdx] = enable;
 }
 
 void CCamera::CheckLayerMask(const wstring& _strLayerName)
 {
-	CScene* pScene = CSceneMgr::GetInst()->GetCurScene();
-	CLayer* pLayer = pScene->GetLayer(_strLayerName);
+	const CScene* pScene = CSceneMgr::GetInst()->GetCurScene();
+	const CLayer* pLayer = pScene->GetLayer(_strLayerName);
 
 	CheckLayerMask(pLayer->GetLayerIdx());
 }
@@ -390,11 +394,11 @@ void CCamera::CalRay()
 {
 	// 마우스 방향을 향하는 Ray 구하기
 	// SwapChain 타겟의 ViewPort 정보
-	CMRT*          pMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
-	D3D11_VIEWPORT tVP  = pMRT->GetViewPort();
+	const CMRT*          pMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
+	const D3D11_VIEWPORT tVP  = pMRT->GetViewPort();
 
 	//  현재 마우스 좌표
-	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+	const Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
 
 	// 직선은 카메라의 좌표를 반드시 지난다.
 	m_ray.vStart = Transform()->GetWorldPos();
@@ -447,7 +451,7 @@ void CCamera::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_fAspectRatio) << YAML::Value << m_fAspectRatio;
 	emitter << YAML::Key << NAME_OF(m_fFOV) << YAML::Value << m_fFOV;
 	emitter << YAML::Key << NAME_OF(m_fFar) << YAML::Value << m_fFar;
-	emitter << YAML::Key << NAME_OF(m_iLayerMask) << YAML::Value << m_iLayerMask;
+	emitter << YAML::Key << NAME_OF(m_iLayerMask) << YAML::Value << m_iLayerMask.to_ulong();
 	emitter << YAML::Key << NAME_OF(m_iCamIdx) << YAML::Value << m_iCamIdx;
 }
 

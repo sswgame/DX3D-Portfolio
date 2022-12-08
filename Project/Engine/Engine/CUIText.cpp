@@ -96,29 +96,11 @@ void CUIText::CreateTextLayout()
 
 void CUIText::RenderText()
 {
-	m_pRTV2D->BeginDraw();
-	const Vec3 worldPos       = Transform()->GetWorldPos();
-	const Vec3 halfWorldScale = Transform()->GetWorldScale() * 0.5f;
-	const Vec2 halfResolution = CDevice::GetInst()->GetRenderResolution() * 0.5f;
+	tEventInfo info{};
+	info.eType  = EVENT_TYPE::RENDER_TEXT;
+	info.lParam = (DWORD_PTR)this;
 
-	if (m_alphaEnable)
-	{
-		m_pColorBrush->SetOpacity(GetOpacity());
-	}
-	else
-	{
-		m_pColorBrush->SetOpacity(1.f);
-	}
-
-	//화면의 좌표계에 그려야 한다.
-	D2D1_POINT_2F ptSize{};
-	const float   yOffset = worldPos.y > 0 ? -fabs(worldPos.y) : fabs(worldPos.y);
-	ptSize.x              = worldPos.x + halfResolution.x - halfWorldScale.x;
-	ptSize.y              = yOffset + halfResolution.y - halfWorldScale.y;
-
-	m_pRTV2D->DrawTextLayout(ptSize, m_pLayout.Get(), m_pColorBrush.Get(), D2D1_DRAW_TEXT_OPTIONS_NONE);
-
-	m_pRTV2D->EndDraw();
+	CEventMgr::GetInst()->AddEvent(info);
 }
 
 void CUIText::AddText(const std::wstring& text)
@@ -172,6 +154,10 @@ void CUIText::SetAlphaEnable(bool enable)
 void CUIText::SetFont(const std::wstring& fontKey)
 {
 	m_pFont = CFontMgr::GetInst()->LoadFontFromFile(fontKey);
+	if (m_pFont)
+	{
+		m_fontName = ToString(fontKey);
+	}
 	CreateTextLayout();
 }
 

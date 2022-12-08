@@ -8,8 +8,10 @@
 
 #include "CRenderMgr.h"
 #include "CComponent.h"
+#include "CDevice.h"
 #include "CFSM.h"
 #include "CMgrScript.h"
+#include "CUIText.h"
 
 CEventMgr::CEventMgr()
 	: m_bObjEvn(false) {}
@@ -239,7 +241,37 @@ void CEventMgr::update()
 				m_bObjEvn = true;
 			}
 			break;
+		case EVENT_TYPE::RENDER_TEXT:
+			{
+				CUIText* pUIText = (CUIText*)m_vecEvent[i].lParam;
+				pUIText->m_pRTV2D->BeginDraw();
+				const Vec3 worldPos       = pUIText->Transform()->GetWorldPos();
+				const Vec3 halfWorldScale = pUIText->Transform()->GetWorldScale() * 0.5f;
+				const Vec2 halfResolution = CDevice::GetInst()->GetRenderResolution() * 0.5f;
 
+				if (pUIText->m_alphaEnable)
+				{
+					pUIText->m_pColorBrush->SetOpacity(pUIText->GetOpacity());
+				}
+				else
+				{
+					pUIText->m_pColorBrush->SetOpacity(1.f);
+				}
+
+				//화면의 좌표계에 그려야 한다.
+				D2D1_POINT_2F ptSize{};
+				const float   yOffset = worldPos.y > 0 ? -fabs(worldPos.y) : fabs(worldPos.y);
+				ptSize.x              = worldPos.x + halfResolution.x - halfWorldScale.x;
+				ptSize.y              = yOffset + halfResolution.y - halfWorldScale.y;
+
+				pUIText->m_pRTV2D->DrawTextLayout(ptSize,
+				                                  pUIText->m_pLayout.Get(),
+				                                  pUIText->m_pColorBrush.Get(),
+				                                  D2D1_DRAW_TEXT_OPTIONS_NONE);
+
+				pUIText->m_pRTV2D->EndDraw();
+				break;
+			}
 		// 이벤트 중에  변경 이벤트가 있었다면,
 		// 나머지 이벤트는 다 무시하고 종료
 		/*if (bChangeStage)

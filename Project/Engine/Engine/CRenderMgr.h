@@ -65,7 +65,6 @@ public:
 public:
 	void RegisterCamera(CCamera* _pCamera);
 	void RegisterEditorCamera(CCamera* _pCam) { m_pEditorCamera = _pCam; }
-	void RegisterUICamera(CCamera* _pCamera) { m_pUICamera = _pCamera; }
 
 	void ClearCamera() { m_vecCamera.clear(); }
 	void SwapCameraIndex(CCamera* _pTargetCamera, int _iCameraIndexToChange) const;

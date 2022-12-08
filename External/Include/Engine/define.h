@@ -266,6 +266,7 @@ enum class EVENT_TYPE
 	SWAP_LAYER,				// lParam : Layer Index, wParam : Layer Index
 	DELETE_RES,				// lParam : ResAdress
 
+	RENDER_TEXT, //lParam : UIText
 	END,
 };
 
