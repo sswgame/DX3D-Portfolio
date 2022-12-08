@@ -26,20 +26,23 @@ ParticleTool::ParticleTool()
 	, m_pTargetParticle(nullptr)
 	, m_strvecParticleName()
 	, m_vecTargetResolution(0.f)
-	, m_iMaxCount{5}
-	, m_bPosInherit{false}
-	, m_iAliveCount{1}
-	, m_fArrMinMaxTime{{0.f}, {5.f}}
-	, m_fArrMinMaxSpeed{{10.f}, {100.f}}
-	, m_fRange{10.f}
-	, m_fTerm{3.f}
+	, m_iMaxCount{ 5 }
+	, m_bPosInherit{ false }
+	, m_iAliveCount{ 1 }
+	, m_fArrMinMaxTime{ {0.f}, {5.f} }
+	, m_fArrMinMaxSpeed{ {10.f}, {100.f} }
+	, m_fRange{ 10.f }
+	, m_fTerm{ 3.f }
 	, m_fAngle(180.f)
-	, m_bShaderUseEmissive{false}
+	, m_bShaderUseEmissive{ false }
 	, m_bShaderUseSpeedDetail(false)
-	, m_fArrDirection{{1.f}, {0.f}}
+	, m_fArrDirection{ {1.f}, {0.f} }
 	, m_iParticleComboIDX(0)
 	, m_bLinerParticle(false)
-	, m_bUseSoftParticle(false) {}
+	, m_bUseSoftParticle(false)
+	, m_strSoundName()
+	, m_pSound(nullptr)
+{}
 
 ParticleTool::~ParticleTool() {}
 
@@ -199,8 +202,8 @@ void ParticleTool::ParticleOptionSetting()
 	if (ImGui::Button("##PARTICLE_TEXTURE_BUTTON", Vec2(15, 15)))
 	{
 		// ListUI 활성화한다.
-		const auto& mapRes  = CResMgr::GetInst()->GetResList(RES_TYPE::TEXTURE);
-		ListUI*     pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
+		const auto& mapRes = CResMgr::GetInst()->GetResList(RES_TYPE::TEXTURE);
+		ListUI* pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 		pListUI->Clear();
 		pListUI->SetTitle("TEXTURE_LIST");
 
@@ -212,27 +215,30 @@ void ParticleTool::ParticleOptionSetting()
 		pListUI->Activate();
 		pListUI->SetDBCEvent(this, (DBCLKED)&ParticleTool::TextureSelect);
 	}
+
+	SetSound();
+
 }
 
 void ParticleTool::SaveParticle()
 {
 	wchar_t      szName[256] = {};
-	OPENFILENAME ofn         = {};
+	OPENFILENAME ofn = {};
 
-	ofn.lStructSize    = sizeof(OPENFILENAME);
-	ofn.hwndOwner      = CCore::GetInst()->GetMainHwnd();
-	ofn.lpstrFile      = szName;
-	ofn.nMaxFile       = sizeof(szName);
-	ofn.lpstrFilter    = L"ALL\0*.*\0Particle\0*.prtcl\0";
-	ofn.nFilterIndex   = 0;
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Particle\0*.prtcl\0";
+	ofn.nFilterIndex = 0;
 	ofn.lpstrFileTitle = nullptr;
-	ofn.nMaxFileTitle  = 0;
+	ofn.nMaxFileTitle = 0;
 
 	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
 	strTileFolder += L"prtcl";
 
 	ofn.lpstrInitialDir = strTileFolder.c_str();
-	ofn.Flags           = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	// Modal
 	if (GetSaveFileName(&ofn))
@@ -256,20 +262,20 @@ void ParticleTool::LoadParticle(CGameObject* _load)
 
 	OPENFILENAME ofn = {};
 
-	ofn.lStructSize    = sizeof(OPENFILENAME);
-	ofn.hwndOwner      = CCore::GetInst()->GetMainHwnd();
-	ofn.lpstrFile      = szName;
-	ofn.nMaxFile       = sizeof(szName);
-	ofn.lpstrFilter    = L"ALL\0*.*\0Particle\0*.prtcl\0";
-	ofn.nFilterIndex   = 0;
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Particle\0*.prtcl\0";
+	ofn.nFilterIndex = 0;
 	ofn.lpstrFileTitle = nullptr;
-	ofn.nMaxFileTitle  = 0;
+	ofn.nMaxFileTitle = 0;
 
 	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
 	strTileFolder += L"prtcl";
 
 	ofn.lpstrInitialDir = strTileFolder.c_str();
-	ofn.Flags           = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	// Modal
 	if (GetOpenFileName(&ofn))
@@ -287,6 +293,118 @@ void ParticleTool::LoadParticle(CGameObject* _load)
 	}
 }
 
+void ParticleTool::SetSound()
+{
+	ImGui::Text("Particle Sound : "); ImGui::SameLine(200);
+	if (L"" == m_strSoundName)
+	{
+		ImGui::Text("-SOUND IS NOT EXIST-");
+	}
+	else
+	{
+		string name = ToString(m_strSoundName);
+		ImGui::Text(name.c_str());
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("LOAD SOUND"))
+	{
+		SoundLoad();
+
+		if (L"" == m_strSoundName)
+			return;
+
+		wstring soundpath = L"sound\\";
+		soundpath += m_strSoundName;
+		m_pSound = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
+
+	}
+}
+
+void ParticleTool::SoundLoad()
+{
+	wchar_t szName[256] = {};
+
+	OPENFILENAME ofn = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Wav\0*.wav\0";
+	ofn.nFilterIndex = 0;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+	strTileFolder += L"prtcl";
+
+	ofn.lpstrInitialDir = strTileFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	wstring SoundPath = L"";
+
+	// Modal
+	if (GetOpenFileName(&ofn))
+	{
+		FILE* pFile = nullptr;
+		_wfopen_s(&pFile, szName, L"rb");
+
+		assert(pFile);
+		if (nullptr == pFile)
+			return;
+
+		fclose(pFile);
+		int i = 0;
+		while (true)
+		{
+			if (L'\0' == szName[i])
+				break;
+			else
+			{
+				SoundPath += szName[i];
+				i++;
+			}
+		}
+
+		int pathLength = (int)SoundPath.size();
+		wstring reversedName = L"";
+
+
+		if (0 == pathLength)
+			return;
+		else
+		{
+			m_strSoundName = L"";
+			while (true)
+			{
+				if (L'\\' == SoundPath[pathLength])
+				{
+					break;
+				}
+				else
+				{
+					if (L'\0' != SoundPath[pathLength])
+					{
+						reversedName += SoundPath[pathLength];
+					}
+					pathLength--;
+				}
+			}
+			int reverseSize = (int)reversedName.size() - 1;
+			while (true)
+			{
+				if (-1 == reverseSize)
+					break;
+				m_strSoundName += reversedName[reverseSize];
+				reverseSize--;
+			}
+		}
+
+		CParticleSystem* pTargetParticleSystem = m_pTargetParticle->ParticleSystem();
+		pTargetParticleSystem->SetSoundName(m_strSoundName);
+	}
+}
+
 void ParticleTool::SetData()
 {
 	if (nullptr == m_pTargetParticle)
@@ -299,45 +417,48 @@ void ParticleTool::SetData()
 	if (nullptr == pTargetParticleSystem)
 		return;
 
-	m_iMaxCount   = pTargetParticleSystem->GetMaxParticleCount();
+	m_iMaxCount = pTargetParticleSystem->GetMaxParticleCount();
 	m_bPosInherit = pTargetParticleSystem->PosInherit();
 	m_iAliveCount = pTargetParticleSystem->GetAliveCount();
 
 	const Vec2& vLifeTime = pTargetParticleSystem->GetMinMaxLifeTime();
-	m_fArrMinMaxTime[0]   = vLifeTime.x;
-	m_fArrMinMaxTime[1]   = vLifeTime.y;
+	m_fArrMinMaxTime[0] = vLifeTime.x;
+	m_fArrMinMaxTime[1] = vLifeTime.y;
 
 	const Vec2& vMinMaxSpeed = pTargetParticleSystem->GetMinMaxSpeed();
-	m_fArrMinMaxSpeed[0]     = vMinMaxSpeed.x;
-	m_fArrMinMaxSpeed[1]     = vMinMaxSpeed.y;
+	m_fArrMinMaxSpeed[0] = vMinMaxSpeed.x;
+	m_fArrMinMaxSpeed[1] = vMinMaxSpeed.y;
 
 	const std::pair<Vec4, Vec4>& pairColor = pTargetParticleSystem->GetStartEndColor();
-	m_vArrStartEndColor[0]                 = pairColor.first;
-	m_vArrStartEndColor[1]                 = pairColor.second;
+	m_vArrStartEndColor[0] = pairColor.first;
+	m_vArrStartEndColor[1] = pairColor.second;
 
 	const std::pair<Vec4, Vec4>& pairEColor = pTargetParticleSystem->GetStartEndEmissiveColor();
-	m_vArrStartEndEmissive[0]               = pairEColor.first;
-	m_vArrStartEndEmissive[1]               = pairEColor.second;
+	m_vArrStartEndEmissive[0] = pairEColor.first;
+	m_vArrStartEndEmissive[1] = pairEColor.second;
 
 	const std::pair<Vec3, Vec3>& pairScale = pTargetParticleSystem->GetStartEndScale();
-	m_vArrStartEndScale[0]                 = pairScale.first;
-	m_vArrStartEndScale[1]                 = pairScale.second;
+	m_vArrStartEndScale[0] = pairScale.first;
+	m_vArrStartEndScale[1] = pairScale.second;
 
 	m_fAngle = pTargetParticleSystem->GetAngle();
 
-	Vec2 dir           = pTargetParticleSystem->GetDirection();
+	Vec2 dir = pTargetParticleSystem->GetDirection();
 	m_fArrDirection[0] = dir.x;
 	m_fArrDirection[1] = dir.y;
 
 	m_bLinerParticle = pTargetParticleSystem->GetLinearParticle();
 
 	m_fRange = pTargetParticleSystem->GetRange();
-	m_fTerm  = pTargetParticleSystem->GetTerm();
+	m_fTerm = pTargetParticleSystem->GetTerm();
+
+	m_strSoundName = pTargetParticleSystem->GetSoundName();
+
 }
 
 void ParticleTool::TextureSelect(void* _pTextureName)
 {
-	const std::wstring  key      = ToWString(static_cast<char*>(_pTextureName));
+	const std::wstring  key = ToWString(static_cast<char*>(_pTextureName));
 	const Ptr<CTexture> pTexture = CResMgr::GetInst()->FindRes<CTexture>(key);
 
 	CParticleSystem* pCurPSys = m_pTargetParticle->ParticleSystem();
@@ -379,7 +500,7 @@ void ParticleTool::ParticleCreate()
 			}
 
 			wstring name = L"";
-			int     i    = 0;
+			int     i = 0;
 			while (true)
 			{
 				if ('\0' == particleName[i])
@@ -399,7 +520,7 @@ void ParticleTool::ParticleCreate()
 			CSceneMgr::GetInst()->SpawnObject(pParticle, L"BG");
 
 
-			CMaterial* pMtrl        = nullptr;
+			CMaterial* pMtrl = nullptr;
 			wstring    materialName = L"material\\";
 			materialName += name;
 			materialName += L".mtrl";
@@ -438,7 +559,7 @@ void ParticleTool::ParticleErase()
 			return;
 
 		CGameObject* pDeleteParticle = m_pTargetParticle;
-		m_vecParticleSystem          = {};
+		m_vecParticleSystem = {};
 
 		vector<CGameObject*> pVecBGObj = CSceneMgr::GetInst()->GetCurScene()->GetLayer(0)->GetObjects();
 		for (size_t i = 0; i < pVecBGObj.size(); i++)
@@ -457,7 +578,7 @@ void ParticleTool::ParticleErase()
 		}
 		else
 		{
-			m_pTargetParticle   = m_vecParticleSystem[0];
+			m_pTargetParticle = m_vecParticleSystem[0];
 			m_iParticleComboIDX = 0;
 			SetData();
 		}
@@ -524,7 +645,7 @@ void ParticleTool::MakeTargetParticleCombo()
 				if (ImGui::Selectable(m_strvecParticleName[n].c_str(), is_selected))
 				{
 					m_iParticleComboIDX = n;
-					m_pTargetParticle   = m_vecParticleSystem[m_iParticleComboIDX];
+					m_pTargetParticle = m_vecParticleSystem[m_iParticleComboIDX];
 
 					SetData();
 				}
@@ -622,22 +743,22 @@ void ParticleTool::render_update()
 	if (0 == TargetTextureIDX)
 	{
 		ImGui::Image(m_pParticleTarget.Get()->GetSRV().Get(),
-		             pTargetImageSize,
-		             ImVec2(0, 0),
-		             ImVec2(1, 1),
-		             ImVec4(1, 1, 1, 1),
-		             ImVec4(0, 0, 0, 0));
+			pTargetImageSize,
+			ImVec2(0, 0),
+			ImVec2(1, 1),
+			ImVec4(1, 1, 1, 1),
+			ImVec4(0, 0, 0, 0));
 	}
 	else if (1 == TargetTextureIDX)
 	{
 		ImGui::Image(m_pEmissiveTarget.Get()->GetSRV().Get(),
-		             pTargetImageSize,
-		             ImVec2(0, 0),
-		             ImVec2(1, 1),
-		             ImVec4(1, 1, 1, 1),
-		             ImVec4(0, 0, 0, 0));
+			pTargetImageSize,
+			ImVec2(0, 0),
+			ImVec2(1, 1),
+			ImVec4(1, 1, 1, 1),
+			ImVec4(0, 0, 0, 0));
 	}
-	else if (2 == TargetTextureIDX) { }
+	else if (2 == TargetTextureIDX) {}
 
 
 	if (nullptr == m_pTargetParticle)

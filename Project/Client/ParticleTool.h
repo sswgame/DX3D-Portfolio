@@ -2,6 +2,7 @@
 #include "UI.h"
 
 class CParticleSystem;
+class CSound;
 
 class ParticleTool : public UI
 {
@@ -11,7 +12,7 @@ private:
 	Ptr<CTexture> m_pDepthTarget;
 
 	vector<CGameObject*> m_vecParticleSystem;
-	CGameObject*         m_pTargetParticle;
+	CGameObject* m_pTargetParticle;
 	vector<string>       m_strvecParticleName;
 
 	Vec2 m_vecTargetResolution;
@@ -38,6 +39,9 @@ private:
 
 	int m_iParticleComboIDX;
 
+	wstring m_strSoundName;
+	CSound* m_pSound;
+
 private:
 	void SetData();
 	void TextureSelect(void* _pTextureName);
@@ -51,6 +55,8 @@ public:
 	void ParticleOptionSetting();
 	void SaveParticle();
 	void LoadParticle(CGameObject* _load);
+	void SetSound();
+	void SoundLoad();
 
 public:
 	void update() override;

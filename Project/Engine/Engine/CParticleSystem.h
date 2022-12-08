@@ -4,6 +4,8 @@
 #include "CStructuredBuffer.h"
 #include "CParticleUpdateShader.h"
 
+class CSound;
+
 class CParticleSystem : public CRenderComponent
 {
 private:
@@ -46,6 +48,9 @@ private:
 	int m_iLighting; // 광원 적용 여부
 
 	Vec2 m_vDirection;
+
+	wstring			m_strSoundName;
+	CSound* m_pSound;
 
 public:
 	void                       SetEmissive(bool _bEmissive);
@@ -97,6 +102,14 @@ public:
 
 	void SetSoftParticle(bool _TorF) { m_bUseSoftParticle = _TorF; }
 	bool GetSoftParticle() { return m_bUseSoftParticle; }
+
+	void SetSoundName(wstring _name)
+	{
+		m_strSoundName = _name;
+		SetSound(_name);
+	}
+	void SetSound(wstring _name);
+	wstring GetSoundName() { return m_strSoundName; }
 
 	void SetMaterial(wstring _mtrl);
 

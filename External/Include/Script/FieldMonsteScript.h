@@ -29,7 +29,6 @@ private:
 	int m_iFullHP;
 	int m_iCurHP;
 
-	float m_fCoolTime;
 	bool	m_bIsChasing;
 
 	bool m_bCurAnimationDone;
@@ -55,7 +54,6 @@ public:
 	void SetDetectRange(float _range) { m_fDetachRange = _range; }
 	void SetAttackRange(float _range) { m_fAttackRange = _range; }
 	void SetColliderSize(Vec3 _size) { m_vColliderSize = _size; }
-	void SetCoolTimeReset() { m_fCoolTime = 0.f; }
 	void SetCurAnimationDone() { m_bCurAnimationDone = true; }
 
 	void SetFieldMonsterType(FieldMonsterType _type) { m_eMonsterType = _type; }
@@ -70,6 +68,9 @@ public:
 
 public:
 	CLONE(FieldMonsteScript)
+
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
 
 public:
 	FieldMonsteScript(const FieldMonsteScript& _origin);

@@ -5,7 +5,11 @@
 
 #include "CTransform.h"
 #include "CResMgr.h"
+#include "CResMgr.h"
+#include "CSound.h"
 #include "CSerializer.h"
+
+
 CParticleSystem::CParticleSystem()
 	:
 	CRenderComponent(COMPONENT_TYPE::PARTICLESYSTEM)
@@ -31,6 +35,8 @@ CParticleSystem::CParticleSystem()
 	, m_iSpeedDetail_Func(0)
 	, m_bLinearParicle(false)
 	, m_bUseSoftParticle(false)
+	, m_strSoundName()
+	, m_pSound(nullptr)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -70,6 +76,8 @@ CParticleSystem::CParticleSystem(const CParticleSystem& _origin)
 	, m_iSpeedDetail_Func(_origin.m_iSpeedDetail_Func)
 	, m_bLinearParicle(_origin.m_bLinearParicle)
 	, m_bUseSoftParticle(_origin.m_bUseSoftParticle)
+	, m_strSoundName(_origin.m_strSoundName)
+	, m_pSound(nullptr)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -152,6 +160,19 @@ void CParticleSystem::SetRange(float _fRange)
 void CParticleSystem::SetTerm(float _fTerm)
 {
 	m_fParticleCreateTerm = ClampData(_fTerm, 0.f, D3D11_FLOAT32_MAX);
+}
+
+void CParticleSystem::SetSound(wstring _name)
+{
+	if (nullptr != m_pSound)
+		m_pSound = nullptr;
+
+	wstring soundpath = L"sound\\";
+	soundpath += _name;
+	//soundpath += L".wav";
+
+	m_pSound = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
+	//m_pSound->Play(1, 0.5f);
 }
 
 void CParticleSystem::SetMaterial(const wstring _mtrl)
@@ -240,6 +261,8 @@ void CParticleSystem::SaveToScene(FILE* _pFile)
 	fwrite(&m_fAngle, sizeof(float), 1, _pFile);
 	fwrite(&m_iSpeedDetail_Func, sizeof(int), 1, _pFile);
 	fwrite(&m_vStartEmissiveColor, sizeof(Vec4), 1, _pFile);
+	SaveWStringToFile(m_strSoundName, _pFile);
+
 }
 
 void CParticleSystem::LoadFromScene(FILE* _pFile)
@@ -273,6 +296,8 @@ void CParticleSystem::LoadFromScene(FILE* _pFile)
 	fread(&m_fAngle, sizeof(float), 1, _pFile);
 	fread(&m_iSpeedDetail_Func, sizeof(int), 1, _pFile);
 	fread(&m_vStartEmissiveColor, sizeof(Vec4), 1, _pFile);
+	LoadWStringFromFile(m_strSoundName, _pFile);
+
 }
 
 void CParticleSystem::Serialize(YAML::Emitter& emitter)
@@ -299,6 +324,8 @@ void CParticleSystem::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_iSpeedDetail_Func) << YAML::Value << m_iSpeedDetail_Func;
 	emitter << YAML::Key << NAME_OF(m_vStartEmissiveColor) << YAML::Value << m_vStartEmissiveColor;
 	emitter << YAML::Key << NAME_OF(m_vEndEmissiveColor) << YAML::Value << m_vEndEmissiveColor;
+	emitter << YAML::Key << "SOUND_NAME" << YAML::Value << ToString(m_strSoundName);
+
 }
 
 void CParticleSystem::Deserialize(const YAML::Node& node)
@@ -325,5 +352,6 @@ void CParticleSystem::Deserialize(const YAML::Node& node)
 	m_iSpeedDetail_Func = node[NAME_OF(m_iSpeedDetail_Func)].as<int>();
 	m_vStartEmissiveColor = node[NAME_OF(m_vStartEmissiveColor)].as<Vec4>();
 	m_vEndEmissiveColor = node[NAME_OF(m_vEndEmissiveColor)].as<Vec4>();
-
+	const std::string soundName = node["SOUND_NAME"].as<std::string>();
+	m_strSoundName = ToWString(soundName);
 }
