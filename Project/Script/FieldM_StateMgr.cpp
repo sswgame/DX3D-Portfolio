@@ -26,7 +26,6 @@ FieldM_StateMgr::FieldM_StateMgr()
 	, m_sCurState()
 	, m_sNextState()
 	, m_fRunTime(-1.f)
-	, m_vMonsterDir(Vec3(0.f, 0.f, -1.f))
 {
 }
 

@@ -366,7 +366,10 @@ namespace
 		pMonster->SetName(L"Homonculus");
 		pMonster->AddComponent(new FieldMonsteScript);
 		pMonster->AddComponent(new CFSM);
+		pMonster->AddComponent(new CCollider3D);
 
+		pMonster->Collider3D()->SetOffsetScale(Vec3(100.f, 300.f, 100.f));
+		pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 150.f, 0.f));
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::HOMONCULUS);
 		_pScene->AddObject(pMonster, L"MONSTER");
 	}
@@ -382,7 +385,10 @@ namespace
 		pMonster->SetName(L"Deuxiemie");
 		pMonster->AddComponent(new FieldMonsteScript);
 		pMonster->AddComponent(new CFSM);
+		pMonster->AddComponent(new CCollider3D);
 
+		pMonster->Collider3D()->SetOffsetScale(Vec3(50.f, 100.f, 50.f));
+		pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::DEUXIEMIE);
 		_pScene->AddObject(pMonster, L"MONSTER");
 	}

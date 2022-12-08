@@ -3,8 +3,11 @@
 #include "FieldM_StateMgr.h"
 #include "PlayerScript.h"
 
+#include <random>
+
 #include <Engine/CAnimator3D.h>
 #include <Engine/CAnimation3D.h>
+
 
 FieldMonsteScript::FieldMonsteScript()
 	: CScript{ (int)SCRIPT_TYPE::FIELDMONSTESCRIPT }
@@ -21,11 +24,12 @@ FieldMonsteScript::FieldMonsteScript()
 	, m_bCurAnimationDone(true)
 	, m_fCoolTime(0.f)
 	, m_bIsChasing(false)
+	, m_bChasingON(false)
 {
 	SetName(L"FieldMonsterScript");
 
 	m_fDetachRange = 500.f;
-	m_fAttackRange = 100.f;
+	m_fAttackRange = 300.f;
 }
 
 FieldMonsteScript::FieldMonsteScript(const FieldMonsteScript& _origin)
@@ -43,6 +47,7 @@ FieldMonsteScript::FieldMonsteScript(const FieldMonsteScript& _origin)
 	, m_bCurAnimationDone(true)
 	, m_fCoolTime(0.f)
 	, m_bIsChasing(false)
+	, m_bChasingON(false)
 {
 	SetName(L"FieldMonsterScript");
 }
@@ -78,16 +83,86 @@ bool FieldMonsteScript::DetectPlayer()
 		(vPlayerPos.z - vMonsterPOs.z) * (vPlayerPos.z - vMonsterPOs.z));
 
 	if (m_fCurDistance <= m_fDetachRange)
+	{
+		MonsterRotation();
 		return true;
+	}
 	else
 		return false;
 }
 
-void FieldMonsteScript::ChangeState()
+void FieldMonsteScript::MonsterRotation()
 {
-	SetCoolTimeReset();
-	//change state IDLE
-	m_bCurAnimationDone = true;
+	if (L"WALK" != m_pMonsterMgr->GetCurState())
+		return;
+
+	Vec3 pCurMonsterPos = GetOwner()->Transform()->GetRelativePos();
+	Vec3 pCurMonsterRotation = GetOwner()->Transform()->GetRelativeRotation();
+	Vec3 pNewMonsterRotation;
+
+	Vec3 vPlayerPos = m_pPlayer->Transform()->GetRelativePos();
+
+	Vec3 vBossFront = GetOwner()->Transform()->GetWorldFrontDir();
+	vBossFront *= -1;
+
+	// 보스의 정면 벡터와 보스-플레이어 벡터 사이의 각을 구한다.
+	Vec3 v1(vBossFront.x, 0.f, vBossFront.z);
+	Vec3 v2(vPlayerPos.x - pCurMonsterPos.x, 0.f, vPlayerPos.z - pCurMonsterPos.z);
+
+	v1.Normalize();
+	v2.Normalize();
+
+	float dot = XMConvertToDegrees(v1.Dot(v2)); // 0 ~ 180
+	Vec3  cross = v1.Cross(v2); // -1 ~ 1
+
+	if (-5.f < dot && dot < 5.f)
+		return;
+
+	float fSpeed = 0;
+
+	// 회전 방향을 찾는다
+	if (0.f < cross.y)
+		fSpeed = 50.f;
+	else if (0.f > cross.y)
+		fSpeed = -50.f;
+
+	// 각이 5도 이상이면 플레이어 방향으로 지속적으로 회전하고 5도 이하이면 플레이를 바로 바라본다.
+	if (fabsf(dot) > 5.f)
+	{
+		Vec3 vBossRot = pCurMonsterRotation;
+		vBossRot.ToDegree();
+		vBossRot.y += DT * fSpeed;
+		vBossRot.ToRadian();
+		pNewMonsterRotation = vBossRot;
+	}
+	else
+	{
+		Vec3 vBossRot = pCurMonsterRotation;
+		vBossRot.ToDegree();
+		vBossRot.y = dot * (cross.y ? -1.f : 1.f);
+		vBossRot.ToRadian();
+		pNewMonsterRotation = vBossRot;
+	}
+
+	GetOwner()->Transform()->SetRelativeRotation(pNewMonsterRotation);
+}
+
+void FieldMonsteScript::PeaceStateRotation()
+{
+	// peace 상태일때의 rotate
+	Vec3 pMonsterRotation = GetOwner()->Transform()->GetRelativeRotation();
+
+	std::random_device                 rdX;
+	std::mt19937                       genX(rdX());
+	std::uniform_int_distribution<int> disX(-60, 60);
+	int angle = disX(genX);
+
+	pMonsterRotation.y += angle;
+
+	Vec3 vMonsterFront = GetOwner()->Transform()->GetWorldFrontDir();
+	vMonsterFront *= -1;
+
+	GetOwner()->Transform()->SetRelativeRotation(pMonsterRotation);
 }
 
 void FieldMonsteScript::start()
@@ -132,49 +207,43 @@ void FieldMonsteScript::update()
 				// 방금 플레이어를 인식.
 				m_pMonsterMgr->SetNextState(L"WALK");
 				m_pMonsterMgr->SetRunTime(3.f);
-				// dir 회전
+				m_bCurAnimationDone = false;
 				m_bIsChasing = true;
 			}
 			else
 			{
-				if (0.f < m_fCoolTime)
+				if (m_fCurDistance <= m_fAttackRange)
 				{
-					m_fCoolTime -= DT;
+					if (L"ATTACK" == m_pMonsterMgr->GetCurState())
+					{
+						// idle 모드로 전환.
+						m_pMonsterMgr->SetNextState(L"IDLE");
+						m_pMonsterMgr->SetRunTime(2.f);
+						m_bCurAnimationDone = false;
+
+					}
 				}
 				else
 				{
-					if (L"WALK" == m_pMonsterMgr->GetCurState()
-						|| L"IDLE" == m_pMonsterMgr->GetCurState())
-					{
-						if (m_fCurDistance < m_fAttackRange)
-						{
-							// attack 모드로 전환.
-							m_pMonsterMgr->SetNextState(L"ATTACK");
-							m_pMonsterMgr->SetRunTime(-1.f);
-							m_fCoolTime = 2.f;
-						}
-						else
-						{	// Set RunTime
-							m_pMonsterMgr->SetNextState(L"WALK");
-							m_pMonsterMgr->SetRunTime(3.f);
-						}
-					}
-					else
-					{
-						m_pMonsterMgr->SetNextState(L"ATTACK");
-						m_pMonsterMgr->SetRunTime(-1.f);
-						m_fCoolTime = 2.f;
-					}
+					// 감지 범위 내이지만, 공격 범위는 아님. 계속 쫒아감
+					m_pMonsterMgr->SetNextState(L"WALK");
+					m_pMonsterMgr->SetRunTime(10.f);
+					m_bCurAnimationDone = false;
+					m_bChasingON = true;
 				}
 			}
 		}
 		else
 		{
 			m_bIsChasing = false;
+			m_bChasingON = false;
 			//  idle 하거나 walk 하거나
 			// Set RunTime
 			if (L"IDLE" == m_pMonsterMgr->GetCurState())
+			{
+				PeaceStateRotation();
 				m_pMonsterMgr->SetNextState(L"WALK");
+			}
 			else
 				m_pMonsterMgr->SetNextState(L"IDLE");
 			m_pMonsterMgr->SetRunTime(4.f);
@@ -187,13 +256,13 @@ void FieldMonsteScript::update()
 		// 다만 attack range에 들어오면 바로 공격으로 한다.
 		if (DetectPlayer())
 		{
-			if (L"ATTACK" != m_pMonsterMgr->GetCurState())
+			if (L"WALK" == m_pMonsterMgr->GetCurState() && m_bChasingON)
 			{
 				if (m_fCurDistance <= m_fAttackRange)
 				{
 					m_pMonsterMgr->SetNextState(L"ATTACK");
 					m_pMonsterMgr->SetRunTime(-1.f);
-					m_fCoolTime = 2.f;
+					//m_fCoolTime = 2.f;
 					m_bCurAnimationDone = false;
 				}
 			}
@@ -223,6 +292,7 @@ void FieldMonsteScript::OnCollision(CGameObject* _OtherObject)
 
 		m_pMonsterMgr->SetNextState(L"HIT");
 		m_pMonsterMgr->SetRunTime(-1.f);
+		m_bCurAnimationDone = false;
 	}
 }
 

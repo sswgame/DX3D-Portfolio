@@ -31,7 +31,7 @@ void Homon_Walk::Enter()
 
 		m_pOwnerMGR = (GetOwner()->GetScript<FieldMonsteScript>()->GetMonsterMGR());
 	}
-	m_pAnimation->SetLerpTime(1.f);
+	m_pAnimation->SetLerpTime(0.1f);
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), true);
 }
 

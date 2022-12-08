@@ -54,8 +54,8 @@ void Homon_Hit::Update()
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
-			GetOwner()->Animator3D()->Play(L"Homon_Idle", true);
 		}
+
 	}
 }
 

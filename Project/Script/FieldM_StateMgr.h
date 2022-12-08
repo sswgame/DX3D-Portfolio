@@ -7,8 +7,6 @@ class FieldM_StateMgr :
 private:
 	CGameObject* m_pOwnerObj;
 
-	Vec3					m_vMonsterDir;
-
 	wstring					m_sPrevState;
 	wstring					m_sCurState;
 	wstring					m_sNextState;

@@ -50,15 +50,13 @@ void Deux_Attack::Update()
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
 		}
-	}	
+	}
 	else
 	{
 		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
-			GetOwner()->Animator3D()->Play(L"Deux_Idle", true);
-			m_pOwnerMGR->SetRunTime(1.f);
 		}
 	}
 }

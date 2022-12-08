@@ -2,6 +2,7 @@
 #include "Homon_Attack.h"
 
 #include "FieldMonsteScript.h"
+#include "FieldM_StateMgr.h"
 
 // engine
 #include <Engine/CGameObject.h>
@@ -56,8 +57,6 @@ void Homon_Attack::Update()
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
-			GetOwner()->Animator3D()->Play(L"Homon_Idle", true);
-			m_pOwnerMGR->SetRunTime(1.f);
 		}
 	}
 }
