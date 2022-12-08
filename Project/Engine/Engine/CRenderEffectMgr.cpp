@@ -20,6 +20,7 @@ CRenderEffectMgr::~CRenderEffectMgr()
 void CRenderEffectMgr::Init()
 {
 	CFXAA::GetInst()->Init();
+	CSSAO::GetInst()->Init();
 
 
 }

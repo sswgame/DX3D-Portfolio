@@ -77,6 +77,15 @@ int CScene::GetLayerIdxFromName(const wstring& _strName) const
 	return -1;
 }
 
+wstring CScene::GetLayerNameFromIdx(int _iLayerIdx) const
+{
+	assert(0 <= _iLayerIdx && _iLayerIdx < MAX_LAYER);
+	wstring LayerName = m_arrLayer[_iLayerIdx]->GetName();
+	return LayerName;
+
+}
+
+
 void CScene::AddObject(CGameObject* _pRootObj, const wstring& _strLayerName) const
 {
 	const int iLayerIndex = GetLayerIdxFromName(_strLayerName);

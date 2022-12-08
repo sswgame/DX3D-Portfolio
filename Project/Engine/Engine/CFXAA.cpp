@@ -3,6 +3,7 @@
 
 #include "CGraphicsShader.h"
 #include "CKeyMgr.h"
+#include "CDevice.h"
 
 
 CFXAA::CFXAA()

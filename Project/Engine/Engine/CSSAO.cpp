@@ -5,6 +5,7 @@
 #include "CRenderMgr.h"
 #include "CConstBuffer.h"
 #include <random>
+#include "CDevice.h"
 
 
 CSSAO::CSSAO()

@@ -28,12 +28,15 @@ private:
 	CMaterial*       m_pMergeMaterial;
 
 private:
+	// [ CREATE ]
 	void CreateSwapChainMRT();
 	void CreateDefferedMRT();
 	void CreateParticleMRT();
 	void CreateDeferredDecalMRT();
 	void CreateLightMRT();
 	void CreateShadowMapMRT();
+	void CreateSSAOMRT();
+
 
 	void CreateMergeMaterial();
 	void CreateDirectionalLightMaterial();
@@ -44,13 +47,15 @@ private:
 	void CreateDefferedDecalMaterial();
 	void CreateForwardDecalMaterial();
 
+	// [ RENDER ]
 	void RenderBegin();
 	void RenderEnd();
+	void Render(MRT_TYPE _eMRT, CCamera* _pCam);
 
-	void render_play();
-	void render_editor();
-	void render_shadowmap() const;
-	void render_lights() const;
+	void Render_Play();
+	void Render_Editor();
+	void Render_ShadowMap(LIGHT_TYPE _eLightType) const;
+	void Render_Lights() const;
 
 public:
 	void init();

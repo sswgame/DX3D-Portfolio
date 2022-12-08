@@ -1,5 +1,6 @@
 #pragma once
 #include "CTexture.h"
+#include "singleton.h"
 
 class CSSAO
 	: public CSingleton<CSSAO>

@@ -13,16 +13,16 @@ struct tTrail
 };
 
 class TrailScript :
-    public CScript
+	public CScript
 {
 private:
-	CGameObject*			 m_pCam;
+	CGameObject* m_pCam;
 
-	CGameObject*			m_pOriginObj;			// 잔상을 일으킨 원본 오브젝트  
+	CGameObject* m_pOriginObj;			// 잔상을 일으킨 원본 오브젝트  
 	Ptr<CMeshData>			m_pOribinObj_MeshData;  // 잔상을 일으킨 원본 오브젝트의 메쉬 데이터  
-	CGameObject*			m_pTrail;
+	CGameObject* m_pTrail;
 
-	
+
 	float					m_fCreateTerm;			// 잔상이 일어나는 시간 간격 
 	float					m_fTimer;				// 잔상이 일어난 누적 시간
 	float					m_fDestroyTime;			// 잔상이 사라질 시간 ( 잔상 지속 시간 )
@@ -37,12 +37,12 @@ private:
 
 public:
 	void SetOriginObject(CGameObject* _Origin);
-	
+
 	void SetTrailMeshData(wstring _strKey);
 	void CreateTrail(int _FrameIdx);
 
-	bool DeactivateTrail( );
-	bool ActivateTrail( );
+	bool DeactivateTrail();
+	bool ActivateTrail();
 	void UpdateActiveTrail();
 
 

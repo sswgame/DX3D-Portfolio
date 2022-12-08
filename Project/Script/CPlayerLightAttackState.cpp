@@ -3,6 +3,8 @@
 #include "PlayerScript.h"
 #include "CStateMgr.h"
 
+#include "SwordTrailScript.h"
+
 
 #include <Engine/CFSM.h>
 #include <Engine/Ccamera.h>
@@ -10,7 +12,8 @@
 #include <Engine/CTransform.h>
 #include <Engine/CTimeMgr.h>
 #include <Engine/CAnimator3D.h>
-#include <Engine/CAnimation3D.h>
+#include <Engine/CCollider3D.h>
+
 
 
 CPlayerLightAttackState::CPlayerLightAttackState()
@@ -28,6 +31,134 @@ CPlayerLightAttackState::~CPlayerLightAttackState()
 {
 }
 
+
+void CPlayerLightAttackState::SetWeaponCollider(CGameObject* _pObj)
+{
+	if (_pObj == nullptr)
+		return;
+
+	m_pWeaponCollider = _pObj;
+}
+
+void CPlayerLightAttackState::SetWeaponTrail(CGameObject* _pObj)
+{
+}
+
+void CPlayerLightAttackState::TrailOn()
+{
+	if (m_pWeaponCollider && m_pWeaponTrail)
+	{
+
+		Vec3 vScale = m_pWeaponCollider->Collider3D()->GetOffsetScale();
+		Vec3 vForward = m_pWeaponCollider->Transform()->GetWorldFrontDir();
+		Vec3 vOffsetTrans = vForward * (vScale.z / 2.f);
+
+		Vec3 vWorldPos = m_pWeaponCollider->Transform()->GetWorldPos();
+		Vec3 vWorldRot = DecomposeRotMat(m_pWeaponCollider->Transform()->GetWorldRotation());
+
+		SwordTrailScript* pTrail = m_pWeaponTrail->GetScript<SwordTrailScript>();
+		pTrail->Reset();
+		if (pTrail && !pTrail->isStart())
+		{
+
+			pTrail->setPos(vWorldPos + vOffsetTrans);
+			pTrail->SetRot(vWorldRot);
+			pTrail->SetForward(vForward);
+			pTrail->TrailStart();
+
+			m_pWeaponTrail->Transform()->SetRelativePos(vWorldPos + vOffsetTrans);
+			switch (m_eLA_State)
+			{
+			case LIGHT_ATTACK_STATE::COMBO_1:
+				m_bSwordTrail_Play_1 = true;
+				break;
+			case LIGHT_ATTACK_STATE::COMBO_2:
+				m_bSwordTrail_Play_2 = true;
+				break;
+			case LIGHT_ATTACK_STATE::COMBO_3:
+				m_bSwordTrail_Play_3 = true;
+
+				break;
+
+			}
+		}
+		else
+		{
+			pTrail->setPos(vWorldPos + vOffsetTrans);
+			pTrail->SetRot(vWorldRot);
+			pTrail->SetForward(vForward);
+
+		}
+	}
+
+}
+
+void CPlayerLightAttackState::UpdateWeaponTrail()
+{
+
+	if (m_pWeaponTrail && m_pWeaponCollider)
+	{
+		Vec3 vScale = m_pWeaponCollider->Collider3D()->GetOffsetScale();
+		Vec3 vForward = m_pWeaponCollider->Transform()->GetWorldFrontDir();
+		Vec3 vOffsetTrans = vForward * (vScale.z / 2.f);
+
+		Vec3 vWorldPos = m_pWeaponCollider->Transform()->GetWorldPos();
+		Vec3 vWorldRot = DecomposeRotMat(m_pWeaponCollider->Transform()->GetWorldRotation());
+
+		SwordTrailScript* pTrail = m_pWeaponTrail->GetScript<SwordTrailScript>();
+		if (pTrail && pTrail->isStart())
+		{
+			pTrail->setPos(vWorldPos + vOffsetTrans);
+			pTrail->SetRot(vWorldRot);
+			pTrail->SetForward(vForward);
+		}
+	}
+}
+
+void CPlayerLightAttackState::UpdateWeaponTrailState()
+{
+	switch (m_eLA_State)
+	{
+	case LIGHT_ATTACK_STATE::COMBO_1:
+	{
+		if (m_tAttTimer.fCombo1_Timer >= 0.4f)
+		{
+			if (!m_bSwordTrail_Play_1)
+			{
+				TrailOn();
+			}
+		}
+
+	}
+	break;
+	case LIGHT_ATTACK_STATE::COMBO_2:
+	{
+		if (m_tAttTimer.fCombo2_Timer >= 0.25f)
+		{
+			if (!m_bSwordTrail_Play_2)
+			{
+				TrailOn();
+			}
+		}
+	}
+	break;
+	case LIGHT_ATTACK_STATE::COMBO_3:
+	{
+		if (m_tAttTimer.fCombo3_Timer >= 0.05f)
+		{
+			if (!m_bSwordTrail_Play_3)
+			{
+				TrailOn();
+			}
+		}
+	}
+	break;
+
+
+	}
+
+
+}
 
 void CPlayerLightAttackState::Enter()
 {
@@ -51,8 +182,21 @@ void CPlayerLightAttackState::Enter()
 	m_bCombo1_2_Success = false;
 	m_bCombo2_3_Success = false;
 
+	if (!m_pWeaponCollider)
+	{
+		CGameObject* pOwner = GetOwner();
+		m_pWeaponCollider = pOwner->FindChild(L"Sword_Bone_Collider");
+	}
 
+	if (!m_pWeaponTrail)
+	{
+		CGameObject* pOwner = GetOwner();
+		m_pWeaponTrail = pOwner->FindChild(L"Sword_Trail");
+	}
 
+	m_bSwordTrail_Play_1 = false;
+	m_bSwordTrail_Play_2 = false;
+	m_bSwordTrail_Play_3 = false;
 }
 
 void CPlayerLightAttackState::Exit()
@@ -76,6 +220,11 @@ void CPlayerLightAttackState::Update()
 	// 약공격 애니메이션 업데이트
 	UpdateLightAttaclAnim();
 
+	// 무기 잔상 효과 PLAY 타이밍 업데이트 
+	UpdateWeaponTrailState();
+
+	// 무기 잔상 효과 업데이트  
+	UpdateWeaponTrail();
 
 
 }

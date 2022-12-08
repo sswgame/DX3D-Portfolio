@@ -236,6 +236,15 @@
     <ClInclude Include="CNaviMapData.h">
       <Filter>Engine\05. Component\12. Navi</Filter>
     </ClInclude>
+    <ClInclude Include="CRenderEffectMgr.h">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CFXAA.h">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr\RenderEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="CSSAO.h">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr\RenderEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -461,6 +470,15 @@
     <ClCompile Include="CNaviMapData.cpp">
       <Filter>Engine\05. Component\12. Navi</Filter>
     </ClCompile>
+    <ClCompile Include="CRenderEffectMgr.cpp">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CFXAA.cpp">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr\RenderEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="CSSAO.cpp">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr\RenderEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -676,11 +694,11 @@
     <Filter Include="Engine\03. Manager\11. RenderEffectMgr">
       <UniqueIdentifier>{df61e5cb-1a5b-4d34-b519-90f7816c7b72}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\03. Manager\11. RenderEffectMgr\NewFilter1">
-      <UniqueIdentifier>{adf29d51-ca65-4bd7-b500-70cdf42ab0cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\HLSL\GraphicsShader\RenderEffect">
       <UniqueIdentifier>{9b21eaec-c2b5-4b08-813b-e69b3e40eedd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\11. RenderEffectMgr\RenderEffect">
+      <UniqueIdentifier>{adf29d51-ca65-4bd7-b500-70cdf42ab0cd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,10 @@
 #include "CScene.h"
 
 #include "CMRT.h"
+#include "CRenderEffectMgr.h"
+#include "CSSAO.h"
+#include "CFXAA.h"
+#include "CKeyMgr.h"
 
 CRenderMgr::CRenderMgr()
 	: m_pEditorCamera(nullptr)
@@ -49,7 +53,7 @@ void CRenderMgr::render()
 	RenderBegin();
 
 	const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	pCurScene->GetSceneState() == SCENE_STATE::PLAY ? render_play() : render_editor();
+	pCurScene->GetSceneState() == SCENE_STATE::PLAY ? Render_Play() : Render_Editor();
 
 	RenderEnd();
 }
@@ -79,7 +83,9 @@ void CRenderMgr::RenderEnd()
 	m_vecLight3D.clear();
 }
 
-void CRenderMgr::render_play()
+
+
+void CRenderMgr::Render_Play()
 {
 	if (m_vecCamera.empty())
 	{
@@ -95,112 +101,138 @@ void CRenderMgr::render_play()
 		}
 
 		pCamera->SortGameObject();
-		// Directional Light ShadowMap ¸¸µé±â
-		render_shadowmap();
+		Render(MRT_TYPE::SHADOWMAP		, pCamera);
 
 		g_transform.matView    = pCamera->GetViewMat();
 		g_transform.matViewInv = pCamera->GetViewInvMat();
 		g_transform.matProj    = pCamera->GetProjMat();
 
-		// Deferred ¹°Ã¼ ·»´õ¸µ			
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
-		pCamera->render_deferred();
+		Render(MRT_TYPE::DEFERRED		, pCamera);
+		Render(MRT_TYPE::DEFERRED_DECAL	, pCamera);
+		Render(MRT_TYPE::SSAO			, pCamera);
+		Render(MRT_TYPE::PARTICLE		, pCamera);
+		Render(MRT_TYPE::LIGHT			, pCamera);
+		Render(MRT_TYPE::SWAPCHAIN		, pCamera);
 
+	}
 
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED_DECAL)]->OMSet();
-		pCamera->render_deferred_decal();
+	// FXAA Àû¿ë 
+	static bool bFXAA = false;
+	if (KEY_TAP(KEY::F))
+		bFXAA = !bFXAA;
+	if (bFXAA)
+	{
+		CRenderMgr::GetInst()->CopyTargetToPostProcess();
+		CFXAA::GetInst()->SetViewPort(m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->GetViewPort());
+		CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::FXAA);
+	}
+}
 
-		// Particle ¹°Ã¼ ·»´õ¸µ	
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::PARTICLE)]->OMSet();
-		pCamera->render_particle();
+void CRenderMgr::Render_Editor()
+{
+	if (nullptr == m_pEditorCamera)
+		return;
 
+	m_pEditorCamera->SortGameObject();	
+	Render(MRT_TYPE::SHADOWMAP		, m_pEditorCamera);
 
-		// ±¤¿ø ·»´õ¸µ
-		render_lights();
+	g_transform.matView		= m_pEditorCamera->GetViewMat();
+	g_transform.matViewInv	= m_pEditorCamera->GetViewInvMat();
+	g_transform.matProj		= m_pEditorCamera->GetProjMat();
 
-		// Merge
-		m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+	Render(MRT_TYPE::DEFERRED		, m_pEditorCamera);
+	Render(MRT_TYPE::DEFERRED_DECAL	, m_pEditorCamera);
+	Render(MRT_TYPE::PARTICLE		, m_pEditorCamera);
+	Render(MRT_TYPE::LIGHT			, m_pEditorCamera);
+	Render(MRT_TYPE::SWAPCHAIN		, m_pEditorCamera);
+}
+
+void CRenderMgr::Render(MRT_TYPE _eMRT, CCamera* _pCam)
+{
+	// MRT Setting 
+	m_arrMRT[static_cast<UINT>(_eMRT)]->OMSet();
+
+	// MRT Render 
+	switch (_eMRT)
+	{
+	case MRT_TYPE::SWAPCHAIN:
+	{
+
 		Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
 		m_pMergeMaterial->UpdateData();
 		pRectMesh->render(0);
 
-		//Æ÷¿öµå ·»´õ¸µ
-		pCamera->render_forward();
-		pCamera->render_masked();
-		pCamera->render_forward_decal();
-		pCamera->render_translucent();
-		pCamera->render_debug();
-		pCamera->render_postprocess();
-	}
-}
+		_pCam->render_forward();			// Foward ¹°Ã¼ ·»´õ¸µ
+		_pCam->render_masked();				// Masked ¹°Ã¼ ·»´õ¸µ
+		_pCam->render_forward_decal();		// Foward Decal ·»´õ¸µ
+		_pCam->render_translucent();		// Alpha ¹°Ã¼ ·»´õ¸µ
+		_pCam->render_debug();				// Debug Object Render
+		_pCam->render_postprocess();		// PostProcess ¹°Ã¼ ·»´õ¸µ
 
-void CRenderMgr::render_editor()
-{
-	if (nullptr == m_pEditorCamera)
+	}
+	break;
+	case MRT_TYPE::DEFERRED:
 	{
-		return;
+		_pCam->render_deferred();
+
+	}
+	break;
+	case MRT_TYPE::PARTICLE:
+	{
+		_pCam->render_particle();
+
+	}
+	break;
+	case MRT_TYPE::DEFERRED_DECAL:
+	{
+		_pCam->render_deferred_decal();
+	}
+	break;
+	case MRT_TYPE::LIGHT:
+	{
+		for (const auto& pLight3D : m_vecLight3D)
+		{
+			pLight3D->render();
+		}
+
+	}
+	break;
+	case MRT_TYPE::SHADOWMAP:
+	{
+		Render_ShadowMap(LIGHT_TYPE::DIRECTIONAL);
+
+	}
+	break;
+	case MRT_TYPE::SSAO:
+	{
+		CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::SSAO);
+
+	}
+	break;
+
+
 	}
 
-	// Camera °¡ Âï´Â Layer ÀÇ ¿ÀºêÁ§Æ®µéÀ» Shader Domain ¿¡ µû¶ó ºÐ·ùÇØµÒ
-	m_pEditorCamera->SortGameObject();
-
-	// Directional Light ShadowMap ¸¸µé±â
-	render_shadowmap();
-
-	g_transform.matView    = m_pEditorCamera->GetViewMat();
-	g_transform.matViewInv = m_pEditorCamera->GetViewInvMat();
-	g_transform.matProj    = m_pEditorCamera->GetProjMat();
-
-	// Deferred ¹°Ã¼ ·»´õ¸µ			
-	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED)]->OMSet();
-	m_pEditorCamera->render_deferred();
-
-	m_arrMRT[static_cast<UINT>(MRT_TYPE::DEFERRED_DECAL)]->OMSet();
-	m_pEditorCamera->render_deferred_decal();
-
-	// Particle ¹°Ã¼ ·»´õ¸µ			
-	m_arrMRT[static_cast<UINT>(MRT_TYPE::PARTICLE)]->OMSet();
-	m_pEditorCamera->render_particle();
-
-	// ±¤¿ø ·»´õ¸µ
-	render_lights();
-
-	// Merge
-	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
-	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-	m_pMergeMaterial->UpdateData();
-	pRectMesh->render(0);
-
-	//Æ÷¿öµå ·»´õ¸µ
-	m_pEditorCamera->render_forward();
-	m_pEditorCamera->render_masked();
-	m_pEditorCamera->render_forward_decal();
-	m_pEditorCamera->render_translucent();
-	m_pEditorCamera->render_debug();
-	m_pEditorCamera->render_postprocess();
 }
 
-void CRenderMgr::render_shadowmap() const
+void CRenderMgr::Render_ShadowMap(LIGHT_TYPE _eLightType) const
 {
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::SHADOWMAP)]->OMSet();
 
 	for (const auto& pLight3D : m_vecLight3D)
 	{
-		if (LIGHT_TYPE::DIRECTIONAL == pLight3D->GetLightType())
+		if (_eLightType == pLight3D->GetLightType())
 		{
 			pLight3D->render_shadowmap();
 		}
 	}
 }
 
-void CRenderMgr::render_lights() const
+void CRenderMgr::Render_Lights() const
 {
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
 
-	for (const auto& pLight3D : m_vecLight3D)
-	{
-		pLight3D->render();
-	}
+
 }
 
 void CRenderMgr::RegisterCamera(CCamera* _pCamera)

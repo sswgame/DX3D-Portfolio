@@ -140,6 +140,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CFontMgr.h" />
     <ClInclude Include="CFrustum.h" />
     <ClInclude Include="CFSM.h" />
+    <ClInclude Include="CFXAA.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGraphicsShader.h" />
     <ClInclude Include="CHeightMapShader.h" />
@@ -163,6 +164,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CPrefab.h" />
     <ClInclude Include="CRaycastShader.h" />
     <ClInclude Include="CRenderComponent.h" />
+    <ClInclude Include="CRenderEffectMgr.h" />
     <ClInclude Include="CRenderMgr.h" />
     <ClInclude Include="CRes.h" />
     <ClInclude Include="CResMgr.h" />
@@ -175,6 +177,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CShader.h" />
     <ClInclude Include="CSkyBox.h" />
     <ClInclude Include="CSound.h" />
+    <ClInclude Include="CSSAO.h" />
     <ClInclude Include="CState.h" />
     <ClInclude Include="CStructuredBuffer.h" />
     <ClInclude Include="CTestShader.h" />
@@ -221,6 +224,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CFontMgr.cpp" />
     <ClCompile Include="CFrustum.cpp" />
     <ClCompile Include="CFSM.cpp" />
+    <ClCompile Include="CFXAA.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGraphicsShader.cpp" />
     <ClCompile Include="CHeightMapShader.cpp" />
@@ -244,6 +248,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CPrefab.cpp" />
     <ClCompile Include="CRaycastShader.cpp" />
     <ClCompile Include="CRenderComponent.cpp" />
+    <ClCompile Include="CRenderEffectMgr.cpp" />
     <ClCompile Include="CRenderMgr.cpp" />
     <ClCompile Include="CRenderMgr_init.cpp" />
     <ClCompile Include="CRes.cpp" />
@@ -258,6 +263,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CShader.cpp" />
     <ClCompile Include="CSkyBox.cpp" />
     <ClCompile Include="CSound.cpp" />
+    <ClCompile Include="CSSAO.cpp" />
     <ClCompile Include="CState.cpp" />
     <ClCompile Include="CStructuredBuffer.cpp" />
     <ClCompile Include="CTestShader.cpp" />

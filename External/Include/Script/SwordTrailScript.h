@@ -48,6 +48,9 @@ public:
 	void UpdateVertexInfo_Start();
 	void UpdateVertexInfo_End();
 
+	void Reset();
+
+
 
 	void setPos(Vec3 _vPos) { m_vSword_Pos = _vPos; }
 	void SetRot(Vec3 _vRot) { m_vSword_Rot = _vRot; }

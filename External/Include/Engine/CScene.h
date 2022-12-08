@@ -27,6 +27,7 @@ public:
 	bool    SwapLayer(int _LayerIdx_1, int _LayerIdx_2);
 	void    SetLayerName(int _iLayerIdx, const wstring& _strName) const;
 	int     GetLayerIdxFromName(const wstring& _strName) const;
+	wstring GetLayerNameFromIdx(int _iLayerIdx) const;
 	CLayer* GetLayer(const wstring& _strLayerName) const;
 	CLayer* GetLayer(int _iLayerIndex) const;
 

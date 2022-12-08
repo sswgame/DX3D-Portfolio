@@ -132,12 +132,7 @@ void PlayerScript::start()
 			m_pSword_Trail->Transform()->SetIgnoreParent(true);		// 부모의 모든 행렬을 적용받지 않음 
 			m_pSword_Trail->Transform()->SetRelativeScale(Vec3(100.f, 100.f, 100.f));
 		}
-
-
-	
 	}
-
-
 }
 
 void PlayerScript::update()
@@ -179,7 +174,7 @@ void PlayerScript::UpdateCamera()
 		return;
 
 	PlayerCamScript* pCamScript = (PlayerCamScript*)m_pCamera->GetScriptByName(L"PlayerCamScript");
-	if (pCamScript != nullptr)
+	if (pCamScript)
 	{
 		// 카메라 스크립트에 플레이어의 위치 정보를 넘긴다 .  
 		pCamScript->SetTargetPos(GetOwner()->Transform()->GetRelativePos());
@@ -213,39 +208,6 @@ void PlayerScript::UpdateSwordCollider()
 			// 위치 적용 
 			m_pSwordCollider->Transform()->SetRelativePos(SocketTrans); // 메인 위치
 			m_pSwordCollider->Collider3D()->SetOffsetPos(vOffsetTrans); // 임의로 위치 조정  
-
-			if (m_pSword_Trail)
-			{
-
-				Vec3 vWorldPos = m_pSwordCollider->Transform()->GetWorldPos();
-				Vec3 vWorldRot = DecomposeRotMat(m_pSwordCollider->Transform()->GetWorldRotation());
-
-				SwordTrailScript* pTrail = m_pSword_Trail->GetScript<SwordTrailScript>();
-				if (pTrail && !pTrail->isStart())
-				{
-					if (KEY_TAP(KEY::O))
-					{
-						pTrail->setPos(vWorldPos + vOffsetTrans);
-						pTrail->SetRot(vWorldRot);
-						pTrail->SetForward(vForward);
-						pTrail->TrailStart();
-					}
-					m_pSword_Trail->Transform()->SetRelativePos(vWorldPos + vOffsetTrans);
-
-				}
-				else
-				{
-					pTrail->setPos(vWorldPos + vOffsetTrans);
-					pTrail->SetRot(vWorldRot);
-					pTrail->SetForward(vForward);
-
-				}
-
-
-				//m_pSword_Trail->Transform()->SetRelativeRotation(vWorldRot);
-
-			}
-
 		}
 	}
 
@@ -275,15 +237,40 @@ CGameObject* PlayerScript::GetChildObj(CGameObject* _parent, wstring _name)
 
 void PlayerScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
-	int a = 1;
+	// 상태 바뀌는거 
+	// 패링 방향 바꾸는거 
+	if (!_OtherObject)
+		return;
+
+	// 충돌체 레이어 인덱스 
+	int iLayerIdx = _OtherObject->GetLayerIndex();
+	const wstring _OtherLayerName = CSceneMgr::GetInst()->GetCurScene()->GetLayerNameFromIdx(iLayerIdx);
+
+
+	// [ Monster Attack Check ]
+	// 1. Non _ Parrying Attack Check
+	GAME::LAYER::MONSTER_NON_PARRING_ATTACK;
+
+
+	// 2. Parrying Attack Check
+	GAME::LAYER::MONSTER_PARRING_ATTACK;
+	// 방향 : 플레이어가 바라보는 방향으로 이동방향을 바꾼다.
+	Vec3 vChangedDir = GetOwner()->Transform()->GetWorldFrontDir();
+
+
+
 }
 
 void PlayerScript::OnCollision(CGameObject* _OtherObject)
 {
+
+
 }
 
 void PlayerScript::OnCollisionExit(CGameObject* _OtherObject)
 {
+
+
 }
 
 
@@ -294,3 +281,14 @@ void PlayerScript::SaveToScene(FILE* _pFile)
 void PlayerScript::LoadFromScene(FILE* _pFile)
 {
 }
+
+
+/*
+* 렌더링 쪽 정리 하고 캐릭터 담당
+*
+	 Z 차이만큼 알파조절 - Soft Particle
+	 Motion Blur
+	 SSAO
+	 HDR
+
+*/

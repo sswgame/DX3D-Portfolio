@@ -601,6 +601,29 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 	}
 }
 
+CGameObject* CGameObject::FindChild(wstring _name)
+{
+	CGameObject* pChild = nullptr;
+
+	for (int i = 0; i < m_vecChild.size(); ++i)
+	{
+		if (m_vecChild[i]->GetName() == _name)
+		{
+			pChild = m_vecChild[i];
+			break;
+		}
+		else
+		{
+			pChild = m_vecChild[i]->FindChild(_name);
+			if (pChild != nullptr)
+				break;
+
+		}
+	}
+
+	return pChild;
+}
+
 void CGameObject::Serialize(YAML::Emitter& emitter)
 {
 	emitter << YAML::Key << "NAME" << YAML::Value << ToString(GetName());

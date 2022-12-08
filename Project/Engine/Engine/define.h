@@ -52,10 +52,13 @@ enum class RES_TYPE
 
 enum class CB_TYPE
 {
-	TRANSFORM,		// b0
-	SCALAR_PARAM,	// b1
-	ANIM2D,			// b2
-	GLOBAL,			// b3
+	TRANSFORM,				// b0
+	SCALAR_PARAM,			// b1
+	ANIM2D,					// b2
+	GLOBAL,					// b3
+	SSAO_CHANGES_ON_RESIZE, // b4
+	SSAO_CHANGES_RARELY,    // b5
+
 	END
 };
 
@@ -93,6 +96,33 @@ enum class BS_TYPE
 	,
 	END,
 };
+
+enum class SAMPLER_TYPE
+{
+	ANISOTROPIC_2X_WRAP,
+	POINT_WRAP,
+
+
+	LINEAR_CLAMP,
+	POINT_CLAMP,
+
+	ANISOTROPIC_2X_CLAMP,
+	ANISOTROPIC_4X_CLAMP,
+	ANISOTROPIC_8X_CLAMP,
+	ANISOTROPIC_16X_CLAMP,
+
+	ANISOTROPIC_16X_WRAP,
+
+	LINEAR_WRAP,
+	SHADOW_PCF,
+
+	NORMAL_DEPTH,
+	RANDOM_VEC,
+	BLUR,
+
+	END,
+};
+
 
 // 쉐이더의 렌더링 시점에 따른 분류
 enum class SHADER_DOMAIN
@@ -254,6 +284,8 @@ enum class MRT_TYPE
 	DEFERRED_DECAL,
 	LIGHT,
 	SHADOWMAP,
+	SSAO,
+	SSAO_BLUR,
 	END,
 };
 

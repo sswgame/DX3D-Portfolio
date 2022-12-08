@@ -5,6 +5,7 @@ class CStateMgr;
 class PlayerScript;
 class CAnimation3D;
 
+
 enum class LIGHT_ATTACK_STATE
 {
     NONE,
@@ -38,6 +39,10 @@ class CPlayerLightAttackState :
     public CState
 {
 private:
+    CGameObject*        m_pWeaponCollider;
+    CGameObject*        m_pWeaponTrail;
+
+private:
     PlayerScript*       m_pPlayerScript;
     CStateMgr*          m_pStateMgr;
     tKey_Zip            m_tCurKeyInfo;          // 눌린 키 정보
@@ -51,6 +56,18 @@ private:
     bool                m_bComboAtt_Start;
     bool                m_bCombo1_2_Success;      // Combo 2 로 넘어 갈 수 있는지 체크 
     bool                m_bCombo2_3_Success;      // Combo 3 로 넘어 갈 수 있는지 체크 
+
+    bool                m_bSwordTrail_Play_1;
+    bool                m_bSwordTrail_Play_2;
+    bool                m_bSwordTrail_Play_3;
+
+
+public:
+    void SetWeaponCollider(CGameObject* _pObj);
+    void SetWeaponTrail(CGameObject* _pObj);
+    void TrailOn();
+    void UpdateWeaponTrail();
+    void UpdateWeaponTrailState();
 
 
 public:

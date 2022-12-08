@@ -10,6 +10,8 @@
 #include "CRenderMgr.h"
 #include "CEventMgr.h"
 #include "CFontMgr.h"
+#include "CRenderEffectMgr.h"
+
 
 CCore::CCore()
 	: m_hWnd(nullptr)
@@ -38,7 +40,8 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CTimeMgr::GetInst()->init();
 	CResMgr::GetInst()->init();
 	CRenderMgr::GetInst()->init();
-	CSceneMgr::GetInst()->init();
+	CRenderEffectMgr::GetInst()->Init();
+;	CSceneMgr::GetInst()->init();
 	CFontMgr::GetInst()->Init();
 
 	return S_OK;

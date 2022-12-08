@@ -1,4 +1,4 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "CDevice.h"
 
 #include "CConstBuffer.h"
@@ -42,7 +42,7 @@ int CDevice::init(HWND _hWnd, Vec2 _vRenderResolution)
 
 	if (FAILED(hr))
 	{
-		MessageBox(nullptr, L"¿Âƒ° √ ±‚»≠ Ω«∆–", L"ø£¡¯ √ ±‚»≠ Ω«∆–", MB_OK);
+		MessageBox(nullptr, L"Ïû•Ïπò Ï¥àÍ∏∞Ìôî Ïã§Ìå®", L"ÏóîÏßÑ Ï¥àÍ∏∞Ìôî Ïã§Ìå®", MB_OK);
 		return E_FAIL;
 	}
 
@@ -51,49 +51,49 @@ int CDevice::init(HWND _hWnd, Vec2 _vRenderResolution)
 
 	if (0 == iQuality)
 	{
-		MessageBox(nullptr, L"∏÷∆ºº¿«√ ∑π∫ß√º≈© Ω«∆–", L"ø£¡¯ √ ±‚»≠ Ω«∆–", MB_OK);
+		MessageBox(nullptr, L"Î©ÄÌã∞ÏÖàÌîå Î†àÎ≤®Ï≤¥ÌÅ¨ Ïã§Ìå®", L"ÏóîÏßÑ Ï¥àÍ∏∞Ìôî Ïã§Ìå®", MB_OK);
 		return E_FAIL;
 	}
 
-	// SwapChain ª˝º∫
+	// SwapChain ÏÉùÏÑ±
 	if (FAILED(CreateSwapchain()))
 	{
-		MessageBox(nullptr, L"Ω∫ø“√º¿Œ ª˝º∫ Ω«∆–", L"ø£¡¯ √ ±‚»≠ Ω«∆–", MB_OK);
+		MessageBox(nullptr, L"Ïä§ÏôëÏ≤¥Ïù∏ ÏÉùÏÑ± Ïã§Ìå®", L"ÏóîÏßÑ Ï¥àÍ∏∞Ìôî Ïã§Ìå®", MB_OK);
 		return E_FAIL;
 	}
 
 	// View
 	if (FAILED(CreateView()))
 	{
-		MessageBox(nullptr, L"∫‰ ª˝º∫ Ω«∆–", L"ø£¡¯ √ ±‚»≠ Ω«∆–", MB_OK);
+		MessageBox(nullptr, L"Î∑∞ ÏÉùÏÑ± Ïã§Ìå®", L"ÏóîÏßÑ Ï¥àÍ∏∞Ìôî Ïã§Ìå®", MB_OK);
 		return E_FAIL;
 	}
 
-	// ∑°Ω∫≈Õ∂Û¿Ã¿˙ Ω∫≈◊¿Ã∆Æ ª˝º∫
+	// ÎûòÏä§ÌÑ∞ÎùºÏù¥Ï†Ä Ïä§ÌÖåÏù¥Ìä∏ ÏÉùÏÑ±
 	if (FAILED(CreateRasterizerState()))
 	{
 		return E_FAIL;
 	}
 
-	// âXΩ∫Ω∫≈ŸΩ« Ω∫≈◊¿Ã∆Æ ª˝º∫
+	// ÎéäÏä§Ïä§ÌÖêÏã§ Ïä§ÌÖåÏù¥Ìä∏ ÏÉùÏÑ±
 	if (FAILED(CreateDepthStencilState()))
 	{
 		return E_FAIL;
 	}
 
-	// ∫Ì∑ªµÂ Ω∫≈◊¿Ã∆Æ ª˝º∫
+	// Î∏îÎ†åÎìú Ïä§ÌÖåÏù¥Ìä∏ ÏÉùÏÑ±
 	if (FAILED(CreateBlendState()))
 	{
 		return E_FAIL;
 	}
 
-	// ªÛºˆπˆ∆€ ª˝º∫
+	// ÏÉÅÏàòÎ≤ÑÌçº ÏÉùÏÑ±
 	if (FAILED(CreateConstBuffer()))
 	{
 		return E_FAIL;
 	}
 
-	// Sampler ª˝º∫
+	// Sampler ÏÉùÏÑ±
 	CreateSamplerState();
 
 	Init2D();
@@ -145,7 +145,7 @@ int CDevice::CreateView() const
 	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)pBuffer.GetAddressOf());
 	CResMgr::GetInst()->CreateTexture(L"RenderTargetTex", pBuffer, true);
 
-	// Depth Stencil Texture ∏∏µÈ±‚
+	// Depth Stencil Texture ÎßåÎì§Í∏∞
 	Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->CreateTexture(L"DepthStencilTex",
 	                                                                   static_cast<UINT>(m_vRenderResolution.x),
 	                                                                   static_cast<UINT>(m_vRenderResolution.y),
@@ -162,11 +162,11 @@ int CDevice::CreateRasterizerState()
 	HRESULT               hr   = S_OK;
 
 	// Default State
-	// π›Ω√∞Ë(µﬁ∏È) ¡¶ø‹, Ω√∞ËπÊ«‚(æ’∏È) ≈Î∞˙
+	// Î∞òÏãúÍ≥Ñ(Îí∑Î©¥) Ï†úÏô∏, ÏãúÍ≥ÑÎ∞©Ìñ•(ÏïûÎ©¥) ÌÜµÍ≥º
 	m_arrRS[static_cast<UINT>(RS_TYPE::CULL_BACK)] = nullptr;
 
 
-	// π›Ω√∞Ë(µﬁ∏È) ≈Î∞˙, Ω√∞ËπÊ«‚(æ’∏È) ¡¶ø‹
+	// Î∞òÏãúÍ≥Ñ(Îí∑Î©¥) ÌÜµÍ≥º, ÏãúÍ≥ÑÎ∞©Ìñ•(ÏïûÎ©¥) Ï†úÏô∏
 	desc.CullMode = D3D11_CULL_FRONT;
 	desc.FillMode = D3D11_FILL_SOLID;
 	hr = DEVICE->CreateRasterizerState(&desc, m_arrRS[static_cast<UINT>(RS_TYPE::CULL_FRONT)].GetAddressOf());
@@ -174,14 +174,14 @@ int CDevice::CreateRasterizerState()
 		return E_FAIL;
 
 
-	// æÁ∏È ∏µŒ ±◊∏Æ±‚, (¡÷∑Œ ¥‹∏È «¸≈¬¿« ∏ﬁΩ¨∏¶ æ’ µ⁄ø°º≠ ∫º∂ß)
+	// ÏñëÎ©¥ Î™®Îëê Í∑∏Î¶¨Í∏∞, (Ï£ºÎ°ú Îã®Î©¥ ÌòïÌÉúÏùò Î©îÏâ¨Î•º Ïïû Îí§ÏóêÏÑú Î≥ºÎïå)
 	desc.CullMode = D3D11_CULL_NONE;
 	desc.FillMode = D3D11_FILL_SOLID;
 	hr            = DEVICE->CreateRasterizerState(&desc, m_arrRS[static_cast<UINT>(RS_TYPE::CULL_NONE)].GetAddressOf());
 	if (FAILED(hr))
 		return E_FAIL;
 
-	// æÁ∏È ∏µŒ ±◊∏Æ±‚, ª¿¥Î «»ºø∏∏ ∑ª¥ı∏µ
+	// ÏñëÎ©¥ Î™®Îëê Í∑∏Î¶¨Í∏∞, ÎºàÎåÄ ÌîΩÏÖÄÎßå Î†åÎçîÎßÅ
 	desc.CullMode = D3D11_CULL_NONE;
 	desc.FillMode = D3D11_FILL_WIREFRAME;
 	hr = DEVICE->CreateRasterizerState(&desc, m_arrRS[static_cast<UINT>(RS_TYPE::WIRE_FRAME)].GetAddressOf());
@@ -254,11 +254,11 @@ int CDevice::CreateDepthStencilState()
 		return E_FAIL;
 
 
-	// »ƒ∏È √º≈©
+	// ÌõÑÎ©¥ Ï≤¥ÌÅ¨
 	// RS_TYPE::CULL_FRONT
 	desc.DepthEnable    = true;
-	desc.DepthFunc      = D3D11_COMPARISON_GREATER;    // ±Ì¿Ã ∞ÀªÁ 0
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // ±Ì¿Ã ±‚∑œ X	
+	desc.DepthFunc      = D3D11_COMPARISON_GREATER;    // ÍπäÏù¥ Í≤ÄÏÇ¨ 0
+	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // ÍπäÏù¥ Í∏∞Î°ù X	
 
 	desc.StencilEnable = true;
 
@@ -273,11 +273,11 @@ int CDevice::CreateDepthStencilState()
 	//desc.FrontFace.StencilFailOp;
 
 
-	// ¿¸∏È √º≈©
+	// Ï†ÑÎ©¥ Ï≤¥ÌÅ¨
 	// RS_TYPE::CULL_BACK
 	desc.DepthEnable    = true;
-	desc.DepthFunc      = D3D11_COMPARISON_LESS;       // ±Ì¿Ã ∞ÀªÁ 0
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // ±Ì¿Ã ±‚∑œ X	
+	desc.DepthFunc      = D3D11_COMPARISON_LESS;       // ÍπäÏù¥ Í≤ÄÏÇ¨ 0
+	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // ÍπäÏù¥ Í∏∞Î°ù X	
 
 	desc.StencilEnable = true;
 
@@ -293,9 +293,9 @@ int CDevice::CreateDepthStencilState()
 	desc.BackFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;*/
 
 
-	// ¡ˆ¡§µ» Ω∫≈ŸΩ« øµø™∏∏ ∑ª¥ı∏µ
+	// ÏßÄÏ†ïÎêú Ïä§ÌÖêÏã§ ÏòÅÏó≠Îßå Î†åÎçîÎßÅ
 	desc.DepthEnable    = false;
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // ±Ì¿Ã ±‚∑œ X	
+	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // ÍπäÏù¥ Í∏∞Î°ù X	
 
 	desc.StencilEnable = true;
 
@@ -316,13 +316,13 @@ int CDevice::CreateBlendState()
 
 	D3D11_BLEND_DESC desc = {};
 
-	desc.AlphaToCoverageEnable  = true; // ƒøπˆ∑π¿Ã¡ˆ ø…º« ªÁøÎ ¿Øπ´
-	desc.IndependentBlendEnable = false; // ∑ª¥ı≈∏∞Ÿ ∫Ì∑£µÂΩ∫≈◊¿ÃµÂ µ∂∏≥Ω««‡
+	desc.AlphaToCoverageEnable  = true; // Ïª§Î≤ÑÎ†àÏù¥ÏßÄ ÏòµÏÖò ÏÇ¨Ïö© Ïú†Î¨¥
+	desc.IndependentBlendEnable = false; // Î†åÎçîÌÉÄÍ≤ü Î∏îÎûúÎìúÏä§ÌÖåÏù¥Îìú ÎèÖÎ¶ΩÏã§Ìñâ
 
-	desc.RenderTarget[0].BlendEnable = true;                      // ∫Ì∑£µ˘ Ω∫≈◊¿Ã∆Æ ªÁøÎ
-	desc.RenderTarget[0].BlendOp     = D3D11_BLEND_OP_ADD;        // ∞°ªÍ »•«’
-	desc.RenderTarget[0].SrcBlend    = D3D11_BLEND_SRC_ALPHA;     // SrcRGB ∫Ì∑£µÂ ∞Ëºˆ ==> (SrcA)
-	desc.RenderTarget[0].DestBlend   = D3D11_BLEND_INV_SRC_ALPHA; // DestRGB ∫Ì∑£µÂ ∞Ëºˆ ==> (1 - SrcA)	
+	desc.RenderTarget[0].BlendEnable = true;                      // Î∏îÎûúÎî© Ïä§ÌÖåÏù¥Ìä∏ ÏÇ¨Ïö©
+	desc.RenderTarget[0].BlendOp     = D3D11_BLEND_OP_ADD;        // Í∞ÄÏÇ∞ ÌòºÌï©
+	desc.RenderTarget[0].SrcBlend    = D3D11_BLEND_SRC_ALPHA;     // SrcRGB Î∏îÎûúÎìú Í≥ÑÏàò ==> (SrcA)
+	desc.RenderTarget[0].DestBlend   = D3D11_BLEND_INV_SRC_ALPHA; // DestRGB Î∏îÎûúÎìú Í≥ÑÏàò ==> (1 - SrcA)	
 
 	desc.RenderTarget[0].BlendOpAlpha   = D3D11_BLEND_OP_ADD;
 	desc.RenderTarget[0].SrcBlendAlpha  = D3D11_BLEND_ONE;
@@ -338,13 +338,13 @@ int CDevice::CreateBlendState()
 
 	desc = {};
 
-	desc.AlphaToCoverageEnable  = false; // ƒøπˆ∑π¿Ã¡ˆ ø…º« ªÁøÎ ¿Øπ´
-	desc.IndependentBlendEnable = false; // ∑ª¥ı≈∏∞Ÿ ∫Ì∑£µÂΩ∫≈◊¿ÃµÂ µ∂∏≥Ω««‡
+	desc.AlphaToCoverageEnable  = false; // Ïª§Î≤ÑÎ†àÏù¥ÏßÄ ÏòµÏÖò ÏÇ¨Ïö© Ïú†Î¨¥
+	desc.IndependentBlendEnable = false; // Î†åÎçîÌÉÄÍ≤ü Î∏îÎûúÎìúÏä§ÌÖåÏù¥Îìú ÎèÖÎ¶ΩÏã§Ìñâ
 
-	desc.RenderTarget[0].BlendEnable = true;               // ∫Ì∑£µ˘ Ω∫≈◊¿Ã∆Æ ªÁøÎ
-	desc.RenderTarget[0].BlendOp     = D3D11_BLEND_OP_ADD; // ∞°ªÍ »•«’
-	desc.RenderTarget[0].SrcBlend    = D3D11_BLEND_ONE;    // SrcRGB ∫Ì∑£µÂ ∞Ëºˆ ==> 1
-	desc.RenderTarget[0].DestBlend   = D3D11_BLEND_ONE;    // DestRGB ∫Ì∑£µÂ ∞Ëºˆ ==> 1	
+	desc.RenderTarget[0].BlendEnable = true;               // Î∏îÎûúÎî© Ïä§ÌÖåÏù¥Ìä∏ ÏÇ¨Ïö©
+	desc.RenderTarget[0].BlendOp     = D3D11_BLEND_OP_ADD; // Í∞ÄÏÇ∞ ÌòºÌï©
+	desc.RenderTarget[0].SrcBlend    = D3D11_BLEND_ONE;    // SrcRGB Î∏îÎûúÎìú Í≥ÑÏàò ==> 1
+	desc.RenderTarget[0].DestBlend   = D3D11_BLEND_ONE;    // DestRGB Î∏îÎûúÎìú Í≥ÑÏàò ==> 1	
 
 	desc.RenderTarget[0].BlendOpAlpha   = D3D11_BLEND_OP_ADD;
 	desc.RenderTarget[0].SrcBlendAlpha  = D3D11_BLEND_ONE;
@@ -359,13 +359,13 @@ int CDevice::CreateBlendState()
 
 	desc = {};
 
-	desc.AlphaToCoverageEnable  = FALSE; // ƒøπˆ∑π¿Ã¡ˆ ø…º« ªÁøÎ ¿Øπ´
-	desc.IndependentBlendEnable = TRUE; // ∑ª¥ı≈∏∞Ÿ ∫Ì∑£µÂΩ∫≈◊¿ÃµÂ µ∂∏≥Ω««‡
+	desc.AlphaToCoverageEnable  = FALSE; // Ïª§Î≤ÑÎ†àÏù¥ÏßÄ ÏòµÏÖò ÏÇ¨Ïö© Ïú†Î¨¥
+	desc.IndependentBlendEnable = TRUE; // Î†åÎçîÌÉÄÍ≤ü Î∏îÎûúÎìúÏä§ÌÖåÏù¥Îìú ÎèÖÎ¶ΩÏã§Ìñâ
 
-	desc.RenderTarget[0].BlendEnable = true;                      // ∫Ì∑£µ˘ Ω∫≈◊¿Ã∆Æ ªÁøÎ
-	desc.RenderTarget[0].BlendOp     = D3D11_BLEND_OP_ADD;        // ∞°ªÍ »•«’
-	desc.RenderTarget[0].SrcBlend    = D3D11_BLEND_SRC_ALPHA;     // SrcRGB ∫Ì∑£µÂ ∞Ëºˆ ==> (SrcA)
-	desc.RenderTarget[0].DestBlend   = D3D11_BLEND_INV_SRC_ALPHA; // DestRGB ∫Ì∑£µÂ ∞Ëºˆ ==> (1 - SrcA)	
+	desc.RenderTarget[0].BlendEnable = true;                      // Î∏îÎûúÎî© Ïä§ÌÖåÏù¥Ìä∏ ÏÇ¨Ïö©
+	desc.RenderTarget[0].BlendOp     = D3D11_BLEND_OP_ADD;        // Í∞ÄÏÇ∞ ÌòºÌï©
+	desc.RenderTarget[0].SrcBlend    = D3D11_BLEND_SRC_ALPHA;     // SrcRGB Î∏îÎûúÎìú Í≥ÑÏàò ==> (SrcA)
+	desc.RenderTarget[0].DestBlend   = D3D11_BLEND_INV_SRC_ALPHA; // DestRGB Î∏îÎûúÎìú Í≥ÑÏàò ==> (1 - SrcA)	
 
 	desc.RenderTarget[0].BlendOpAlpha   = D3D11_BLEND_OP_ADD;
 	desc.RenderTarget[0].SrcBlendAlpha  = D3D11_BLEND_ONE;
@@ -394,65 +394,186 @@ int CDevice::CreateConstBuffer()
 	m_arrCB[static_cast<UINT>(CB_TYPE::GLOBAL)] = new CConstBuffer(CB_TYPE::GLOBAL);
 	m_arrCB[static_cast<UINT>(CB_TYPE::GLOBAL)]->Create(sizeof(tGlobal));
 
+	m_arrCB[(UINT)CB_TYPE::SSAO_CHANGES_ON_RESIZE] = new CConstBuffer(CB_TYPE::SSAO_CHANGES_ON_RESIZE);
+	m_arrCB[(UINT)CB_TYPE::SSAO_CHANGES_ON_RESIZE]->Create(sizeof(tSSAO_ChangesOnResize));
+
+	m_arrCB[(UINT)CB_TYPE::SSAO_CHANGES_RARELY] = new CConstBuffer(CB_TYPE::SSAO_CHANGES_RARELY);
+	m_arrCB[(UINT)CB_TYPE::SSAO_CHANGES_RARELY]->Create(sizeof(tSSAO_ChangesRarely));
+
 	return S_OK;
 }
 
 void CDevice::CreateSamplerState()
 {
+	// ******************
+	// ÏÉòÌîåÎü¨ ÏÉÅÌÉú Ï¥àÍ∏∞Ìôî
+	// ******************
+
 	D3D11_SAMPLER_DESC tDesc = {};
 
-	tDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	tDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	tDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	tDesc.Filter   = D3D11_FILTER_ANISOTROPIC;
-	tDesc.MaxLOD   = D3D11_FLOAT32_MAX;
+	//ANISOTROPIC_2X_WRAP - Í∏∞Ï°¥ g_sam_0
+	tDesc.Filter = D3D11_FILTER::D3D11_FILTER_ANISOTROPIC;
+	tDesc.MaxAnisotropy = 2;
+	tDesc.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	tDesc.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	tDesc.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	tDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	DEVICE->CreateSamplerState(&tDesc, m_arrSam[0].GetAddressOf());
+	DEVICE->CreateSamplerState(&tDesc, m_arrSam[(UINT)SAMPLER_TYPE::ANISOTROPIC_2X_WRAP].GetAddressOf());
 
-	tDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	tDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	tDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	tDesc.Filter   = D3D11_FILTER_MIN_MAG_MIP_POINT;
-	tDesc.MaxLOD   = D3D11_FLOAT32_MAX;
+	// POINT_WRAP
+	tDesc.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_MIP_POINT;
+	tDesc.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	tDesc.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	tDesc.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	tDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	DEVICE->CreateSamplerState(&tDesc, m_arrSam[1].GetAddressOf());
+	DEVICE->CreateSamplerState(&tDesc, m_arrSam[(UINT)SAMPLER_TYPE::POINT_WRAP].GetAddressOf());
 
-	CONTEXT->VSSetSamplers(0, 1, m_arrSam[0].GetAddressOf());
-	CONTEXT->HSSetSamplers(0, 1, m_arrSam[0].GetAddressOf());
-	CONTEXT->DSSetSamplers(0, 1, m_arrSam[0].GetAddressOf());
-	CONTEXT->GSSetSamplers(0, 1, m_arrSam[0].GetAddressOf());
-	CONTEXT->PSSetSamplers(0, 1, m_arrSam[0].GetAddressOf());
-	CONTEXT->CSSetSamplers(0, 1, m_arrSam[0].GetAddressOf());
+	// ÏÑ†Ìòï ÌïÑÌÑ∞ÎßÅ Î∞è ÌÅ¥Îû®ÌîÑ Î™®Îìú
+	CD3D11_SAMPLER_DESC sampDesc(CD3D11_DEFAULT{});
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::LINEAR_CLAMP].GetAddressOf());
 
-	CONTEXT->VSSetSamplers(1, 1, m_arrSam[1].GetAddressOf());
-	CONTEXT->HSSetSamplers(1, 1, m_arrSam[1].GetAddressOf());
-	CONTEXT->DSSetSamplers(1, 1, m_arrSam[1].GetAddressOf());
-	CONTEXT->GSSetSamplers(1, 1, m_arrSam[1].GetAddressOf());
-	CONTEXT->PSSetSamplers(1, 1, m_arrSam[1].GetAddressOf());
-	CONTEXT->CSSetSamplers(1, 1, m_arrSam[1].GetAddressOf());
+	// Ìè¨Ïù∏Ìä∏ ÌïÑÌÑ∞ÎßÅ Î∞è ÌÅ¥Îû®ÌîÑ Î™®Îìú
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	DEVICE->CreateSamplerState(&tDesc, m_arrSam[(UINT)SAMPLER_TYPE::POINT_CLAMP].GetAddressOf());
+
+	/*
+		x4Î°ú ÏÑ§Ï†ïÌïòÎ©¥ ÎπÑÎì±Î∞©ÏÑ± ÌïÑÌÑ∞ÎßÅÏù¥ ÌÖçÏä§Ï≤òÏùò Î™®ÏñëÏùÑ Í≤∞Ï†ïÌïòÍ∏∞ ÏúÑÌï¥ ÌÖçÏÖÄÎãπ 4Í∞úÏùò ÏÉòÌîåÏùÑ ÏàòÏßëÌï©ÎãàÎã§
+	*/
+
+	// 2x ÎπÑÎì±Î∞©ÏÑ± ÌïÑÌÑ∞ÎßÅ Î∞è ÌÅ¥Îû®ÌîÑ Î™®Îìú
+	sampDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	sampDesc.MaxAnisotropy = 2;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::ANISOTROPIC_2X_CLAMP].GetAddressOf());
+
+	// 4x ÎπÑÎì±Î∞©ÏÑ± ÌïÑÌÑ∞ÎßÅ Î∞è ÌÅ¥Îû®ÌîÑ Î™®Îìú
+	sampDesc.MaxAnisotropy = 4;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::ANISOTROPIC_4X_CLAMP].GetAddressOf());
+
+	// 8x ÎπÑÎì±Î∞©ÏÑ± ÌïÑÌÑ∞ÎßÅ Î∞è ÌÅ¥Îû®ÌîÑ Î™®Îìú
+	sampDesc.MaxAnisotropy = 8;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::ANISOTROPIC_8X_CLAMP].GetAddressOf());
+
+	// 16x ÎπÑÎì±Î∞©ÏÑ± ÌïÑÌÑ∞ÎßÅ Î∞è ÌÅ¥Îû®ÌîÑ Î™®Îìú
+	sampDesc.MaxAnisotropy = 16;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::ANISOTROPIC_16X_CLAMP].GetAddressOf());
+
+	// ÏÑ†Ìòï ÌïÑÌÑ∞ÎßÅ Î∞è Îû© Î™®Îìú
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.MaxAnisotropy = 0;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::LINEAR_WRAP].GetAddressOf());
+
+	//ÏÉòÌîåÎü¨ ÏÉÅÌÉú: ÍπäÏù¥ ÎπÑÍµê Î∞è ‚Äã‚ÄãÍ≤ΩÍ≥Ñ Î™®Îìú
+	sampDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+	sampDesc.MaxAnisotropy = 1;
+	sampDesc.MinLOD = 0.0f;
+	sampDesc.MaxLOD = 0.0f;
+	sampDesc.BorderColor[0] = 0.0f;
+	sampDesc.BorderColor[1] = 0.0f;
+	sampDesc.BorderColor[2] = 0.0f;
+	sampDesc.BorderColor[3] = 1.0f;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::SHADOW_PCF].GetAddressOf());
+
+
+	D3D11_SAMPLER_DESC samplerDesc; // SSAO
+	ZeroMemory(&samplerDesc, sizeof samplerDesc);
+
+	// ÏùºÎ∞ò Î∞è ÍπäÏù¥ ÏÉòÌîåÎü¨
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+	samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	samplerDesc.BorderColor[3] = 1e5f;	// Îß§Ïö∞ ÌÅ∞ ÍπäÏù¥ Í∞íÏùÑ ÏÑ§Ï†ï (Normal, depthZ) = (0, 0, 0, 1e5f)
+	samplerDesc.MinLOD = 0.0f;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::NORMAL_DEPTH].GetAddressOf());
+
+
+	// ÎûúÎç§ Î≤°ÌÑ∞ ÏÉòÌîåÎü¨
+	samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.BorderColor[3] = 0.0f;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::RANDOM_VEC].GetAddressOf());
+
+
+	// Î∏îÎü¨ÎßÅÏùÑ ÏúÑÌïú ÏÉòÌîåÎü¨
+	samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	DEVICE->CreateSamplerState(&sampDesc, m_arrSam[(UINT)SAMPLER_TYPE::BLUR].GetAddressOf());
+
+
+	// CPU -> GPU Update Sampler State
+	UpdateSamplerState((int)SAMPLER_TYPE::ANISOTROPIC_2X_WRAP	, SAMPLER_TYPE::ANISOTROPIC_2X_WRAP		, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::POINT_WRAP			, SAMPLER_TYPE::POINT_WRAP				, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::LINEAR_CLAMP			, SAMPLER_TYPE::LINEAR_CLAMP			, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::POINT_CLAMP			, SAMPLER_TYPE::POINT_CLAMP				, PIPELINE_STAGE::ALL);
+
+	UpdateSamplerState((int)SAMPLER_TYPE::ANISOTROPIC_2X_CLAMP	, SAMPLER_TYPE::ANISOTROPIC_2X_CLAMP	, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::ANISOTROPIC_4X_CLAMP	, SAMPLER_TYPE::ANISOTROPIC_4X_CLAMP	, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::ANISOTROPIC_8X_CLAMP	, SAMPLER_TYPE::ANISOTROPIC_8X_CLAMP	, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::ANISOTROPIC_16X_CLAMP	, SAMPLER_TYPE::ANISOTROPIC_16X_CLAMP	, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::ANISOTROPIC_16X_WRAP	, SAMPLER_TYPE::ANISOTROPIC_16X_WRAP	, PIPELINE_STAGE::ALL);
+
+	UpdateSamplerState((int)SAMPLER_TYPE::LINEAR_WRAP			, SAMPLER_TYPE::LINEAR_WRAP				, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::SHADOW_PCF			, SAMPLER_TYPE::SHADOW_PCF				, PIPELINE_STAGE::ALL);
+
+	UpdateSamplerState((int)SAMPLER_TYPE::NORMAL_DEPTH			, SAMPLER_TYPE::NORMAL_DEPTH			, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::RANDOM_VEC			, SAMPLER_TYPE::RANDOM_VEC				, PIPELINE_STAGE::ALL);
+	UpdateSamplerState((int)SAMPLER_TYPE::BLUR					, SAMPLER_TYPE::BLUR					, PIPELINE_STAGE::ALL);
+
+
 }
 
 void CDevice::Init2D()
 {
-	// 2D Factory ª˝º∫
+	// 2D Factory ÏÉùÏÑ±
 	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, m_pFactory2D.GetAddressOf())))
 	{
 		MessageBox(nullptr, L"2D Failed", L"Error",MB_OK);
 		assert(nullptr);
 	}
-	// 3D BackBuffer¿« Surface∏¶ æÚæÓø¬¥Ÿ.
+	// 3D BackBufferÏùò SurfaceÎ•º ÏñªÏñ¥Ïò®Îã§.
 	ComPtr<IDXGISurface> pBackBuffer{};
 
 	m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
 
-	// 2DøÎ ∑ª¥ı≈∏∞Ÿ¿ª ∏∏µÈæÓ¡ÿ¥Ÿ.
+	// 2DÏö© Î†åÎçîÌÉÄÍ≤üÏùÑ ÎßåÎì§Ïñ¥Ï§ÄÎã§.
 	const D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_HARDWARE,
 	                                                                         D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN,
 		                                                                         D2D1_ALPHA_MODE_PREMULTIPLIED));
 
 	if (FAILED(m_pFactory2D->CreateDxgiSurfaceRenderTarget(pBackBuffer.Get(), props, m_pRtv2D.GetAddressOf())))
 	{
-		MessageBox(nullptr, L"2D »£»Ø Ω«∆–", L"Error",MB_OK);
+		MessageBox(nullptr, L"2D Ìò∏Ìôò Ïã§Ìå®", L"Error",MB_OK);
 		assert(nullptr);
 	}
+}
+
+void CDevice::UpdateSamplerState(int _iRegisterNum, SAMPLER_TYPE _eSamplerType
+	, PIPELINE_STAGE _PipelineStage, bool _bComputeShaderStage)
+{
+	if (_PipelineStage & (UINT)PIPELINE_STAGE::VS)
+		CONTEXT->VSSetSamplers(_iRegisterNum, 1, m_arrSam[(UINT)_eSamplerType].GetAddressOf());
+
+	if (_PipelineStage & (UINT)PIPELINE_STAGE::HS)
+		CONTEXT->HSSetSamplers(_iRegisterNum, 1, m_arrSam[(UINT)_eSamplerType].GetAddressOf());
+
+	if (_PipelineStage & (UINT)PIPELINE_STAGE::DS)
+		CONTEXT->DSSetSamplers(_iRegisterNum, 1, m_arrSam[(UINT)_eSamplerType].GetAddressOf());
+
+	if (_PipelineStage & (UINT)PIPELINE_STAGE::GS)
+		CONTEXT->GSSetSamplers(_iRegisterNum, 1, m_arrSam[(UINT)_eSamplerType].GetAddressOf());
+
+	if (_PipelineStage & (UINT)PIPELINE_STAGE::PS)
+		CONTEXT->PSSetSamplers(_iRegisterNum, 1, m_arrSam[(UINT)_eSamplerType].GetAddressOf());
+
+	if (_bComputeShaderStage)
+		CONTEXT->CSSetSamplers(_iRegisterNum, 1, m_arrSam[(UINT)_eSamplerType].GetAddressOf());
+
 }

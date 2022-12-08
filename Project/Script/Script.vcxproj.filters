@@ -191,7 +191,6 @@
       <Filter>Script\MIssile</Filter>
     </ClInclude>
     <ClInclude Include="MagmaScript.h" />
-    <ClInclude Include="SwordTrailScript.h" />
     <ClInclude Include="UITestScript.h">
       <Filter>Script\UI</Filter>
     </ClInclude>
@@ -238,6 +237,9 @@
     </ClInclude>
     <ClInclude Include="Homon_Walk.h">
       <Filter>Script\Monster\Homonculus</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordTrailScript.h">
+      <Filter>Script\Effect\Trail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -422,7 +424,6 @@
       <Filter>Script\MIssile</Filter>
     </ClCompile>
     <ClCompile Include="MagmaScript.cpp" />
-    <ClCompile Include="SwordTrailScript.cpp" />
     <ClCompile Include="UITestScript.cpp">
       <Filter>Script\UI</Filter>
     </ClCompile>
@@ -469,6 +470,9 @@
     </ClCompile>
     <ClCompile Include="Homon_Walk.cpp">
       <Filter>Script\Monster\Homonculus</Filter>
+    </ClCompile>
+    <ClCompile Include="SwordTrailScript.cpp">
+      <Filter>Script\Effect\Trail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

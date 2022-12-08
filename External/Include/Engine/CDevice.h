@@ -7,27 +7,24 @@ class CDevice
 {
 	SINGLE(CDevice);
 private:
-	HWND m_hWnd;              // Main Window Handle
-	Vec2 m_vRenderResolution; // 렌더링 해상도
+	HWND							m_hWnd;              // Main Window Handle
+	Vec2							m_vRenderResolution; // 렌더링 해상도
 
-	ComPtr<ID3D11Device>        m_pDevice;        // GPU 메모리 제어
-	ComPtr<ID3D11DeviceContext> m_pDeviceContext; // GPU Rendering 제어
+	ComPtr<ID3D11Device>			m_pDevice;        // GPU 메모리 제어
+	ComPtr<ID3D11DeviceContext>		m_pDeviceContext; // GPU Rendering 제어
 
-	ComPtr<IDXGISwapChain> m_pSwapChain;
-	DXGI_SWAP_CHAIN_DESC   m_tSwapChainDesc;
+	ComPtr<IDXGISwapChain>			m_pSwapChain;
+	DXGI_SWAP_CHAIN_DESC			m_tSwapChainDesc;
 
 	ComPtr<ID3D11RasterizerState>   m_arrRS[static_cast<UINT>(RS_TYPE::END)];
 	ComPtr<ID3D11DepthStencilState> m_arrDS[static_cast<UINT>(DS_TYPE::END)];
 	ComPtr<ID3D11BlendState>        m_arrBS[static_cast<UINT>(BS_TYPE::END)];
-
-
-	CConstBuffer* m_arrCB[static_cast<UINT>(CB_TYPE::END)];
-
-	ComPtr<ID3D11SamplerState> m_arrSam[2];
+	ComPtr<ID3D11SamplerState>		m_arrSam[static_cast<UINT>(SAMPLER_TYPE::END)];
+	CConstBuffer*					m_arrCB[static_cast<UINT>(CB_TYPE::END)];
 
 	//Direct2D
-	ComPtr<ID2D1RenderTarget> m_pRtv2D;
-	ComPtr<ID2D1Factory>      m_pFactory2D;
+	ComPtr<ID2D1RenderTarget>		m_pRtv2D;
+	ComPtr<ID2D1Factory>			m_pFactory2D;	
 
 public:
 	ComPtr<ID2D1RenderTarget> GetRtv2D() const { return m_pRtv2D; }
@@ -55,6 +52,10 @@ private:
 	int  CreateBlendState();
 	int  CreateConstBuffer();
 	void CreateSamplerState();
+
+	void UpdateSamplerState(int _iRegisterNum, SAMPLER_TYPE _eSamplerType
+		, PIPELINE_STAGE _PipelineStage, bool _bComputeShaderStage = true);
+
 
 	//Direct2D
 	void Init2D();

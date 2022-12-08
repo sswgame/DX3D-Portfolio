@@ -20,8 +20,8 @@ class CPlayerMoveState :
     public CState
 {
 private:
-    CTranslateMgr*      m_pTranslateMgr;
-    CStateMgr*          m_pStateMgr;
+    CTranslateMgr* m_pTranslateMgr;
+    CStateMgr* m_pStateMgr;
 
     tKey_Zip            m_tCurKeyInfo;          // 눌린 키 정보
     bool                m_bKeyUpdateFinish;     // 키 처리가 중복 되지 않기 위해 키 처리가 끝남을 알린다. 
@@ -32,9 +32,9 @@ private:
 
 
     MOVE_MODE           m_eMode;                // 걷기/ 달리기 모드  
-   
-    PlayerCamScript*    m_pCamScript;
-    CPlayerStat*        m_pStat;
+
+    PlayerCamScript* m_pCamScript;
+    CPlayerStat* m_pStat;
 
 public:
     virtual void Enter();
@@ -59,7 +59,7 @@ public:
 
     // [ GET PART ]
 public:
- 
+
     CLONE(CPlayerMoveState)
 public:
     CPlayerMoveState();

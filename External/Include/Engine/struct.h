@@ -308,3 +308,36 @@ struct SB_PcikingData
 	UINT objectID;
 	Vec3 objectPos;
 };
+
+
+struct tSSAO_ChangesOnResize
+{
+	Matrix g_ViewToTexSpace;     // Proj * Texture
+	Vec4 g_FarPlanePoints[3];  // 원거리 삼각형(네 모서리를 덮음), 삼각형은 아래 참조
+	Vec2 g_TexelSize;          // (1.0f/W, 1.0f/H)
+
+	Vec2 padding;
+};
+
+struct tSSAO_ChangesRarely
+{
+	// 방향으로 균일한 분포를 갖지만 길이는 무작위인 14개의 벡터
+	Vec4 g_OffsetVectors[14];
+
+	// 보는 공간의 좌표
+	float g_OcclusionRadius;
+	float g_OcclusionFadeStart;
+	float g_OcclusionFadeEnd;
+	float g_SurfaceEpsilon;
+
+	//
+	// SSAO_Blur용
+	//
+	Vec4 g_BlurWeights[3];
+	// 정적 변수는 상수 버퍼에 속하지 않습니다.
+	//static float s_BlurWeights[12] = (float[12]) g_BlurWeights;
+
+	int     g_BlurRadius;
+	Vec3	g_Pad;
+
+};

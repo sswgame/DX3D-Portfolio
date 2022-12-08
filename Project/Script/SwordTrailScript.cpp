@@ -53,13 +53,16 @@ void SwordTrailScript::start()
 	m_pTarget = GetOwner();
 	GetOwner()->AddComponent(new CMeshRender);
 
-	Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\Sword_Trail_2.png",
-		L"texture\\Sword_Trail_2.png");
+	Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\Sword_Trail_4.png",
+		L"texture\\Sword_Trail_4.png");
+	Ptr<CTexture> pPostProcess = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
 
 	GetOwner()->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh_Trail"));
 	//GetOwner()->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"), 0);
 	GetOwner()->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\SwordTrailMtrl.mtrl"), 0);
 	GetOwner()->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTex);
+	GetOwner()->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1, pPostProcess);
+
 
 	//GetOwner()->MeshRender()->GetDynamicMaterial(0)->SetScalarParam(SCALAR_PARAM::, pMagicCircle);
 
@@ -167,7 +170,7 @@ void SwordTrailScript::UpdateVertexInfo_Start()
 		m_iUpdateVtx_Cnt++;
 	else
 	{
-		m_bStart = false;
+		//m_bStart = false;
 		m_bStart_Setting = false;
 		m_bFinish_Start = true;
 		m_iShrink_Idx = 0;
@@ -224,5 +227,18 @@ void SwordTrailScript::UpdateVertexInfo_End()
 
 
 	return;
+}
+
+void SwordTrailScript::Reset()
+{
+	m_pTarget->MeshRender()->Activate();
+	m_bFinish_Start = false;
+	m_bStart = false;
+
+	// 시작 세팅  
+	m_bStart_Setting = false;
+	m_iUpdateVtx_Cnt = 0;
+
+	m_vCurPos_Local = Vec3(0.f, 0.f, 0.f);
 }
 

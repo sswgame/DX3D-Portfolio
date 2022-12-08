@@ -150,11 +150,13 @@ void CPlayerSprintState::UpdateSprintState()
 	case SPRINT_TYPE::JUMP_DASH_END:
 	{
 
-		GravityScript* pGravity = (GravityScript*)GetOwner()->GetScriptByName(L"GravityScript");
-		if (pGravity != nullptr)
+		//GravityScript* pGravity = (GravityScript*)GetOwner()->GetScriptByName(L"GravityScript");
+		CRigidBody* pRigid = GetOwner()->RigidBody();
+
+		if (pRigid)
 		{
 			// [ ÂøÁö ] 
-			if (pGravity->Isfalling() == false)
+			if (pRigid->IsOnGround() == true)
 			{
 				GetOwner()->FSM()->ChangeState(L"IDLE");
 				//RigidBodyScript* pRigid = (RigidBodyScript*)GetOwner()->GetScriptByName(L"RigidBodyScript");
@@ -235,9 +237,13 @@ void CPlayerSprintState::Sprint(float _fForce)
 
 void CPlayerSprintState::GravityIgnore(bool _b)
 {
-	GravityScript* pGravity = (GravityScript*)GetOwner()->GetScriptByName(L"GravityScript");
-	if (pGravity)
-		pGravity->SetIgnoreGravity(_b);
+	//GravityScript* pGravity = (GravityScript*)GetOwner()->GetScriptByName(L"GravityScript");
+	//if (pGravity)
+	//	pGravity->SetIgnoreGravity(_b);
+
+	CRigidBody* pRigid = GetOwner()->RigidBody();
+	if(pRigid)
+		pRigid->SetIgnoreGravity(_b);
 
 }
 
