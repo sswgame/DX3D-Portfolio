@@ -33,6 +33,7 @@ private:
 	bool	m_bIsChasing;
 
 	bool m_bCurAnimationDone;
+	bool m_bChasingON;
 
 	FieldMonsterType m_eMonsterType;
 
@@ -64,7 +65,8 @@ public:
 
 public:
 	bool DetectPlayer();
-	void ChangeState();
+	void MonsterRotation();
+	void PeaceStateRotation();
 
 public:
 	CLONE(FieldMonsteScript)

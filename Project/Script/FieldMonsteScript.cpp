@@ -7,6 +7,7 @@
 
 #include <Engine/CAnimator3D.h>
 #include <Engine/CAnimation3D.h>
+#include <Engine/CSerializer.h>
 
 
 FieldMonsteScript::FieldMonsteScript()
@@ -22,12 +23,12 @@ FieldMonsteScript::FieldMonsteScript()
 	, m_iCurHP(0)
 	, m_eMonsterType(FieldMonsterType::NONE)
 	, m_bCurAnimationDone(true)
-	, m_fCoolTime(0.f)
 	, m_bIsChasing(false)
 	, m_bChasingON(false)
 {
 	SetName(L"FieldMonsterScript");
 
+	m_iFullHP = 100;
 	m_fDetachRange = 500.f;
 	m_fAttackRange = 300.f;
 }
@@ -45,7 +46,6 @@ FieldMonsteScript::FieldMonsteScript(const FieldMonsteScript& _origin)
 	, m_iCurHP(_origin.m_iCurHP)
 	, m_eMonsterType(_origin.m_eMonsterType)
 	, m_bCurAnimationDone(true)
-	, m_fCoolTime(0.f)
 	, m_bIsChasing(false)
 	, m_bChasingON(false)
 {
@@ -194,6 +194,7 @@ void FieldMonsteScript::start()
 			return;
 	}
 
+	m_iCurHP = m_iFullHP;
 }
 
 void FieldMonsteScript::update()
@@ -262,7 +263,6 @@ void FieldMonsteScript::update()
 				{
 					m_pMonsterMgr->SetNextState(L"ATTACK");
 					m_pMonsterMgr->SetRunTime(-1.f);
-					//m_fCoolTime = 2.f;
 					m_bCurAnimationDone = false;
 				}
 			}
@@ -298,4 +298,22 @@ void FieldMonsteScript::OnCollision(CGameObject* _OtherObject)
 
 void FieldMonsteScript::OnCollisionExit(CGameObject* _OtherObject)
 {
+}
+
+void FieldMonsteScript::Serialize(YAML::Emitter& emitter)
+{
+	emitter << YAML::Key << NAME_OF(m_fDetachRange) << YAML::Value << m_fDetachRange;
+	emitter << YAML::Key << NAME_OF(m_fAttackRange) << YAML::Value << m_fAttackRange;
+	emitter << YAML::Key << NAME_OF(m_iFullHP) << YAML::Value << m_iFullHP;
+
+	CScript::Serialize(emitter);
+}
+
+void FieldMonsteScript::Deserialize(const YAML::Node& node)
+{
+	m_fDetachRange = node[NAME_OF(m_fHP)].as<float>();
+	m_fAttackRange = node[NAME_OF(m_fMaxHP)].as<float>();
+	m_iFullHP = node[NAME_OF(m_fMaxHP)].as<int>();
+
+	CScript::Deserialize(node);
 }
