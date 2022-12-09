@@ -180,6 +180,7 @@ void CCamera::SortGameObject()
 				break;
 			case SHADER_DOMAIN::DOMAIN_EMISSIVE_PARTICLE:
 				m_vecDeferredParticle.push_back(vecObj[j]);
+				m_vecTranslucent.push_back(vecObj[j]);
 				break;
 			case SHADER_DOMAIN::DOMAIN_FORWARD:
 				m_vecForward.push_back(vecObj[j]);

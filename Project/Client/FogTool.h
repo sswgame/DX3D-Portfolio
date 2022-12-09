@@ -10,6 +10,9 @@ private:
     CGameObject* m_pFog;
     bool m_bFogOn;
 
+    CGameObject* m_pParticleEmissive;
+    bool m_bParticleEmissiveOn;
+
 public:
     void SetData();
 

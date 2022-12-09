@@ -43,6 +43,7 @@ private:
 
 	bool	m_bLinearParicle;
 	bool	m_bUseSoftParticle;
+	bool	m_bUseEmissive;
 
 	int m_iEmissive; // 파티클 발광여부
 	int m_iLighting; // 광원 적용 여부
@@ -102,6 +103,9 @@ public:
 
 	void SetSoftParticle(bool _TorF) { m_bUseSoftParticle = _TorF; }
 	bool GetSoftParticle() { return m_bUseSoftParticle; }
+
+	void SetUseEmissive(bool _TorF) { m_bUseEmissive = _TorF; }
+	bool GetUseEmissive() { return m_bUseEmissive; }
 
 	void SetSoundName(wstring _name)
 	{

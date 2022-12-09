@@ -143,11 +143,19 @@ void ParticleTool::ParticleOptionSetting()
 	ImGui::ColorEdit4("##END_COLOR", m_vArrStartEndColor[1]);
 	pTargetParticleSystem->SetStartEndColor(m_vArrStartEndColor[0], m_vArrStartEndColor[1]);
 
-	ImGui::BulletText("Emissive");
-	ImGui::SameLine(200);
-	ImGui::ColorEdit4("##EMISSIVE", m_vArrStartEndEmissive[0]);
-	pCurPSys->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, m_vArrStartEndEmissive[0]);
-	pTargetParticleSystem->SetStartEndEmissiveColor(m_vArrStartEndEmissive[0], m_vArrStartEndEmissive[0]);
+	ImGui::BulletText("Use Emissive"); ImGui::SameLine(200);
+	ImGui::Checkbox("##EmissiveCheckBox", &m_bShaderUseEmissive);
+	pTargetParticleSystem->SetUseEmissive(m_bShaderUseEmissive);
+
+	if (m_bShaderUseEmissive)
+	{
+		ImGui::Indent();
+		ImGui::BulletText("Emissive");
+		ImGui::SameLine(200);
+		ImGui::ColorEdit4("##EMISSIVE", m_vArrStartEndEmissive[0]);
+		pTargetParticleSystem->SetStartEndEmissiveColor(m_vArrStartEndEmissive[0], m_vArrStartEndEmissive[0]);
+		ImGui::Unindent();
+	}
 
 	ImGui::BulletText("Start Scale");
 	ImGui::SameLine(200);
@@ -448,6 +456,7 @@ void ParticleTool::SetData()
 	m_fArrDirection[1] = dir.y;
 
 	m_bLinerParticle = pTargetParticleSystem->GetLinearParticle();
+	m_bShaderUseEmissive = pTargetParticleSystem->GetUseEmissive();
 
 	m_fRange = pTargetParticleSystem->GetRange();
 	m_fTerm = pTargetParticleSystem->GetTerm();

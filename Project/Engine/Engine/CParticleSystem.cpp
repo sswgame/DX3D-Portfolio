@@ -37,6 +37,7 @@ CParticleSystem::CParticleSystem()
 	, m_bUseSoftParticle(false)
 	, m_strSoundName()
 	, m_pSound(nullptr)
+	, m_bUseEmissive(false)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -78,6 +79,7 @@ CParticleSystem::CParticleSystem(const CParticleSystem& _origin)
 	, m_bUseSoftParticle(_origin.m_bUseSoftParticle)
 	, m_strSoundName(_origin.m_strSoundName)
 	, m_pSound(nullptr)
+	, m_bUseEmissive(_origin.m_bUseEmissive)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -215,9 +217,13 @@ void CParticleSystem::render()
 
 	m_ParticleBuffer->UpdateData(PIPELINE_STAGE::GS | PIPELINE_STAGE::PS, 16);
 
+	int iEmissive = (int)m_bUseEmissive;
+
 	//GetMaterial()->SetScalarParam(SCALAR_PARAM::INT_0, &i);
 	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_1, &m_bPosInherit);
 	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_2, &m_iLighting);
+	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_3, &iEmissive);
+	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vStartEmissiveColor);
 	GetMaterial(0)->UpdateData();
 	GetMesh()->render_particle(m_iMaxCount);
 

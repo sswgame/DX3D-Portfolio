@@ -251,11 +251,12 @@ struct VS_MERGE_OUT
     float4 vPosition : SV_Position;
 };
 
-static const float Weight4[25] = // 12 - 1 - 12
+static const float Weight[9] = // 4 - 1 - 4
 {
-    0.0050, 0.0162, 0.0382, 0.0561, 0.1353, 0.1953, 0.278, 0.4868, 0.6018, 0.7261, 0.8131, 0.9231,
-    1, 0.9231, 0.8131, 0.7261, 0.6018, 0.4868, 0.278, 0.1953, 0.1353, 0.0561, 0.0382, 0.0162, 0.0050
+    0.1f, 0.18f, 0.55f, 0.9f,
+    1, 0.9f, 0.55f, 0.18f, 0.1f
 };
+
 
 VS_MERGE_OUT VS_Merge(VS_MERGE_IN _in)
 {
@@ -291,28 +292,27 @@ float4 PS_Merge(VS_MERGE_OUT _in) : SV_Target0
     float2 uv = (float2) 0.f;
     float4 vBloomColor = (float4) 0.f;
 
-    for (int i = -12; i < 12; ++i)
+    for (int i = -4; i < 4; ++i)
     {
         uv = t + float2(fWeightOnePixel * i, 0.f);
-        vBloomColor += Weight4[12 + i] * g_tex_0.Sample(g_sam_0, uv);
+        vBloomColor += Weight[4 + i] * g_tex_0.Sample(g_sam_0, uv);
     }
 
-    for (int i = -12; i < 12; ++i)
+    for (int j = -4; j < 4; ++j)
     {
-        uv = t + float2(0, fHeightOnePixel * i);
-        vBloomColor += Weight4[12 + i] * g_tex_0.Sample(g_sam_0, uv);
+        uv = t + float2(0, fHeightOnePixel * j);
+        vBloomColor += Weight[4 + j] * g_tex_0.Sample(g_sam_0, uv);
     }
 
     // bloom ÃßÃâ
 
-    vBloomColor /= 12.f;
+    vBloomColor /= 8.f;
     float vBrightness = dot(vBloomColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
 
     if (vBrightness > 0.99)
-        vBrightness = float4(vOutColor.rgb, 1.f);
+        return vBloomColor;
     else
         return vOutColor;
-
 
     return vBloomColor;
 }

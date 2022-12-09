@@ -978,6 +978,21 @@ void CResMgr::CreateEngineShader()
 
 	AddRes<CGraphicsShader>(L"FogPostProcessShader", pShader, true);
 
+	// Emissive PostProcess Shader
+	pShader = new CGraphicsShader;
+
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
+	pShader->CreateVertexShader(L"Shader\\postprocess.fx", "VS_EmissivePostProcess");
+	pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_EmissivePostProcess");
+
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+
+	pShader->AddTexParamInfo(L"Render Target", TEX_PARAM::TEX_0);
+	pShader->AddTexParamInfo(L"Emissive Target", TEX_PARAM::TEX_1);
+
+	AddRes<CGraphicsShader>(L"EmissivePostProcessShader", pShader, true);
+
 	// Tessellation Test Shader
 	pShader = new CGraphicsShader;
 
@@ -1088,6 +1103,11 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"FogPostProcessShader"));
 	AddRes<CMaterial>(L"material\\FogPostProcessMtrl.mtrl", pMtrl);
+
+	// Emissive PostProcess Mtrl
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"EmissivePostProcessShader"));
+	AddRes<CMaterial>(L"material\\EmissivePostProcessMtrl.mtrl", pMtrl);
 
 	// Tessellation Test Material
 	pMtrl = new CMaterial;
