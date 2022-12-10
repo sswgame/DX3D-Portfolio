@@ -617,5 +617,8 @@
     <Filter Include="Script\Monster\Mgr&amp;Script">
       <UniqueIdentifier>{a2b853d8-75fe-4752-b6e3-7e07dd227d6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script\Item">
+      <UniqueIdentifier>{d7cf0114-7204-49ce-842e-6a8ddf29c402}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
