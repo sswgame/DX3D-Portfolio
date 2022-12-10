@@ -267,6 +267,10 @@ void CParticleSystem::SaveToScene(FILE* _pFile)
 	fwrite(&m_fAngle, sizeof(float), 1, _pFile);
 	fwrite(&m_iSpeedDetail_Func, sizeof(int), 1, _pFile);
 	fwrite(&m_vStartEmissiveColor, sizeof(Vec4), 1, _pFile);
+	fwrite(&m_bLinearParicle, sizeof(bool), 1, _pFile);
+	fwrite(&m_bUseSoftParticle, sizeof(bool), 1, _pFile);
+	fwrite(&m_bUseEmissive, sizeof(bool), 1, _pFile);
+
 	SaveWStringToFile(m_strSoundName, _pFile);
 
 }
@@ -302,6 +306,10 @@ void CParticleSystem::LoadFromScene(FILE* _pFile)
 	fread(&m_fAngle, sizeof(float), 1, _pFile);
 	fread(&m_iSpeedDetail_Func, sizeof(int), 1, _pFile);
 	fread(&m_vStartEmissiveColor, sizeof(Vec4), 1, _pFile);
+	fread(&m_bLinearParicle, sizeof(bool), 1, _pFile);
+	fread(&m_bUseSoftParticle, sizeof(bool), 1, _pFile);
+	fread(&m_bUseEmissive, sizeof(bool), 1, _pFile);
+
 	LoadWStringFromFile(m_strSoundName, _pFile);
 
 }
@@ -331,6 +339,9 @@ void CParticleSystem::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_vStartEmissiveColor) << YAML::Value << m_vStartEmissiveColor;
 	emitter << YAML::Key << NAME_OF(m_vEndEmissiveColor) << YAML::Value << m_vEndEmissiveColor;
 	emitter << YAML::Key << "SOUND_NAME" << YAML::Value << ToString(m_strSoundName);
+	emitter << YAML::Key << NAME_OF(m_bLinearParicle) << YAML::Value << m_bLinearParicle;
+	emitter << YAML::Key << NAME_OF(m_bUseSoftParticle) << YAML::Value << m_bUseSoftParticle;
+	emitter << YAML::Key << NAME_OF(m_bUseEmissive) << YAML::Value << m_bUseEmissive;
 
 }
 
@@ -360,4 +371,8 @@ void CParticleSystem::Deserialize(const YAML::Node& node)
 	m_vEndEmissiveColor = node[NAME_OF(m_vEndEmissiveColor)].as<Vec4>();
 	const std::string soundName = node["SOUND_NAME"].as<std::string>();
 	m_strSoundName = ToWString(soundName);
+	m_bLinearParicle = node[NAME_OF(m_bLinearParicle)].as<bool>();
+	m_bUseSoftParticle = node[NAME_OF(m_bUseSoftParticle)].as<bool>();
+	m_bUseEmissive = node[NAME_OF(m_bUseEmissive)].as<bool>();
+
 }
