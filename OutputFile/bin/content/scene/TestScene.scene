@@ -17,8 +17,7 @@ LAYERS:
               MATERIAL COUNT: 1
               0: [material\SkyBoxMtrl.mtrl, material\SkyBoxMtrl.mtrl]
               MATERIAL 0 TEXTURE LIST:
-                0: Output Texture
-                6: Cube Texture
+                6: texture\skybox\SkyDawn.dds
               m_bDynamicShadow: false
               m_bFrustumCulling: false
               m_eType: 1

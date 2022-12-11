@@ -1,33 +1,35 @@
-NAME: UI_0
+NAME: BAR_BACKGROUND
 m_bActive: true
 m_bDynamicShadow: false
 m_bFrustumCulling: false
 COMPONENTS:
   - TRANSFORM:
-      m_vRelativePos: [0, 0, 500]
-      m_vRelativeScale: [400, 80.1874466, 1]
+      m_vRelativePos: [-450, 412.596008, 0]
+      m_vRelativeScale: [500, 24.8080006, 1]
       m_vRelativeRot: [0, 0, 0]
       m_bIgnoreParentScale: true
   - UIIMAGE:
       m_orderZ: 0
       m_opacity: 1
       m_mouseCollisionEnable: true
-      m_anchorH: 1
-      m_anchorV: 1
+      m_anchorH: 0
+      m_anchorV: 0
       m_offsetPos: [0, 0]
       IMAGE INFO LIST:
-        {}
-      m_useInfo: 0
+        FRAME_0:
+          info.imagePos: [349.262329, 45.919281]
+          info.imageSize: [1556.01587, 27.551569]
+      m_useInfo: 1
       m_currentFrameName: FRAME_0
-      m_currentInfo.imagePos: [259.916138, 626.338989]
-      m_currentInfo.imageSize: [1236.92236, 247.964127]
+      m_currentInfo.imagePos: [348.10199, 47.7560539]
+      m_currentInfo.imageSize: [1554.85547, 31.2251129]
       m_preserveRatio: false
   - MESHRENDER:
       MESH: [RectMesh, RectMesh]
       MATERIAL COUNT: 1
-      0: [material\UIInterface2.mtrl, material\UIInterface2.mtrl]
+      0: [material\UIPlayer.mtrl, material\UIPlayer.mtrl]
       MATERIAL 0 TEXTURE LIST:
-        0: UI TEXTURE
+        0: texture\UI\PlayerUI_Tex.png
       m_bDynamicShadow: false
       m_bFrustumCulling: false
 SCRIPTS:

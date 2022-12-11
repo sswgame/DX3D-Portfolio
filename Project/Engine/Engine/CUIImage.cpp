@@ -145,14 +145,12 @@ void CUIImage::Deserialize(const YAML::Node& node)
 	CUIBase::Deserialize(node);
 	for (auto& infoNameNode : node["IMAGE INFO LIST"])
 	{
-		tImageInfo         info{};
-		const std::wstring infoName = ToWString(infoNameNode.first.as<std::string>());
-		for (auto& infoNode : infoNameNode.second)
-		{
-			info.imagePos  = infoNode[NAME_OF(info.imagePos)].as<Vec2>();
-			info.imageSize = infoNode[NAME_OF(info.imageSize)].as<Vec2>();
-		}
-		m_mapInfo.insert({infoName, info});
+		tImageInfo        info{};
+		const std::string infoName = infoNameNode.first.as<std::string>();
+		const YAML::Node& mapData  = infoNameNode.second;
+		info.imagePos              = mapData[NAME_OF(info.imagePos)].as<Vec2>();
+		info.imageSize             = mapData[NAME_OF(info.imageSize)].as<Vec2>();
+		m_mapInfo.insert({ToWString(infoName), info});
 	}
 	m_useInfo               = node[NAME_OF(m_useInfo)].as<int>();
 	m_currentFrameName      = node[NAME_OF(m_currentFrameName)].as<std::string>();

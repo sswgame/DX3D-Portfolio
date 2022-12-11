@@ -1,0 +1,39 @@
+NAME: PROGRESS_BAR
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [-450, 342.596008, 0]
+      m_vRelativeScale: [500, 24.8080006, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: true
+  - UIIMAGE:
+      m_orderZ: 0
+      m_opacity: 1
+      m_mouseCollisionEnable: true
+      m_anchorH: 0
+      m_anchorV: 0
+      m_offsetPos: [100, -95]
+      m_showDebugRect: 1
+      IMAGE INFO LIST:
+        FRAME_0:
+          info.imagePos: [348.10199, 126.737221]
+          info.imageSize: [1575.7417, 34.8986549]
+      m_useInfo: 1
+      m_currentFrameName: FRAME_0
+      m_currentInfo.imagePos: [348.10199, 126.737221]
+      m_currentInfo.imageSize: [1575.7417, 34.8986549]
+      m_preserveRatio: false
+  - MESHRENDER:
+      MESH: [RectMesh, RectMesh]
+      MATERIAL COUNT: 1
+      0: [material\UIPlayer.mtrl, material\UIPlayer.mtrl]
+      MATERIAL 0 TEXTURE LIST:
+        0: texture\UI\PlayerUI_Tex.png
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  []
+CHILDREN:
+  []

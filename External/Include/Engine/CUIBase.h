@@ -89,6 +89,5 @@ public:
 	void Deserialize(const YAML::Node& node) override;
 public:
 	CUIBase(COMPONENT_TYPE type);
-	CUIBase(const CUIBase& _origin);
 	virtual ~CUIBase();
 };

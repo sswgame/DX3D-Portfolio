@@ -21,16 +21,6 @@ CUIBase::CUIBase(COMPONENT_TYPE type)
 	, m_anchorH{ANCHOR_HORIZONTAL::MIDDLE}
 	, m_showDebugRect{true} {}
 
-CUIBase::CUIBase(const CUIBase& _origin)
-	: CComponent{_origin}
-	, m_orderZ{_origin.m_orderZ}
-	, m_opacity{_origin.m_opacity}
-	, m_isMouseHovered{false}
-	, m_mouseCollisionEnable{_origin.m_mouseCollisionEnable}
-	, m_anchorV{_origin.m_anchorV}
-	, m_anchorH{_origin.m_anchorH}
-	, m_showDebugRect{_origin.m_showDebugRect} {}
-
 CUIBase::~CUIBase() = default;
 
 
@@ -251,6 +241,7 @@ void CUIBase::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_anchorH) << YAML::Value << static_cast<int>(m_anchorH);
 	emitter << YAML::Key << NAME_OF(m_anchorV) << YAML::Value << static_cast<int>(m_anchorV);
 	emitter << YAML::Key << NAME_OF(m_offsetPos) << YAML::Value << m_offsetPos;
+	emitter << YAML::Key << NAME_OF(m_showDebugRect) << YAML::Value << m_showDebugRect;
 }
 
 void CUIBase::Deserialize(const YAML::Node& node)
@@ -261,4 +252,8 @@ void CUIBase::Deserialize(const YAML::Node& node)
 	m_anchorH              = static_cast<ANCHOR_HORIZONTAL>(node[NAME_OF(m_anchorH)].as<int>());
 	m_anchorV              = static_cast<ANCHOR_VERTICAL>(node[NAME_OF(m_anchorV)].as<int>());
 	m_offsetPos            = node[NAME_OF(m_offsetPos)].as<Vec2>();
+	if (node[NAME_OF(m_showDebugRect)].IsDefined())
+	{
+		m_showDebugRect = node[NAME_OF(m_showDebugRect)].as<int>();
+	}
 }

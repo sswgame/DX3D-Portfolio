@@ -1,0 +1,302 @@
+NAME: HP_PANEL
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 0, 1]
+      m_vRelativeScale: [1600, 900, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: true
+  - UIPANEL:
+      m_orderZ: 0
+      m_opacity: 1
+      m_mouseCollisionEnable: true
+      m_anchorH: 1
+      m_anchorV: 1
+      m_offsetPos: [0, 0]
+      m_showDebugRect: 1
+  - MESHRENDER:
+      MESH: [RectMesh, RectMesh]
+      MATERIAL COUNT: 1
+      0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+      MATERIAL 0 TEXTURE LIST:
+        {}
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  []
+CHILDREN:
+  - NAME: HP_PANEL_BACKGROUND
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-400, 307.493256, 0]
+          m_vRelativeScale: [800, 145.013489, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIIMAGE:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 0
+          m_anchorV: 0
+          m_offsetPos: [0, -70]
+          m_showDebugRect: 0
+          IMAGE INFO LIST:
+            FRAME_0:
+              info.imagePos: [265.717834, 648.380249]
+              info.imageSize: [1175.42432, 213.065475]
+          m_useInfo: 1
+          m_currentFrameName: FRAME_0
+          m_currentInfo.imagePos: [265.717834, 648.380249]
+          m_currentInfo.imageSize: [1175.42432, 213.065475]
+          m_preserveRatio: true
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIInterface2.mtrl, material\UIInterface2.mtrl]
+          MATERIAL 0 TEXTURE LIST:
+            0: texture\UI\UI_Interface2_Tex.png
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: HP_BACKGROUND
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-450, 342.596008, 0]
+          m_vRelativeScale: [500, 24.8080006, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIIMAGE:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 0
+          m_anchorV: 0
+          m_offsetPos: [100, -95]
+          m_showDebugRect: 0
+          IMAGE INFO LIST:
+            FRAME_0:
+              info.imagePos: [349.262329, 45.919281]
+              info.imageSize: [1556.01587, 27.551569]
+          m_useInfo: 1
+          m_currentFrameName: FRAME_0
+          m_currentInfo.imagePos: [348.10199, 47.7560539]
+          m_currentInfo.imageSize: [1554.85547, 31.2251129]
+          m_preserveRatio: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIPlayer.mtrl, material\UIPlayer.mtrl]
+          MATERIAL 0 TEXTURE LIST:
+            0: texture\UI\PlayerUI_Tex.png
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: STAMINA_BACKGROUND
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-475, 322.596008, 0]
+          m_vRelativeScale: [450, 24.8080006, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIIMAGE:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 0
+          m_anchorV: 0
+          m_offsetPos: [100, -115]
+          m_showDebugRect: 0
+          IMAGE INFO LIST:
+            FRAME_0:
+              info.imagePos: [349.262329, 45.919281]
+              info.imageSize: [1556.01587, 27.551569]
+          m_useInfo: 1
+          m_currentFrameName: FRAME_0
+          m_currentInfo.imagePos: [348.10199, 47.7560539]
+          m_currentInfo.imageSize: [1554.85547, 31.2251129]
+          m_preserveRatio: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIPlayer.mtrl, material\UIPlayer.mtrl]
+          MATERIAL 0 TEXTURE LIST:
+            0: texture\UI\PlayerUI_Tex.png
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: MP_BACKGROUND
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-500, 302.596008, 0]
+          m_vRelativeScale: [400, 24.8080006, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIIMAGE:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 0
+          m_anchorV: 0
+          m_offsetPos: [100, -135]
+          m_showDebugRect: 0
+          IMAGE INFO LIST:
+            FRAME_0:
+              info.imagePos: [349.262329, 45.919281]
+              info.imageSize: [1556.01587, 27.551569]
+          m_useInfo: 1
+          m_currentFrameName: FRAME_0
+          m_currentInfo.imagePos: [349.262329, 45.919281]
+          m_currentInfo.imageSize: [1556.01587, 27.551569]
+          m_preserveRatio: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIPlayer.mtrl, material\UIPlayer.mtrl]
+          MATERIAL 0 TEXTURE LIST:
+            0: texture\UI\PlayerUI_Tex.png
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: HP_PROGRESS_BAR
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-450, 342.596008, 0]
+          m_vRelativeScale: [500, 24.8080006, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIIMAGE:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 0
+          m_anchorV: 0
+          m_offsetPos: [100, -95]
+          m_showDebugRect: 1
+          IMAGE INFO LIST:
+            FRAME_0:
+              info.imagePos: [348.10199, 126.737221]
+              info.imageSize: [1575.7417, 34.8986549]
+          m_useInfo: 1
+          m_currentFrameName: FRAME_0
+          m_currentInfo.imagePos: [348.10199, 126.737221]
+          m_currentInfo.imageSize: [1575.7417, 34.8986549]
+          m_preserveRatio: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIPlayer.mtrl, material\UIPlayer.mtrl]
+          MATERIAL 0 TEXTURE LIST:
+            0: texture\UI\PlayerUI_Tex.png
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: STAMINA_PROGRESS_BAR
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-475, 322.596008, 0]
+          m_vRelativeScale: [450, 24.8080006, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIIMAGE:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 0
+          m_anchorV: 0
+          m_offsetPos: [100, -115]
+          m_showDebugRect: 1
+          IMAGE INFO LIST:
+            FRAME_0:
+              info.imagePos: [348.10199, 161.63588]
+              info.imageSize: [1575.7417, 34.8986549]
+          m_useInfo: 1
+          m_currentFrameName: FRAME_0
+          m_currentInfo.imagePos: [348.10199, 161.63588]
+          m_currentInfo.imageSize: [1575.7417, 34.8986549]
+          m_preserveRatio: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIPlayer.mtrl, material\UIPlayer.mtrl]
+          MATERIAL 0 TEXTURE LIST:
+            0: texture\UI\PlayerUI_Tex.png
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []
+  - NAME: MP_PROGRESS_BAR
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-500, 302.596008, 0]
+          m_vRelativeScale: [400, 24.8080006, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIIMAGE:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 0
+          m_anchorV: 0
+          m_offsetPos: [100, -135]
+          m_showDebugRect: 1
+          IMAGE INFO LIST:
+            FRAME_0:
+              info.imagePos: [349.262329, 198.371307]
+              info.imageSize: [1575.7417, 34.8986549]
+          m_useInfo: 1
+          m_currentFrameName: FRAME_0
+          m_currentInfo.imagePos: [349.262329, 198.371307]
+          m_currentInfo.imageSize: [1575.7417, 34.8986549]
+          m_preserveRatio: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIPlayer.mtrl, material\UIPlayer.mtrl]
+          MATERIAL 0 TEXTURE LIST:
+            0: texture\UI\PlayerUI_Tex.png
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []

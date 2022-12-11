@@ -27,6 +27,11 @@
 
 SceneOutliner::SceneOutliner()
 	: UI("SceneOutliner")
+	, m_TreeUI{nullptr}
+	, m_eClickedNodeType{}
+	, m_pSelectedScene{nullptr}
+	, m_pSelectedLayer{nullptr}
+	, m_pSelectedGameObject{nullptr}
 {
 	m_TreeUI = new TreeUI(true);
 	m_TreeUI->SetTitle("SceneOutliner");

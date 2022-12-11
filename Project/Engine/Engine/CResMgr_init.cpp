@@ -37,7 +37,7 @@ namespace
 		pShader->CreateVertexShader(L"shader\\ui.fx", "VS_UI");
 		pShader->CreatePixelShader(L"shader\\ui.fx", "PS_UI");
 
-		pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_TRANSLUCENT);
+		pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_FORWARD);
 		pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
 		pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 		pShader->SetRSType(RS_TYPE::CULL_BACK);

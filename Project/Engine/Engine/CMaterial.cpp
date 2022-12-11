@@ -55,9 +55,14 @@ CMaterial* CMaterial::GetMtrlInst()
 
 void CMaterial::Serialize(YAML::Emitter& emitter)
 {
-	for (auto& textInfo : m_vecTexParamInfo)
+	for (auto& texInfo : m_vecTexParamInfo)
 	{
-		emitter << YAML::Key << static_cast<int>(textInfo.eTexParam) << YAML::Value << ToString(textInfo.strDesc);
+		Ptr<CTexture> pTexture = m_arrTex[(UINT)texInfo.eTexParam];
+		if (nullptr != pTexture)
+		{
+			emitter << YAML::Key << static_cast<int>(texInfo.eTexParam) << YAML::Value <<
+				ToString(pTexture->GetRelativePath());
+		}
 	}
 }
 
@@ -67,10 +72,9 @@ void CMaterial::Deserialize(const YAML::Node& node)
 	{
 		for (const auto& texNode : node)
 		{
-			tTexParamInfo info{};
-			info.eTexParam = static_cast<TEX_PARAM>(texNode.first.as<int>());
-			info.strDesc   = ToWString(texNode.second.as<std::string>());
-			m_vecTexParamInfo.push_back(info);
+			TEX_PARAM    param       = static_cast<TEX_PARAM>(texNode.first.as<int>());
+			std::wstring texturePath = ToWString(texNode.second.as<std::string>());
+			m_arrTex[(UINT)param]    = CResMgr::GetInst()->Load<CTexture>(texturePath, texturePath);
 		}
 	}
 }
