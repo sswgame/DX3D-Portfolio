@@ -192,7 +192,7 @@
     </ClInclude>
     <ClInclude Include="MagmaScript.h" />
     <ClInclude Include="UITestScript.h">
-      <Filter>Script\UI</Filter>
+      <Filter>TEST</Filter>
     </ClInclude>
     <ClInclude Include="MagmaScript.h" />
     <ClInclude Include="SwordTrailScript.h" />
@@ -425,7 +425,7 @@
     </ClCompile>
     <ClCompile Include="MagmaScript.cpp" />
     <ClCompile Include="UITestScript.cpp">
-      <Filter>Script\UI</Filter>
+      <Filter>TEST</Filter>
     </ClCompile>
     <ClCompile Include="MagmaScript.cpp" />
     <ClCompile Include="SwordTrailScript.cpp" />
@@ -599,9 +599,6 @@
     <Filter Include="Script\Common">
       <UniqueIdentifier>{9f8f4ddc-f144-4954-9e7a-80b22286feed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Script\UI">
-      <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Script\Camera">
       <UniqueIdentifier>{26ff9c4b-bb46-4786-aa05-4d7222b78d33}</UniqueIdentifier>
     </Filter>
@@ -617,8 +614,8 @@
     <Filter Include="Script\Monster\Mgr&amp;Script">
       <UniqueIdentifier>{a2b853d8-75fe-4752-b6e3-7e07dd227d6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Script\Item">
-      <UniqueIdentifier>{d7cf0114-7204-49ce-842e-6a8ddf29c402}</UniqueIdentifier>
+    <Filter Include="TEST">
+      <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

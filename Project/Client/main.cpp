@@ -3,14 +3,14 @@
 #include <Engine/CCore.h>
 #include <Engine/CDevice.h>
 #include <Engine/CPrefab.h>
-#include <Engine/CSceneMgr.h>
+
+#include <Script/CSceneSaveLoad.h>
 
 #include "CImGuiMgr.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "CToolObjMgr.h"
-
-#include <Script/CSceneSaveLoad.h>
 #include "CTestScene.h"
+
 
 HINSTANCE hInst;
 HWND      g_hWnd;
@@ -28,6 +28,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 #ifdef _DEBUG
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+	AllocConsole();
+	CLog::Init();
+	LOG_INFO("PROGRAM START");
+	LOG_TRACE("CONSOLE OPENED");
 #else
     #define DBG_NEW new
 #endif
@@ -36,24 +41,31 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 
 	if (!InitInstance(hInstance, nCmdShow))
 	{
-		return FALSE;
+		LOG_ERROR("WINDOW CREATION FAILED");
+		return EXIT_FAILURE;
 	}
+	LOG_INFO("WINDOW CREATED");
 
 	if (FAILED(CCore::GetInst()->init(g_hWnd, POINT{ 1600, 900 })))
 	{
-		return 0;
+		LOG_ERROR("CCORE INIT FAILED");
+		return EXIT_FAILURE;
 	}
+	LOG_INFO("CCORE INIT SUCCEDED");
 
 	CPrefab::m_pSaveFunc = &CSceneSaveLoad::SavePrefab;
 	CPrefab::m_pLoadFunc = &CSceneSaveLoad::LoadPrefab;
 
-	CTestScene::CreateTestScene();
-	CCore::GetInst()->progress();
+	CImGuiMgr::GetInst()->init(g_hWnd);
+	LOG_INFO("IMGUI INIT SUCCEDED");
 
 	CToolObjMgr::GetInst()->init();
+	LOG_INFO("TOOL MANAGER INIT SUCCEDED");
 
-	CImGuiMgr::GetInst()->init(g_hWnd);
+	CTestScene::CreateTestScene();
+	LOG_INFO("SCENE CREATED");
 
+	LOG_TRACE("ENTERING GAME LOOP");
 	MSG msg{};
 	while (true)
 	{
@@ -76,9 +88,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 			CDevice::GetInst()->Present();
 		}
 	}
+	LOG_TRACE("EXIT GAME LOOP");
 
 	CImGuiMgr::GetInst()->clear();
+	LOG_INFO("CLEAR IMGUI");
 
+	LOG_INFO("QUIT PROGRAM");
 	return static_cast<int>(msg.wParam);
 }
 
@@ -118,12 +133,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	                       nullptr,
 	                       hInstance,
 	                       nullptr);
-
-	if (!g_hWnd)
+	if (nullptr == g_hWnd)
 	{
 		return FALSE;
 	}
-
 	ShowWindow(g_hWnd, nCmdShow);
 	UpdateWindow(g_hWnd);
 
@@ -140,7 +153,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_DESTROY:
-		PostQuitMessage(0);
+		{
+			PostQuitMessage(0);
+			FreeConsole();
+		}
 		break;
 
 	case WM_DPICHANGED:

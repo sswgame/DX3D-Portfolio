@@ -53,6 +53,28 @@ CMaterial* CMaterial::GetMtrlInst()
 	return pCloneMtrl;
 }
 
+void CMaterial::Serialize(YAML::Emitter& emitter)
+{
+	for (auto& textInfo : m_vecTexParamInfo)
+	{
+		emitter << YAML::Key << static_cast<int>(textInfo.eTexParam) << YAML::Value << ToString(textInfo.strDesc);
+	}
+}
+
+void CMaterial::Deserialize(const YAML::Node& node)
+{
+	if (node.IsDefined())
+	{
+		for (const auto& texNode : node)
+		{
+			tTexParamInfo info{};
+			info.eTexParam = static_cast<TEX_PARAM>(texNode.first.as<int>());
+			info.strDesc   = ToWString(texNode.second.as<std::string>());
+			m_vecTexParamInfo.push_back(info);
+		}
+	}
+}
+
 void CMaterial::SetShader(Ptr<CGraphicsShader> _pShader)
 {
 	m_pShader = _pShader;
@@ -234,7 +256,6 @@ int CMaterial::Save(const wstring& _strFilePath)
 	FILE* pFile = nullptr;
 
 	_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
-	assert(pFile);
 
 	if (nullptr == pFile)
 		return E_FAIL;

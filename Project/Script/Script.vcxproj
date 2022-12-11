@@ -52,7 +52,7 @@
     <OutDir>$(SolutionDir)External\Library\Script\</OutDir>
     <TargetName>Script_debug</TargetName>
     <IntDir>$(SolutionDir)Trash\$(ProjectName)\$(Configuration)\</IntDir>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\DirectXTex\;$(SolutionDir)External\Include\spdlog\;$(SolutionDir)External\Include\FBXLoader\;</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -60,7 +60,7 @@
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)External\Library\Script\</OutDir>
     <IntDir>$(SolutionDir)Trash\$(ProjectName)\$(Configuration)\</IntDir>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\DirectXTex\;$(SolutionDir)External\Include\FBXLoader\;</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

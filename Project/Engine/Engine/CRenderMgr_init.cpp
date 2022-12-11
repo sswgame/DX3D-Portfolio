@@ -20,12 +20,6 @@ void CRenderMgr::init()
 	                                                                    DXGI_FORMAT_R8G8B8A8_UNORM,
 	                                                                    D3D11_BIND_SHADER_RESOURCE,
 	                                                                    true);
-	Ptr<CTexture> pToolRenderTargetTex = CResMgr::GetInst()->CreateTexture(L"ToolRenderTargetTex",
-	                                                                       static_cast<UINT>(scrreenResolution.x),
-	                                                                       static_cast<UINT>(scrreenResolution.y),
-	                                                                       DXGI_FORMAT_R8G8B8A8_UNORM,
-	                                                                       D3D11_BIND_SHADER_RESOURCE,
-	                                                                       true);
 	CreateMRT();
 	CreateMaterial();
 }
@@ -39,7 +33,6 @@ void CRenderMgr::CreateMRT()
 	CreateLightMRT();
 	CreateShadowMapMRT();
 	CreateSSAOMRT();
-
 }
 
 void CRenderMgr::CreateMaterial()
@@ -216,34 +209,34 @@ void CRenderMgr::CreateSSAOMRT()
 	// ===========================================
 	// SSAO MRT ( Screen Space Ambient Occlusion )
 	// ===========================================
-	const Vec2          vResolution = CDevice::GetInst()->GetRenderResolution();
+	const Vec2          vResolution      = CDevice::GetInst()->GetRenderResolution();
 	const Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->FindRes<CTexture>(L"DepthStencilTex");
 
 	Ptr<CTexture> arrTex[8]
 		= {
 			CResMgr::GetInst()->CreateTexture(L"AmbientOcclusionTex",
-											  (UINT)vResolution.x ,
-											  (UINT)vResolution.y ,
-											  DXGI_FORMAT_R32G32B32A32_FLOAT,
-											  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-											  true),
+			                                  (UINT)vResolution.x,
+			                                  (UINT)vResolution.y,
+			                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
+			                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+			                                  true),
 
 			CResMgr::GetInst()->CreateTexture(L"AmbientOcclusionTempTex",
-											  (UINT)vResolution.x ,
-											  (UINT)vResolution.y ,
-											  DXGI_FORMAT_R32G32B32A32_FLOAT,
-											  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-											  true),
+			                                  (UINT)vResolution.x,
+			                                  (UINT)vResolution.y,
+			                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
+			                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+			                                  true),
 
 			CResMgr::GetInst()->CreateTexture(L"RandomVectorTex",
-											  (UINT)vResolution.x,
-											  (UINT)vResolution.y,
-											  DXGI_FORMAT_R32G32B32A32_FLOAT,
-											  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-											  true),
+			                                  (UINT)vResolution.x,
+			                                  (UINT)vResolution.y,
+			                                  DXGI_FORMAT_R32G32B32A32_FLOAT,
+			                                  D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
+			                                  true),
 
 
-	};
+		};
 
 	m_arrMRT[(UINT)MRT_TYPE::SSAO] = new CMRT;
 	m_arrMRT[(UINT)MRT_TYPE::SSAO]->Create(3, arrTex, pDepthStencilTex);

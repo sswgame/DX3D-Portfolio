@@ -9,8 +9,8 @@ private:
 	vector<int> m_vecLinkedCell;
 
 public:
-	const Vtx*        GetVTX() { return m_arrVTX; }
-	const vector<int> GetLinkedCellIDX() { return m_vecLinkedCell; }
+	const Vtx*         GetVTX() { return m_arrVTX; }
+	const vector<int>& GetLinkedCellIDX() const { return m_vecLinkedCell; }
 
 	CNaviCell();
 	~CNaviCell();
@@ -25,9 +25,9 @@ private:
 	vector<CNaviCell*> m_vecNaviCell;
 
 public:
-	Ptr<CMesh> GetNaviMesh() { return m_pNavMesh; }
-	CNaviCell* GetCell(int _iIDX) { return m_vecNaviCell[_iIDX]; }
-	UINT       GetCellCount() { return static_cast<UINT>(m_vecNaviCell.size()); }
+	Ptr<CMesh> GetNaviMesh() const { return m_pNavMesh; }
+	CNaviCell* GetCell(int _iIDX) const { return m_vecNaviCell[_iIDX]; }
+	UINT       GetCellCount() const { return static_cast<UINT>(m_vecNaviCell.size()); }
 
 	bool CreateFromObj(const wstring& _strRelativePath, const wstring& _strMeshPath);
 

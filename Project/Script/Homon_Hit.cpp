@@ -8,15 +8,11 @@
 #include <Engine/CAnimator3D.h>
 
 Homon_Hit::Homon_Hit()
-	: CState{ L"HIT" }
+	: CState{L"HIT"}
 	, m_pAnimation(nullptr)
-	, m_pOwnerMGR(nullptr)
-{
-}
+	, m_pOwnerMGR(nullptr) {}
 
-Homon_Hit::~Homon_Hit()
-{
-}
+Homon_Hit::~Homon_Hit() {}
 
 void Homon_Hit::Enter()
 {
@@ -50,12 +46,11 @@ void Homon_Hit::Update()
 	}
 	else
 	{
-		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
 		}
-
 	}
 }
 

@@ -50,12 +50,14 @@ using std::make_pair;
 // Fbx Loader
 #include <FBXLoader/fbxsdk.h>
 
+//FBX
 #ifdef _DEBUG
 #pragma comment(lib, "FBXLoader/x64/debug/libfbxsdk-md.lib")
 #else
 #pragma comment(lib, "FBXLoader/x64/release/libfbxsdk-md.lib")
 #endif
 
+//YAML
 #define YAML_CPP_STATIC_DEFINE
 #include <yaml-cpp/yaml.h>
 #if _DEBUG
@@ -64,10 +66,10 @@ using std::make_pair;
 #pragma comment(lib,"yaml-cpp/yaml-cpp")
 #endif
 
-
 #include "define.h"
 #include "struct.h"
 #include "extern.h"
 #include "singleton.h"
 #include "func.h"
-
+#include "CLog.h"
+#include "CTimeMeasure.h"

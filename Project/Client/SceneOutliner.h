@@ -22,11 +22,10 @@ private:
 	CGameObject* m_pObjectForShow   = nullptr;
 
 public:
-	void RenderGuizmo();
+	void RenderGuizmo() const;
 
 private:
 	void RenderAddObject();
-	void RenderAddLayer();
 
 	bool MakePrefab();
 	void SelectPrefab(DWORD_PTR _param);
@@ -44,7 +43,6 @@ public:
 public:
 	void update() override;
 	void render_update() override;
-
 public:
 	void Reset();
 	void ResetTreeUI();
@@ -54,7 +52,7 @@ public:
 	// Delegeate Funcs 
 	void PressDelete(DWORD_PTR _dw);
 	void DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop);
-	void ResDrop(DWORD_PTR _resPtr);
+	void ResDrop(DWORD_PTR _dwResource);
 
 public:
 	SceneOutliner();

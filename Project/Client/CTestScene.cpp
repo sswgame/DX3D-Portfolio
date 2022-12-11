@@ -26,7 +26,6 @@
 #include <Engine/CMaterial.h>
 
 
-
 // [SCRIPT TYPE]
 #include <Script/PlayerScript.h>
 #include <Script/CameraMoveScript.h>
@@ -250,10 +249,10 @@ namespace
 
 	void AddPlayer(CScene* _pScene, CGameObject* _pCamera)
 	{
-		CGameObject*   pObj      = nullptr;
+		CGameObject* pObj = nullptr;
 
 		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat",
-		                                                L"meshdata\\player_sword0.mdat");
+		                                                               L"meshdata\\player_sword0.mdat");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"player");
 		pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
@@ -357,9 +356,9 @@ namespace
 
 	void AddHomonculus(CScene* _pScene)
 	{
-		wstring sMeshName = L"meshdata//homonculus0.mdat";
+		wstring        sMeshName = L"meshdata//homonculus0.mdat";
 		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(sMeshName.c_str(),
-			sMeshName.c_str());
+		                                                               sMeshName.c_str());
 
 		CGameObject* pMonster;
 		pMonster = pMeshData->Instantiate();
@@ -376,9 +375,9 @@ namespace
 
 	void AddDeuxiemie(CScene* _pScene)
 	{
-		wstring sMeshName = L"meshdata//deuxiemie_SmallSword0.mdat";
+		wstring        sMeshName = L"meshdata//deuxiemie_SmallSword0.mdat";
 		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(sMeshName.c_str(),
-			sMeshName.c_str());
+		                                                               sMeshName.c_str());
 
 		CGameObject* pMonster;
 		pMonster = pMeshData->Instantiate();
@@ -472,11 +471,11 @@ namespace
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
 
-		AddPlayer(pCurScene, pCamObj);
+		//AddPlayer(pCurScene, pCamObj);
 		//AddBoss(pCurScene);
 		//AddHomonculus(pCurScene);
 		//AddDeuxiemie(pCurScene);
-		
+
 		//TestUI(pCurScene);
 		//TestObjectPicking(pCurScene);
 

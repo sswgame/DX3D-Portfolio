@@ -12,16 +12,7 @@ CUIImage::CUIImage()
 	, m_preserveRatio{false}
 	, m_ratio{1.f} {}
 
-CUIImage::CUIImage(const CUIImage& _origin)
-	: CUIBase{_origin}
-	, m_currentInfo{_origin.m_currentInfo}
-	, m_currentFrameName{_origin.m_currentFrameName}
-	, m_useInfo{0}
-	, m_preserveRatio{false}
-	, m_ratio{1.f} {}
-
 CUIImage::~CUIImage() = default;
-
 
 void CUIImage::finalupdate()
 {

@@ -8,15 +8,11 @@
 #include <Engine/CAnimator3D.h>
 
 Homon_Walk::Homon_Walk()
-	: CState{ L"WALK" }
+	: CState{L"WALK"}
 	, m_pAnimation(nullptr)
-	, m_pOwnerMGR(nullptr)
-{
-}
+	, m_pOwnerMGR(nullptr) {}
 
-Homon_Walk::~Homon_Walk()
-{
-}
+Homon_Walk::~Homon_Walk() {}
 
 void Homon_Walk::Enter()
 {
@@ -51,7 +47,7 @@ void Homon_Walk::Update()
 	}
 	else
 	{
-		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
@@ -62,5 +58,4 @@ void Homon_Walk::Update()
 void Homon_Walk::Exit()
 {
 	m_pAnimation->Reset();
-
 }

@@ -4,6 +4,7 @@
 #include "CTestShader.h"
 #include "CParticleUpdateShader.h"
 #include "CAnimation3DShader.h"
+#include "CThreadPool.h"
 
 namespace
 {
@@ -30,16 +31,57 @@ namespace
 		pShader->AddScalarParamInfo(L"UI INFO", SCALAR_PARAM::VEC4_0);
 
 		CResMgr::GetInst()->AddRes<CGraphicsShader>(L"UIShader", pShader, true);
+
+		//UI Translucent Shader
+		pShader = new CGraphicsShader;
+		pShader->CreateVertexShader(L"shader\\ui.fx", "VS_UI");
+		pShader->CreatePixelShader(L"shader\\ui.fx", "PS_UI");
+
+		pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_TRANSLUCENT);
+		pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
+		pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+		pShader->SetRSType(RS_TYPE::CULL_BACK);
+
+		pShader->AddTexParamInfo(L"UI TEXTURE", TEX_PARAM::TEX_0);
+		pShader->AddScalarParamInfo(L"UI TYPE", SCALAR_PARAM::INT_0);
+		pShader->AddScalarParamInfo(L"USE INFO", SCALAR_PARAM::INT_1);
+		pShader->AddScalarParamInfo(L"USE PROGRESS BAR", SCALAR_PARAM::INT_2);
+		pShader->AddScalarParamInfo(L"PROGRESS BAR DIRECTION", SCALAR_PARAM::INT_3);
+		pShader->AddScalarParamInfo(L"PERCENTAGE", SCALAR_PARAM::FLOAT_0);
+		pShader->AddScalarParamInfo(L"TEXTURE SIZE", SCALAR_PARAM::VEC2_0);
+		pShader->AddScalarParamInfo(L"UI INFO", SCALAR_PARAM::VEC4_0);
+
+		CResMgr::GetInst()->AddRes<CGraphicsShader>(L"UITranslucentShader", pShader, true);
 	}
 
 	void MakeGameMaterial()
 	{
 		CMaterial* pMtrl = nullptr;
 
-		// Std2DMtrl 생성
+		//UI(DEFAULT)
 		pMtrl = new CMaterial;
 		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UIShader"));
 		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIMtrl.mtrl", pMtrl);
+
+		//UI(ITEM)
+		pMtrl = new CMaterial;
+		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UIShader"));
+		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIItem.mtrl", pMtrl);
+
+		//UI_INTERFACE1
+		pMtrl = new CMaterial;
+		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UIShader"));
+		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIInterface1.mtrl", pMtrl);
+
+		//UI_INTERFACE2
+		pMtrl = new CMaterial;
+		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UITranslucentShader"));
+		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIInterface2.mtrl", pMtrl);
+
+		//UI_PLAYER
+		pMtrl = new CMaterial;
+		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UIShader"));
+		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIPlayer.mtrl", pMtrl);
 	}
 
 	void MakeGameCompute() { }
@@ -48,13 +90,32 @@ namespace
 void CResMgr::init()
 {
 	InitSound();
-
-	CreateEngineMesh();
-	CreateEngineTexture();
-	CreateEngineShader();
+	//DirectXText에서 내부적으로 사용하는 COM으로 LoadXXX함수를 사용 이전에 초기화 필요
+	HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
+	CThreadPool::GetInst()->EnqueueJob([this]()
+	{
+		CreateEngineMesh();
+		LOG_TRACE("ENGINE MESH CREATED");
+	});
+	CThreadPool::GetInst()->EnqueueJob([this]()
+	{
+		CreateEngineTexture();
+		LOG_TRACE("ENGINE TEXTURE CREATED");
+	});
+	CThreadPool::GetInst()->EnqueueJob([this]()
+	{
+		CreateEngineShader();
+		LOG_TRACE("ENGINE SHADER CREATED");
+	});
+	CThreadPool::GetInst()->EnqueueJob([this]()
+	{
+		CreateEngineComputeShader();
+		LOG_TRACE("ENGINE COMPUTE-SHADER CREATED");
+	});
+	CThreadPool::GetInst()->Start();
+	CThreadPool::GetInst()->Join();
 	CreateEngineMaterial();
-
-	CreateEngineComputeShader();
+	LOG_TRACE("ENGINE MATERIAL CREATED");
 }
 
 void CResMgr::update()

@@ -244,7 +244,7 @@ void CEventMgr::update()
 		case EVENT_TYPE::RENDER_TEXT:
 			{
 				CUIText* pUIText = (CUIText*)m_vecEvent[i].lParam;
-				pUIText->m_pRTV2D->BeginDraw();
+				CDevice::GetInst()->GetRtv2D()->BeginDraw();
 				const Vec3 worldPos       = pUIText->Transform()->GetWorldPos();
 				const Vec3 halfWorldScale = pUIText->Transform()->GetWorldScale() * 0.5f;
 				const Vec2 halfResolution = CDevice::GetInst()->GetRenderResolution() * 0.5f;
@@ -264,12 +264,12 @@ void CEventMgr::update()
 				ptSize.x              = worldPos.x + halfResolution.x - halfWorldScale.x;
 				ptSize.y              = yOffset + halfResolution.y - halfWorldScale.y;
 
-				pUIText->m_pRTV2D->DrawTextLayout(ptSize,
-				                                  pUIText->m_pLayout.Get(),
-				                                  pUIText->m_pColorBrush.Get(),
-				                                  D2D1_DRAW_TEXT_OPTIONS_NONE);
+				CDevice::GetInst()->GetRtv2D()->DrawTextLayout(ptSize,
+				                                               pUIText->m_pLayout.Get(),
+				                                               pUIText->m_pColorBrush.Get(),
+				                                               D2D1_DRAW_TEXT_OPTIONS_NONE);
 
-				pUIText->m_pRTV2D->EndDraw();
+				CDevice::GetInst()->GetRtv2D()->EndDraw();
 				break;
 			}
 		// 이벤트 중에  변경 이벤트가 있었다면,

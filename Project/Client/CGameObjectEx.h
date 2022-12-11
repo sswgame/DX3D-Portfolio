@@ -1,8 +1,8 @@
 #pragma once
+#include <Engine/CGameObject.h>
 
-#include <Engine\CGameObject.h>
-
-class CGameObjectEx : public CGameObject
+class CGameObjectEx
+	: public CGameObject
 {
 public:
 	void finalupdate();

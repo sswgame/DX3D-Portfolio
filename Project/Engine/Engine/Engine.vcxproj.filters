@@ -199,16 +199,10 @@
     <ClInclude Include="CFSM.h">
       <Filter>Engine\05. Component\FSM</Filter>
     </ClInclude>
-    <ClInclude Include="CSerializer.h">
-      <Filter>Engine\01. Header</Filter>
-    </ClInclude>
     <ClInclude Include="CState.h">
       <Filter>Engine\05. Component\FSM</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="CNaviAgent.h" />
-    <ClInclude Include="CNaviMap.h" />
-    <ClInclude Include="CNaviMapData.h" />
     <ClInclude Include="CUIBase.h">
       <Filter>Engine\05. Component\UI</Filter>
     </ClInclude>
@@ -226,6 +220,39 @@
     </ClInclude>
     <ClInclude Include="CUIButton.h">
       <Filter>Engine\05. Component\UI\Extra</Filter>
+    </ClInclude>
+    <ClInclude Include="CThreadPool.h">
+      <Filter>Engine\03. Manager\ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="CNaviMap.h">
+      <Filter>Engine\05. Component\NaviMap</Filter>
+    </ClInclude>
+    <ClInclude Include="CNaviAgent.h">
+      <Filter>Engine\05. Component\NaviMap</Filter>
+    </ClInclude>
+    <ClInclude Include="CNaviMapData.h">
+      <Filter>Engine\07. Resource\09. NaviMapData</Filter>
+    </ClInclude>
+    <ClInclude Include="CRigidBody.h">
+      <Filter>Engine\05. Component\RigidBody</Filter>
+    </ClInclude>
+    <ClInclude Include="CFXAA.h">
+      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CRenderEffectMgr.h">
+      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CSSAO.h">
+      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CLog.h">
+      <Filter>Engine\01. Header\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="CSerializer.h">
+      <Filter>Engine\01. Header\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="CTimeMeasure.h">
+      <Filter>Engine\01. Header\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -415,16 +442,10 @@
     <ClCompile Include="CFSM.cpp">
       <Filter>Engine\05. Component\FSM</Filter>
     </ClCompile>
-    <ClCompile Include="CSerializer.cpp">
-      <Filter>Engine\01. Header</Filter>
-    </ClCompile>
     <ClCompile Include="CState.cpp">
       <Filter>Engine\05. Component\FSM</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="CNaviAgent.cpp" />
-    <ClCompile Include="CNaviMap.cpp" />
-    <ClCompile Include="CNaviMapData.cpp" />
     <ClCompile Include="CUIBase.cpp">
       <Filter>Engine\05. Component\UI</Filter>
     </ClCompile>
@@ -442,6 +463,39 @@
     </ClCompile>
     <ClCompile Include="CUIButton.cpp">
       <Filter>Engine\05. Component\UI\Extra</Filter>
+    </ClCompile>
+    <ClCompile Include="CThreadPool.cpp">
+      <Filter>Engine\03. Manager\ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="CNaviMap.cpp">
+      <Filter>Engine\05. Component\NaviMap</Filter>
+    </ClCompile>
+    <ClCompile Include="CNaviAgent.cpp">
+      <Filter>Engine\05. Component\NaviMap</Filter>
+    </ClCompile>
+    <ClCompile Include="CNaviMapData.cpp">
+      <Filter>Engine\07. Resource\09. NaviMapData</Filter>
+    </ClCompile>
+    <ClCompile Include="CRigidBody.cpp">
+      <Filter>Engine\05. Component\RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="CFXAA.cpp">
+      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CRenderEffectMgr.cpp">
+      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CSSAO.cpp">
+      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CLog.cpp">
+      <Filter>Engine\01. Header\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="CSerializer.cpp">
+      <Filter>Engine\01. Header\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="CTimeMeasure.cpp">
+      <Filter>Engine\01. Header\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -649,6 +703,27 @@
     <Filter Include="Engine\05. Component\UI\Extra">
       <UniqueIdentifier>{457ffc07-2f80-4bc3-a46d-f97fbe2ba8aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\HLSL\Game">
+      <UniqueIdentifier>{111277ff-ddc7-448c-9e5e-793881fdde0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\ThreadPool">
+      <UniqueIdentifier>{1fb71569-4d0b-49bc-900d-e81ba57d4b65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Component\NaviMap">
+      <UniqueIdentifier>{2409bbfb-8608-46fc-9d50-449e63f01ca5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Resource\09. NaviMapData">
+      <UniqueIdentifier>{d3e44cfb-0f00-4c78-92f6-09eaa400a348}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Component\RigidBody">
+      <UniqueIdentifier>{662d36bf-730a-4b98-94a0-d179ce826a76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\RenderEffectMgr">
+      <UniqueIdentifier>{297dce57-4e6e-4875-93c0-61dfc98aa2ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\01. Header\Utility">
+      <UniqueIdentifier>{f2a3a627-86fb-4e5d-a2c9-04cf2b021f06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -705,23 +780,32 @@
     <None Include="weightmap.fx">
       <Filter>Engine\HLSL\ComputeShader\LandScape\WeightMap</Filter>
     </None>
-    <None Include="boss.fx">
-      <Filter>Engine\HLSL</Filter>
-    </None>
-    <None Include="func.fx">
-      <Filter>Engine\HLSL</Filter>
-    </None>
-    <None Include="struct.fx">
-      <Filter>Engine\HLSL</Filter>
-    </None>
-    <None Include="trail.fx">
-      <Filter>Engine\HLSL</Filter>
-    </None>
-    <None Include="ui.fx">
-      <Filter>Engine\HLSL</Filter>
-    </None>
     <None Include="value.fx">
       <Filter>Engine\HLSL</Filter>
+    </None>
+    <None Include="boss.fx">
+      <Filter>Engine\HLSL\Game</Filter>
+    </None>
+    <None Include="func.fx">
+      <Filter>Engine\HLSL\Game</Filter>
+    </None>
+    <None Include="struct.fx">
+      <Filter>Engine\HLSL\Game</Filter>
+    </None>
+    <None Include="trail.fx">
+      <Filter>Engine\HLSL\Game</Filter>
+    </None>
+    <None Include="ui.fx">
+      <Filter>Engine\HLSL\Game</Filter>
+    </None>
+    <None Include="SSAO.fx">
+      <Filter>Engine\HLSL\Game</Filter>
+    </None>
+    <None Include="FXAA.fx">
+      <Filter>Engine\HLSL\Game</Filter>
+    </None>
+    <None Include="FullScreenTriangle.fx">
+      <Filter>Engine\HLSL\Game</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -2,26 +2,22 @@
 #include "MagmaScript.h"
 
 // < ENGINE >>
-#include <Engine/CMesh.h>
 #include <Engine/CCollider3D.h>
 #include <Engine/CTransform.h>
-#include <Engine/CSceneMgr.h>
-#include <Engine/CScene.h>
 #include <Engine/CParticleSystem.h>
 #include <Engine/CSerializer.h>
+
 MagmaScript::MagmaScript()
-	: CScript{ (int)SCRIPT_TYPE::MAGMASCRIPT }
+	: CScript{(int)SCRIPT_TYPE::MAGMASCRIPT}
 	, m_fLifeTime(0.f)
 	, m_fAddTime(0.f)
 	, m_fExplodeScale(0.f)
 {
-	m_fLifeTime = 6.f;
+	m_fLifeTime     = 6.f;
 	m_fExplodeScale = 500.f;
 }
 
-MagmaScript::~MagmaScript()
-{
-}
+MagmaScript::~MagmaScript() {}
 
 void MagmaScript::Update()
 {
@@ -51,7 +47,6 @@ void MagmaScript::Update()
 		//CSceneMgr::GetInst()->SpawnObject(pExplodeParticle, 1);
 
 		//GetOwner()->Destroy();
-
 	}
 	else if (4.f < m_fAddTime && m_fAddTime < 6.f)
 	{
@@ -66,9 +61,9 @@ void MagmaScript::Update()
 		// ================
 
 		Vec3 vScale = GetOwner()->Transform()->GetRelativeScale();
-		
+
 		float fMagmaScale = 0.f;
-		fMagmaScale = (2.f - (4.f - m_fAddTime)) / 2.f;
+		fMagmaScale       = (2.f - (4.f - m_fAddTime)) / 2.f;
 
 		vScale.y = fMagmaScale;
 
@@ -82,9 +77,7 @@ void MagmaScript::Update()
 	}
 }
 
-void MagmaScript::LateUpdate()
-{
-}
+void MagmaScript::LateUpdate() {}
 
 void MagmaScript::Serialize(YAML::Emitter& emitter)
 {
@@ -93,13 +86,12 @@ void MagmaScript::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_fExplodeScale) << YAML::Value << m_fExplodeScale;
 
 	CScript::Serialize(emitter);
-
 }
 
 void MagmaScript::Deserialize(const YAML::Node& node)
 {
 	m_fLifeTime = node[NAME_OF(m_fLifeTime)].as<float>();
-	m_fAddTime = node[NAME_OF(m_fAddTime)].as<float>();
+	m_fAddTime  = node[NAME_OF(m_fAddTime)].as<float>();
 	m_fLifeTime = node[NAME_OF(m_fLifeTime)].as<float>();
 
 	CScript::Deserialize(node);

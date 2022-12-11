@@ -12,8 +12,6 @@ private:
 
 private:
 	CScene* m_pCurScene;
-private:
-	void MakeToolScene();
 public:
 	CScene* GetCurScene() const { return m_pCurScene; }
 

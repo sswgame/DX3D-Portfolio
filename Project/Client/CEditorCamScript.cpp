@@ -15,6 +15,20 @@ CEditorCamScript::~CEditorCamScript() {}
 
 void CEditorCamScript::update()
 {
+	if (KEY_PRESSED(KEY::LCTRL) && KEY_TAP(KEY::F12))
+	{
+		m_bEnableInput = !m_bEnableInput;
+		LOG_INFO(m_bEnableInput ? "EDITOR CAMERA MOVE ENABLED" : "EDITOR CAMERA MOVE DISABLED");
+	}
+	if (false == m_bEnableInput)
+	{
+		return;
+	}
+	if (KEY_PRESSED(KEY::LCTRL) && KEY_TAP(KEY::F11))
+	{
+		Transform()->SetRelativePos({0.f, 0.f, 0.f});
+		Transform()->SetRelativeRotation({0.f, 0.f, 0.f});
+	}
 	Vec3  vPos   = Transform()->GetRelativePos();
 	float fSpeed = m_fSpeed;
 

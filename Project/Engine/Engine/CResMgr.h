@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include "Ptr.h"
 
 #include "CPathMgr.h"
@@ -22,6 +24,7 @@ class CResMgr
 private:
 	std::map<std::wstring, CRes*> m_Res[static_cast<UINT>(RES_TYPE::END)];
 
+	std::mutex m_mutex;
 public:
 	void init();
 	void update();
@@ -108,29 +111,35 @@ template <typename T>
 Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strRelativePath, bool _bEngineResource)
 {
 	RES_TYPE eType = GetResType<T>();
-	CRes*    pRes  = FindRes<T>(_strKey).Get();
-	if (nullptr != pRes)
 	{
-		return static_cast<T*>(pRes);
+		std::lock_guard<std::mutex> lock{m_mutex};
+		CRes*                       pRes = FindRes<T>(_strKey).Get();
+		if (nullptr != pRes)
+		{
+			return static_cast<T*>(pRes);
+		}
 	}
 
 	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
 	const wstring strFullPath    = strContentPath + _strRelativePath;
 
-	pRes = new T{};
+	Ptr<T> pRes = new T{};
 	pRes->SetKey(_strKey);
 	pRes->SetRelativePath(_strRelativePath);
 	pRes->m_bEngineRes = _bEngineResource;
 	if (FAILED(pRes->Load(strFullPath)))
 	{
-		SAFE_DELETE(pRes);
+		CRes* pDelete = pRes.Get();
+		SAFE_DELETE(pDelete);
 		MessageBox(nullptr, L"리소스 로딩 실패", L"리소스 로딩 오류", MB_OK);
 		return nullptr;
 	}
+	{
+		std::lock_guard<std::mutex> lock{m_mutex};
+		m_Res[static_cast<UINT>(eType)].insert({_strKey, pRes.Get()});
+	}
 
-	m_Res[static_cast<UINT>(eType)].insert({_strKey, pRes});
-
-	return static_cast<T*>(pRes);
+	return static_cast<T*>(pRes.Get());
 }
 
 template <typename T>

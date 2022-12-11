@@ -10,6 +10,7 @@ void CPathMgr::init()
 	const std::filesystem::path currentDirectory = std::filesystem::current_path();
 	const std::filesystem::path parentDirectory  = currentDirectory.parent_path();
 	m_strContentPath                             = parentDirectory.wstring() + L"\\bin\\content\\";
+	LOG_TRACE("CONTENT PATH : %s", ToString(m_strContentPath).c_str());
 }
 
 std::wstring CPathMgr::GetRelativePath(const wstring& _strFilePath) const

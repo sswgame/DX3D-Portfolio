@@ -25,10 +25,10 @@ private:
 	ComPtr<IDWriteTextFormat>    m_pFont;
 	ComPtr<IDWriteTextLayout>    m_pLayout;
 	ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
-	ComPtr<ID2D1RenderTarget>    m_pRTV2D;
-	std::string                  m_fontName;
-	bool                         m_alphaEnable;
-	Vec4                         m_color;
+
+	std::string m_fontName;
+	bool        m_alphaEnable;
+	Vec4        m_color;
 
 	TEXT_ALIGN_HORIZONTAL m_alignTextH;
 	TEXT_ALIGN_VERTICAL   m_alignTextV;

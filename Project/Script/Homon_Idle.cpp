@@ -8,15 +8,11 @@
 #include <Engine/CAnimator3D.h>
 
 Homon_Idle::Homon_Idle()
-	: CState{ L"IDLE" }
+	: CState{L"IDLE"}
 	, m_pAnimation(nullptr)
-	, m_pOwnerMGR(nullptr)
-{
-}
+	, m_pOwnerMGR(nullptr) {}
 
-Homon_Idle::~Homon_Idle()
-{
-}
+Homon_Idle::~Homon_Idle() {}
 
 void Homon_Idle::Enter()
 {
@@ -51,7 +47,7 @@ void Homon_Idle::Update()
 	}
 	else
 	{
-		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();

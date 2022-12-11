@@ -10,6 +10,7 @@
 #include "CTransform.h"
 #include "CUIPanel.h"
 #include "CSerializer.h"
+
 CUIBase::CUIBase(COMPONENT_TYPE type)
 	: CComponent{type}
 	, m_orderZ{0}
@@ -43,7 +44,8 @@ void CUIBase::finalupdate()
 	Transform()->SetRelativePos(adjustPos);
 
 	//ºôº¸µåÈ­
-	const Vec3 cameraRotation = CRenderMgr::GetInst()->GetMainCam()->Transform()->GetRelativeRotation();
+	CCamera*   pCamera        = CRenderMgr::GetInst()->GetMainCam();
+	const Vec3 cameraRotation = pCamera->Transform()->GetRelativeRotation();
 	Transform()->SetRelativeRotation(cameraRotation.x, cameraRotation.y, 0.f);
 
 	if (nullptr == GetOwner()->GetParent() || nullptr == GetOwner()->GetParent()->UIPanel())
@@ -114,7 +116,7 @@ void CUIBase::SetOrderZ(int iOrderZ)
 	}
 }
 
-void CUIBase::ShowDebugRect(bool enable)
+void CUIBase::SetShowDebugRect(bool enable)
 {
 	m_showDebugRect = enable;
 }

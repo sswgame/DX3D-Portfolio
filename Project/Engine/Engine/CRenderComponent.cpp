@@ -6,6 +6,7 @@
 
 #include "CTransform.h"
 #include "CSerializer.h"
+
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	: CComponent(_type)
 	, m_pMesh(nullptr)
@@ -181,8 +182,11 @@ void CRenderComponent::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << "MATERIAL COUNT" << YAML::Value << materialCount;
 	for (int i = 0; i < materialCount; ++i)
 	{
-		CRes& material = *m_vecMtrls[i].pSharedMtrl.Get();
+		CRes& material = *m_vecMtrls[i].pMtrl.Get();
 		emitter << YAML::Key << i << YAML::Value << material;
+		emitter << YAML::Key << "MATERIAL " + std::to_string(i) + " TEXTURE LIST" << YAML::Value << YAML::BeginMap;
+		m_vecMtrls[i].pMtrl->Serialize(emitter);
+		emitter << YAML::EndMap;
 	}
 	emitter << YAML::Key << NAME_OF(m_bDynamicShadow) << YAML::Value << m_bDynamicShadow;
 	emitter << YAML::Key << NAME_OF(m_bFrustumCulling) << YAML::Value << m_bFrustumCulling;
@@ -197,7 +201,10 @@ void CRenderComponent::Deserialize(const YAML::Node& node)
 
 	for (int i = 0; i < materialCount; ++i)
 	{
-		Ptr<CMaterial> pMaterial = LoadAs<CMaterial>(node[i]);
+		Ptr<CMaterial> pMaterial       = LoadAs<CMaterial>(node[i]);
+		auto           textureListNode = node["MATERIAL " + std::to_string(i) + " TEXTURE LIST"];
+		pMaterial->Deserialize(textureListNode);
+
 		SetSharedMaterial(pMaterial, i);
 	}
 	m_bDynamicShadow  = node[NAME_OF(m_bDynamicShadow)].as<bool>();

@@ -1,6 +1,7 @@
 #pragma once
 #include "UI.h"
 
+#include <Engine/CResMgr.h>
 class TreeUI;
 
 class ResourceUI
@@ -27,6 +28,16 @@ private:
 
 	RES_TYPE GetResTypeFromExt(const wstring& _strExt);
 
+private:
+	void UsingMultiThread();
+	void WithOutMultiThead();
+
+	template <typename T>
+	void LoadResource(const std::wstring& resourceKey)
+	{
+		assert(RES_TYPE::END != CResMgr::GetInst()->GetResType<T>() && "INVALID TYPE");
+		CResMgr::GetInst()->Load<T>(resourceKey, resourceKey);
+	}
 
 public:
 	ResourceUI();

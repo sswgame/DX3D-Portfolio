@@ -9,9 +9,7 @@
 #include "CAnimator3D.h"
 
 CMeshRender::CMeshRender()
-	: CRenderComponent(COMPONENT_TYPE::MESHRENDER)
-{
-}
+	: CRenderComponent(COMPONENT_TYPE::MESHRENDER) {}
 
 CMeshRender::~CMeshRender() {}
 
@@ -57,7 +55,7 @@ void CMeshRender::render()
 	{
 		if (nullptr == GetMaterial(i))
 			continue;
-		
+
 		GetMaterial(i)->UpdateData();
 		GetMesh()->render(i);
 	}

@@ -8,15 +8,11 @@
 #include <Engine/CAnimator3D.h>
 
 Deux_Hit::Deux_Hit()
-	: CState{ L"HIT" }
+	: CState{L"HIT"}
 	, m_pAnimation(nullptr)
-	, m_pOwnerMGR(nullptr)
-{
-}
+	, m_pOwnerMGR(nullptr) {}
 
-Deux_Hit::~Deux_Hit()
-{
-}
+Deux_Hit::~Deux_Hit() {}
 
 void Deux_Hit::Enter()
 {
@@ -50,7 +46,7 @@ void Deux_Hit::Update()
 	}
 	else
 	{
-		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();

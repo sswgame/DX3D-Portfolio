@@ -1,5 +1,4 @@
 #pragma once
-#include "CEntity.h"
 
 enum class EFFECT_TYPE
 {
@@ -10,23 +9,17 @@ enum class EFFECT_TYPE
 	END,
 };
 
-
-
-class CRenderEffectMgr 
+class CRenderEffectMgr
 	: public CSingleton<CRenderEffectMgr>
 {
 	SINGLE(CRenderEffectMgr);
 
 private:
-	D3D11_VIEWPORT                      m_tViewPort;
-
+	D3D11_VIEWPORT m_tViewPort;
 
 public:
 	void Init();
 	void Apply(EFFECT_TYPE _eType);
 
 	void SetViewPort(D3D11_VIEWPORT _tViewPort);
-
-
 };
-

@@ -12,7 +12,6 @@
 #include "CFontMgr.h"
 #include "CRenderEffectMgr.h"
 
-
 CCore::CCore()
 	: m_hWnd(nullptr)
 	, m_ptResolution{} {}
@@ -25,6 +24,13 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, false);
 	SetWindowPos(_hWnd, nullptr, 10, 10, rt.right - rt.left, rt.bottom - rt.top, 0);
 
+	LOG_TRACE("CLIENT RESOLUTION : %d, %d", _ptResolution.x, _ptResolution.y);
+	LOG_TRACE("WINDOW SIZE ADJUSTED : BEFORE(%d,%d) -> AFTER(%d,%d)",
+	          _ptResolution.x,
+	          _ptResolution.y,
+	          rt.right - rt.left,
+	          rt.bottom - rt.top);
+
 	m_hWnd         = _hWnd;
 	m_ptResolution = _ptResolution;
 
@@ -32,17 +38,27 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	if (FAILED(CDevice::GetInst()->init(m_hWnd, Vec2(static_cast<float>(m_ptResolution.x), static_cast<float>(
 		           m_ptResolution.y)))))
 	{
+		LOG_ERROR("CDEVICE INIT FAILED");
 		return E_FAIL;
 	}
+	LOG_INFO("CDEVICE INIT SUCCEDED");
 
 	CPathMgr::GetInst()->init();
+	LOG_INFO("PATH MANAGER INIT SUCCEED");
 	CKeyMgr::GetInst()->init();
+	LOG_INFO("KEY MANAGER INIT SUCCEED");
 	CTimeMgr::GetInst()->init();
+	LOG_INFO("TIME MANAGER INIT SUCCEED");
 	CResMgr::GetInst()->init();
+	LOG_INFO("RESOURCE MANAGER INIT SUCCEED");
 	CRenderMgr::GetInst()->init();
+	LOG_INFO("RENDER MANAGER INIT SUCCEED");
 	CRenderEffectMgr::GetInst()->Init();
-;	CSceneMgr::GetInst()->init();
+	LOG_INFO("RENDER-EFFECT MANAGER INIT SUCCEED");
+	CSceneMgr::GetInst()->init();
+	LOG_INFO("SCENE MANAGER INIT SUCCEED");
 	CFontMgr::GetInst()->Init();
+	LOG_INFO("FONT MANAGER INIT SUCCEED");
 
 	return S_OK;
 }

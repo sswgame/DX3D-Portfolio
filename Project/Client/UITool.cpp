@@ -14,6 +14,7 @@
 #include <Engine/CUIPanel.h>
 #include <Engine/CCamera.h>
 #include <Engine/CRenderMgr.h>
+#include <Engine/CMRT.h>
 
 #include "CImGuiMgr.h"
 #include "ListUI.h"
@@ -52,13 +53,13 @@ void UITool::Activate()
 {
 	UI::Activate();
 
-	////UI만 찍혀야 하므로 레이어 변경
-	CCamera* pEditorCamera = CRenderMgr::GetInst()->GetMainCam();
-	pEditorCamera->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
-	pEditorCamera->CheckLayerMaskAll(false);
-	pEditorCamera->CheckLayerMask(UI_TOOL::UI_LAYER);
-	pEditorCamera->CheckLayerMask(UI_TOOL::BACK_LAYER);
-	pEditorCamera->CheckLayerMask(UI_TOOL::BACK_OBJ_LAYER);
+	//////UI만 찍혀야 하므로 레이어 변경
+	//CCamera* pEditorCamera = CRenderMgr::GetInst()->GetMainCam();
+	//pEditorCamera->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
+	//pEditorCamera->CheckLayerMaskAll(false);
+	//pEditorCamera->CheckLayerMask(UI_TOOL::UI_LAYER);
+	//pEditorCamera->CheckLayerMask(UI_TOOL::BACK_LAYER);
+	//pEditorCamera->CheckLayerMask(UI_TOOL::BACK_OBJ_LAYER);
 }
 
 void UITool::Deactivate()
@@ -66,7 +67,10 @@ void UITool::Deactivate()
 	UI::Deactivate();
 
 	CCamera* pEditorCamera = CRenderMgr::GetInst()->GetMainCam();
-	pEditorCamera->CheckLayerMaskAll(true);
+	if (nullptr != pEditorCamera)
+	{
+		pEditorCamera->CheckLayerMaskAll(true);
+	}
 }
 
 void UITool::DrawImage()
@@ -263,11 +267,13 @@ void UITool::DrawInfo()
 				break;
 			}
 		}
+
 		CComponent* pProgressBar = m_pSelected->GetComponent(COMPONENT_TYPE::UIPROGRESSBAR);
 		if (nullptr != pProgressBar)
 		{
 			ShowProgressBar(static_cast<CUIProgressBar*>(pProgressBar));
 		}
+
 		CComponent* pButton = m_pSelected->GetComponent(COMPONENT_TYPE::UIBUTTON);
 		if (nullptr != pButton)
 		{
@@ -354,6 +360,7 @@ void UITool::AddDelegate(DWORD_PTR _pGameObject)
 
 			return;
 		}
+		CSceneMgr::GetInst()->SpawnObject(pGameObject, m_pSelected->GetLayerIndex());
 		CSceneMgr::GetInst()->AddChild(m_pSelected, pGameObject);
 	}
 
@@ -501,9 +508,9 @@ void UITool::ShowDefault(CUIBase* pScript) const
 
 	ImGui::Text(u8"알파 표시");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
-	static bool showFullRange = false;
+	bool showFullRange = pScript->IsShowDebugRect();
 	ImGui::Checkbox("##UI_SHOW_RANGE", &showFullRange);
-	pScript->ShowDebugRect(showFullRange);
+	pScript->SetShowDebugRect(showFullRange);
 
 	bool enableCollision = pScript->GetMouseCollision();
 	ImGui::Text("MOUSE COLLISION");
@@ -526,8 +533,10 @@ void UITool::ShowDefault(CUIBase* pScript) const
 	ImGui::Text("Z ORDER");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
 	int zOrder = pScript->GetOrderZ();
-	ImGui::InputInt("##UI_Z_ORDER", &zOrder);
-	pScript->SetOrderZ(zOrder);
+	if (ImGui::InputInt("##UI_Z_ORDER", &zOrder))
+	{
+		pScript->SetOrderZ(zOrder);
+	}
 
 	ImGui::Text("OPACITY");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
@@ -554,13 +563,13 @@ void UITool::ShowDefault(CUIBase* pScript) const
 	static const char* arrAlignV[] = {"TOP", "MIDDLE", "BOTTOM"};
 	ImGui::Text("ALIGNMENT(VERTICAL)");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
-	if (ImGui::BeginCombo("##UI_VERTICAL_COMBO", arrAlignV[static_cast<UINT>(pScript->GetAnchorH())]))
+	if (ImGui::BeginCombo("##UI_VERTICAL_COMBO", arrAlignV[static_cast<UINT>(pScript->GetAnchorV())]))
 	{
 		for (size_t i = 0; i < std::size(arrAlignV); ++i)
 		{
 			if (ImGui::Selectable(arrAlignV[i]))
 			{
-				pScript->SetAnchorH(static_cast<ANCHOR_HORIZONTAL>(i));
+				pScript->SetAnchorV(static_cast<ANCHOR_VERTICAL>(i));
 			}
 		}
 		ImGui::EndCombo();
@@ -601,6 +610,10 @@ void UITool::ShowPanel(CUIPanel* pScript)
 		pListUI->Activate();
 		pListUI->SetDBCEvent(this, reinterpret_cast<DBCLKED>(&UITool::TextureSelected));
 	}
+	if (ImGui::Button("##TEXTURE_CANCEL", ImVec2{15, 15}))
+	{
+		pMeshRender->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, nullptr);
+	}
 }
 
 void UITool::ShowImage(CUIImage* pScript)
@@ -638,6 +651,10 @@ void UITool::ShowImage(CUIImage* pScript)
 		pListUI->Activate();
 		pListUI->SetDBCEvent(this, reinterpret_cast<DBCLKED>(&UITool::TextureSelected));
 	}
+	if (ImGui::Button("##TEXTURE_CANCEL", ImVec2{15, 15}))
+	{
+		pMeshRender->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, nullptr);
+	}
 
 	if (nullptr == pTexture)
 	{
@@ -646,8 +663,13 @@ void UITool::ShowImage(CUIImage* pScript)
 
 	ImGui::Text("USE WHOLE TEXTURE");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
-	static bool useWholeTexture = true;
-	ImGui::Checkbox("##UI_USE_WHOLE", &useWholeTexture);
+	const bool  hasInfo = pScript->GetInfoList().empty();
+	static bool useWholeTexture{};
+	useWholeTexture = (false == hasInfo) && useWholeTexture;
+	if (ImGui::Checkbox("##UI_USE_WHOLE", &useWholeTexture))
+	{
+		int a = 0;
+	}
 
 	if (false == useWholeTexture)
 	{
@@ -701,6 +723,7 @@ void UITool::ShowImage(CUIImage* pScript)
 				pScript->AddImageInfo(ToWString(pScript->CurrentInfoName()),
 				                      Vec2{m_leftTop.x, m_leftTop.y},
 				                      Vec2{m_size.x, m_size.y});
+				pScript->SetImageInfo(ToWString(pScript->CurrentInfoName()));
 			}
 		}
 
@@ -861,8 +884,8 @@ void UITool::ShowText(CUIText* pScript)
 		//IMGUI는 utf-8을 사용하므로 이를 wchar_t(유니코드16)으로 변경해줘야한다.
 		//이건 약간 성능을 감수하고 플랫폼에 독립적으로 하려고 그냥 파일시스템으로 해본 것.
 		//std::wstring text = std::filesystem::u8path(szText);
-		int nLen = MultiByteToWideChar(CP_UTF8, 0, szText, strlen(szText), nullptr, NULL);
-		MultiByteToWideChar(CP_UTF8, 0, szText, strlen(szText), szwText, nLen);
+		int nLen = MultiByteToWideChar(CP_UTF8, 0, szText, (int)strlen(szText), nullptr, 0);
+		MultiByteToWideChar(CP_UTF8, 0, szText, (int)strlen(szText), szwText, nLen);
 		pScript->SetText(szwText);
 		std::memset(szText, 0, std::size(szText));
 	}
@@ -911,6 +934,11 @@ void UITool::ShowProgressBar(CUIProgressBar* pScript)
 
 		pListUI->Activate();
 		pListUI->SetDBCEvent(this, reinterpret_cast<DBCLKED>(&UITool::TextureSelected));
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("##TEXTURE_CANCEL", ImVec2{15, 15}))
+	{
+		pMeshRender->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, nullptr);
 	}
 
 	ImGui::Text("DIRECTION");

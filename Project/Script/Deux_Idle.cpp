@@ -8,15 +8,11 @@
 #include <Engine/CAnimator3D.h>
 
 Deux_Idle::Deux_Idle()
-	: CState{ L"IDLE" }
+	: CState{L"IDLE"}
 	, m_pAnimation(nullptr)
-	, m_pOwnerMGR(nullptr)
-{
-}
+	, m_pOwnerMGR(nullptr) {}
 
-Deux_Idle::~Deux_Idle()
-{
-}
+Deux_Idle::~Deux_Idle() {}
 
 void Deux_Idle::Enter()
 {
@@ -33,7 +29,6 @@ void Deux_Idle::Enter()
 	}
 	m_pAnimation->SetLerpTime(1.f);
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), true);
-
 }
 
 void Deux_Idle::Update()
@@ -53,7 +48,7 @@ void Deux_Idle::Update()
 	}
 	else
 	{
-		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();

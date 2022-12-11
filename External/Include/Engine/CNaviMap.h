@@ -13,7 +13,7 @@ private:
 
 public:
 	void          SetNaviMapData(CNaviMapData* _pData);
-	CNaviMapData* GetNaviMapData() { return m_pNeviMapData; }
+	CNaviMapData* GetNaviMapData() const { return m_pNeviMapData; }
 
 	/**
 	 * \brief NaviMap의 삼각형(Cell)과 충돌 테스트를 진행하는 함수
@@ -31,7 +31,7 @@ public:
 	void render_debug() override;
 
 	CLONE(CNaviMap);
-	
+
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
 

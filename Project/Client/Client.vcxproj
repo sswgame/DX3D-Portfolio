@@ -52,7 +52,7 @@
     <IncludePath>$(SolutionDir)External\Include\;$(ProjectDir);$(SolutionDir)External\Include\FBXLoader\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Trash\$(ProjectName)\$(Configuration)\</IntDir>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ProjectDir)ImGui\;$(ProjectDir)ImGuizmo\</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\DirectXTex\;$(SolutionDir)External\Include\spdlog\;$(SolutionDir)External\Include\FBXLoader\;$(ProjectDir)ImGui\;$(ProjectDir)ImGuizmo\</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -60,7 +60,7 @@
     <IncludePath>$(SolutionDir)External\Include\;$(ProjectDir);$(SolutionDir)External\Include\FBXLoader\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Trash\$(ProjectName)\$(Configuration)\</IntDir>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\;$(ProjectDir)ImGui\;$(ProjectDir)ImGuizmo\</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\DirectXTex\;$(SolutionDir)External\Include\FBXLoader\;$(ProjectDir)ImGui\;$(ProjectDir)ImGuizmo\</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

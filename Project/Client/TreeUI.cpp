@@ -411,9 +411,14 @@ void TreeUI::DropCheck()
 	if (ImGui::BeginDragDropTarget())
 	{
 		DWORD_PTR dwData = 0;
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Resource"))
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GetAcceptDragUIName().c_str()))
 		{
 			memcpy(&dwData, payload->Data, sizeof(DWORD_PTR));
+
+			if (m_pDropInstance && m_dropFuc)
+			{
+				(m_pDropInstance->*m_dropFuc)(dwData);
+			}
 		}
 
 		ImGui::EndDragDropTarget();

@@ -3,18 +3,25 @@
 
 #include <Engine/CDevice.h>
 #include <Engine/CGameObject.h>
-#include <Engine/CSceneMgr.h>
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "ImGui/imgui_impl_dx11.h"
 
-#include "UI.h"
-#include "ParamUI.h"
 #include "IconsFontAwesome5.h"
-#include "UITool.h"
 #include "ImGuizmo/ImGuizmo.h"
 
+#include "UI.h"
+#include "SceneOutliner.h"
+#include "MenuUI.h"
+#include "InspectorUI.h"
+#include "ResourceUI.h"
+#include "ListUI.h"
+#include "ParamUI.h"
+#include "ParticleTool.h"
+#include "FogTool.h"
+#include "UITool.h"
+#include "../Engine/Engine/CEventMgr.h"
 
 CImGuiMgr::CImGuiMgr()
 	: m_hNotify{nullptr} {}
@@ -31,41 +38,28 @@ void CImGuiMgr::init(HWND _hwnd)
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	(void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;   // Enable Docking
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
-
-	//호스트 윈도우(여기선 게임 세계)와 합쳐지지 않고, 반드시 본인의 개별 윈도우를 가지도록 지정.
-	//io.ConfigViewportsNoAutoMerge = true;
-	//io.ConfigViewportsNoTaskBarIcon = true;
-	//io.ConfigViewportsNoDefaultParent = true;
-	//io.ConfigDockingAlwaysTabBar = true;
-	//io.ConfigDockingTransparentPayload = true;
-	//io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;     // FIXME-DPI: Experimental. THIS CURRENTLY DOESN'T WORK AS EXPECTED. DON'T USE IN USER APP!
-	//io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleViewports; // FIXME-DPI: Experimental.
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;	// Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;		// Enable Docking
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;		// Enable Multi-Viewport / Platform Windows
 
 	// 한글 폰트 추가
-	wstring wstrFilePath = CPathMgr::GetInst()->GetContentPath();
-	string  strFontPath  = ToString(wstrFilePath) + "font\\Pretendard-Medium.ttf";
+	const string strFontPath = ToString(CPathMgr::GetInst()->GetContentPath() + L"font\\Pretendard-Medium.ttf");
 	io.Fonts->AddFontFromFileTTF(strFontPath.c_str(), 15.f, nullptr, io.Fonts->GetGlyphRangesKorean());
 
 	// Font Awesome Icon 추가
-	string       strFontAwesomeIcon = ToString(wstrFilePath) + "font/fa-solid-900.ttf";
-	ImFontConfig config;
-	config.MergeMode                   = true;
-	config.GlyphMinAdvanceX            = 13.0f; // Use if you want to make the icon monospaced
-	static const ImWchar icon_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
-	io.Fonts->
-	   AddFontFromFileTTF(strFontAwesomeIcon.c_str(),
-	                      13.0f,
-	                      &config,
-	                      icon_ranges);    // outputs a paint brush icon and 'Paint' as a string.
+	const string strFontAwesomeIcon = ToString(CPathMgr::GetInst()->GetContentPath() + L"font/fa-solid-900.ttf");
+	ImFontConfig config{};
+	config.MergeMode                       = true;
+	config.GlyphMinAdvanceX                = 13.0f; // Use if you want to make the icon monospaced
+	static constexpr ImWchar icon_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
+	io.Fonts->AddFontFromFileTTF(strFontAwesomeIcon.c_str(),
+	                             13.0f,
+	                             &config,
+	                             icon_ranges);    // outputs a paint brush icon and 'Paint' as a string.
 	io.Fonts->Build();
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsClassic();
 
 	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -77,9 +71,6 @@ void CImGuiMgr::init(HWND _hwnd)
 		style.FrameRounding             = 1.f;
 	}
 
-
-	//io.Fonts->AddFontDefault();
-
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(_hwnd);
 	ImGui_ImplDX11_Init(DEVICE, CONTEXT);
@@ -88,11 +79,12 @@ void CImGuiMgr::init(HWND _hwnd)
 	CreateUI();
 
 	// 알림설정  
-	wstring strPath = CPathMgr::GetInst()->GetContentPath();
-	m_hNotify       = FindFirstChangeNotification(strPath.c_str(),
-	                                              TRUE,
-	                                              FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
-	                                              FILE_ACTION_ADDED | FILE_ACTION_REMOVED);
+	const wstring strPath = CPathMgr::GetInst()->GetContentPath();
+	m_hNotify             = FindFirstChangeNotification(strPath.c_str(),
+	                                                    TRUE,
+	                                                    FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
+	                                                    FILE_ACTION_ADDED | FILE_ACTION_REMOVED);
+	CEventMgr::GetInst()->SetOccurObjEvent();
 }
 
 void CImGuiMgr::progress()
@@ -107,33 +99,27 @@ void CImGuiMgr::progress()
 	ParamUI::KeyCount = 0;
 
 	// UI Update
-	for (auto& pair : m_mapUI)
+	for (const auto& [UIName, pUI] : m_mapUI)
 	{
-		pair.second->update();
+		pUI->update();
 	}
-
 	// UI Render
-	for (auto& pair : m_mapUI)
+	for (const auto& [UIName, pUI] : m_mapUI)
 	{
-		pair.second->render();
+		pUI->render();
 	}
-
-	//bool bOpen = true;
-	//ImGui::ShowDemoWindow(&bOpen);
 
 	// Delegate 호출
-	for (size_t i = 0; i < m_vecDelegate.size(); ++i)
+	for (auto& UIDelegate : m_vecDelegate)
 	{
-		(m_vecDelegate[i].pInst->*m_vecDelegate[i].pFunc)(m_vecDelegate[i].dwParam);
+		(UIDelegate.pInst->*UIDelegate.pFunc)(UIDelegate.dwParam);
 	}
-
 	m_vecDelegate.clear();
 
 	// Content 변경 감지
 	ObserveContent();
 }
 
-#include "SceneOutliner.h"
 
 void CImGuiMgr::render()
 {
@@ -160,14 +146,6 @@ void CImGuiMgr::clear()
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 }
-
-#include "MenuUI.h"
-#include "InspectorUI.h"
-#include "ResourceUI.h"
-#include "ListUI.h"
-#include "SceneOutliner.h"
-#include "ParticleTool.h"
-#include "FogTool.h"
 
 void CImGuiMgr::CreateUI()
 {
@@ -210,30 +188,25 @@ void CImGuiMgr::CreateUI()
 	m_mapUI.insert({pUITool->GetName(), pUITool});
 }
 
-
 UI* CImGuiMgr::FindUI(const string& _strKey)
 {
 	const auto iter = m_mapUI.find(_strKey);
-
 	if (m_mapUI.end() == iter)
 	{
 		return nullptr;
 	}
-
 	return iter->second;
 }
 
-
 void CImGuiMgr::ObserveContent()
 {
-	DWORD dwWaitStatus = WaitForSingleObject(m_hNotify, 0);
-
+	const DWORD dwWaitStatus = WaitForSingleObject(m_hNotify, 0);
 	if (dwWaitStatus == WAIT_OBJECT_0)
 	{
-		ResourceUI* pResUI = (ResourceUI*)FindUI("Resource");
+		LOG_INFO("CONTENTS HAS CHANGED");
+		ResourceUI* pResUI = static_cast<ResourceUI*>(FindUI("Resource"));
 		pResUI->Reset();
 
-		wstring strPath = CPathMgr::GetInst()->GetContentPath();
 		FindNextChangeNotification(m_hNotify);
 	}
 }

@@ -8,15 +8,11 @@
 #include <Engine/CAnimator3D.h>
 
 Deux_Attack::Deux_Attack()
-	: CState{ L"ATTACK" }
+	: CState{L"ATTACK"}
 	, m_pAnimation(nullptr)
-	, m_pOwnerMGR(nullptr)
-{
-}
+	, m_pOwnerMGR(nullptr) {}
 
-Deux_Attack::~Deux_Attack()
-{
-}
+Deux_Attack::~Deux_Attack() {}
 
 void Deux_Attack::Enter()
 {
@@ -33,7 +29,6 @@ void Deux_Attack::Enter()
 	}
 	m_pAnimation->SetLerpTime(1.5f);
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), false);
-
 }
 
 void Deux_Attack::Update()
@@ -53,7 +48,7 @@ void Deux_Attack::Update()
 	}
 	else
 	{
-		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();

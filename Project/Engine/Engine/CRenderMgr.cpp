@@ -84,7 +84,6 @@ void CRenderMgr::RenderEnd()
 }
 
 
-
 void CRenderMgr::Render_Play()
 {
 	if (m_vecCamera.empty())
@@ -101,19 +100,18 @@ void CRenderMgr::Render_Play()
 		}
 
 		pCamera->SortGameObject();
-		Render(MRT_TYPE::SHADOWMAP		, pCamera);
+		Render(MRT_TYPE::SHADOWMAP, pCamera);
 
 		g_transform.matView    = pCamera->GetViewMat();
 		g_transform.matViewInv = pCamera->GetViewInvMat();
 		g_transform.matProj    = pCamera->GetProjMat();
 
-		Render(MRT_TYPE::DEFERRED		, pCamera);
-		Render(MRT_TYPE::DEFERRED_DECAL	, pCamera);
-		Render(MRT_TYPE::SSAO			, pCamera);
-		Render(MRT_TYPE::PARTICLE		, pCamera);
-		Render(MRT_TYPE::LIGHT			, pCamera);
-		Render(MRT_TYPE::SWAPCHAIN		, pCamera);
-
+		Render(MRT_TYPE::DEFERRED, pCamera);
+		Render(MRT_TYPE::DEFERRED_DECAL, pCamera);
+		Render(MRT_TYPE::SSAO, pCamera);
+		Render(MRT_TYPE::PARTICLE, pCamera);
+		Render(MRT_TYPE::LIGHT, pCamera);
+		Render(MRT_TYPE::SWAPCHAIN, pCamera);
 	}
 
 	// FXAA Àû¿ë 
@@ -133,18 +131,18 @@ void CRenderMgr::Render_Editor()
 	if (nullptr == m_pEditorCamera)
 		return;
 
-	m_pEditorCamera->SortGameObject();	
-	Render(MRT_TYPE::SHADOWMAP		, m_pEditorCamera);
+	m_pEditorCamera->SortGameObject();
+	Render(MRT_TYPE::SHADOWMAP, m_pEditorCamera);
 
-	g_transform.matView		= m_pEditorCamera->GetViewMat();
-	g_transform.matViewInv	= m_pEditorCamera->GetViewInvMat();
-	g_transform.matProj		= m_pEditorCamera->GetProjMat();
+	g_transform.matView    = m_pEditorCamera->GetViewMat();
+	g_transform.matViewInv = m_pEditorCamera->GetViewInvMat();
+	g_transform.matProj    = m_pEditorCamera->GetProjMat();
 
-	Render(MRT_TYPE::DEFERRED		, m_pEditorCamera);
-	Render(MRT_TYPE::DEFERRED_DECAL	, m_pEditorCamera);
-	Render(MRT_TYPE::PARTICLE		, m_pEditorCamera);
-	Render(MRT_TYPE::LIGHT			, m_pEditorCamera);
-	Render(MRT_TYPE::SWAPCHAIN		, m_pEditorCamera);
+	Render(MRT_TYPE::DEFERRED, m_pEditorCamera);
+	Render(MRT_TYPE::DEFERRED_DECAL, m_pEditorCamera);
+	Render(MRT_TYPE::PARTICLE, m_pEditorCamera);
+	Render(MRT_TYPE::LIGHT, m_pEditorCamera);
+	Render(MRT_TYPE::SWAPCHAIN, m_pEditorCamera);
 }
 
 void CRenderMgr::Render(MRT_TYPE _eMRT, CCamera* _pCam)
@@ -156,63 +154,53 @@ void CRenderMgr::Render(MRT_TYPE _eMRT, CCamera* _pCam)
 	switch (_eMRT)
 	{
 	case MRT_TYPE::SWAPCHAIN:
-	{
-
-		Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-		m_pMergeMaterial->UpdateData();
-		pRectMesh->render(0);
-
-		_pCam->render_forward();			// Foward ¹°Ã¼ ·»´õ¸µ
-		_pCam->render_masked();				// Masked ¹°Ã¼ ·»´õ¸µ
-		_pCam->render_forward_decal();		// Foward Decal ·»´õ¸µ
-		_pCam->render_translucent();		// Alpha ¹°Ã¼ ·»´õ¸µ
-		_pCam->render_debug();				// Debug Object Render
-		_pCam->render_postprocess();		// PostProcess ¹°Ã¼ ·»´õ¸µ
-
-	}
-	break;
-	case MRT_TYPE::DEFERRED:
-	{
-		_pCam->render_deferred();
-
-	}
-	break;
-	case MRT_TYPE::PARTICLE:
-	{
-		_pCam->render_particle();
-
-	}
-	break;
-	case MRT_TYPE::DEFERRED_DECAL:
-	{
-		_pCam->render_deferred_decal();
-	}
-	break;
-	case MRT_TYPE::LIGHT:
-	{
-		for (const auto& pLight3D : m_vecLight3D)
 		{
-			pLight3D->render();
+			Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+			m_pMergeMaterial->UpdateData();
+			pRectMesh->render(0);
+
+			_pCam->render_forward();			// Foward ¹°Ã¼ ·»´õ¸µ
+			_pCam->render_masked();				// Masked ¹°Ã¼ ·»´õ¸µ
+			_pCam->render_forward_decal();		// Foward Decal ·»´õ¸µ
+			_pCam->render_translucent();		// Alpha ¹°Ã¼ ·»´õ¸µ
+			_pCam->render_debug();				// Debug Object Render
+			_pCam->render_postprocess();		// PostProcess ¹°Ã¼ ·»´õ¸µ
 		}
-
-	}
-	break;
+		break;
+	case MRT_TYPE::DEFERRED:
+		{
+			_pCam->render_deferred();
+		}
+		break;
+	case MRT_TYPE::PARTICLE:
+		{
+			_pCam->render_particle();
+		}
+		break;
+	case MRT_TYPE::DEFERRED_DECAL:
+		{
+			_pCam->render_deferred_decal();
+		}
+		break;
+	case MRT_TYPE::LIGHT:
+		{
+			for (const auto& pLight3D : m_vecLight3D)
+			{
+				pLight3D->render();
+			}
+		}
+		break;
 	case MRT_TYPE::SHADOWMAP:
-	{
-		Render_ShadowMap(LIGHT_TYPE::DIRECTIONAL);
-
-	}
-	break;
+		{
+			Render_ShadowMap(LIGHT_TYPE::DIRECTIONAL);
+		}
+		break;
 	case MRT_TYPE::SSAO:
-	{
-		CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::SSAO);
-
+		{
+			CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::SSAO);
+		}
+		break;
 	}
-	break;
-
-
-	}
-
 }
 
 void CRenderMgr::Render_ShadowMap(LIGHT_TYPE _eLightType) const
@@ -231,8 +219,6 @@ void CRenderMgr::Render_ShadowMap(LIGHT_TYPE _eLightType) const
 void CRenderMgr::Render_Lights() const
 {
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
-
-
 }
 
 void CRenderMgr::RegisterCamera(CCamera* _pCamera)
@@ -339,7 +325,13 @@ void CRenderMgr::UpdateLight3D() const
 // ÇöÀç ½ÃÁ¡ Ä«¸Þ¶ó °¡Á®¿À±â
 CCamera* CRenderMgr::GetMainCam() const
 {
-	if (SCENE_STATE::PLAY == CSceneMgr::GetInst()->GetCurScene()->GetSceneState())
+	const CScene* pScene = CSceneMgr::GetInst()->GetCurScene();
+	if (nullptr == pScene)
+	{
+		return nullptr;
+	}
+
+	if (pScene->GetSceneState() == SCENE_STATE::PLAY)
 	{
 		if (m_vecCamera.empty())
 		{
@@ -347,7 +339,6 @@ CCamera* CRenderMgr::GetMainCam() const
 		}
 		return m_vecCamera[0];
 	}
-
 	return m_pEditorCamera;
 }
 

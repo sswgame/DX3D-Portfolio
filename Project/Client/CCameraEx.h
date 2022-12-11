@@ -1,10 +1,11 @@
 #pragma once
-#include <Engine\CCamera.h>
+#include <Engine/CCamera.h>
 
-class CCameraEx : public CCamera
+class CCameraEx
+	: public CCamera
 {
 public:
-	virtual void finalupdate() override;
+	void finalupdate() override;
 
 public:
 	CCameraEx();

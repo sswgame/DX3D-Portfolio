@@ -46,6 +46,9 @@ public:
 	CMaterial* GetMasterMtrl() const { return m_pMasterMtrl; }
 
 public:
+	void Serialize(YAML::Emitter& emitter) override;
+	void Deserialize(const YAML::Node& node) override;
+public:
 	int Save(const wstring& _strFilePath) override;
 	int Load(const wstring& _strFilePath) override;
 

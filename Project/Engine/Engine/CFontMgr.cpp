@@ -3,9 +3,8 @@
 
 #include "CDevice.h"
 
-CFontMgr::CFontMgr() {}
-
-CFontMgr::~CFontMgr() {}
+CFontMgr::CFontMgr()  = default;
+CFontMgr::~CFontMgr() = default;
 
 void CFontMgr::Init()
 {
@@ -14,16 +13,21 @@ void CFontMgr::Init()
 	                                       (IUnknown**)m_pFactory.GetAddressOf());
 	if (FAILED(hr))
 	{
-		MessageBox(nullptr, L"dwrite 초기화 실패", L"Error", MB_OK);
-		assert(nullptr);
+		LOG_ASSERT(hr==S_OK, "DWRITE CREATION FAILED");
 	}
 }
 
 ComPtr<IDWriteTextFormat> CFontMgr::LoadFontFromFile(const std::wstring& _relativePath)
 {
+	auto pFont = FindFont(_relativePath);
+	if (nullptr != pFont)
+	{
+		return pFont;
+	}
+
 	CreateFontCollection(_relativePath, _relativePath);
 	const std::wstring fontFace = GetFontFaceName(_relativePath);
-	assert(fontFace.empty() == false);
+
 	return CreateFontFromFile(_relativePath, fontFace);
 }
 
@@ -51,32 +55,21 @@ void CFontMgr::CreateFontCollection(const std::wstring& _key, const std::wstring
 	const std::wstring      fullPath = CPathMgr::GetInst()->GetContentPath() + _relativePath;
 	ComPtr<IDWriteFontFile> pFontFile{};
 
-	if (FAILED(m_pFactory->CreateFontFileReference(fullPath.c_str(),nullptr,pFontFile.GetAddressOf())))
-	{
-		MessageBox(nullptr, L"폰트 파일 생성 실패", L"Error",MB_OK);
-		assert(nullptr);
-	}
+	HRESULT hr = m_pFactory->CreateFontFileReference(fullPath.c_str(), nullptr, pFontFile.GetAddressOf());
+	LOG_ASSERT(hr==S_OK, "FONT FILE CREATION FAILED");
 
 	ComPtr<IDWriteFontSetBuilder1> pBuilder{};
-	if (FAILED(m_pFactory->CreateFontSetBuilder(pBuilder.GetAddressOf())))
-	{
-		MessageBox(nullptr, L"폰트 파일 셋 빌더 생성 실패", L"Error",MB_OK);
-		assert(nullptr);
-	}
+	hr = m_pFactory->CreateFontSetBuilder(pBuilder.GetAddressOf());
+	LOG_ASSERT(hr==S_OK, "FONT BUILDER CREATION FAILED");
 	pBuilder->AddFontFile(pFontFile.Get());
 
 	ComPtr<IDWriteFontSet> pFontSet{};
-	if (FAILED(pBuilder->CreateFontSet(pFontSet.GetAddressOf())))
-	{
-		MessageBox(nullptr, L"폰트 파일 셋 생성 실패", L"Error",MB_OK);
-		assert(nullptr);
-	}
+	hr = pBuilder->CreateFontSet(pFontSet.GetAddressOf());
+	LOG_ASSERT(hr==S_OK, "FONT SET CREATION FAILED");
 
-	if (FAILED(m_pFactory->CreateFontCollectionFromFontSet(pFontSet.Get(),pFontCollection.GetAddressOf())))
-	{
-		MessageBox(nullptr, L"폰트 콜렉션 생성 실패", L"Error",MB_OK);
-		assert(nullptr);
-	}
+	hr = m_pFactory->CreateFontCollectionFromFontSet(pFontSet.Get(), pFontCollection.GetAddressOf());
+	LOG_ASSERT(hr==S_OK, "FONT COLLECTION CREATION FAILED");
+
 	m_mapCollection.insert({_key, pFontCollection});
 }
 
@@ -103,30 +96,25 @@ ComPtr<IDWriteTextFormat> CFontMgr::FindFont(const std::wstring& _key)
 
 std::wstring CFontMgr::GetFontFaceName(const std::wstring& _key)
 {
-	auto pFontCollection = FindFontCollection(_key);
+	const auto pFontCollection = FindFontCollection(_key);
 	if (nullptr == pFontCollection)
 	{
+		LOG_WARN("FONT FACE NOT FOUND");
 		return L"";
 	}
 
 	ComPtr<IDWriteFontFamily> pFamily{};
-	if (FAILED(pFontCollection->GetFontFamily(0,pFamily.GetAddressOf())))
-	{
-		MessageBox(nullptr, L"폰트 패밀리 생성 실패", L"Error",MB_OK);
-		assert(nullptr);
-	}
+	HRESULT                   hr = pFontCollection->GetFontFamily(0, pFamily.GetAddressOf());
+	LOG_ASSERT(hr==S_OK, "FONT FAMILY CREATION FAILED");
+
 	ComPtr<IDWriteLocalizedStrings> pLocalizedName{};
-	if (FAILED(pFamily->GetFamilyNames(pLocalizedName.GetAddressOf())))
-	{
-		MessageBox(nullptr, L"언어에 맞는 폰트 패밀리 추출 실패", L"Error",MB_OK);
-		assert(nullptr);
-	}
+	hr = pFamily->GetFamilyNames(pLocalizedName.GetAddressOf());
+	LOG_ASSERT(hr==S_OK, "FONT LANGUAGE NOT SUPPORTED");
+
 	WCHAR szName[256]{};
-	if (FAILED(pLocalizedName->GetString(0,szName,ARRAYSIZE(szName))))
-	{
-		MessageBox(nullptr, L"언어에 맞는 이름 추출 실패", L"Error",MB_OK);
-		assert(nullptr);
-	}
+	hr = pLocalizedName->GetString(0, szName,ARRAYSIZE(szName));
+	LOG_ASSERT(hr==S_OK, "FONT FACE NOT FOUND");
+
 	return szName;
 }
 
@@ -145,12 +133,15 @@ ComPtr<IDWriteTextFormat> CFontMgr::CreateFontFromFile(const std::wstring& _key,
 		return pFont;
 	}
 
-	if (FAILED(m_pFactory->CreateTextFormat(_fontFace.c_str(), nullptr, _fontWeight,_fontStyle, _fontStretch, _fontSize,
-		           _locale.c_str(), pFont.GetAddressOf())))
-	{
-		MessageBox(nullptr, L"폰트 생성 실패", L"Error",MB_OK);
-		assert(nullptr);
-	}
+	const HRESULT hr = m_pFactory->CreateTextFormat(_fontFace.c_str(),
+	                                                nullptr,
+	                                                _fontWeight,
+	                                                _fontStyle,
+	                                                _fontStretch,
+	                                                _fontSize,
+	                                                _locale.c_str(),
+	                                                pFont.GetAddressOf());
+	LOG_ASSERT(hr==S_OK, "FONT CREATION FAILED");
 
 	m_mapFont.insert({_key, pFont});
 
@@ -166,12 +157,11 @@ ComPtr<ID2D1SolidColorBrush> CFontMgr::GetBrush(const Vec4& _color)
 		return pBrush;
 	}
 
-	if (FAILED(CDevice::GetInst()->GetRtv2D()->CreateSolidColorBrush(D2D1::ColorF{_color.x,_color.y,_color.z,_color.w},
-		           pBrush.GetAddressOf())))
-	{
-		MessageBox(nullptr, L"브러시 생성 실패", L"Error",MB_OK);
-		assert(nullptr);
-	}
+	const HRESULT hr = CDevice::GetInst()->GetRtv2D()->CreateSolidColorBrush(D2D1::ColorF
+	                                                                         {_color.x, _color.y, _color.z, _color.w},
+	                                                                         pBrush.GetAddressOf());
+	LOG_ASSERT(hr==S_OK, "BRUSH CREATION FAILED");
+
 	m_mapBrush.insert({GetColorID(_color), pBrush});
 
 	return pBrush;
@@ -194,10 +184,7 @@ ComPtr<IDWriteTextLayout> CFontMgr::CreateTextLayout(const std::wstring&       t
 	                                                            width,
 	                                                            height,
 	                                                            pLayout.GetAddressOf());
-	if (FAILED(hr))
-	{
-		return nullptr;
-	}
+	LOG_ASSERT(hr==S_OK, "TEXTURE LAYOUT CRAETION FAILED");
 
 	return pLayout;
 }

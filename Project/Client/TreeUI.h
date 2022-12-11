@@ -71,7 +71,7 @@ public:
 using CLICKED = void(UI::*)(DWORD_PTR);
 using DRAG_DROP = void(UI::*)(DWORD_PTR, DWORD_PTR);
 using KEY_FUNC = CLICKED;
-
+using DROP = void(UI::*)(DWORD_PTR);
 
 struct tTreeKey
 {
@@ -113,6 +113,8 @@ private:
 	// Key Binding Delegate
 	vector<tTreeKey> m_vecKeyBind;
 
+	UI*  m_pDropInstance;
+	DROP m_dropFuc;
 public:
 	TreeNode* GetDragNode() { return m_pDragNode; }
 	TreeNode* GetDropNode() { return m_pDropNode; }
@@ -123,6 +125,12 @@ public:
 	void DropCheck() override;
 
 public:
+	void SetDragDropFunc(UI* _pInstance, DROP func)
+	{
+		m_pDropInstance = _pInstance;
+		m_dropFuc       = func;
+	}
+
 	void      ShowDummyRoot(bool _bTrue) { m_bShowDummy = _bTrue; }
 	void      UseFrame(bool _b) { m_bUseFrame = _b; }
 	void      UseDragDropOuter(bool _b) { m_bUseDragDropOuter = _b; }

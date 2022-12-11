@@ -8,15 +8,11 @@
 #include <Engine/CAnimator3D.h>
 
 Homon_Die::Homon_Die()
-	: CState{ L"DIE" }
+	: CState{L"DIE"}
 	, m_pAnimation(nullptr)
-	, m_pOwnerMGR(nullptr)
-{
-}
+	, m_pOwnerMGR(nullptr) {}
 
-Homon_Die::~Homon_Die()
-{
-}
+Homon_Die::~Homon_Die() {}
 
 void Homon_Die::Enter()
 {
@@ -50,7 +46,7 @@ void Homon_Die::Update()
 	}
 	else
 	{
-		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		if (fAnimationLength + 2.f <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
@@ -61,5 +57,4 @@ void Homon_Die::Update()
 void Homon_Die::Exit()
 {
 	m_pAnimation->Reset();
-
 }

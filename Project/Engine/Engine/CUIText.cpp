@@ -32,10 +32,8 @@ CUIText::~CUIText() = default;
 
 void CUIText::start()
 {
-	m_pRTV2D      = CDevice::GetInst()->GetRtv2D();
 	m_pFont       = CFontMgr::GetInst()->LoadFontFromFile(L"font\\fa-solid-900.ttf");
 	m_pColorBrush = CFontMgr::GetInst()->GetBrush(m_color);
-
 	CreateTextLayout();
 }
 

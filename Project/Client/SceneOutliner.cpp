@@ -7,12 +7,10 @@
 #include <Engine/CGameObject.h>
 #include <Engine/CPrefab.h>
 #include <Engine/CTransform.h>
-
 #include <Engine/CEventMgr.h>
 #include <Engine/CRenderComponent.h>
 #include <Engine/CRenderMgr.h>
 #include <Engine/CCamera.h>
-#include <Engine/CDevice.h>
 #include <Engine/CMesh.h>
 
 #include "TreeUI.h"
@@ -36,24 +34,20 @@ SceneOutliner::SceneOutliner()
 	m_TreeUI->ShowDummyRoot(false);
 	m_TreeUI->UseDragDropOuter(true);
 	m_TreeUI->UseDragDropSelf(true);
-
-
 	AddChild(m_TreeUI);
 
 	// Clicked Delegate 등록
 	m_TreeUI->SetClickedDelegate(this, static_cast<CLICKED>(&SceneOutliner::ObjectClicked));
-
 	// Drag and Drop Delegate 등록
 	m_TreeUI->SetDragAndDropDelegate(this, static_cast<DRAG_DROP>(&SceneOutliner::DragAndDropDelegate));
-
 	// Key Delegate 등록
 	m_TreeUI->SetKeyBinding(KEY::DEL, this, static_cast<CLICKED>(&SceneOutliner::PressDelete));
 
-
-	//Reset();
+	m_TreeUI->SetAcceptDragUIName("Resource");
+	m_TreeUI->SetDragDropFunc(this, static_cast<DROP>(&SceneOutliner::ResDrop));
 }
 
-SceneOutliner::~SceneOutliner() {}
+SceneOutliner::~SceneOutliner() = default;
 
 void SceneOutliner::ShowHierarchyAll(CGameObject* pGameObject, bool afterRenew)
 {
@@ -61,7 +55,9 @@ void SceneOutliner::ShowHierarchyAll(CGameObject* pGameObject, bool afterRenew)
 	{
 		m_pObjectForShow = pGameObject;
 	}
-	m_pSelectedGameObject   = pGameObject;
+
+	m_pSelectedGameObject = pGameObject;
+
 	TreeNode* pSelectedNode = m_TreeUI->FindNode(ToString(m_pSelectedGameObject->GetName()));
 	if (nullptr == pSelectedNode)
 	{
@@ -160,8 +156,8 @@ void SceneOutliner::render_update()
 		}
 	}
 	RenderAddObject();
-	RenderAddLayer();
 }
+
 
 void SceneOutliner::Reset()
 {
@@ -372,9 +368,7 @@ void SceneOutliner::RenderAddObject()
 	}
 }
 
-void SceneOutliner::RenderAddLayer() {}
-
-void SceneOutliner::RenderGuizmo()
+void SceneOutliner::RenderGuizmo() const
 {
 	if (nullptr == m_pSelectedGameObject || false == TransformUI::IsGuizmoEnabled())
 	{
@@ -410,7 +404,6 @@ void SceneOutliner::RenderGuizmo()
 		Matrix     origin = m_pSelectedGameObject->Transform()->GetWorldMat();
 		origin.Decompose(originScale, originRotation, originTranslation);
 
-
 		switch (TransformUI::GetGuizmoType())
 		{
 		case GUIZMO_TYPE::TRANSLATE:
@@ -434,7 +427,7 @@ void SceneOutliner::RenderGuizmo()
 				m_pSelectedGameObject->Transform()->SetRelativeScale(modifiedScale);
 				break;
 			}
-		default: assert(nullptr && "INVALID GUIZMO TYPE");
+		default: LOG_ASSERT(nullptr, "INVALID GUIZMO TYPE");
 		}
 	}
 }
@@ -472,23 +465,20 @@ bool SceneOutliner::MakePrefab()
 
 void SceneOutliner::SelectPrefab(DWORD_PTR _param)
 {
-	string  strSelectedName = (char*)_param;
-	auto    strPrefabKey    = wstring(strSelectedName.begin(), strSelectedName.end());
-	wstring strContent      = CPathMgr::GetInst()->GetContentPath();
-	wstring FullPath        = strContent + strPrefabKey;
+	const std::wstring strPrefabKey = ToWString(reinterpret_cast<char*>(_param));
+	const std::wstring strFullPath  = CPathMgr::GetInst()->GetContentPath() + strPrefabKey;
 
 	auto pPrefab = new CPrefab;
-	pPrefab->Load(FullPath);
-
+	pPrefab->Load(strFullPath);
 	assert(pPrefab);
 
 	if (m_pSelectedScene && m_pSelectedLayer)
 	{
 		// Prefab 파일에 저장된 gameObject 를 읽어서 해당 Layer 에 포함한다. 
-		CGameObject* NewObj = pPrefab->Instantiate();
-		m_pSelectedScene->AddObject(NewObj, m_pSelectedLayer->GetName());
+		CGameObject* pNewGameObject = pPrefab->Instantiate();
+		m_pSelectedScene->AddObject(pNewGameObject, m_pSelectedLayer->GetName());
 		SAFE_DELETE(pPrefab);
-		// TReeUI 에 추가하기 위해서 Reset() 
+		// TreeUI 에 추가하기 위해서 Reset() 
 		ResetTreeUI();
 	}
 }
@@ -497,16 +487,14 @@ void SceneOutliner::CreateGameObject()
 {
 	if (m_pSelectedLayer)
 	{
-		CScene* pCurScene   = CSceneMgr::GetInst()->GetCurScene();
-		auto    pDefaultObj = new CGameObject;
-
-		pDefaultObj->SetName(L"New_GameObject");
-		pDefaultObj->AddComponent(new CTransform);
-		pCurScene->AddObject(pDefaultObj, m_pSelectedLayer->GetLayerIdx());
+		const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		const auto    pDefault  = new CGameObject;
+		pDefault->SetName(L"New_GameObject");
+		pDefault->AddComponent(new CTransform);
+		pCurScene->AddObject(pDefault, m_pSelectedLayer->GetLayerIdx());
 
 		Reset();
 	}
-	else {}
 }
 
 void SceneOutliner::ObjectPicking()
@@ -575,7 +563,7 @@ void SceneOutliner::ObjectPicking()
 
 				// We have to iterate over all the triangles in order to find the nearest intersection.
 
-				float distance = 0.0f;
+				float distance{};
 				if (TriangleTests::Intersects(rayLocalPosForMesh,
 				                              rayLocalDirForMesh,
 				                              vertex_0,
@@ -588,19 +576,16 @@ void SceneOutliner::ObjectPicking()
 			}
 		}
 		std::sort(vecDistance.begin(), vecDistance.end());
-		if (vecDistance.size() > 0)
+		if (false == vecDistance.empty())
 		{
 			vecIntersect.push_back({vecDistance[0], pGameObject});
 		}
 	}
-	if (vecIntersect.size() > 0)
+	if (false == vecIntersect.empty())
 	{
 		std::sort(vecIntersect.begin(),
 		          vecIntersect.end(),
-		          [](const auto& left, const auto& right)
-		          {
-			          return left.first < right.first;
-		          });
+		          [](const auto& left, const auto& right) { return left.first < right.first; });
 
 		ShowHierarchyAll(vecIntersect[0].second);
 	}
@@ -611,12 +596,10 @@ TreeNode* SceneOutliner::AddGameObjectToTree(CGameObject* _pObject, TreeNode* _p
 	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode, ToString(_pObject->GetName()), (DWORD_PTR)_pObject);
 	pNode->SetNodeType(NODE_TYPE::ENGINE_GAMEOBJECT);
 
-
 	const vector<CGameObject*>& vecChild = _pObject->GetChild();
-
-	for (size_t i = 0; i < vecChild.size(); ++i)
+	for (const auto& pChild : vecChild)
 	{
-		AddGameObjectToTree(vecChild[i], pNode);
+		AddGameObjectToTree(pChild, pNode);
 	}
 
 	return pNode;
@@ -632,96 +615,92 @@ TreeNode* SceneOutliner::AddSceneToTree(CScene* _pScene, TreeNode* _pDestNode)
 
 TreeNode* SceneOutliner::AddLayerToTree(CLayer* _pLayer, TreeNode* _pDestNode)
 {
-	int       layerIdx = _pLayer->GetLayerIdx();
-	TreeNode* pNode    = m_TreeUI->AddTreeNode(_pDestNode, "Layer " + ToString(_pLayer->GetName()), (DWORD_PTR)_pLayer);
-
+	TreeNode* pNode = m_TreeUI->AddTreeNode(_pDestNode, "Layer " + ToString(_pLayer->GetName()), (DWORD_PTR)_pLayer);
 	pNode->SetNodeType(NODE_TYPE::ENGINE_LAYER);
+
 	return pNode;
 }
 
 void SceneOutliner::PressDelete(DWORD_PTR _dw)
 {
-	auto pNode = (TreeNode*)_dw;
-
+	const auto pNode = (TreeNode*)_dw;
 	if (nullptr == pNode)
+	{
 		return;
+	}
 
-	auto pTargetObj = (CGameObject*)pNode->GetData();
-	pTargetObj->Destroy();
+	const auto pTargetObject = reinterpret_cast<CGameObject*>(pNode->GetData());
+	pTargetObject->Destroy();
 
 	// InspectorUI 를 찾아서 Object 를 nullptr 로 세팅한다.
-
-	auto pInspectorUI = static_cast<InspectorUI*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
+	const auto pInspectorUI = static_cast<InspectorUI*>(CImGuiMgr::GetInst()->FindUI("Inspector"));
 	pInspectorUI->SetTargetObject(nullptr);
 }
 
 void SceneOutliner::DragAndDropDelegate(DWORD_PTR _dwDrag, DWORD_PTR _dwDrop)
 {
 	if (_dwDrag == (DWORD_PTR)nullptr || _dwDrop == (DWORD_PTR)nullptr)
+	{
 		return;
+	}
 
-
-	NODE_TYPE eDragNode_Type = m_TreeUI->GetDragNode()->GetNodeType();
-	NODE_TYPE eDropNode_Type = m_TreeUI->GetDropNode()->GetNodeType();
+	const NODE_TYPE eDragNode_Type = m_TreeUI->GetDragNode()->GetNodeType();
+	const NODE_TYPE eDropNode_Type = m_TreeUI->GetDropNode()->GetNodeType();
 
 	// GAME_OBJECT -> GAME_OBJECT
 	if (eDragNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT &&
 	    eDropNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT)
 	{
-		auto pDrag = (CGameObject*)_dwDrag; // Child 
-		auto pDrop = (CGameObject*)_dwDrop; // Parent
+		const auto pChild  = reinterpret_cast<CGameObject*>(_dwDrag);
+		const auto pParent = reinterpret_cast<CGameObject*>(_dwDrop);
 
-		if (pDrop != nullptr)
+		if (pParent != nullptr)
 		{
-			if (pDrag == pDrop || pDrop->IsAncestor(pDrag))
+			if (pChild == pParent || pParent->IsAncestor(pChild))
 			{
 				return;
 			}
-
-			CSceneMgr::GetInst()->AddChild(pDrop, pDrag);
+			CSceneMgr::GetInst()->AddChild(pParent, pChild);
 		}
 		// 자식 오브젝트의 목적지가 nullptr 인 경우
 		else
 		{
 			// 이미 최상위 부모 오브젝트는 이벤트 처리가 필요없다.
-			if (nullptr == pDrag->GetParent())
+			if (nullptr == pChild->GetParent())
 			{
 				return;
 			}
-
-			CSceneMgr::GetInst()->DisconnectParent(pDrag);
+			CSceneMgr::GetInst()->DisconnectParent(pChild);
 		}
 	}
 	// GAME_OBJECT -> LAYER 
 	else if (eDragNode_Type == NODE_TYPE::ENGINE_GAMEOBJECT &&
 	         eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
 	{
-		auto pDrag = (CGameObject*)_dwDrag; // Object 
-		auto pDrop = (CLayer*)_dwDrop;		// Layer
-
-		CSceneMgr::GetInst()->ChangeObjectLayerIndex(pDrag, pDrop->GetLayerIdx());
+		const auto pDragObject = reinterpret_cast<CGameObject*>(_dwDrag);
+		const auto pDropLayer  = reinterpret_cast<CLayer*>(_dwDrop);
+		CSceneMgr::GetInst()->ChangeObjectLayerIndex(pDragObject, pDropLayer->GetLayerIdx());
 	}
 	// LAYER -> LAYER 
 	else if (eDragNode_Type == NODE_TYPE::ENGINE_LAYER &&
 	         eDropNode_Type == NODE_TYPE::ENGINE_LAYER)
 	{
-		auto pDrag = (CLayer*)_dwDrag;		// Layer 
-		auto pDrop = (CLayer*)_dwDrop;		// Layer
-
-		CSceneMgr::GetInst()->SwapLayer(pDrag->GetLayerIdx(), pDrop->GetLayerIdx());
+		const auto pDragLayer = reinterpret_cast<CLayer*>(_dwDrag);
+		const auto pDropLayer = reinterpret_cast<CLayer*>(_dwDrop);
+		CSceneMgr::GetInst()->SwapLayer(pDragLayer->GetLayerIdx(), pDropLayer->GetLayerIdx());
 	}
 }
 
-void SceneOutliner::ResDrop(DWORD_PTR _resPtr)
+void SceneOutliner::ResDrop(DWORD_PTR _dwResource)
 {
-	if (ImGui::BeginDragDropTarget())
-	{
-		DWORD_PTR dwData = 0;
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Resource"))
-		{
-			memcpy(&dwData, payload->Data, sizeof(DWORD_PTR));
-		}
+	CRes*    pResource    = reinterpret_cast<CRes*>(_dwResource);
+	RES_TYPE resourceType = pResource->GetResType();
 
-		ImGui::EndDragDropTarget();
+	if (resourceType == RES_TYPE::PREFAB)
+	{
+		Ptr<CPrefab> pPrefab = static_cast<CPrefab*>(pResource);
+
+		CGameObject* pGameObject = pPrefab->Instantiate();
+		CSceneMgr::GetInst()->SpawnObject(pGameObject, 0);
 	}
 }

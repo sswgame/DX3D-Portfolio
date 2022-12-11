@@ -8,15 +8,11 @@
 #include <Engine/CAnimator3D.h>
 
 Deux_Walk::Deux_Walk()
-	: CState{ L"WALK" }
+	: CState{L"WALK"}
 	, m_pAnimation(nullptr)
-	, m_pOwnerMGR(nullptr)
-{
-}
+	, m_pOwnerMGR(nullptr) {}
 
-Deux_Walk::~Deux_Walk()
-{
-}
+Deux_Walk::~Deux_Walk() {}
 
 void Deux_Walk::Enter()
 {
@@ -32,7 +28,6 @@ void Deux_Walk::Enter()
 		m_pOwnerMGR = (GetOwner()->GetScript<FieldMonsteScript>()->GetMonsterMGR());
 	}
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), true);
-
 }
 
 void Deux_Walk::Update()
@@ -52,7 +47,7 @@ void Deux_Walk::Update()
 	}
 	else
 	{
-		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();

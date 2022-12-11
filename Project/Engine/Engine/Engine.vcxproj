@@ -52,7 +52,7 @@
     <IncludePath>$(SolutionDir)External\Include\;$(SolutionDir)External\Include\FBXLoader\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Trash\$(ProjectName)\$(Configuration)\</IntDir>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\DirectXTex\;$(SolutionDir)External\Include\spdlog\;$(SolutionDir)External\Include\FBXLoader\;</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -60,7 +60,7 @@
     <IncludePath>$(SolutionDir)External\Include\;$(SolutionDir)External\Include\FBXLoader\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Trash\$(ProjectName)\$(Configuration)\</IntDir>
-    <ExternalIncludePath>$(SolutionDir)External\Include\FBXLoader\</ExternalIncludePath>
+    <ExternalIncludePath>$(SolutionDir)External\Include\DirectXTex\;$(SolutionDir)External\Include\FBXLoader\;</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -155,6 +155,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CLayer.h" />
     <ClInclude Include="CLight2D.h" />
     <ClInclude Include="CLight3D.h" />
+    <ClInclude Include="CLog.h" />
     <ClInclude Include="CMaterial.h" />
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="CMeshData.h" />
@@ -188,7 +189,9 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CStructuredBuffer.h" />
     <ClInclude Include="CTestShader.h" />
     <ClInclude Include="CTexture.h" />
+    <ClInclude Include="CThreadPool.h" />
     <ClInclude Include="CTileMap.h" />
+    <ClInclude Include="CTimeMeasure.h" />
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="CTransform.h" />
     <ClInclude Include="CUIBase.h" />
@@ -240,6 +243,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CLayer.cpp" />
     <ClCompile Include="CLight2D.cpp" />
     <ClCompile Include="CLight3D.cpp" />
+    <ClCompile Include="CLog.cpp" />
     <ClCompile Include="CMaterial.cpp" />
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CMeshData.cpp" />
@@ -274,7 +278,9 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CStructuredBuffer.cpp" />
     <ClCompile Include="CTestShader.cpp" />
     <ClCompile Include="CTexture.cpp" />
+    <ClCompile Include="CThreadPool.cpp" />
     <ClCompile Include="CTileMap.cpp" />
+    <ClCompile Include="CTimeMeasure.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="CTransform.cpp" />
     <ClCompile Include="CUIBase.cpp" />
@@ -512,18 +518,21 @@ call EngineCopy.bat</Command>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="FullScreenTriangle.fx">
+    <None Include="FullScreenTriangle.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
-    </FxCompile>
-    <FxCompile Include="FXAA.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="FXAA.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
-    </FxCompile>
-    <FxCompile Include="SSAO.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="SSAO.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
-    </FxCompile>
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

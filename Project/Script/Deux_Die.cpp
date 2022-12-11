@@ -8,15 +8,11 @@
 #include <Engine/CAnimator3D.h>
 
 Deux_Die::Deux_Die()
-	: CState{ L"DEATH" }
+	: CState{L"DEATH"}
 	, m_pAnimation(nullptr)
-	, m_pOwnerMGR(nullptr)
-{
-}
+	, m_pOwnerMGR(nullptr) {}
 
-Deux_Die::~Deux_Die()
-{
-}
+Deux_Die::~Deux_Die() {}
 
 void Deux_Die::Enter()
 {
@@ -32,7 +28,6 @@ void Deux_Die::Enter()
 		m_pOwnerMGR = (GetOwner()->GetScript<FieldMonsteScript>()->GetMonsterMGR());
 	}
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), false);
-
 }
 
 void Deux_Die::Update()
@@ -52,7 +47,7 @@ void Deux_Die::Update()
 	}
 	else
 	{
-		float fAnimationLength = m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime();
+		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
 		if (fAnimationLength + 2.f <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();

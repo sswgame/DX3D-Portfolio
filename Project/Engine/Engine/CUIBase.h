@@ -70,7 +70,8 @@ public:
 
 	bool IsMouseHovered() const { return m_isMouseHovered; }
 
-	void ShowDebugRect(bool enable);
+	void SetShowDebugRect(bool enable);
+	bool IsShowDebugRect() const { return m_showDebugRect; }
 
 	template <typename T>
 	void SetMouseHoverCallback(T* pInstance, void (T::*func)())

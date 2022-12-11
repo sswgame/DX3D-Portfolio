@@ -46,6 +46,5 @@ public:
 public:
 	CLONE(CUIImage);
 	CUIImage();
-	CUIImage(const CUIImage& _origin);
 	virtual ~CUIImage();
 };
