@@ -164,11 +164,18 @@ void CGameObject::finalupdate()
 		if (nullptr != pComponent)
 		{
 			pComponent->finalupdate();
-			if (nullptr != pComponent && nullptr != pComponent->GetDebugObj())
+
+			if (nullptr != pComponent->GetDebugObj())
 			{
 				pComponent->finalupdate_debug();
 			}
 		}
+	}
+
+	// 자식 object final update
+	for (const auto& pChild : m_vecChild)
+	{
+		pChild->finalupdate();
 	}
 
 	// Layer가 없으면 넘어간다 (ex-DebugObj)
@@ -181,12 +188,6 @@ void CGameObject::finalupdate()
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	CLayer* pLayer    = pCurScene->GetLayer(m_iLayerIdx);
 	pLayer->RegisterObject(this);
-
-	// 자식 object final update
-	for (const auto& pChild : m_vecChild)
-	{
-		pChild->finalupdate();
-	}
 }
 
 void CGameObject::finalupdate_module()

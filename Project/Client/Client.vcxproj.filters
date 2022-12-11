@@ -149,6 +149,10 @@
     <ClCompile Include="GameButtonUI.cpp">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
     </ClCompile>
+    <ClCompile Include="NaviMapUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\14. NaviMapUI</Filter>
+    </ClCompile>
+    <ClCompile Include="NaviAgentUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -310,6 +314,10 @@
     <ClInclude Include="GameButtonUI.h">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI</Filter>
     </ClInclude>
+    <ClInclude Include="NaviMapUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\14. NaviMapUI</Filter>
+    </ClInclude>
+    <ClInclude Include="NaviAgentUI.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">
@@ -436,6 +444,12 @@
     </Filter>
     <Filter Include="ImGui\UI\01. InspectorUI\ComponentUI\13. GameUI">
       <UniqueIdentifier>{bba3a2d9-3b6a-401e-876c-88669d2206b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\UI\01. InspectorUI\ComponentUI\14. NaviMapUI">
+      <UniqueIdentifier>{d94d7e4d-6efd-401e-89eb-7c8566395e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\UI\01. InspectorUI\ComponentUI\15. NaviAgentUI">
+      <UniqueIdentifier>{ca37913f-1519-44b0-8f4b-9e3d88a03f34}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

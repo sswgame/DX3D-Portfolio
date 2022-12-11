@@ -72,15 +72,15 @@ void CRigidBody::update()
 	m_vMovedDist = vPrevPos - vCurPos; 					// 이동 거리 
 
 	// TEST : 일단 0.f 아래로 안떨어지게 막아둠 - Nav Mesh 후 수정할 예정 
-	Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
-	if (vPos.y < 0.f)
-	{
-		vPos.y = 0.f;
-		GetOwner()->Transform()->SetRelativePos(vPos);
-		m_bOnGround = true;
-	}
-	else
-		m_bOnGround = false;
+	//Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
+	//if (vPos.y < 0.f)
+	//{
+	//	vPos.y = 0.f;
+	//	GetOwner()->Transform()->SetRelativePos(vPos);
+	//	m_bOnGround = true;
+	//}
+	//else
+	//	m_bOnGround = false;
 
 
 }

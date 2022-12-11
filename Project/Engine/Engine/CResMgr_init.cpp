@@ -819,7 +819,7 @@ void CResMgr::CreateEngineShader()
 	pShader->CreatePixelShader(L"shader\\std3d.fx", "PS_Std3D");
 
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_MASKED);
-	pShader->SetRSType(RS_TYPE::WIRE_FRAME);
+	pShader->SetRSType(RS_TYPE::CULL_BACK);
 	pShader->SetDSType(DS_TYPE::LESS);
 	pShader->SetBSType(BS_TYPE::DEFAULT);
 
@@ -840,6 +840,18 @@ void CResMgr::CreateEngineShader()
 	pShader->SetBSType(BS_TYPE::DEFAULT);
 
 	AddRes<CGraphicsShader>(L"Std3DWireShader", pShader, true);
+
+	// Std3D Alpha Shader
+	pShader = new CGraphicsShader;
+	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3DAlpha");
+	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Std3DAlpha");
+
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_TRANSLUCENT);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::NO_WRITE);
+	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
+
+	AddRes<CGraphicsShader>(L"Std3DAlphaShader", pShader, true);
 
 	// Std3D Deferred Shader
 	pShader = new CGraphicsShader;
@@ -1096,6 +1108,11 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"Std3DWireShader"));
 	AddRes<CMaterial>(L"material\\Std3DWireShader.mtrl", pMtrl);
+
+	// Std3D Alpha
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"Std3DAlphaShader"));
+	AddRes<CMaterial>(L"material\\Std3DAlphaMtrl.mtrl", pMtrl);
 
 	// Collider3D
 	pMtrl = new CMaterial;

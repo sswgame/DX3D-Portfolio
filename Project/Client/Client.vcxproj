@@ -133,6 +133,8 @@
     <ClInclude Include="ImGuizmo\ImZoomSlider.h" />
     <ClInclude Include="MaterialUI.h" />
     <ClInclude Include="MenuUI.h" />
+    <ClInclude Include="NaviAgentUI.h" />
+    <ClInclude Include="NaviMapUI.h" />
     <ClInclude Include="ParamUI.h" />
     <ClInclude Include="ParticleSystemUI.h" />
     <ClInclude Include="ParticleTool.h" />
@@ -186,6 +188,8 @@
     <ClCompile Include="ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="MaterialUI.cpp" />
     <ClCompile Include="MenuUI.cpp" />
+    <ClCompile Include="NaviAgentUI.cpp" />
+    <ClCompile Include="NaviMapUI.cpp" />
     <ClCompile Include="ParamUI.cpp" />
     <ClCompile Include="ParticleSystemUI.cpp" />
     <ClCompile Include="ParticleTool.cpp" />

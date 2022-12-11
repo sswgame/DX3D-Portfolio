@@ -1,29 +1,47 @@
 #include "pch.h"
 #include "CNaviAgent.h"
 
-#define AGENT_TEST
 #include "CKeyMgr.h"
 #include "CTimeMgr.h"
-#include "CMeshRender.h"
 
 #include "CNaviMap.h"
 #include "CNaviMapData.h"
 #include "CTransform.h"
+#include "CMeshRender.h"
+#include "CRigidBody.h"
 #include "CSerializer.h"
 
 CNaviAgent::CNaviAgent()
 	: CComponent{COMPONENT_TYPE::NAVIAGENT}
 	, m_pTargetNaviMap(nullptr)
+	, m_pRigidBody(nullptr)
 	, m_iCurCellIndex(-1)
 	, m_bGravity(false)
+	, m_vDebugAgentColor(0.6f, 0.8f, 1.f, 0.6f)
 {
+	// Debug Obj 추가
+	if (nullptr == m_pDebugObj)
+	{
+		m_pDebugObj = new CGameObject;
+		m_pDebugObj->SetName(L"NaviAgent_debug");
+		m_pDebugObj->AddComponent(new CTransform);
+		m_pDebugObj->AddComponent(new CMeshRender);
+
+		Ptr<CMesh>     pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
+		Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl");
+
+		m_pDebugObj->MeshRender()->SetMesh(pMesh);
+		m_pDebugObj->MeshRender()->SetSharedMaterial(pMtrl, 0);
+	}
 }
 
 CNaviAgent::CNaviAgent(const CNaviAgent& _origin)
 	: CComponent{COMPONENT_TYPE::NAVIAGENT}
 	, m_pTargetNaviMap(_origin.m_pTargetNaviMap)
+	, m_pRigidBody(_origin.m_pRigidBody)
 	, m_iCurCellIndex(-1)
 	, m_bGravity(false)
+	, m_vDebugAgentColor(_origin.m_vDebugAgentColor)
 {
 }
 
@@ -55,15 +73,16 @@ bool CNaviAgent::CheckLinkedCell()
 
 	// 인접한 셀과 충돌 여부를 체크한다.
 	CNaviMapData* pData = m_pTargetNaviMap->GetNaviMapData();
-	Vec3          vPos  = Transform()->GetWorldPos();
+	Vec3          vPos  = Transform()->GetWorldPos() + m_vOffsetPos;
 
 	vector<int> vecLinkedCell = pData->GetCell(m_iCurCellIndex)->GetLinkedCellIDX();
 	for (size_t i = 0; i < vecLinkedCell.size(); ++i)
 	{
-		float tmp;
-		if (m_pTargetNaviMap->CheckIntersect(vecLinkedCell[i], vPos, Vec3(0.f, -1.f, 0.f), tmp))
+		float fDist;
+		if (m_pTargetNaviMap->CheckIntersect(vecLinkedCell[i], vPos, Vec3(0.f, -1.f, 0.f), fDist))
 		{
 			m_iCurCellIndex = vecLinkedCell[i];
+			m_vPrevPos      = Transform()->GetWorldPos();
 			return true;
 		}
 	}
@@ -71,8 +90,26 @@ bool CNaviAgent::CheckLinkedCell()
 	return false;
 }
 
-void CNaviAgent::SetYPos()
+Vec3 CNaviAgent::SetYPos(float _fDist)
 {
+	Vec3  vPos   = Transform()->GetWorldPos();
+	float fSpace = _fDist - m_vOffsetSize.y;
+
+	if (fSpace < 0.f)
+	{
+		Transform()->SetMovePosition(0.f, -fSpace, 0.f);
+		vPos.y -= fSpace;
+
+		if (nullptr != m_pRigidBody)
+			m_pRigidBody->SetOnGround(true);
+	}
+	else
+	{
+		if (nullptr != m_pRigidBody && 0 != fSpace)
+			m_pRigidBody->SetOnGround(false);
+	}
+
+	return vPos;
 }
 
 void CNaviAgent::SetNaviMap(CNaviMap* _pNaviMap)
@@ -83,61 +120,22 @@ void CNaviAgent::SetNaviMap(CNaviMap* _pNaviMap)
 
 void CNaviAgent::update()
 {
-	assert(m_pTargetNaviMap && "지정된 NaviMap이 없습니다");
+	if (nullptr == m_pTargetNaviMap)
+		return;
+
+	if (nullptr == m_pRigidBody)
+		m_pRigidBody = GetOwner()->RigidBody();
 
 	if (-1 == m_iCurCellIndex)
 		FindCurIndex();
-
-#ifdef AGENT_TEST
-	if (nullptr == MeshRender())
-	{
-		GetOwner()->AddComponent(new CMeshRender);
-
-		MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
-		MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3D_DeferredMtrl.mtrl"),
-		                                0);
-		const Ptr<CTexture> pTexture = CResMgr::GetInst()->FindRes<CTexture>(L"texture\\skybox\\Sky01.png");
-		MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
-	}
-
-	Vec3  vPos   = Transform()->GetRelativePos();
-	float fSpeed = 90.f;
-
-	if (KEY_PRESSED(KEY::UP))
-	{
-		Vec3 vFront = Transform()->GetWorldFrontDir();
-		vPos += DT * vFront * fSpeed;
-		int a = 5;
-	}
-
-	if (KEY_PRESSED(KEY::DOWN))
-	{
-		Vec3 vFront = Transform()->GetWorldFrontDir();
-		vPos -= DT * vFront * fSpeed;
-	}
-
-	if (KEY_PRESSED(KEY::LEFT))
-	{
-		Vec3 vRight = Transform()->GetWorldRightDir();
-		vPos -= DT * vRight * fSpeed;
-	}
-
-	if (KEY_PRESSED(KEY::RIGHT))
-	{
-		Vec3 vRight = Transform()->GetWorldRightDir();
-		vPos += DT * vRight * fSpeed;
-	}
-
-	Transform()->SetRelativePos(vPos);
-#endif
 }
 
 void CNaviAgent::lateupdate()
 {
-	if (-1 != m_iCurCellIndex)
+	if (nullptr != m_pTargetNaviMap && -1 != m_iCurCellIndex)
 	{
-		Vec3  vPos = Transform()->GetWorldPos();
-		vPos.y += Transform()->GetWorldScale().y / 2;
+		Vec3 vPos = Transform()->GetWorldPos() + m_vOffsetPos;
+		vPos.y += m_vOffsetSize.y / 2;
 		float fDist;
 		if (!m_pTargetNaviMap->CheckIntersect(m_iCurCellIndex, vPos, Vec3(0.f, -1.f, 0.f), fDist))
 		{
@@ -147,12 +145,7 @@ void CNaviAgent::lateupdate()
 			}
 		}
 		else
-		{
-			if (Transform()->GetWorldScale().y < fDist)
-				Transform()->SetMovePosition(0.f, -fDist, 0.f);
-
-			m_vPrevPos = vPos;
-		}
+			m_vPrevPos = SetYPos(fDist);
 	}
 }
 
@@ -168,7 +161,24 @@ void CNaviAgent::finalupdate()
 
 void CNaviAgent::finalupdate_debug()
 {
-	CComponent::finalupdate_debug();
+	if (nullptr != m_pDebugObj)
+	{
+		m_pDebugObj->Transform()->SetRelativePos(Transform()->GetWorldPos() + m_vOffsetPos);
+		m_pDebugObj->Transform()->SetRelativeScale(m_vOffsetSize);
+		m_pDebugObj->Transform()->SetRelativeRotation(DecomposeRotMat(Transform()->GetWorldRotation()));
+		if (nullptr != m_pDebugObj->MeshRender()->GetDynamicMaterial(0))
+			m_pDebugObj->MeshRender()->GetDynamicMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vDebugAgentColor);
+
+		m_pDebugObj->finalupdate();
+	}
+}
+
+void CNaviAgent::render_debug()
+{
+	if (nullptr != m_pDebugObj)
+	{
+		m_pDebugObj->MeshRender()->render();
+	}
 }
 
 void CNaviAgent::Serialize(YAML::Emitter& emitter)

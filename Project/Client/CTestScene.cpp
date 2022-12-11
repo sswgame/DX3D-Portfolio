@@ -5,6 +5,7 @@
 #include <Engine/CCollisionMgr.h>
 
 #include <Engine/CSceneMgr.h>
+#include <Engine/CRes.h>
 #include <Engine/CScene.h>
 #include <Engine/CGameObject.h>
 
@@ -21,12 +22,16 @@
 #include <Engine/CAnimator3D.h>
 #include <Engine/CFSM.h>
 #include <Engine/CMeshData.h>
+#include <Engine/CNaviMap.h>
+#include <Engine/CNaviAgent.h>
+
 #include <Engine/CRigidBody.h>
 #include <Engine/CMesh.h>
 #include <Engine/CMaterial.h>
 
 
 // [SCRIPT TYPE]
+#include <Script/GameDefine.h>
 #include <Script/PlayerScript.h>
 #include <Script/CameraMoveScript.h>
 #include <Script/PlayerCamScript.h>
@@ -36,15 +41,16 @@
 #include <Script/GravityScript.h>
 #include <Script/TrailScript.h>
 #include <Script/SwordTrailScript.h>
+#include <Script/CObjectManager.h>
+#include <Script/CTranslateMgr.h>
 #include <Script/FieldMonsteScript.h>
 
 //UI
-#include <Engine/CUIPanel.h>
-#include <Engine/CUIText.h>
-#include <Engine/CUIImage.h>
-#include <Engine/CUIProgressBar.h>
-#include <Engine/CUIButton.h>
-#include <Script/UITestScript.h>
+//#include <Script/UIPanelScript.h>
+//#include <Script/UITextScript.h>
+//#include <Script/UIImageScript.h>
+//#include <Script/UIProgressBarScript.h>
+//#include <Script/ButtonScript.h>
 
 namespace
 {
@@ -64,14 +70,23 @@ namespace
 		_pScene->SetLayerName(31, L"UI_INTERACTIVE");
 	}
 
+	void LoadTextures()
+	{
+		// Texture 한장 로딩해보기
+
+		//Ptr<CTexture> pSkyTex_01 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky01.png", L"texture\\skybox\\Sky01.png");
+		//Ptr<CTexture> pSkyTex_02 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky02.jpg", L"texture\\skybox\\Sky02.jpg");
+		//Ptr<CTexture> pSkyTex_04 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyWater.dds",L"texture\\skybox\\SkyWater.dds");
+	}
+
 	CGameObject* AddCamera(CScene* _pScene)
 	{
 		const auto pCamera = new CGameObject;
 		pCamera->SetName(L"MainCamera");
 		pCamera->AddComponent(new CTransform);
 		pCamera->AddComponent(new CCamera);
-		//pCamObj->AddComponent(new CameraMoveScript);
-		//pCamera->AddComponent(new PlayerCamScript);
+		//pCamera->AddComponent(new CameraMoveScript);
+		pCamera->AddComponent(new PlayerCamScript);
 
 		pCamera->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
 		pCamera->Camera()->SetCameraAsMain();
@@ -255,7 +270,7 @@ namespace
 		                                                               L"meshdata\\player_sword0.mdat");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"player");
-		pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
+		pObj->Transform()->SetRelativePos(Vec3(0.f, 5.f, 0.f));
 		pObj->Animator3D()->Play(L"test", true);
 		pObj->Animator3D()->GetCurAnim()->SetPlay(false);
 		pObj->Animator3D()->MakeAnimationFromTXT_Extended("PlayerAnimInfo2.txt");
@@ -267,6 +282,7 @@ namespace
 		//pObj->AddComponent(new GravityScript);
 		pObj->AddComponent(new TrailScript);
 		pObj->AddComponent(new CCollider3D);
+		pObj->AddComponent(new CNaviAgent);
 
 		pObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 		pObj->Collider3D()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
@@ -278,7 +294,7 @@ namespace
 
 		CGameObject* pPlayer = pObj;
 		_pScene->AddObject(pObj, L"PLAYER");
-
+		//CObjectManager::GetInst()->SetPlayer(pObj);
 
 		Ptr<CMeshData> pMeshDataWeapon = nullptr;
 		CGameObject*   pObjWeapon      = nullptr;
@@ -350,7 +366,7 @@ namespace
 		pBoss->SetName(L"BOSS_COMBAT");
 		pBoss->AddComponent(new CTransform);
 		pBoss->AddComponent(new BossJugCombatMgrScript);
-		_pScene->AddObject(pBoss, L"MONSTER");
+		_pScene->AddObject(pBoss, GAME::LAYER::OBJECT_MGR);
 		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
 	}
 
@@ -367,8 +383,6 @@ namespace
 		pMonster->AddComponent(new CFSM);
 		pMonster->AddComponent(new CCollider3D);
 
-		pMonster->Collider3D()->SetOffsetScale(Vec3(100.f, 300.f, 100.f));
-		pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 150.f, 0.f));
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::HOMONCULUS);
 		_pScene->AddObject(pMonster, L"MONSTER");
 	}
@@ -385,11 +399,56 @@ namespace
 		pMonster->AddComponent(new FieldMonsteScript);
 		pMonster->AddComponent(new CFSM);
 		pMonster->AddComponent(new CCollider3D);
-
 		pMonster->Collider3D()->SetOffsetScale(Vec3(50.f, 100.f, 50.f));
 		pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::DEUXIEMIE);
 		_pScene->AddObject(pMonster, L"MONSTER");
+	}
+
+	void TestNavi(CScene* _pScene)
+	{
+		/// Navi Mesh Test
+		CGameObject* pNMesh = new CGameObject;
+		pNMesh->SetName(L"NaviMesh");
+		pNMesh->AddComponent(new CTransform);
+		pNMesh->AddComponent(new CNaviMap);
+
+		CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\arena.map", L"navimap\\arena.map").
+		                                             Get();
+		pNMesh->NaviMap()->SetNaviMapData(pNaviMap);
+		pNMesh->Transform()->SetRelativeScale(15.f, 15.f, 15.f);
+		pNMesh->Transform()->SetRelativePos(0.f, -6.f, 0.f);
+
+		_pScene->AddObject(pNMesh, GAME::LAYER::BG_OBJ);
+
+		/// Player NaviAgent Test
+		CGameObject* pPlayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(GAME::LAYER::PLAYER)->
+		                                             FindRootObject(L"player");
+		pPlayer->NaviAgent()->SetNaviMap(pNMesh->NaviMap());
+		pPlayer->NaviAgent()->SetOffsetSize(Vec3(10.f, 200.f, 100.f));
+		pPlayer->NaviAgent()->SetOffsetPos(Vec3(0.f, 100.f, 0.f));
+
+		/// NaviAgent Test
+		CGameObject* pAgent = new CGameObject;
+		pAgent->SetName(L"Agent");
+		pAgent->AddComponent(new CTransform);
+		pAgent->AddComponent(new CNaviAgent);
+
+		pAgent->Transform()->SetRelativePos(-300.f, 0.f, 11.f);
+		pAgent->Transform()->SetRelativeScale(300.f, 300.f, 300.f);
+		pAgent->NaviAgent()->SetNaviMap(pNMesh->NaviMap());
+
+		_pScene->AddObject(pAgent, GAME::LAYER::PLAYER);
+
+
+		/// Save
+		//pNaviMap = new CNaviMapData;
+		//pNaviMap->CreateFromObj(L"boss_stage.obj", L"mesh\\Navi_boss_stage.mesh");
+		//wstring strPath = L"navimap\\boss_stage.map";
+		//pNaviMap->Save(CPathMgr::GetInst()->GetContentPath() + strPath);
+
+		/// Load
+		//CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\test.map", L"navimap\\test.map").Get();
 	}
 
 	void LoadScene()
@@ -399,67 +458,82 @@ namespace
 		CSceneMgr::GetInst()->ChangeScene(pCurScene);
 	}
 
-	void TestUI(CScene* _pScene)
-	{
-		//UI CAMERA
-		CGameObject* pUICamera = new CGameObject{};
-		pUICamera->SetName(L"UICamera");
-		pUICamera->AddComponent(new CTransform{});
-		pUICamera->AddComponent(new CCamera{});
-		pUICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
-		pUICamera->Camera()->CheckLayerMask(L"UI_STATIC");
-		pUICamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
-		//pUICamera->AddComponent(new CameraMoveScript{});
-		_pScene->AddObject(pUICamera, L"CAMERA");
+	//void TestUI(CScene* _pScene)
+	//{
+	//	Ptr<CMesh>    pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+	//	Ptr<CTexture> pPanelTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\UI_NameBox_Tex.png",
+	//	                                                             L"texture\\UI\\UI_NameBox_Tex.png");
+	//	Ptr<CTexture> pTexture_1 = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\StageBGUI_Tex.png",
+	//	                                                              L"texture\\UI\\StageBGUI_Tex.png");
+	//	Ptr<CTexture> pTexture_2 = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\Cursor.png",
+	//	                                                              L"texture\\UI\\Cursor.png");
+	//	Ptr<CMaterial> pUIMaterial = CResMgr::GetInst()->Load<CMaterial>(L"material\\UIMtrl.mtrl",
+	//	                                                                 L"material\\UIMtrl.mtrl");
+	//	//UI CAMERA
+	//	CGameObject* pUICamera = new CGameObject{};
+	//	pUICamera->SetName(L"UICamera");
+	//	pUICamera->AddComponent(new CTransform{});
+	//	pUICamera->AddComponent(new CCamera{});
+	//	pUICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
+	//	pUICamera->Camera()->CheckLayerMask(L"UI_STATIC");
+	//	pUICamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
+	//	pUICamera->AddComponent(new CameraMoveScript{});
+	//	_pScene->AddObject(pUICamera, L"CAMERA");
 
-		/*Ptr<CMesh>     pRectMesh   = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-		Ptr<CMaterial> pUIMaterial = CResMgr::GetInst()->Load<CMaterial>(L"material\\UIMtrl.mtrl",
-		                                                                 L"material\\UIMtrl.mtrl");
-		CGameObject* pGameObject = new CGameObject{};
-		pGameObject->SetName(L"UI TEST");
-		pGameObject->AddComponent(new CTransform{});
-		pGameObject->AddComponent(new CMeshRender{});
-		pGameObject->MeshRender()->SetMesh(pRectMesh);
-		pGameObject->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
-		pGameObject->AddComponent(new UITestScript{});*/
+	//	//PANEL UI
+	//	CGameObject* pPanelUI = new CGameObject{};
+	//	pPanelUI->SetName(L"UI_PANEL");
+	//	pPanelUI->AddComponent(new CTransform{});
+	//	pPanelUI->Transform()->SetRelativeScale(500.f, 500.f, 1.f);
+	//	pPanelUI->AddComponent(new CMeshRender{});
+	//	pPanelUI->MeshRender()->SetMesh(pRectMesh);
+	//	pPanelUI->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
+	//	pPanelUI->AddComponent(new UIPanelScript{});
+	//	pPanelUI->GetScript<UIPanelScript>()->SetTexture(L"texture\\UI\\UI_NameBox_Tex.png");
+	//	_pScene->AddObject(pPanelUI, L"UI_STATIC");
 
-		CGameObject* pGameObject = CResMgr::GetInst()->
-		                           Load<CPrefab>(L"prefab\\UI_PANEL.pref", L"prefab\\UI_PANEL.pref")->
-		                           Instantiate();
-		if (nullptr != pGameObject)
-		{
-			_pScene->AddObject(pGameObject, 30);
-		}
-	}
+	//	//IMAGE UI_1
+	//	CGameObject* pImageUI_1 = new CGameObject{};
+	//	pImageUI_1->SetName(L"UI_1");
+	//	pImageUI_1->AddComponent(new CTransform{});
+	//	pImageUI_1->Transform()->SetRelativeScale(400.f, 400.f, 1.f);
+	//	pImageUI_1->AddComponent(new CMeshRender{});
+	//	pImageUI_1->MeshRender()->SetMesh(pRectMesh);
+	//	pImageUI_1->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
+	//	pImageUI_1->AddComponent(new UIImageScript{});
+	//	pImageUI_1->GetScript<UIImageScript>()->SetPreserveRatio(true);
+	//	pImageUI_1->GetScript<UIImageScript>()->SetTexture(L"texture\\UI\\StageBGUI_Tex.png");
+	//	pPanelUI->AddChild(pImageUI_1);
 
-	void TestObjectPicking(CScene* _pScene)
-	{
-		Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
-		                                                            L"texture\\tile\\TILE_01.tga");
-		CGameObject* pObject = new CGameObject;
-		pObject->SetName(L"CUBE");
-
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CMeshRender);
-
-		pObject->Transform()->SetRelativePos(0.f, 0.f, 2000.f);
-		pObject->Transform()->SetRelativeScale(600.f, 600.f, 600.f);
-		pObject->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-
-		const Ptr<CMesh>     pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
-		const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3D_DeferredMtrl.mtrl");
-		pObject->MeshRender()->SetMesh(pMesh);
-		pObject->MeshRender()->SetSharedMaterial(pMaterial, 0);
-		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
-
-		_pScene->AddObject(pObject, L"BG_OBJ");
-	}
+	//	//IMAMGE_UI_2
+	//	CGameObject* pImageUI_2 = new CGameObject{};
+	//	pImageUI_2->SetName(L"UI_2");
+	//	pImageUI_2->AddComponent(new CTransform{});
+	//	pImageUI_2->Transform()->SetRelativeScale(5.f, 5.f, 1.f);
+	//	pImageUI_2->AddComponent(new CMeshRender{});
+	//	pImageUI_2->MeshRender()->SetMesh(pRectMesh);
+	//	pImageUI_2->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
+	//	pImageUI_2->AddComponent(new UIImageScript{});
+	//	pImageUI_2->GetScript<UIImageScript>()->SetPreserveRatio(true);
+	//	//pImageUI_2->GetScript<UIImageScript>()->SetAnchorH(ANCHOR_HORIZONTAL::LEFT);
+	//	pImageUI_2->GetScript<UIImageScript>()->SetTexture(L"texture\\UI\\Cursor.png");
+	//	auto pScript = new TestScript{};
+	//	pImageUI_2->AddComponent(pScript);
+	//	pImageUI_2->GetScript<UIImageScript>()->SetMouseHoverCallback(pScript, &TestScript::MouseHover);
+	//	pImageUI_2->AddComponent(new ButtonScript{});
+	//	pImageUI_2->GetScript<ButtonScript>()->SetCallback(pScript,
+	//	                                                   &TestScript::OneClick,
+	//	                                                   MOUSE_TYPE::LEFT,
+	//	                                                   CLICK_TYPE::ONE);
+	//	pPanelUI->AddChild(pImageUI_2);
+	//}	
 
 	void CreateScene()
 	{
 		auto pCurScene = new CScene;
 		CSceneMgr::GetInst()->ChangeScene(pCurScene);
 		SetLayer(pCurScene);
+		LoadTextures();
 
 		CGameObject* pCamObj = AddCamera(pCurScene);
 		AddDirectionalLight(pCurScene);
@@ -471,20 +545,25 @@ namespace
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
 
-		//AddPlayer(pCurScene, pCamObj);
+		AddPlayer(pCurScene, pCamObj);
 		//AddBoss(pCurScene);
-		//AddHomonculus(pCurScene);
-		//AddDeuxiemie(pCurScene);
 
+		/// UI Test
 		//TestUI(pCurScene);
 		//TestObjectPicking(pCurScene);
 
-		// 충돌 레이어 설정
-		CCollisionMgr::GetInst()->CollisionCheck(1, 1);
+		/// NaviTest
+		TestNavi(pCurScene);
+
+		/// 충돌 레이어 설정
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
 
 		pCurScene->SetResKey(L"scene\\TestScene.scene");
 		wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
 		CSceneSaveLoad::SaveScene(pCurScene, strSceneFilePath + L"scene\\TestScene.scene");
+
 		pCurScene->SetSceneState(SCENE_STATE::STOP);
 	}
 }

@@ -32,7 +32,9 @@ CComponent::CComponent(COMPONENT_TYPE _eType)
 	: m_eComType(_eType)
 	, m_pOwner{nullptr}
 	, m_bActive(true)
-	, m_pDebugObj(nullptr) {}
+	, m_pDebugObj(nullptr)
+{
+}
 
 CComponent::~CComponent()
 {

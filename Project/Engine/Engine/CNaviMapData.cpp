@@ -126,7 +126,7 @@ void CNaviMapData::Bake(const vector<Vtx>& _vVTXBuffer, const vector<UINT>& _vID
 							if (m_vecNaviCell[j]->m_iIDX == (*iter))
 							{
 								overlap = true;
-								continue;
+								break;
 							}
 						}
 

@@ -118,20 +118,6 @@ float4 PS_Std2DAlpha(VTX_OUT _in) : SV_Target
 
 
 
-// ================
-// 
-// ================
-
-
-
-
-
-
-
-
-
-
-
 // ==================
 // Collider2D Shader
 // g_int_0 : Collision

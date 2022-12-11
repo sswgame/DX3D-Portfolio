@@ -24,6 +24,8 @@
 #include "GamePanelUI.h"
 #include "GameProgressBarUI.h"
 #include "GameTextUI.h"
+#include "NaviMapUI.h"
+#include "NaviAgentUI.h"
 
 // etc UI
 #include "ListUI.h"
@@ -52,6 +54,9 @@
 #include <Engine/CUIPanel.h>
 #include <Engine/CUIProgressBar.h>
 #include <Engine/CUIText.h>
+#include <Engine/CCollider3D.h>
+#include <Engine/CNaviAgent.h>
+#include <Engine/CNaviMap.h>
 
 // Engine > etc
 #include <Engine/CMaterial.h>
@@ -115,6 +120,16 @@ InspectorUI::InspectorUI()
 	pComUI = new GameProgressBarUI{};
 	AddChild(pComUI);
 	m_arrComUI[(UINT)COMPONENT_TYPE::UIPROGRESSBAR] = pComUI;
+
+	pComUI = new NaviMapUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::NAVIMAP] = pComUI;
+
+	pComUI = new NaviAgentUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::NAVIAGENT] = pComUI;
+
+
 	// ==============
 	// ResInfoUI »ý¼º
 	// ==============
@@ -485,6 +500,19 @@ void InspectorUI::AddComponent(DWORD_PTR _param)
 				}
 				break;
 			case COMPONENT_TYPE::COLLIDER3D:
+				{
+					m_pTargetObject->AddComponent(new CCollider3D);
+				}
+				break;
+			case COMPONENT_TYPE::NAVIMAP:
+				{
+					m_pTargetObject->AddComponent(new CNaviMap);
+				}
+				break;
+			case COMPONENT_TYPE::NAVIAGENT:
+				{
+					m_pTargetObject->AddComponent(new CNaviMap);
+				}
 				break;
 			case COMPONENT_TYPE::ANIMATOR2D:
 				{
