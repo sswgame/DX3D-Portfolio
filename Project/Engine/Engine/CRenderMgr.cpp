@@ -106,7 +106,7 @@ void CRenderMgr::Render_Play()
 		g_transform.matViewInv = pCamera->GetViewInvMat();
 		g_transform.matProj    = pCamera->GetProjMat();
 
-		//if (pCamera != m_pUICamera)
+		if (pCamera != m_pUICamera)
 		{
 			Render(MRT_TYPE::DEFERRED, pCamera);
 			Render(MRT_TYPE::DEFERRED_DECAL, pCamera);

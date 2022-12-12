@@ -71,7 +71,7 @@ void PlayerCamScript::start()
 		m_pCamLock_Point->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"), 0);
 		m_pCamLock_Point->MeshRender()->GetDynamicMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vCamPoint_Color);
 
-		CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pCamLock_Point, GetOwner()->GetLayerIndex());
+		CSceneMgr::GetInst()->SpawnObject(m_pCamLock_Point, GetOwner()->GetLayerIndex());
 	}
 }
 
