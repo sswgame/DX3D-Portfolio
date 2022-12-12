@@ -1,9 +1,10 @@
 #pragma once
 #include <Engine/CScript.h>
 #include "CObjKeyMgr.h"
+#include "CPlayerStat.h"
+
 class CStateMgr;
 class CObjKeyMgr;
-class CPlayerStat;
 class CCamera;
 
 
@@ -56,6 +57,14 @@ public:
 
 
 	CLONE(PlayerScript)
+
+	// 외부에서 스탯 부르는 함수 0.0 ~ 1.0f
+public:
+	void Stat_Up(STAT_TYPE _eType, float _fPercent);
+	void Stat_Down(STAT_TYPE _eType, float _fPercent);
+
+
+
 
 public:
 	PlayerScript(const PlayerScript& _origin);

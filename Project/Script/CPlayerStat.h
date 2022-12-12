@@ -11,6 +11,18 @@
 		같은 다양한 효과를 부여합니다.
 
 */
+
+enum class STAT_TYPE
+{
+	HP,
+	STAMINA,
+	ETHER,
+	ATTACK,
+	ARMOR,
+	SPEED,
+	END,
+};
+
 struct tSTAT
 {
 	float	fHp;		// 체력
@@ -50,6 +62,9 @@ public:
 	void SubAttack(float _fAttack);
 	void SubArmor(float _fStamina);
 
+	void SubSpeed(float _fSpeed);
+
+
 	// [ A D D ]
 	void AddHp(float _fHp);
 	void AddStamina(float _fStamina);
@@ -57,6 +72,9 @@ public:
 
 	void AddAttack(float _fAttack);
 	void AddArmor(float _fArmor);
+
+	void AddSpeed(float _fSpeed);
+
 
 public:
 	// [ SET PART ]
@@ -78,7 +96,7 @@ public:
 
 	// [ GET PART ]
 	tSTAT GetStat() { return m_tCurStat; }
-
+	tSTAT GetMaxStat() { return m_tMaxStat; }
 
 public:
 	virtual void SaveToScene(FILE* _pFile) override;

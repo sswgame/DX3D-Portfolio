@@ -178,11 +178,27 @@ void CPlayerStat::AddArmor(float _fArmor)
 		m_tCurStat.fArmor = m_tMaxStat.fArmor;
 }
 
+void CPlayerStat::AddSpeed(float _fSpeed)
+{
+	m_tCurStat.fSpeed += _fSpeed;
+	if(m_tCurStat.fSpeed >= m_tMaxStat.fSpeed)
+		m_tCurStat.fSpeed = m_tMaxStat.fSpeed;
+
+}
+
+void CPlayerStat::SubSpeed(float _fSpeed)
+{
+	m_tCurStat.fSpeed += _fSpeed;
+	if (m_tCurStat.fSpeed <= 0.f)
+		m_tCurStat.fSpeed = 0.f;
+}
 
 void CPlayerStat::SaveToScene(FILE* _pFile)
 {
+
 }
 
 void CPlayerStat::LoadFromScene(FILE* _pFile)
 {
+
 }

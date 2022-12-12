@@ -481,7 +481,7 @@ namespace
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
 
-		//AddPlayer(pCurScene, pCamObj);
+		AddPlayer(pCurScene, pCamObj);
 		//AddBoss(pCurScene);
 
 		/// UI Test

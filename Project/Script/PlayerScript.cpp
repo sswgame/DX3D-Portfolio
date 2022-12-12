@@ -4,7 +4,7 @@
 //#include "CState.h" // .. 각 상태별 헤더들은 CState.h 에 정의했습니다. 
 
 #include "CStateMgr.h"
-#include "CPlayerStat.h"
+
 #include "CObjKeyMgr.h"
 
 #include "PlayerCamScript.h"
@@ -283,12 +283,115 @@ void PlayerScript::LoadFromScene(FILE* _pFile)
 }
 
 
-/*
-* 렌더링 쪽 정리 하고 캐릭터 담당
-*
-	 Z 차이만큼 알파조절 - Soft Particle
-	 Motion Blur
-	 SSAO
-	 HDR
+void PlayerScript::Stat_Up(STAT_TYPE _eType, float _fPercent)
+{
+	tSTAT MaxStat = m_pStat->GetMaxStat();
 
-*/
+	switch (_eType)
+	{
+	case STAT_TYPE::HP:
+	{
+		float fHP = MaxStat.fHp * _fPercent;
+		m_pStat->AddHp(fHP);
+
+	}
+		
+		break;
+	case STAT_TYPE::STAMINA:
+	{
+		float fStamina = MaxStat.fStamina * _fPercent;
+		m_pStat->AddStamina(fStamina);
+
+	}
+		
+		break;
+	case STAT_TYPE::ETHER:
+	{
+		float fEther = MaxStat.fEther * _fPercent;
+		m_pStat->AddEther(fEther);
+
+	}
+		
+		break;
+	case STAT_TYPE::ATTACK:
+	{
+		float fAttack = MaxStat.fEther * _fPercent;
+		m_pStat->AddAttack(fAttack);
+
+	}
+		
+		break;
+	case STAT_TYPE::ARMOR:
+	{
+		float fArmor = MaxStat.fArmor * _fPercent;
+		m_pStat->AddArmor(fArmor);
+
+	}
+		
+		break;
+	case STAT_TYPE::SPEED:
+	{
+		float fSpeed = MaxStat.fSpeed * _fPercent;
+		m_pStat->AddSpeed(fSpeed);
+
+	}
+		
+		break;
+	}
+}
+void PlayerScript::Stat_Down(STAT_TYPE _eType, float _fPercent)
+{
+	tSTAT MaxStat = m_pStat->GetMaxStat();
+
+	switch (_eType)
+	{
+	case STAT_TYPE::HP:
+	{
+		float fHP = MaxStat.fHp * _fPercent;
+		m_pStat->SubHp(fHP);
+
+	}
+		
+		break;
+	case STAT_TYPE::STAMINA:
+	{
+		float fStamina = MaxStat.fStamina * _fPercent;
+		m_pStat->SubStamina(fStamina);
+
+	}
+		
+		break;
+	case STAT_TYPE::ETHER:
+	{
+		float fEther = MaxStat.fEther * _fPercent;
+		m_pStat->SubEther(fEther);
+
+	}
+		
+		break;
+	case STAT_TYPE::ATTACK:
+	{
+		float fAttack = MaxStat.fEther * _fPercent;
+		m_pStat->SubAttack(fAttack);
+
+	}
+		
+		break;
+	case STAT_TYPE::ARMOR:
+	{
+		float fArmor = MaxStat.fArmor * _fPercent;
+		m_pStat->SubArmor(fArmor);
+
+	}
+		
+		break;
+	case STAT_TYPE::SPEED:
+	{
+		float fSpeed = MaxStat.fSpeed * _fPercent;
+		m_pStat->SubSpeed(fSpeed);
+
+	}
+		
+		break;
+	}
+}
