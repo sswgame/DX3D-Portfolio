@@ -167,3 +167,42 @@ void CFrustum::CalculateFrustumMat()
 	// 충돌체 상대행렬 * 오브젝트 월드 크기 역행렬(크기^-1) * 오브젝트 월드 행렬(크기 * 회전 * 이동)
 	m_matFrustumWorld = m_matFrustumWorld * matObjScaleInv * m_pCam->Transform()->GetWorldMat();
 }
+
+bool CFrustum::CheckBoundingBoxInFrustum(Vec3 _BoundingBoxCenterPos, Vec3 _BoundingBoxScale)
+{
+	Vec3 Center = _BoundingBoxCenterPos;
+	Vec3 Size = _BoundingBoxScale;
+
+	// Check if any of the 6 planes of the rectangle are inside the view frustum.
+	for (int i = 0; i < (UINT)PLANE::END; i++)
+	{
+		Vec3 vPos = Vec3((Center.x - Size.x), (Center.y - Size.y), (Center.z - Size.z));
+		if (vPos.Dot(m_arrPlane[i]) + m_arrPlane[i].w <= 0)
+			continue;
+		vPos = Vec3((Center.x + Size.x), (Center.y - Size.y), (Center.z - Size.z));
+		if (vPos.Dot(m_arrPlane[i]) + m_arrPlane[i].w <= 0)
+			continue;
+		vPos = Vec3((Center.x - Size.x), (Center.y + Size.y), (Center.z - Size.z));
+		if (vPos.Dot(m_arrPlane[i]) + m_arrPlane[i].w <= 0)
+			continue;
+		vPos = Vec3((Center.x - Size.x), (Center.y - Size.y), (Center.z + Size.z));
+		if (vPos.Dot(m_arrPlane[i]) + m_arrPlane[i].w <= 0)
+			continue;
+		vPos = Vec3((Center.x + Size.x), (Center.y + Size.y), (Center.z - Size.z));
+		if (vPos.Dot(m_arrPlane[i]) + m_arrPlane[i].w <= 0)
+			continue;
+		vPos = Vec3((Center.x + Size.x), (Center.y - Size.y), (Center.z + Size.z));
+		if (vPos.Dot(m_arrPlane[i]) + m_arrPlane[i].w <= 0)
+			continue;
+		vPos = Vec3((Center.x - Size.x), (Center.y + Size.y), (Center.z + Size.z));
+		if (vPos.Dot(m_arrPlane[i]) + m_arrPlane[i].w <= 0)
+			continue;
+		vPos = Vec3((Center.x + Size.x), (Center.y + Size.y), (Center.z + Size.z));
+		if (vPos.Dot(m_arrPlane[i]) + m_arrPlane[i].w <= 0)
+			continue;
+
+		return false;
+	}
+
+	return true;
+}

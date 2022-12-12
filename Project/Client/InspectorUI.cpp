@@ -26,6 +26,7 @@
 #include "GameTextUI.h"
 #include "NaviMapUI.h"
 #include "NaviAgentUI.h"
+#include "BoundingBoxUI.h"
 
 // etc UI
 #include "ListUI.h"
@@ -57,6 +58,8 @@
 #include <Engine/CCollider3D.h>
 #include <Engine/CNaviAgent.h>
 #include <Engine/CNaviMap.h>
+#include <Engine/CBoundingBox.h>
+
 
 // Engine > etc
 #include <Engine/CMaterial.h>
@@ -128,6 +131,12 @@ InspectorUI::InspectorUI()
 	pComUI = new NaviAgentUI{};
 	AddChild(pComUI);
 	m_arrComUI[(UINT)COMPONENT_TYPE::NAVIAGENT] = pComUI;
+
+
+	pComUI = new BoundingBoxUI{};
+	AddChild(pComUI);
+	m_arrComUI[(UINT)COMPONENT_TYPE::BOUNDINGBOX] = pComUI;
+
 
 
 	// ==============
@@ -222,7 +231,7 @@ void InspectorUI::SetTargetObject(CGameObject* _pTarget)
 		// ScriptUI 가 더 많이 있을때
 		if (vecScripts.size() < m_vecScriptUI.size())
 		{
-			// 대응하는 UI 를 제외한 나머지 ScriptUI 들을 비활성화 한다.ㄴ
+			// 대응하는 UI 를 제외한 나머지 ScriptUI 들을 비활성화 한다.
 			for (size_t i = vecScripts.size(); i < m_vecScriptUI.size(); ++i)
 			{
 				m_vecScriptUI[i]->Deactivate();
@@ -530,6 +539,9 @@ void InspectorUI::AddComponent(DWORD_PTR _param)
 
 						m_arrComUI[(UINT)COMPONENT_TYPE::MESHRENDER]->Activate();
 						m_arrComUI[(UINT)COMPONENT_TYPE::MESHRENDER]->SetTargetObject(m_pTargetObject);
+
+		
+
 					}
 
 					m_pTargetObject->AddComponent(new CAnimator2D);
@@ -555,6 +567,13 @@ void InspectorUI::AddComponent(DWORD_PTR _param)
 				}
 				break;
 			case COMPONENT_TYPE::BOUNDINGBOX:
+			{
+				m_pTargetObject->AddComponent(new CBoundingBox);
+				CRenderComponent* pRenderCom = m_pTargetObject->GetRenderComponent();
+				if(pRenderCom)
+					pRenderCom->SetFrustumCulling(true);
+
+			}
 				break;
 			case COMPONENT_TYPE::MESHRENDER:
 				{
@@ -567,6 +586,12 @@ void InspectorUI::AddComponent(DWORD_PTR _param)
 					                 SetSharedMaterial(CResMgr::GetInst()->FindRes<
 						                                   CMaterial>(L"material\\Std3DMtrl.mtrl"),
 					                                   0);
+
+					if (m_pTargetObject->BoundingBox())
+					{
+						m_pTargetObject->GetRenderComponent()->SetFrustumCulling(true);
+					}
+
 				}
 				break;
 			case COMPONENT_TYPE::TILEMAP:

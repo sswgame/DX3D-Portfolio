@@ -65,6 +65,7 @@ public:
 	bool        GetShowFrustum() { return m_Frustum.GetShowFrustum(); }
 	const tRay& GetRay() const { return m_ray; }
 	PROJ_TYPE   GetProjType() const { return m_eProjType; }
+	CFrustum	GetFrustum() const { return m_Frustum; }
 
 	void CheckLayerMask(int _iLayerIdx, bool enable = true);
 	void CheckLayerMask(const wstring& _strLayerName, bool enable = true);
@@ -79,6 +80,7 @@ private:
 	void SortGameObject(); // Shader Domain 에 따른 물체 분류
 	void SortDebugGameObject(CGameObject* _pObj);
 	void CalRay();  // 마우스 방향으로 광선 연산
+	bool FrustumCulling(CGameObject* pObj);
 
 public:
 	void SortShadowObject();
@@ -97,6 +99,7 @@ public:
 
 	void render_shadowmap();
 	void render_debug() override;
+	void render_Frustum() { m_Frustum.render(); }
 
 public:
 	void SaveToScene(FILE* _pFile) override;

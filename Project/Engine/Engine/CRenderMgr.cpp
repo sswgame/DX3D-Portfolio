@@ -61,7 +61,7 @@ void CRenderMgr::render()
 void CRenderMgr::RenderBegin()
 {
 	// Rendering 시작	
-	ClearMRT();
+	ClearAllMRT();
 
 	// TextureRegister 초기화
 	ClearTextureRegister();
@@ -83,50 +83,67 @@ void CRenderMgr::RenderEnd()
 	m_vecLight3D.clear();
 }
 
-
-void CRenderMgr::Render_Play()
+void CRenderMgr::Render_MainCamera()
 {
 	if (m_vecCamera.empty())
 	{
 		return;
 	}
 
-	//카메라 시점으로 렌더링
-	for (const auto& pCamera : m_vecCamera)
+	m_pMainCamera = m_vecCamera[0];
+	if (m_pMainCamera)
 	{
-		if (nullptr == pCamera)
-		{
-			continue;
-		}
+		m_pMainCamera->SortGameObject();
+		Render(MRT_TYPE::SHADOWMAP		, m_pMainCamera);
 
-		pCamera->SortGameObject();
-		Render(MRT_TYPE::SHADOWMAP, pCamera);
+		g_transform.matView    = m_pMainCamera->GetViewMat();
+		g_transform.matViewInv = m_pMainCamera->GetViewInvMat();
+		g_transform.matProj    = m_pMainCamera->GetProjMat();
 
-		g_transform.matView    = pCamera->GetViewMat();
-		g_transform.matViewInv = pCamera->GetViewInvMat();
-		g_transform.matProj    = pCamera->GetProjMat();
-
-		if (pCamera != m_pUICamera)
-		{
-			Render(MRT_TYPE::DEFERRED, pCamera);
-			Render(MRT_TYPE::DEFERRED_DECAL, pCamera);
-			Render(MRT_TYPE::SSAO, pCamera);
-			Render(MRT_TYPE::PARTICLE, pCamera);
-			Render(MRT_TYPE::LIGHT, pCamera);
-		}
-		Render(MRT_TYPE::SWAPCHAIN, pCamera);
+		Render(MRT_TYPE::DEFERRED		, m_pMainCamera);
+		Render(MRT_TYPE::DEFERRED_DECAL	, m_pMainCamera);
+		Render(MRT_TYPE::SSAO			, m_pMainCamera);
+		Render(MRT_TYPE::PARTICLE		, m_pMainCamera);
+		Render(MRT_TYPE::LIGHT			, m_pMainCamera);
+		Render(MRT_TYPE::SWAPCHAIN		, m_pMainCamera);	// Back Buffer
 	}
 
-	// FXAA 적용 
-	static bool bFXAA = false;
-	if (KEY_TAP(KEY::F))
-		bFXAA = !bFXAA;
-	if (bFXAA)
-	{
-		CRenderMgr::GetInst()->CopyTargetToPostProcess();
-		CFXAA::GetInst()->SetViewPort(m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->GetViewPort());
-		CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::FXAA);
-	}
+	// 저장된 모든 카메라의 프러스텀을 출력합니다. ( 프러스텀 설정된 카메라만 ) 
+	Render_Camera_Frustum();
+
+}
+
+void CRenderMgr::Render_UICamera()
+{
+	if (!m_pUICamera)
+		return;
+
+	m_pUICamera->SortGameObject();
+	g_transform.matView    = m_pUICamera->GetViewMat();
+	g_transform.matViewInv = m_pUICamera->GetViewInvMat();
+	g_transform.matProj    = m_pUICamera->GetProjMat();
+
+	m_arrMRT[static_cast<UINT>(MRT_TYPE::SWAPCHAIN)]->OMSet();
+	m_pUICamera->render_forward();				// Foward 물체 렌더링
+	m_pUICamera->render_masked();				// Masked 물체 렌더링
+	m_pUICamera->render_forward_decal();		// Foward Decal 렌더링
+	m_pUICamera->render_translucent();			// Alpha 물체 렌더링
+	m_pUICamera->render_debug();				// Debug Object Render
+	m_pUICamera->render_postprocess();			// PostProcess 물체 렌더링
+
+
+}
+
+
+void CRenderMgr::Render_Play()
+{
+	// 여러 카메라 중 메인 카메라로 장면을 찍는다.
+	Render_MainCamera();		
+	Render_UICamera();			
+
+	// Post Process 
+	CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::FXAA);
+
 }
 
 void CRenderMgr::Render_Editor()
@@ -158,12 +175,11 @@ void CRenderMgr::Render(MRT_TYPE _eMRT, CCamera* _pCam)
 	{
 	case MRT_TYPE::SWAPCHAIN:
 		{
-			if (_pCam != m_pUICamera)
-			{
-				Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-				m_pMergeMaterial->UpdateData();
-				pRectMesh->render(0);
-			}
+
+			Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+			m_pMergeMaterial->UpdateData();
+			pRectMesh->render(0);
+			
 			_pCam->render_forward();			// Foward 물체 렌더링
 			_pCam->render_masked();				// Masked 물체 렌더링
 			_pCam->render_forward_decal();		// Foward Decal 렌더링
@@ -224,6 +240,18 @@ void CRenderMgr::Render_ShadowMap(LIGHT_TYPE _eLightType) const
 void CRenderMgr::Render_Lights() const
 {
 	m_arrMRT[static_cast<UINT>(MRT_TYPE::LIGHT)]->OMSet();
+}
+
+void CRenderMgr::Render_Camera_Frustum()
+{
+	// 현재 저장된 카메라의 모든 프러스텀을 출력합니다. 
+	for (int i = 1; i < m_vecCamera.size(); ++i)
+	{
+		if (m_vecCamera[i]->GetShowFrustum())
+		{
+			m_vecCamera[i]->render_Frustum();
+		}
+	}
 }
 
 void CRenderMgr::RegisterCamera(CCamera* _pCamera)
@@ -370,4 +398,16 @@ CCamera* CRenderMgr::GetUICamera()
 		assert(m_pUICamera && "UI CAMERA NOT FOUND");
 	}
 	return m_pUICamera;
+}
+
+
+CCamera* CRenderMgr::GetCameraByName(wstring _name)
+{
+	for (int i = 0; i < m_vecCamera.size(); ++i)
+	{
+		if (m_vecCamera[i]->GetOwner()->GetName() == _name)
+			return m_vecCamera[i];
+	}
+
+	return nullptr;
 }

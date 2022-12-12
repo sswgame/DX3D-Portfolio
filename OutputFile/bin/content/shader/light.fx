@@ -234,12 +234,12 @@ PS_DIR_OUT PS_Spot(VS_DIR_OUT _in)
 // ==============================
 // Merge Shader
 // Mesh : RectMesh
-#define ColorTarget         g_tex_0
-#define DiffuseTarget       g_tex_1
-#define SpecularTarget      g_tex_2
-#define ShadowPowTarget     g_tex_3
-#define ParticleTarget      g_tex_4
-#define EmissiveTarget      g_tex_5
+#define ColorTarget             g_tex_0
+#define DiffuseTarget           g_tex_1
+#define SpecularTarget          g_tex_2
+#define ShadowPowTarget         g_tex_3
+#define AmbientOcclusionTarget  g_tex_4
+#define EmissiveTarget          g_tex_5
 // ==============================
 struct VS_MERGE_IN
 {
@@ -257,38 +257,36 @@ static const float Weight[9] = // 4 - 1 - 4
     1, 0.9f, 0.55f, 0.18f, 0.1f
 };
 
-
-VS_MERGE_OUT VS_Merge(VS_MERGE_IN _in)
+float4 ApplySSAO(float _fAOaccess)
 {
-    VS_MERGE_OUT output = (VS_MERGE_OUT) 0.f;
-
-    output.vPosition = float4(_in.vPos * 2.f, 1.f);
     
-    return output;
+    float4 vAmbient = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    float4 vPhongMat = float4(0.1f, 0.1f, 0.1f, 1.f);
+    float4 vDirLightAmb = float4(0.2f, 0.2f, 0.2f, 1.f);
+
+    float4 vAmb = (vPhongMat * vDirLightAmb * _fAOaccess) * 5;
+    
+    if (_fAOaccess >= 0.95f)
+    {
+        float fStrength = vAmb.a * 0.05f;
+        vAmb = float4(fStrength, fStrength, fStrength, fStrength);
+
+    }
+    else
+        vAmb.xyz *= -1.3f;
+    
+    return vAmb;
 }
 
-float4 PS_Merge(VS_MERGE_OUT _in) : SV_Target0
+float4 ApplyBloom(float4 vColor, float2 _vUV)
 {
-    float4 vOutColor = (float4) 0.f;
+    float4 vOutColor = vColor;
     
-    float2 vUV = _in.vPosition.xy / vResolution.xy;
-    
-    float3 vColor = ColorTarget.Sample(g_sam_0, vUV).xyz;
-    float3 vDiffuse = DiffuseTarget.Sample(g_sam_0, vUV).xyz;
-    float3 vSpecular = SpecularTarget.Sample(g_sam_0, vUV).xyz;
-    float3 vParticle = ParticleTarget.Sample(g_sam_0, vUV).xyz;
-    float3 vEmissive = EmissiveTarget.Sample(g_sam_0, vUV).xyz;
-
-    float fShadowPow = ShadowPowTarget.Sample(g_sam_0, vUV).x;
-        
-    vOutColor = float4(vColor * vDiffuse * (1.f - fShadowPow)
-                       + vSpecular * (1.f - fShadowPow), 1.f);
-
     // bloom
     float fWeightOnePixel = 1.f / vResolution.x;
     float fHeightOnePixel = 1.f / vResolution.y;
 
-    float2 t = vUV;
+    float2 t = _vUV;
     float2 uv = (float2) 0.f;
     float4 vBloomColor = (float4) 0.f;
 
@@ -305,16 +303,53 @@ float4 PS_Merge(VS_MERGE_OUT _in) : SV_Target0
     }
 
     // bloom 추출
-
     vBloomColor /= 8.f;
     float vBrightness = dot(vBloomColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
 
     if (vBrightness > 0.99)
+    {
         return vBloomColor;
+    }
     else
         return vOutColor;
+    
+}
 
-    return vBloomColor;
+VS_MERGE_OUT VS_Merge(VS_MERGE_IN _in)
+{
+    VS_MERGE_OUT output = (VS_MERGE_OUT) 0.f;
+
+    output.vPosition = float4(_in.vPos * 2.f, 1.f);
+    
+    return output;
+}
+
+float4 PS_Merge(VS_MERGE_OUT _in) : SV_Target0
+{
+    float4 vOutColor = (float4) 0.f;
+    
+    float2 vUV = _in.vPosition.xy / vResolution.xy;
+    
+    float4 vColor           = ColorTarget.Sample(g_sam_0, vUV);
+    float4 vDiffuse         = DiffuseTarget.Sample(g_sam_0, vUV);
+    float4 vSpecular        = SpecularTarget.Sample(g_sam_0, vUV);
+    float4 vAO              = AmbientOcclusionTarget.Sample(g_sam_0, vUV);
+    float4 vEmissive        = EmissiveTarget.Sample(g_sam_0, vUV);
+
+    float fShadowPow        = ShadowPowTarget.Sample(g_sam_0, vUV).x;
+    float fAmbientAccess    = AmbientOcclusionTarget.Sample(g_sam_0, vUV).r;
+    
+    // SSAO 
+    float4 vAmb = ApplySSAO(fAmbientAccess);
+    
+    // vDiffuse 에 이미 Ambient 가 더해져있음  
+    vOutColor = float4(vColor.xyz * (vAmb.xyz + vDiffuse.xyz) * (1.f - fShadowPow)
+                        + vSpecular.xyz * (1.f - fShadowPow), 1.f);
+    vOutColor.a = vColor.a * vDiffuse.a;
+    
+    // BLOOM
+    vOutColor = ApplyBloom(vOutColor, vUV);
+    return vOutColor;
 }
 
 

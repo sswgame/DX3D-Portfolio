@@ -21,6 +21,7 @@ class CScript;
 class CRenderComponent;
 class CLandScape;
 class CCollider3D;
+class CBoundingBox;
 class CFSM;
 class CRigiBody;
 class CNaviMap;
@@ -116,6 +117,7 @@ public:
 	GET_COMPONENT(Decal, DECAL)
 	GET_COMPONENT(LandScape, LANDSCAPE)
 	GET_COMPONENT(Collider3D, COLLIDER3D);
+	GET_COMPONENT(BoundingBox, BOUNDINGBOX);
 	GET_COMPONENT(FSM, FSM);
 	GET_COMPONENT(RigidBody, RIGIDBODY);
 	GET_COMPONENT(NaviMap, NAVIMAP);

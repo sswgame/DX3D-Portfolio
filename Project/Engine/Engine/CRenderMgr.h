@@ -11,21 +11,22 @@ class CRenderMgr
 {
 	SINGLE(CRenderMgr);
 private:
-	vector<CCamera*> m_vecCamera;           // Scene 에 있는 Camera 들
-	CCamera*         m_pEditorCamera;       // Editor 시점 카메라
-	CCamera*         m_pUICamera;
+	CCamera*			m_pMainCamera;			// 현재 시점 카메라
+	vector<CCamera*>	m_vecCamera;			// Scene 에 있는 Camera 들
+	CCamera*			m_pEditorCamera;		// Editor 시점 카메라
+	CCamera*			m_pUICamera;
 
-	vector<CLight2D*>  m_vecLight2D;
-	CStructuredBuffer* m_pLight2DBuffer;    // Scene 의 2D 광원 버퍼
+	vector<CLight2D*>	m_vecLight2D;
+	CStructuredBuffer*	m_pLight2DBuffer;		// Scene 의 2D 광원 버퍼
 
-	vector<CLight3D*>  m_vecLight3D;
-	CStructuredBuffer* m_pLight3DBuffer;    // Scene 의 3D 광원 버퍼
+	vector<CLight3D*>	m_vecLight3D;
+	CStructuredBuffer*	m_pLight3DBuffer;		// Scene 의 3D 광원 버퍼
 
 	std::array<CMRT*, static_cast<UINT>(MRT_TYPE::END)> m_arrMRT;
 
 	// Merge 
-	CGraphicsShader* m_pMergeShader;
-	CMaterial*       m_pMergeMaterial;
+	CGraphicsShader*	m_pMergeShader;
+	CMaterial*			m_pMergeMaterial;
 
 private:
 	// [ CREATE ]
@@ -50,12 +51,16 @@ private:
 	// [ RENDER ]
 	void RenderBegin();
 	void RenderEnd();
+	void Render_MainCamera();
+	void Render_UICamera();
 	void Render(MRT_TYPE _eMRT, CCamera* _pCam);
 
 	void Render_Play();
 	void Render_Editor();
 	void Render_ShadowMap(LIGHT_TYPE _eLightType) const;
 	void Render_Lights() const;
+	void Render_Camera_Frustum();
+
 
 public:
 	void init();
@@ -87,12 +92,14 @@ public:
 	CCamera* GetMainCam() const;
 	CCamera* GetUICamera();
 	CMRT*    GetMRT(MRT_TYPE _eType) const { return m_arrMRT[static_cast<UINT>(_eType)]; }
+	CCamera* GetCameraByName(wstring _name);
 
 
 private:
 	void CreateMRT();
 	void CreateMaterial();
-	void ClearMRT() const;
+	void ClearAllMRT() const;
+	void ClearMRT(MRT_TYPE _eType) const;
 	void ClearTextureRegister();
 
 	void UpdateLight2D() const;

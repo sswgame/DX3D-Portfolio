@@ -15,6 +15,7 @@
 
 #include "CTransform.h"
 #include "CMeshRender.h"
+#include "CBoundingBox.h"
 
 #include "CMRT.h"
 #include "CSerializer.h"
@@ -161,8 +162,7 @@ void CCamera::SortGameObject()
 			// 오브젝트가 카메라 시야 밖에 있으면 제외
 			// TODO:바운딩 박스로 전환
 			if (pRenderCom->IsFrustumCulling()
-			    && !m_Frustum.SphereCheck(vecObj[j]->Transform()->GetWorldPos(),
-			                              vecObj[j]->Transform()->GetWorldScale().x / 2.f))
+				&& FrustumCulling(vecObj[j]))
 			{
 				continue;
 			}
@@ -411,6 +411,24 @@ void CCamera::CalRay()
 	// world space 에서의 방향
 	m_ray.vDir = XMVector3TransformNormal(m_ray.vDir, m_matViewInv);
 	m_ray.vDir.Normalize();
+}
+
+bool CCamera::FrustumCulling(CGameObject* pObj)
+{
+	CBoundingBox* pBoundingBox = pObj->BoundingBox();
+	if (!pBoundingBox)
+		return true;
+
+	// BB : Bounding Box 
+	Vec3 BB_CenterPos = pBoundingBox->GetWorldPos();
+	Vec3 BB_Size = pBoundingBox->GetWorldScale();
+
+	// Frustum 내에 Bounding Box 가 있는지 확인 
+	bool IsInFrustum = true;	// Frustum 안에 있는지 여부 
+	IsInFrustum = m_Frustum.CheckBoundingBoxInFrustum(BB_CenterPos, BB_Size);
+
+	// InInFrustum : True -> Render O / False -> Render X
+	return !IsInFrustum;
 }
 
 

@@ -152,7 +152,12 @@
     <ClCompile Include="NaviMapUI.cpp">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\14. NaviMapUI</Filter>
     </ClCompile>
-    <ClCompile Include="NaviAgentUI.cpp" />
+    <ClCompile Include="NaviAgentUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\15. NaviAgentUI</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBoxUI.cpp">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\07. BoundingBox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -317,7 +322,12 @@
     <ClInclude Include="NaviMapUI.h">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\14. NaviMapUI</Filter>
     </ClInclude>
-    <ClInclude Include="NaviAgentUI.h" />
+    <ClInclude Include="NaviAgentUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\15. NaviAgentUI</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBoxUI.h">
+      <Filter>ImGui\UI\01. InspectorUI\ComponentUI\07. BoundingBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="39Engine.ico">

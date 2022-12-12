@@ -236,14 +236,8 @@
     <ClInclude Include="CRigidBody.h">
       <Filter>Engine\05. Component\RigidBody</Filter>
     </ClInclude>
-    <ClInclude Include="CFXAA.h">
-      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
-    </ClInclude>
     <ClInclude Include="CRenderEffectMgr.h">
-      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="CSSAO.h">
-      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
+      <Filter>Engine\03. Manager\11. RenderEffectMgr</Filter>
     </ClInclude>
     <ClInclude Include="CLog.h">
       <Filter>Engine\01. Header\Utility</Filter>
@@ -253,6 +247,15 @@
     </ClInclude>
     <ClInclude Include="CTimeMeasure.h">
       <Filter>Engine\01. Header\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="CBoundingBox.h">
+      <Filter>Engine\05. Component\09. BoundingBox</Filter>
+    </ClInclude>
+    <ClInclude Include="CFXAA.h">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="CSSAO.h">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -479,14 +482,8 @@
     <ClCompile Include="CRigidBody.cpp">
       <Filter>Engine\05. Component\RigidBody</Filter>
     </ClCompile>
-    <ClCompile Include="CFXAA.cpp">
-      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
-    </ClCompile>
     <ClCompile Include="CRenderEffectMgr.cpp">
-      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
-    </ClCompile>
-    <ClCompile Include="CSSAO.cpp">
-      <Filter>Engine\03. Manager\RenderEffectMgr</Filter>
+      <Filter>Engine\03. Manager\11. RenderEffectMgr</Filter>
     </ClCompile>
     <ClCompile Include="CLog.cpp">
       <Filter>Engine\01. Header\Utility</Filter>
@@ -496,6 +493,15 @@
     </ClCompile>
     <ClCompile Include="CTimeMeasure.cpp">
       <Filter>Engine\01. Header\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="CBoundingBox.cpp">
+      <Filter>Engine\05. Component\09. BoundingBox</Filter>
+    </ClCompile>
+    <ClCompile Include="CFXAA.cpp">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="CSSAO.cpp">
+      <Filter>Engine\03. Manager\11. RenderEffectMgr\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -718,11 +724,14 @@
     <Filter Include="Engine\05. Component\RigidBody">
       <UniqueIdentifier>{662d36bf-730a-4b98-94a0-d179ce826a76}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\03. Manager\RenderEffectMgr">
-      <UniqueIdentifier>{297dce57-4e6e-4875-93c0-61dfc98aa2ab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\01. Header\Utility">
       <UniqueIdentifier>{f2a3a627-86fb-4e5d-a2c9-04cf2b021f06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\11. RenderEffectMgr">
+      <UniqueIdentifier>{297dce57-4e6e-4875-93c0-61dfc98aa2ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\11. RenderEffectMgr\Effect">
+      <UniqueIdentifier>{cf44545d-9b75-45d5-9a3d-a4a1fd1ffc9d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

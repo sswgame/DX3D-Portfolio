@@ -107,6 +107,7 @@
   <ItemGroup>
     <ClInclude Include="Anim3DSequencer.h" />
     <ClInclude Include="Animator3DUI.h" />
+    <ClInclude Include="BoundingBoxUI.h" />
     <ClInclude Include="CameraUI.h" />
     <ClInclude Include="CCameraEx.h" />
     <ClInclude Include="CEditorCamScript.h" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="Anim3DSequencer.cpp" />
     <ClCompile Include="Animator3DUI.cpp" />
+    <ClCompile Include="BoundingBoxUI.cpp" />
     <ClCompile Include="CameraUI.cpp" />
     <ClCompile Include="CCameraEx.cpp" />
     <ClCompile Include="CEditorCamScript.cpp" />

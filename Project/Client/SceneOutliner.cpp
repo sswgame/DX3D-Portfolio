@@ -24,6 +24,8 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "ImGui/imgui_internal.h"
+#include <Engine/CRenderEffectMgr.h>
+
 
 SceneOutliner::SceneOutliner()
 	: UI("SceneOutliner")
@@ -270,6 +272,7 @@ void SceneOutliner::ObjectClicked(DWORD_PTR _dw)
 void SceneOutliner::RenderAddObject()
 {
 	// [ ADD GAMEOBJECT BUTTON ]
+#pragma region ADD_GAMEOBJECT
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(153.f / 255.f, 153.f / 255.f, 153.f / 255.f, 1.f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(102.f / 255.f, 102.f / 255.f, 102.f / 255.f, 1.f));
 	string ButtonName = ICON_FA_PLUS;
@@ -280,15 +283,7 @@ void SceneOutliner::RenderAddObject()
 	}
 	ImGui::PopStyleColor(2);
 
-	ImGui::SameLine();
-	ImGui::Checkbox("Enable Picking", &m_bEnablePicking);
 
-	if (m_bEnablePicking
-	    && KEY_TAP(KEY::LBTN)
-	    && CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
-	{
-		ObjectPicking();
-	}
 
 
 	bool unused_open = true;
@@ -322,7 +317,7 @@ void SceneOutliner::RenderAddObject()
 		if (ImGui::Button("##PrefabListbtn", Vec2(15, 15)))
 		{
 			// ListUI 활성화한다.
-			const map<wstring, CRes*>& mapRes  = CResMgr::GetInst()->GetResList(RES_TYPE::PREFAB);
+			const map<wstring, CRes*>& mapRes = CResMgr::GetInst()->GetResList(RES_TYPE::PREFAB);
 			auto                       pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 			pListUI->Clear();
 			pListUI->SetTitle("Prefab List");
@@ -342,7 +337,7 @@ void SceneOutliner::RenderAddObject()
 
 		if (ImGui::Button("Complete"))
 		{
-			string name    = buf;
+			string name = buf;
 			auto   newName = wstring(name.begin(), name.end());
 
 			auto NewObj = new CGameObject;
@@ -362,7 +357,7 @@ void SceneOutliner::RenderAddObject()
 
 				// TReeUI 에 추가하기 위해서 Reset() 
 				ResetTreeUI();
-				char empty[512] = {NULL,};
+				char empty[512] = { NULL, };
 				strcpy_s(buf, empty);
 				ImGui::CloseCurrentPopup();
 			}
@@ -378,6 +373,45 @@ void SceneOutliner::RenderAddObject()
 
 		ImGui::EndPopup();
 	}
+#pragma endregion
+
+	// [ ENABLE PICKING BUTTON ]
+#pragma region ENABLE_PICKING
+	ImGui::SameLine();
+	ImGui::Checkbox("Enable Picking", &m_bEnablePicking);
+
+	if (m_bEnablePicking
+		&& KEY_TAP(KEY::LBTN)
+		&& CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
+	{
+		ObjectPicking();
+	}
+#pragma endregion
+
+	// [ RENDER EFFECT BUTTON ]
+#pragma region RENDER_EFFECT
+	// [ FXAA BUTTON ]
+	ImGui::SameLine();
+	bool bFXAA = CRenderEffectMgr::GetInst()->IsEnable_FXAA();
+	ImGui::Checkbox("FXAA", &bFXAA);
+	if (bFXAA)
+		CRenderEffectMgr::GetInst()->Enable_FXAA();
+	else
+		CRenderEffectMgr::GetInst()->Disable_FXAA();
+
+
+	// [ SSAO BUTTON ]
+	ImGui::SameLine();
+	bool bSSAO = CRenderEffectMgr::GetInst()->IsEnable_SSAO();
+	ImGui::Checkbox("SSAO", &bSSAO);
+	if (bSSAO)
+		CRenderEffectMgr::GetInst()->Enable_SSAO();
+	else
+		CRenderEffectMgr::GetInst()->Disable_SSAO();
+
+#pragma endregion
+
+
 }
 
 void SceneOutliner::RenderGuizmo() const

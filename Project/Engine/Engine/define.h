@@ -23,6 +23,15 @@
 
 #define MAX_MIP 8
 
+
+#define RED		Vector4(255.f / 255.f, 0.f   / 255.f, 0.f / 255.f, 1.f)
+#define BLUE	Vector4(255.f / 255.f, 0.f   / 255.f, 0.f / 255.f, 1.f)
+#define GREEN	Vector4(0.f   / 255.f, 255.f / 255.f, 0.f / 255.f, 1.f)
+#define YELLOW	Vector4(255.f / 255.f, 255.f / 255.f, 0.f / 255.f, 1.f)
+#define WHITE	Vector4(255.f / 255.f, 255.f / 255.f, 0.f / 255.f, 1.f)
+
+
+
 typedef Vector2 Vec2;
 typedef Vector3 Vec3;
 typedef Vector4 Vec4;

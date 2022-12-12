@@ -104,7 +104,7 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
         output.vData.r = fSpecData;
     }
     
-    output.vNormal = float4(vViewNormal, 1.f);
+    output.vNormal = float4(vViewNormal, _in.vViewPos.z); // Normal /  Depth
     output.vPosition = float4(_in.vViewPos, 1.f);
     
     return output;

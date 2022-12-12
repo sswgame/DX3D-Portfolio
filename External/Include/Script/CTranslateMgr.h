@@ -24,7 +24,7 @@ struct tAxis
 
      [4]        Front 0       [1]
                   ↑
-       -90 Left ←  → Right 90
+       -90 Left ←   → Right 90
                   ↓
      [3]        Back 180      [2]
 

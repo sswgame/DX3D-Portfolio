@@ -17,6 +17,7 @@
 #include "CTileMap.h"
 #include "CTransform.h"
 #include "CCollider3D.h"
+#include "CBoundingBox.h"
 #include "CFSM.h"
 #include "CRigidBody.h"
 #include "CNaviAgent.h"
@@ -70,7 +71,7 @@ CComponent* CComponent::MakeComponent(const std::wstring& name)
 	if (L"ANIMATOR3D" == name) return new CAnimator3D{};
 	if (L"LIGHT2D" == name) return new CLight2D{};
 	if (L"LIGHT3D" == name) return new CLight3D{};
-	//	if (L"BOUNDINGBOX" == name) return new CBoundingBox{};
+	if (L"BOUNDINGBOX" == name) return new CBoundingBox{};
 	if (L"MESHRENDER" == name) return new CMeshRender{};
 	if (L"TILEMAP" == name) return new CTileMap{};
 	if (L"PARTICLESYSTEM" == name) return new CParticleSystem{};

@@ -26,17 +26,6 @@ LAYERS:
           []
         CHILDREN:
           []
-      - NAME: Effect
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          []
-        SCRIPTS:
-          - EffectScript:
-              {}
-        CHILDREN:
-          []
   - LAYER NAME: BG_OBJ
     GAME OBJECTS:
       - NAME: Directional Light

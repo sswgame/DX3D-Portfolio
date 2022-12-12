@@ -34,6 +34,7 @@ private:
 
 private:
 	void CalculateFrustumMat();
+	bool CheckBoundingBoxInFrustum(Vec3 _BoundingBoxCenterPos, Vec3 _BoundingBoxScale);
 
 public:
 	void UpdateData();

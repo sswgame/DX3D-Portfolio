@@ -101,5 +101,9 @@ void CameraUI::render_update()
 	ImGui::Checkbox("##SetShowFrustum", &bShowFrustum);
 	pCameraCom->SetShowFrustum(bShowFrustum);
 
+	if (ImGui::Button("Set As MainCamera"))
+	{
+		pCameraCom->SetCameraAsMain();
+	}
 
 }

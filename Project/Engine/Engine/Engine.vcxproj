@@ -130,6 +130,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="CAnimation3DShader.h" />
     <ClInclude Include="CAnimator2D.h" />
     <ClInclude Include="CAnimator3D.h" />
+    <ClInclude Include="CBoundingBox.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCollider3D.h" />
     <ClInclude Include="CCollider2D.h" />
@@ -217,6 +218,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="CAnimation3DShader.cpp" />
     <ClCompile Include="CAnimator2D.cpp" />
     <ClCompile Include="CAnimator3D.cpp" />
+    <ClCompile Include="CBoundingBox.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCollider3D.cpp" />
     <ClCompile Include="CCollider2D.cpp" />

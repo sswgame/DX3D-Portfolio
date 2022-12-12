@@ -47,7 +47,7 @@ void CRenderMgr::CreateMaterial()
 	CreateForwardDecalMaterial();
 }
 
-void CRenderMgr::ClearMRT() const
+void CRenderMgr::ClearAllMRT() const
 {
 	for (auto& pMRT : m_arrMRT)
 	{
@@ -56,6 +56,14 @@ void CRenderMgr::ClearMRT() const
 			pMRT->Clear();
 		}
 	}
+}
+
+void CRenderMgr::ClearMRT(MRT_TYPE _eType) const
+{
+	CMRT* pMrt = m_arrMRT[static_cast<UINT>(_eType)];
+	if (pMrt)
+		pMrt->Clear();
+
 }
 
 void CRenderMgr::ClearTextureRegister()
@@ -258,7 +266,7 @@ void CRenderMgr::CreateMergeMaterial()
 	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_1, CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex"));
 	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_2, CResMgr::GetInst()->FindRes<CTexture>(L"SpecularTargetTex"));
 	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_3, CResMgr::GetInst()->FindRes<CTexture>(L"ShadowPowerTargetTex"));
-	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_4, CResMgr::GetInst()->FindRes<CTexture>(L"ParticleTargetTex"));
+	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_4, CResMgr::GetInst()->FindRes<CTexture>(L"AmbientOcclusionTex"));
 	m_pMergeMaterial->SetTexParam(TEX_PARAM::TEX_5, CResMgr::GetInst()->FindRes<CTexture>(L"EmissiveTargetTex"));
 }
 
