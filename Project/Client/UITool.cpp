@@ -49,30 +49,6 @@ void UITool::render_update()
 	DrawWarning();
 }
 
-void UITool::Activate()
-{
-	UI::Activate();
-
-	//////UI만 찍혀야 하므로 레이어 변경
-	//CCamera* pEditorCamera = CRenderMgr::GetInst()->GetMainCam();
-	//pEditorCamera->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
-	//pEditorCamera->CheckLayerMaskAll(false);
-	//pEditorCamera->CheckLayerMask(UI_TOOL::UI_LAYER);
-	//pEditorCamera->CheckLayerMask(UI_TOOL::BACK_LAYER);
-	//pEditorCamera->CheckLayerMask(UI_TOOL::BACK_OBJ_LAYER);
-}
-
-void UITool::Deactivate()
-{
-	UI::Deactivate();
-
-	CCamera* pEditorCamera = CRenderMgr::GetInst()->GetMainCam();
-	if (nullptr != pEditorCamera)
-	{
-		pEditorCamera->CheckLayerMaskAll(true);
-	}
-}
-
 void UITool::DrawImage()
 {
 	static bool op{};
@@ -221,7 +197,7 @@ void UITool::DrawInfo()
 		ImGui::SameLine();
 		if (ImGui::Button(u8"프리팹으로 저장")) { SaveAsPrefab(); }
 
-		if (m_pSelected->UIImage())
+		if (m_pSelected->UIImage() || m_pSelected->UIPanel())
 		{
 			ImGui::PushID(0);
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(220.f / 255.f, 10.f / 255.f, 10.f / 255.f, 1.f));
@@ -587,11 +563,20 @@ void UITool::ShowPanel(CUIPanel* pScript)
 	ImGui::PopStyleColor(3);
 	ImGui::PopID();
 
+
+	CMeshRender*  pMeshRender        = pScript->GetOwner()->MeshRender();
+	Ptr<CTexture> pTexture           = pMeshRender->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
+	bool          useDynamicMaterial = pMeshRender->IsUsingDynamicMaterial(0);
+
+	ImGui::Text("USE DYNAMIC MATERIAL");
+	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+	if (ImGui::Checkbox("##DYNAMIC", &useDynamicMaterial))
+	{
+		pMeshRender->SetUseDynamicMaterial(0, useDynamicMaterial);
+	}
+
 	ImGui::Text("TEXTURE");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
-
-	CMeshRender*  pMeshRender = pScript->GetOwner()->MeshRender();
-	Ptr<CTexture> pTexture    = pMeshRender->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
 
 	ImGui::Text((nullptr != pTexture) ? ToString(pTexture->GetKey()).c_str() : "NO TEXTURE");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING + ImGui::GetItemRectSize().x);
@@ -610,9 +595,56 @@ void UITool::ShowPanel(CUIPanel* pScript)
 		pListUI->Activate();
 		pListUI->SetDBCEvent(this, reinterpret_cast<DBCLKED>(&UITool::TextureSelected));
 	}
-	if (ImGui::Button("##TEXTURE_CANCEL", ImVec2{15, 15}))
+	ImGui::SameLine();
+	if (ImGui::Button("Reset"))
 	{
 		pMeshRender->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, nullptr);
+	}
+	ImGui::Text("USE WHOLE TEXTURE");
+	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+	static bool useWholeTexture = true;
+	if (ImGui::Checkbox("##PANEL_USE_WHOLE", &useWholeTexture))
+	{
+		pScript->SetUseInfo(useWholeTexture ? false : true);
+	}
+
+	if (false == useWholeTexture)
+	{
+		bool preserveRatio = pScript->IsPreserveRatio();
+		ImGui::Text("PRESERVE RATIO");
+		ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+		ImGui::Checkbox("##PANEL_PRESERVE_RATIO", &preserveRatio);
+		pScript->SetPreserveRatio(preserveRatio);
+
+
+		ImGui::PushID(0);
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(220.f / 255.f, 10.f / 255.f, 10.f / 255.f, 1.f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(220.f / 255.f, 10.f / 255.f, 10.f / 255.f, 1.f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(150.f / 255.f, 10.f / 255.f, 10.f / 255.f, 1.f));
+		ImGui::Button("[CURRENT INFO]");
+		ImGui::PopStyleColor(3);
+		ImGui::PopID();
+
+		ImGui::Text("POS/SIZE");
+		ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+		tImageInfo info = pScript->GetInfo();
+
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * .5f);
+		if (ImGui::InputFloat2("##PANEL_INFO_POS", &info.imagePos.x))
+		{
+			pScript->SetImageInfo(info);
+		}
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+		if (ImGui::InputFloat2("##PANEL_INFO_SIZE", &info.imageSize.x))
+		{
+			pScript->SetImageInfo(info);
+		}
+
+		if (m_bHasDragArea && ImGui::Button("APPLY POS/SIZE##PANEL"))
+		{
+			pScript->SetImageInfo({Vec2{m_leftTop.x, m_leftTop.y}, Vec2{m_size.x, m_size.y}});
+		}
 	}
 }
 
@@ -631,8 +663,17 @@ void UITool::ShowImage(CUIImage* pScript)
 	ImGui::Text("TEXTURE");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
 
+
 	CMeshRender*  pMeshRender = pScript->GetOwner()->MeshRender();
 	Ptr<CTexture> pTexture    = pMeshRender->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
+
+	bool useDynamicMaterial = pMeshRender->IsUsingDynamicMaterial(0);
+	ImGui::Text("USE DYNAMIC MATERIAL");
+	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+	if (ImGui::Checkbox("##DYNAMIC", &useDynamicMaterial))
+	{
+		pMeshRender->SetUseDynamicMaterial(0, useDynamicMaterial);
+	}
 
 	ImGui::Text((nullptr != pTexture) ? ToString(pTexture->GetKey()).c_str() : "NO TEXTURE");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING + ImGui::GetItemRectSize().x);
@@ -651,7 +692,9 @@ void UITool::ShowImage(CUIImage* pScript)
 		pListUI->Activate();
 		pListUI->SetDBCEvent(this, reinterpret_cast<DBCLKED>(&UITool::TextureSelected));
 	}
-	if (ImGui::Button("##TEXTURE_CANCEL", ImVec2{15, 15}))
+
+	ImGui::SameLine();
+	if (ImGui::Button("Reset"))
 	{
 		pMeshRender->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, nullptr);
 	}
@@ -660,6 +703,7 @@ void UITool::ShowImage(CUIImage* pScript)
 	{
 		return;
 	}
+
 
 	ImGui::Text("USE WHOLE TEXTURE");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
@@ -755,6 +799,10 @@ void UITool::ShowImage(CUIImage* pScript)
 			else
 			{
 				ImGui::Text(ToString(frameName).c_str());
+				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+				{
+					pScript->SetImageInfo(frameName);
+				}
 				ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
 
 				ImGui::Text("[POS] %.2f, %.2f [SIZE] %.2f, %.2f",
@@ -767,10 +815,6 @@ void UITool::ShowImage(CUIImage* pScript)
 			if (ImGui::Button("UPDATE"))
 			{
 				pScript->AddImageInfo(frameName, Vec2{m_leftTop.x, m_leftTop.y}, Vec2{m_size.x, m_size.y});
-			}
-			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-			{
-				pScript->SetImageInfo(frameName);
 			}
 		}
 
@@ -803,7 +847,7 @@ void UITool::ShowText(CUIText* pScript)
 
 	ImGui::Text("FONT NAME");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
-	const std::string fontName = pScript->GetFont().empty() ? "NO FONT" : pScript->GetFont();
+	const std::string fontName = pScript->GetFontName().empty() ? "NO FONT" : pScript->GetFontName();
 	ImGui::Text(fontName.c_str());
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING + ImGui::GetItemRectSize().x);
 	if (ImGui::Button("##FONT_SELECT", ImVec2{15, 15}))
@@ -911,35 +955,6 @@ void UITool::ShowProgressBar(CUIProgressBar* pScript)
 	ImGui::Button("[PROGRESS BAR SCRIPT INFO]");
 	ImGui::PopStyleColor(3);
 	ImGui::PopID();
-
-	ImGui::Text("TEXTURE");
-	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
-
-	CMeshRender*  pMeshRender = pScript->GetOwner()->MeshRender();
-	Ptr<CTexture> pTexture    = pMeshRender->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
-
-	ImGui::Text((nullptr != pTexture) ? ToString(pTexture->GetKey()).c_str() : "NO TEXTURE");
-	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING + ImGui::GetItemRectSize().x);
-	if (ImGui::Button("##TEXTURE_SELECT", ImVec2{15, 15}))
-	{
-		// ListUI 활성화한다.
-		const auto& mapResource = CResMgr::GetInst()->GetResList(RES_TYPE::TEXTURE);
-		const auto  pListUI     = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
-		pListUI->Clear();
-		pListUI->SetTitle("Texture List");
-		for (const auto& [resourceKey, pResource] : mapResource)
-		{
-			pListUI->AddList(ToString(resourceKey));
-		}
-
-		pListUI->Activate();
-		pListUI->SetDBCEvent(this, reinterpret_cast<DBCLKED>(&UITool::TextureSelected));
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("##TEXTURE_CANCEL", ImVec2{15, 15}))
-	{
-		pMeshRender->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, nullptr);
-	}
 
 	ImGui::Text("DIRECTION");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);

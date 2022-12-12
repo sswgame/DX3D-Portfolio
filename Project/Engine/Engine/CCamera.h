@@ -67,7 +67,7 @@ public:
 	PROJ_TYPE   GetProjType() const { return m_eProjType; }
 
 	void CheckLayerMask(int _iLayerIdx, bool enable = true);
-	void CheckLayerMask(const wstring& _strLayerName);
+	void CheckLayerMask(const wstring& _strLayerName, bool enable = true);
 	void CheckLayerMaskAll(bool enable = true) { m_iLayerMask = (enable) ? 0xFFFF'FFFF : 0; }
 
 	const Matrix& GetViewMat() const { return m_matView; }

@@ -38,7 +38,10 @@ void CUIImage::finalupdate()
 		}
 	}
 	CUIBase::finalupdate();
-	if (nullptr == MeshRender() || nullptr == MeshRender()->GetMaterial(0) || nullptr == MeshRender()->GetMesh())
+	if (nullptr == MeshRender()
+	    || false == MeshRender()->IsActive()
+	    || nullptr == MeshRender()->GetMaterial(0)
+	    || nullptr == MeshRender()->GetMesh())
 	{
 		return;
 	}
@@ -98,8 +101,11 @@ void CUIImage::RemoveInfo(const std::wstring& frameName)
 	}
 	else
 	{
-		m_currentFrameName = ToString(iter->first);
-		m_currentInfo      = iter->second;
+		if (iter != m_mapInfo.end())
+		{
+			m_currentFrameName = ToString(iter->first);
+			m_currentInfo      = iter->second;
+		}
 	}
 }
 
@@ -113,11 +119,6 @@ void CUIImage::SetImageInfo(const std::wstring& frameName)
 void CUIImage::SetPreserveRatio(bool enable)
 {
 	m_preserveRatio = enable;
-}
-
-void CUIImage::SetUseInfo(bool enable)
-{
-	m_useInfo = enable;
 }
 
 void CUIImage::Serialize(YAML::Emitter& emitter)

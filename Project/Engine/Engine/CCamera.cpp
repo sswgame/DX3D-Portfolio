@@ -142,7 +142,6 @@ void CCamera::SortGameObject()
 		CLayer*               pLayer = pCurScene->GetLayer(i);
 		vector<CGameObject*>& vecObj = pLayer->GetObjects();
 
-
 		for (size_t j = 0; j < vecObj.size(); ++j)
 		{
 			// Register Component Debug Object
@@ -383,12 +382,12 @@ void CCamera::CheckLayerMask(int _iLayerIdx, bool enable)
 	m_iLayerMask[_iLayerIdx] = enable;
 }
 
-void CCamera::CheckLayerMask(const wstring& _strLayerName)
+void CCamera::CheckLayerMask(const wstring& _strLayerName, bool enable)
 {
 	const CScene* pScene = CSceneMgr::GetInst()->GetCurScene();
 	const CLayer* pLayer = pScene->GetLayer(_strLayerName);
 
-	CheckLayerMask(pLayer->GetLayerIdx());
+	CheckLayerMask(pLayer->GetLayerIdx(), enable);
 }
 
 void CCamera::CalRay()

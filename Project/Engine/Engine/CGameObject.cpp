@@ -19,6 +19,7 @@
 
 #include "CScript.h"
 #include "CSerializer.h"
+
 namespace GAMEOBJECT
 {
 	constexpr int INVALID_INDEX = -1;
@@ -172,12 +173,6 @@ void CGameObject::finalupdate()
 		}
 	}
 
-	// 자식 object final update
-	for (const auto& pChild : m_vecChild)
-	{
-		pChild->finalupdate();
-	}
-
 	// Layer가 없으면 넘어간다 (ex-DebugObj)
 	if (m_iLayerIdx == GAMEOBJECT::INVALID_INDEX)
 	{
@@ -188,6 +183,12 @@ void CGameObject::finalupdate()
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	CLayer* pLayer    = pCurScene->GetLayer(m_iLayerIdx);
 	pLayer->RegisterObject(this);
+
+	// 자식 object final update
+	for (const auto& pChild : m_vecChild)
+	{
+		pChild->finalupdate();
+	}
 }
 
 void CGameObject::finalupdate_module()
@@ -322,7 +323,6 @@ CGameObject* CGameObject::GetChild(const std::wstring& childName) const
 void CGameObject::SortChild(std::function<bool(CGameObject*, CGameObject*)> func)
 {
 	std::sort(m_vecChild.begin(), m_vecChild.end(), func);
-	CEventMgr::GetInst()->SetOccurObjEvent();
 }
 
 void CGameObject::Deregister()
@@ -618,7 +618,6 @@ CGameObject* CGameObject::FindChild(wstring _name)
 			pChild = m_vecChild[i]->FindChild(_name);
 			if (pChild != nullptr)
 				break;
-
 		}
 	}
 

@@ -78,8 +78,6 @@ private:
 	void CalculatePosAndSize(const Vec2& windowSize);
 public:
 	void render_update() override;
-	void Activate() override;
-	void Deactivate() override;
 public:
 	UITool();
 	virtual ~UITool();

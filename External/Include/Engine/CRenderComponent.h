@@ -21,6 +21,7 @@ private:
 	bool m_bDynamicShadow;  // 동적 그림자 생성
 	bool m_bFrustumCulling; // 절두체 컬링 
 
+	std::vector<bool> m_vecUseDynamicMaterial;
 public:
 	void SetMesh(Ptr<CMesh> _pMesh);
 	void SetSharedMaterial(Ptr<CMaterial> _pMtrl, UINT _iIdx);
@@ -38,8 +39,9 @@ public:
 
 	UINT GetMtrlCount() const { return static_cast<UINT>(m_vecMtrls.size()); }
 
-	bool IsUsingDynamicMaterial(UINT _index) const;
 
+	void SetUseDynamicMaterial(UINT _iIndex, bool _enable);
+	bool IsUsingDynamicMaterial(UINT _iIndex);
 public:
 	virtual void render() = 0;
 	virtual void render_shadowmap();

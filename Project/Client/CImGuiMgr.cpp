@@ -84,7 +84,6 @@ void CImGuiMgr::init(HWND _hwnd)
 	                                                    TRUE,
 	                                                    FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
 	                                                    FILE_ACTION_ADDED | FILE_ACTION_REMOVED);
-	CEventMgr::GetInst()->SetOccurObjEvent();
 }
 
 void CImGuiMgr::progress()

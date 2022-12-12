@@ -247,6 +247,11 @@ RES_TYPE ResourceUI::GetResTypeFromExt(const wstring& _strExt)
 		return RES_TYPE::NAVIMAPDATA;
 	}
 
+	if (L".mdat" == extension)
+	{
+		return RES_TYPE::MESHDATA;
+	}
+
 	return RES_TYPE::END;
 }
 

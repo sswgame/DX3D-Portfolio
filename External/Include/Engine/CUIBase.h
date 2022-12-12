@@ -20,6 +20,13 @@ enum class ANCHOR_VERTICAL
 	END
 };
 
+struct tImageInfo
+{
+	Vec2 imagePos;
+	Vec2 imageSize;
+};
+
+
 class CUIBase
 	: public CComponent
 {

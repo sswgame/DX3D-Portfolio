@@ -1,0 +1,577 @@
+NAME: ITEM_PANEL
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 0, 500]
+      m_vRelativeScale: [350, 308.870575, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: true
+  - UIPANEL:
+      m_orderZ: 0
+      m_opacity: 1
+      m_mouseCollisionEnable: true
+      m_anchorH: 1
+      m_anchorV: 1
+      m_offsetPos: [0, 0]
+      m_showDebugRect: 0
+      m_useInfo: 1
+      m_info.imagePos: [21.291748, 337.540741]
+      m_info.imageSize: [524.309265, 462.696289]
+      m_preserveRatio: true
+  - MESHRENDER:
+      MESH: [RectMesh, RectMesh]
+      MATERIAL COUNT: 1
+      0: [material\UIInterface2.mtrl, material\UIInterface2.mtrl]
+      USE DYNAMIC 0: true
+      MATERIAL 0 TEXTURE LIST:
+        0: texture\UI\PlayerUI_Tex.png
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  []
+CHILDREN:
+  - NAME: ITEM_EQUIP_PANEL
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-75, -45, 0]
+          m_vRelativeScale: [100, 100, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIPANEL:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 1
+          m_anchorV: 1
+          m_offsetPos: [-75, -45]
+          m_showDebugRect: 0
+          m_useInfo: 0
+          m_info.imagePos: [0, 0]
+          m_info.imageSize: [0, 0]
+          m_preserveRatio: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+          USE DYNAMIC 0: false
+          MATERIAL 0 TEXTURE LIST:
+            {}
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      - NAME: SLOT_IMAGE
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [100, 100, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: true
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                ANCIENT_CATALYST:
+                  info.imagePos: [2048, 2048]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_0:
+                  info.imagePos: [0, 512]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_1:
+                  info.imagePos: [512, 512]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_2:
+                  info.imagePos: [1024, 512]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_3:
+                  info.imagePos: [1536, 512]
+                  info.imageSize: [512, 512]
+                FIRE_FLY:
+                  info.imagePos: [3584, 1536]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_0:
+                  info.imagePos: [0, 0]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_1:
+                  info.imagePos: [512, 0]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_2:
+                  info.imagePos: [1024, 0]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_3:
+                  info.imagePos: [1536, 0]
+                  info.imageSize: [512, 512]
+                MARK_OF_CHORONZON:
+                  info.imagePos: [512, 2560]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_0:
+                  info.imagePos: [0, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_1:
+                  info.imagePos: [512, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_2:
+                  info.imagePos: [1024, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_3:
+                  info.imagePos: [1536, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_4:
+                  info.imagePos: [0, 1536]
+                  info.imageSize: [512, 512]
+                WEAPON_0:
+                  info.imagePos: [4096, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_1:
+                  info.imagePos: [4608, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_2:
+                  info.imagePos: [5120, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_3:
+                  info.imagePos: [5632, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_4:
+                  info.imagePos: [6144, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_5:
+                  info.imagePos: [6656, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_6:
+                  info.imagePos: [7168, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_7:
+                  info.imagePos: [7680, 0]
+                  info.imageSize: [512, 512]
+              m_useInfo: 1
+              m_currentFrameName: WEAPON_0
+              m_currentInfo.imagePos: [4096, 0]
+              m_currentInfo.imageSize: [512, 512]
+              m_preserveRatio: true
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIItem.mtrl, material\UIItem.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\ItemsSheet8k_Tex.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: SLOT_TEXT
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [10, -40, 0]
+              m_vRelativeScale: [80, 20, 0]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UITEXT:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: true
+              m_anchorH: 2
+              m_anchorV: 2
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 1
+              m_text: "    "
+              m_fontSize: 20
+              m_fontName: font\fa-solid-900.ttf
+              m_alphaEnable: false
+              m_color: [1, 1, 1, 1]
+              m_alignTextH: 2
+              m_alignTextV: 1
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+              USE DYNAMIC 0: false
+              MATERIAL 0 TEXTURE LIST:
+                {}
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+  - NAME: ITEM_ARTIFACT_PANEL
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [-5, 30, 0]
+          m_vRelativeScale: [100, 100, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIPANEL:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 1
+          m_anchorV: 1
+          m_offsetPos: [-5, 30]
+          m_showDebugRect: 0
+          m_useInfo: 0
+          m_info.imagePos: [0, 0]
+          m_info.imageSize: [0, 0]
+          m_preserveRatio: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+          USE DYNAMIC 0: false
+          MATERIAL 0 TEXTURE LIST:
+            {}
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      - NAME: SLOT_IMAGE
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [100, 100, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: true
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                ANCIENT_CATALYST:
+                  info.imagePos: [2048, 2048]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_0:
+                  info.imagePos: [0, 512]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_1:
+                  info.imagePos: [512, 512]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_2:
+                  info.imagePos: [1024, 512]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_3:
+                  info.imagePos: [1536, 512]
+                  info.imageSize: [512, 512]
+                FIRE_FLY:
+                  info.imagePos: [3584, 1536]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_0:
+                  info.imagePos: [0, 0]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_1:
+                  info.imagePos: [512, 0]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_2:
+                  info.imagePos: [1024, 0]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_3:
+                  info.imagePos: [1536, 0]
+                  info.imageSize: [512, 512]
+                MARK_OF_CHORONZON:
+                  info.imagePos: [512, 2560]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_0:
+                  info.imagePos: [0, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_1:
+                  info.imagePos: [512, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_2:
+                  info.imagePos: [1024, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_3:
+                  info.imagePos: [1536, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_4:
+                  info.imagePos: [0, 1536]
+                  info.imageSize: [512, 512]
+                WEAPON_0:
+                  info.imagePos: [4096, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_1:
+                  info.imagePos: [4608, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_2:
+                  info.imagePos: [5120, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_3:
+                  info.imagePos: [5632, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_4:
+                  info.imagePos: [6144, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_5:
+                  info.imagePos: [6656, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_6:
+                  info.imagePos: [7168, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_7:
+                  info.imagePos: [7680, 0]
+                  info.imageSize: [512, 512]
+              m_useInfo: 1
+              m_currentFrameName: ETHER_FRAGMENT_0
+              m_currentInfo.imagePos: [0, 512]
+              m_currentInfo.imageSize: [512, 512]
+              m_preserveRatio: true
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIItem.mtrl, material\UIItem.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\ItemsSheet8k_Tex.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: SLOT_TEXT
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [30, -40, 0]
+              m_vRelativeScale: [40, 20, 0]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UITEXT:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: true
+              m_anchorH: 2
+              m_anchorV: 2
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              m_text: "  "
+              m_fontSize: 20
+              m_fontName: font\fa-solid-900.ttf
+              m_alphaEnable: false
+              m_color: [1, 1, 1, 1]
+              m_alignTextH: 2
+              m_alignTextV: 1
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+              USE DYNAMIC 0: false
+              MATERIAL 0 TEXTURE LIST:
+                {}
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+  - NAME: ITEM_CONSUME_PANEL
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [75, -45, 0]
+          m_vRelativeScale: [100, 100, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIPANEL:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 1
+          m_anchorV: 1
+          m_offsetPos: [75, -45]
+          m_showDebugRect: 0
+          m_useInfo: 0
+          m_info.imagePos: [0, 0]
+          m_info.imageSize: [0, 0]
+          m_preserveRatio: false
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+          USE DYNAMIC 0: false
+          MATERIAL 0 TEXTURE LIST:
+            {}
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      - NAME: SLOT_IMAGE
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [100, 100, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: true
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                ANCIENT_CATALYST:
+                  info.imagePos: [2048, 2048]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_0:
+                  info.imagePos: [0, 512]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_1:
+                  info.imagePos: [512, 512]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_2:
+                  info.imagePos: [1024, 512]
+                  info.imageSize: [512, 512]
+                ETHER_FRAGMENT_3:
+                  info.imagePos: [1536, 512]
+                  info.imageSize: [512, 512]
+                FIRE_FLY:
+                  info.imagePos: [3584, 1536]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_0:
+                  info.imagePos: [0, 0]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_1:
+                  info.imagePos: [512, 0]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_2:
+                  info.imagePos: [1024, 0]
+                  info.imageSize: [512, 512]
+                LIFE_FRAGMENT_3:
+                  info.imagePos: [1536, 0]
+                  info.imageSize: [512, 512]
+                MARK_OF_CHORONZON:
+                  info.imagePos: [512, 2560]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_0:
+                  info.imagePos: [0, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_1:
+                  info.imagePos: [512, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_2:
+                  info.imagePos: [1024, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_3:
+                  info.imagePos: [1536, 1024]
+                  info.imageSize: [512, 512]
+                RESIDUAL_ESSENCE_4:
+                  info.imagePos: [0, 1536]
+                  info.imageSize: [512, 512]
+                WEAPON_0:
+                  info.imagePos: [4096, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_1:
+                  info.imagePos: [4608, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_2:
+                  info.imagePos: [5120, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_3:
+                  info.imagePos: [5632, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_4:
+                  info.imagePos: [6144, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_5:
+                  info.imagePos: [6656, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_6:
+                  info.imagePos: [7168, 0]
+                  info.imageSize: [512, 512]
+                WEAPON_7:
+                  info.imagePos: [7680, 0]
+                  info.imageSize: [512, 512]
+              m_useInfo: 1
+              m_currentFrameName: LIFE_FRAGMENT_0
+              m_currentInfo.imagePos: [0, 0]
+              m_currentInfo.imageSize: [512, 512]
+              m_preserveRatio: true
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIItem.mtrl, material\UIItem.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\ItemsSheet8k_Tex.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: SLOT_TEXT
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [30, -40, 0]
+              m_vRelativeScale: [40, 20, 0]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UITEXT:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: true
+              m_anchorH: 2
+              m_anchorV: 2
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              m_text: "  "
+              m_fontSize: 20
+              m_fontName: font\fa-solid-900.ttf
+              m_alphaEnable: false
+              m_color: [1, 1, 1, 1]
+              m_alignTextH: 2
+              m_alignTextV: 1
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+              USE DYNAMIC 0: false
+              MATERIAL 0 TEXTURE LIST:
+                {}
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []

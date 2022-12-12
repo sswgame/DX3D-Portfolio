@@ -106,11 +106,14 @@ void CRenderMgr::Render_Play()
 		g_transform.matViewInv = pCamera->GetViewInvMat();
 		g_transform.matProj    = pCamera->GetProjMat();
 
-		Render(MRT_TYPE::DEFERRED, pCamera);
-		Render(MRT_TYPE::DEFERRED_DECAL, pCamera);
-		Render(MRT_TYPE::SSAO, pCamera);
-		Render(MRT_TYPE::PARTICLE, pCamera);
-		Render(MRT_TYPE::LIGHT, pCamera);
+		if (pCamera != m_pUICamera)
+		{
+			Render(MRT_TYPE::DEFERRED, pCamera);
+			Render(MRT_TYPE::DEFERRED_DECAL, pCamera);
+			Render(MRT_TYPE::SSAO, pCamera);
+			Render(MRT_TYPE::PARTICLE, pCamera);
+			Render(MRT_TYPE::LIGHT, pCamera);
+		}
 		Render(MRT_TYPE::SWAPCHAIN, pCamera);
 	}
 
@@ -155,10 +158,12 @@ void CRenderMgr::Render(MRT_TYPE _eMRT, CCamera* _pCam)
 	{
 	case MRT_TYPE::SWAPCHAIN:
 		{
-			Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-			m_pMergeMaterial->UpdateData();
-			pRectMesh->render(0);
-
+			if (_pCam != m_pUICamera)
+			{
+				Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+				m_pMergeMaterial->UpdateData();
+				pRectMesh->render(0);
+			}
 			_pCam->render_forward();			// Foward ¹°Ã¼ ·»´õ¸µ
 			_pCam->render_masked();				// Masked ¹°Ã¼ ·»´õ¸µ
 			_pCam->render_forward_decal();		// Foward Decal ·»´õ¸µ

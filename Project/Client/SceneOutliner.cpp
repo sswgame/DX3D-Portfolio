@@ -81,6 +81,13 @@ void SceneOutliner::ShowHierarchyAll(CGameObject* pGameObject, bool afterRenew)
 
 void SceneOutliner::update()
 {
+	static bool bFirst = true;
+	if (bFirst)
+	{
+		bFirst = false;
+		Reset();
+	}
+
 	m_pSelectedScene = CSceneMgr::GetInst()->GetCurScene();
 
 	if (CEventMgr::GetInst()->HasOccurObjEvent())
@@ -451,15 +458,15 @@ bool SceneOutliner::MakePrefab()
 		return false;
 	}
 
-	if (nullptr != CResMgr::GetInst()->FindRes<CPrefab>(prefabPath))
+	if (nullptr != CResMgr::GetInst()->FindRes<CPrefab>(prefabPath) && m_bOverwritePrefab)
 	{
 		CResMgr::GetInst()->ForceDeleteRes<CPrefab>(prefabPath);
 		if (std::filesystem::exists(contentPath + prefabPath))
 		{
 			std::filesystem::remove(contentPath + prefabPath);
 		}
+		m_bOverwritePrefab = false;
 	}
-	m_bOverwritePrefab = false;
 
 	Ptr<CPrefab> pPrefab = new CPrefab{};
 	pPrefab->SetProto(m_pSelectedGameObject->Clone());

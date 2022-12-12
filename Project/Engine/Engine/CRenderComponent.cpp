@@ -10,7 +10,6 @@
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	: CComponent(_type)
 	, m_pMesh(nullptr)
-	, m_vecMtrls{}
 	, m_bDynamicShadow(false)
 	, m_bFrustumCulling(false)
 {
@@ -22,13 +21,19 @@ CRenderComponent::CRenderComponent(const CRenderComponent& _origin)
 	, m_pMesh(_origin.m_pMesh)
 	, m_bDynamicShadow(_origin.m_bDynamicShadow)
 	, m_bFrustumCulling(_origin.m_bFrustumCulling)
+	, m_vecUseDynamicMaterial{_origin.m_vecUseDynamicMaterial}
 {
 	if (false == _origin.m_vecMtrls.empty())
 	{
 		m_vecMtrls.resize(_origin.m_vecMtrls.size());
-		for (size_t i = 0; i < _origin.m_vecMtrls.size(); ++i)
+		for (size_t i = 0; i < m_vecMtrls.size(); ++i)
 		{
-			SetSharedMaterial(_origin.m_vecMtrls[i].pSharedMtrl, static_cast<UINT>(i));
+			SetSharedMaterial(_origin.m_vecMtrls[i].pSharedMtrl, (UINT)i);
+			if (_origin.m_vecUseDynamicMaterial[i] && nullptr != _origin.m_vecMtrls[i].pDynamicMtrl)
+			{
+				m_vecMtrls[i].pDynamicMtrl = _origin.m_vecMtrls[i].pDynamicMtrl.Get()->Clone();
+				m_vecMtrls[i].pMtrl        = m_vecMtrls[i].pDynamicMtrl;
+			}
 		}
 	}
 }
@@ -75,6 +80,10 @@ Ptr<CMaterial> CRenderComponent::GetMaterial(UINT _iIdx)
 		m_vecMtrls[_iIdx].pMtrl = m_vecMtrls[_iIdx].pSharedMtrl;
 	}
 
+	if (IsUsingDynamicMaterial(_iIdx))
+	{
+		return GetDynamicMaterial(_iIdx);
+	}
 	return m_vecMtrls[_iIdx].pMtrl;
 }
 
@@ -87,6 +96,17 @@ Ptr<CMaterial> CRenderComponent::GetSharedMaterial(UINT _iIdx)
 
 Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _iIdx)
 {
+	//EDITOR에서 확인하는 용도
+	if (IsUsingDynamicMaterial(_iIdx))
+	{
+		if (nullptr == m_vecMtrls[_iIdx].pDynamicMtrl)
+		{
+			m_vecMtrls[_iIdx].pDynamicMtrl = m_vecMtrls[_iIdx].pSharedMtrl->GetMtrlInst();
+			m_vecMtrls[_iIdx].pMtrl        = m_vecMtrls[_iIdx].pDynamicMtrl;
+		}
+		return m_vecMtrls[_iIdx].pMtrl;
+	}
+
 	// Play 모드에서만 동작가능
 	if (CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
 	{
@@ -111,12 +131,25 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _iIdx)
 	return m_vecMtrls[_iIdx].pMtrl;
 }
 
-bool CRenderComponent::IsUsingDynamicMaterial(UINT _index) const
+void CRenderComponent::SetUseDynamicMaterial(UINT _iIndex, bool _enable)
 {
-	assert(_index < m_vecMtrls.size());
-	return m_vecMtrls[_index].pMtrl.Get() == m_vecMtrls[_index].pDynamicMtrl.Get();
+	LOG_ASSERT(_iIndex<m_vecMtrls.size(), "INVALID MATERIAL INDEX");
+	if (m_vecUseDynamicMaterial.size() != m_vecMtrls.size())
+	{
+		m_vecUseDynamicMaterial.resize(m_vecMtrls.size(), false);
+	}
+	m_vecUseDynamicMaterial[_iIndex] = _enable;
 }
 
+bool CRenderComponent::IsUsingDynamicMaterial(UINT _iIndex)
+{
+	LOG_ASSERT(_iIndex<m_vecMtrls.size(), "INVALID MATERIAL INDEX");
+	if (m_vecUseDynamicMaterial.size() != m_vecMtrls.size())
+	{
+		m_vecUseDynamicMaterial.resize(m_vecMtrls.size(), false);
+	}
+	return m_vecUseDynamicMaterial[_iIndex];
+}
 
 void CRenderComponent::render_shadowmap()
 {
@@ -140,7 +173,6 @@ void CRenderComponent::SaveToScene(FILE* _pFile)
 	{
 		SaveResPtr(m_vecMtrls[i].pSharedMtrl, _pFile);
 	}
-
 
 	fwrite(&m_bDynamicShadow, 1, 1, _pFile);
 	fwrite(&m_bFrustumCulling, 1, 1, _pFile);
@@ -182,10 +214,14 @@ void CRenderComponent::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << "MATERIAL COUNT" << YAML::Value << materialCount;
 	for (int i = 0; i < materialCount; ++i)
 	{
-		CRes& material = *m_vecMtrls[i].pMtrl.Get();
+		CRes& material = *GetMaterial(i).Get();
 		emitter << YAML::Key << i << YAML::Value << material;
+
+		emitter << YAML::Key << "USE DYNAMIC " + std::to_string(i)
+			<< YAML::Value << (false == m_vecUseDynamicMaterial.empty() ? m_vecUseDynamicMaterial[i] : false);
+
 		emitter << YAML::Key << "MATERIAL " + std::to_string(i) + " TEXTURE LIST" << YAML::Value << YAML::BeginMap;
-		m_vecMtrls[i].pMtrl->Serialize(emitter);
+		GetMaterial(i)->Serialize(emitter);
 		emitter << YAML::EndMap;
 	}
 	emitter << YAML::Key << NAME_OF(m_bDynamicShadow) << YAML::Value << m_bDynamicShadow;
@@ -198,14 +234,25 @@ void CRenderComponent::Deserialize(const YAML::Node& node)
 	int materialCount = node["MATERIAL COUNT"].as<int>();
 
 	m_vecMtrls.resize(materialCount);
+	m_vecUseDynamicMaterial.resize(materialCount);
 
 	for (int i = 0; i < materialCount; ++i)
 	{
-		Ptr<CMaterial> pMaterial       = LoadAs<CMaterial>(node[i]);
-		auto           textureListNode = node["MATERIAL " + std::to_string(i) + " TEXTURE LIST"];
+		Ptr<CMaterial>    pMaterial  = LoadAs<CMaterial>(node[i]);
+		const YAML::Node& useDynamic = node["USE DYNAMIC " + std::to_string(i)];
+		if (useDynamic.IsDefined())
+		{
+			m_vecUseDynamicMaterial[i] = useDynamic.as<bool>();
+		}
+		auto textureListNode = node["MATERIAL " + std::to_string(i) + " TEXTURE LIST"];
 		pMaterial->Deserialize(textureListNode);
 
 		SetSharedMaterial(pMaterial, i);
+		if (m_vecUseDynamicMaterial[i])
+		{
+			m_vecMtrls[i].pDynamicMtrl = pMaterial->Clone();
+			m_vecMtrls[i].pMtrl        = m_vecMtrls[i].pDynamicMtrl;
+		}
 	}
 	m_bDynamicShadow  = node[NAME_OF(m_bDynamicShadow)].as<bool>();
 	m_bFrustumCulling = node[NAME_OF(m_bFrustumCulling)].as<bool>();

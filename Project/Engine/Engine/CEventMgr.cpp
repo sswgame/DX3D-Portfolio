@@ -244,18 +244,19 @@ void CEventMgr::update()
 		case EVENT_TYPE::RENDER_TEXT:
 			{
 				CUIText* pUIText = (CUIText*)m_vecEvent[i].lParam;
+
 				CDevice::GetInst()->GetRtv2D()->BeginDraw();
 				const Vec3 worldPos       = pUIText->Transform()->GetWorldPos();
 				const Vec3 halfWorldScale = pUIText->Transform()->GetWorldScale() * 0.5f;
 				const Vec2 halfResolution = CDevice::GetInst()->GetRenderResolution() * 0.5f;
 
-				if (pUIText->m_alphaEnable)
+				if (pUIText->IsAlphaEnable())
 				{
-					pUIText->m_pColorBrush->SetOpacity(pUIText->GetOpacity());
+					pUIText->GetBrush()->SetOpacity(pUIText->GetOpacity());
 				}
 				else
 				{
-					pUIText->m_pColorBrush->SetOpacity(1.f);
+					pUIText->GetBrush()->SetOpacity(1.f);
 				}
 
 				//화면의 좌표계에 그려야 한다.
@@ -265,8 +266,8 @@ void CEventMgr::update()
 				ptSize.y              = yOffset + halfResolution.y - halfWorldScale.y;
 
 				CDevice::GetInst()->GetRtv2D()->DrawTextLayout(ptSize,
-				                                               pUIText->m_pLayout.Get(),
-				                                               pUIText->m_pColorBrush.Get(),
+				                                               pUIText->GetTextureLayout().Get(),
+				                                               pUIText->GetBrush().Get(),
 				                                               D2D1_DRAW_TEXT_OPTIONS_NONE);
 
 				CDevice::GetInst()->GetRtv2D()->EndDraw();
@@ -287,6 +288,5 @@ void CEventMgr::update()
 	if (false == CSingletonScript::s_vecFunc.empty())
 	{
 		CSingletonScript::FireScriptEvents();
-		//m_bObjEvn = true;
 	}
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include <chrono>
 #include <condition_variable>
 #include <functional>
 #include <future>
@@ -21,6 +20,7 @@ public:
 public:
 	void Start()
 	{
+		m_stop = false;
 		m_condition.notify_all();
 	}
 

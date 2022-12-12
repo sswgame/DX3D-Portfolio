@@ -18,5 +18,4 @@ public:
 public:
 	void AddEvent(const tEventInfo& _event) { m_vecEvent.push_back(_event); }
 	bool HasOccurObjEvent() const { return m_bObjEvn; }
-	void SetOccurObjEvent() { m_bObjEvn = true; }
 };

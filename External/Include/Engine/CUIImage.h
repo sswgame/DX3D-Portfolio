@@ -1,12 +1,6 @@
 #pragma once
 #include "CUIBase.h"
 
-struct tImageInfo
-{
-	Vec2 imagePos;
-	Vec2 imageSize;
-};
-
 class CUIImage final
 	: public CUIBase
 {
@@ -18,8 +12,6 @@ private:
 	bool                               m_preserveRatio;
 	float                              m_ratio;
 
-private:
-	void SetUseInfo(bool enable);
 public:
 	void finalupdate() override;
 public:

@@ -56,7 +56,7 @@ public:
 	bool IsAlphaEnable() const { return m_alphaEnable; }
 
 	void               SetFont(const std::wstring& fontKey);
-	const std::string& GetFont() const { return m_fontName; }
+	const std::string& GetFontName() const { return m_fontName; }
 
 	void                  SetAlignH(TEXT_ALIGN_HORIZONTAL alignment);
 	TEXT_ALIGN_HORIZONTAL GetAlignH() const { return m_alignTextH; }
@@ -68,13 +68,15 @@ public:
 	void SetColor(const Vec4& color);
 	Vec4 GetColor() const { return m_color; }
 
+	ComPtr<ID2D1SolidColorBrush> GetBrush();
+	ComPtr<IDWriteTextLayout>    GetTextureLayout();
+	ComPtr<IDWriteTextFormat>    GetFontFormat();
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
 public:
 	CLONE(CUIText);
 	CUIText();
-	CUIText(const CUIText& _origin);
 	virtual ~CUIText();
 
 	friend class CEventMgr;

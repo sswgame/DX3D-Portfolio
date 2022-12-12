@@ -3,6 +3,7 @@
 
 #include "CMeshRender.h"
 #include "CSerializer.h"
+
 CUIProgressBar::CUIProgressBar()
 	: CComponent{COMPONENT_TYPE::UIPROGRESSBAR}
 	, m_percentage{1.f}
@@ -23,7 +24,10 @@ void CUIProgressBar::SetPercent(float value)
 
 void CUIProgressBar::finalupdate()
 {
-	if (nullptr == MeshRender() || nullptr == MeshRender()->GetMaterial(0) || nullptr == MeshRender()->GetMesh())
+	if (nullptr == MeshRender()
+	    || false == MeshRender()->IsActive()
+	    || nullptr == MeshRender()->GetMaterial(0)
+	    || nullptr == MeshRender()->GetMesh())
 	{
 		return;
 	}

@@ -56,11 +56,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 	CPrefab::m_pSaveFunc = &CSceneSaveLoad::SavePrefab;
 	CPrefab::m_pLoadFunc = &CSceneSaveLoad::LoadPrefab;
 
-	CImGuiMgr::GetInst()->init(g_hWnd);
-	LOG_INFO("IMGUI INIT SUCCEDED");
-
 	CToolObjMgr::GetInst()->init();
 	LOG_INFO("TOOL MANAGER INIT SUCCEDED");
+
+	CImGuiMgr::GetInst()->init(g_hWnd);
+	LOG_INFO("IMGUI INIT SUCCEDED");
 
 	CTestScene::CreateTestScene();
 	LOG_INFO("SCENE CREATED");

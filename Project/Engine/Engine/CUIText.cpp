@@ -2,7 +2,6 @@
 #include "CUIText.h"
 
 #include "CFontMgr.h"
-#include "CDevice.h"
 #include "CEventMgr.h"
 #include "CMeshRender.h"
 #include "CTransform.h"
@@ -19,40 +18,40 @@ CUIText::CUIText()
 	, m_alignTextH{TEXT_ALIGN_HORIZONTAL::MIDDLE}
 	, m_alignTextV{TEXT_ALIGN_VERTICAL::MIDDLE} {}
 
-CUIText::CUIText(const CUIText& _origin)
-	: CUIBase{_origin}
-	, m_text{_origin.m_text}
-	, m_fontSize{_origin.m_fontSize}
-	, m_alphaEnable{_origin.m_alphaEnable}
-	, m_color{_origin.m_color}
-	, m_alignTextH{_origin.m_alignTextH}
-	, m_alignTextV{_origin.m_alignTextV} {}
-
 CUIText::~CUIText() = default;
 
-void CUIText::start()
-{
-	m_pFont       = CFontMgr::GetInst()->LoadFontFromFile(L"font\\fa-solid-900.ttf");
-	m_pColorBrush = CFontMgr::GetInst()->GetBrush(m_color);
-	CreateTextLayout();
-}
+void CUIText::start() { }
 
 void CUIText::finalupdate()
 {
-	if (nullptr == MeshRender() || nullptr == MeshRender()->GetMaterial(0))
+	if (nullptr == MeshRender()
+	    || false == MeshRender()->IsActive()
+	    || nullptr == MeshRender()->GetMaterial(0))
 	{
 		return;
 	}
 	CUIBase::finalupdate();
-	RenderText();
+	if (false == GetOwner()->IsDead())
+	{
+		RenderText();
+	}
+}
+
+ComPtr<IDWriteTextFormat> CUIText::GetFontFormat()
+{
+	if (nullptr == m_pFont)
+	{
+		m_pFont = m_fontName.empty()
+			          ? CFontMgr::GetInst()->LoadFontFromFile(L"font\\fa-solid-900.ttf")
+			          : CFontMgr::GetInst()->LoadFontFromFile(ToWString(m_fontName));;
+	}
+	return m_pFont;
 }
 
 void CUIText::CreateTextLayout()
 {
-	if (nullptr == m_pFont)
-	{
-		return;
-	}
+	LOG_ASSERT(nullptr!= GetFontFormat(), "FONT NOT FOUND");
+
 	Vec3 size{};
 	size.x = m_text.size() * m_fontSize;
 	size.y = m_fontSize;
@@ -182,6 +181,24 @@ void CUIText::SetColor(const Vec4& color)
 {
 	m_color       = color;
 	m_pColorBrush = CFontMgr::GetInst()->GetBrush(m_color);
+}
+
+ComPtr<ID2D1SolidColorBrush> CUIText::GetBrush()
+{
+	if (nullptr == m_pColorBrush)
+	{
+		m_pColorBrush = CFontMgr::GetInst()->GetBrush(m_color);
+	}
+	return m_pColorBrush;
+}
+
+ComPtr<IDWriteTextLayout> CUIText::GetTextureLayout()
+{
+	if (nullptr == m_pLayout)
+	{
+		CreateTextLayout();
+	}
+	return m_pLayout;
 }
 
 void CUIText::Serialize(YAML::Emitter& emitter)

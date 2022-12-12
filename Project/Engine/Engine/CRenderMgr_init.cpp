@@ -141,12 +141,10 @@ void CRenderMgr::CreateParticleMRT()
 
 void CRenderMgr::CreateDeferredDecalMRT()
 {
-	const Ptr<CTexture> pDepthStencilTex = CResMgr::GetInst()->FindRes<CTexture>(L"DepthStencilTex");
-
 	Ptr<CTexture> arrTex[8] = {CResMgr::GetInst()->FindRes<CTexture>(L"ColorTargetTex")};
 
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL] = new CMRT{};
-	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->Create(1, arrTex, pDepthStencilTex);
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED_DECAL]->Create(1, arrTex, nullptr);
 }
 
 void CRenderMgr::CreateLightMRT()

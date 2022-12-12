@@ -12,8 +12,7 @@ FogTool::FogTool()
 	, m_pFog(nullptr)
 	, m_bFogOn(true)
 	, m_pParticleEmissive(nullptr)
-	, m_bParticleEmissiveOn(false)
-{}
+	, m_bParticleEmissiveOn(false) {}
 
 FogTool::~FogTool() {}
 
@@ -28,8 +27,8 @@ void FogTool::update()
 		m_pFog->AddComponent(new CTransform);
 		m_pFog->AddComponent(new CMeshRender);
 
-		CMesh* pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
-		CMaterial* pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\FogPostProcessMtrl.mtrl").Get();
+		CMesh*        pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
+		CMaterial*    pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\FogPostProcessMtrl.mtrl").Get();
 		Ptr<CTexture> pPostProcTarget = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex").Get();
 		Ptr<CTexture> pPositionTarget = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex").Get();
 
@@ -64,8 +63,8 @@ void FogTool::update()
 		m_pParticleEmissive->AddComponent(new CTransform);
 		m_pParticleEmissive->AddComponent(new CMeshRender);
 
-		CMesh* pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
-		CMaterial* pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\EmissivePostProcessMtrl.mtrl").Get();
+		CMesh*        pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
+		CMaterial*    pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\EmissivePostProcessMtrl.mtrl").Get();
 		Ptr<CTexture> pPostProcTarget = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex").Get();
 		Ptr<CTexture> pEmissiveTarget = CResMgr::GetInst()->FindRes<CTexture>(L"EmissiveTargetTex").Get();
 

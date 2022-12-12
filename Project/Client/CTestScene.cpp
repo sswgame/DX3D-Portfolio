@@ -45,13 +45,6 @@
 #include <Script/CTranslateMgr.h>
 #include <Script/FieldMonsteScript.h>
 
-//UI
-//#include <Script/UIPanelScript.h>
-//#include <Script/UITextScript.h>
-//#include <Script/UIImageScript.h>
-//#include <Script/UIProgressBarScript.h>
-//#include <Script/ButtonScript.h>
-
 namespace
 {
 	void SetLayer(CScene* _pScene)
@@ -70,29 +63,21 @@ namespace
 		_pScene->SetLayerName(31, L"UI_INTERACTIVE");
 	}
 
-	void LoadTextures()
-	{
-		// Texture 한장 로딩해보기
-
-		//Ptr<CTexture> pSkyTex_01 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky01.png", L"texture\\skybox\\Sky01.png");
-		//Ptr<CTexture> pSkyTex_02 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\Sky02.jpg", L"texture\\skybox\\Sky02.jpg");
-		//Ptr<CTexture> pSkyTex_04 = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyWater.dds",L"texture\\skybox\\SkyWater.dds");
-	}
-
 	CGameObject* AddCamera(CScene* _pScene)
 	{
 		const auto pCamera = new CGameObject;
 		pCamera->SetName(L"MainCamera");
 		pCamera->AddComponent(new CTransform);
 		pCamera->AddComponent(new CCamera);
-		//pCamera->AddComponent(new CameraMoveScript);
-		pCamera->AddComponent(new PlayerCamScript);
+		pCamera->AddComponent(new CameraMoveScript);
+		pCamera->AddComponent(new CameraMoveScript);
+		//pCamera->AddComponent(new PlayerCamScript);
 
 		pCamera->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
 		pCamera->Camera()->SetCameraAsMain();
 		pCamera->Camera()->CheckLayerMaskAll();
-		pCamera->Camera()->CheckLayerMask(L"UI_STATIC");
-		pCamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
+		pCamera->Camera()->CheckLayerMask(L"UI_STATIC", false);
+		pCamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE", false);
 		pCamera->Camera()->SetShowFrustum(true);
 
 		_pScene->AddObject(pCamera, L"CAMERA");
@@ -419,6 +404,8 @@ namespace
 		pNMesh->Transform()->SetRelativeScale(15.f, 15.f, 15.f);
 		pNMesh->Transform()->SetRelativePos(0.f, -6.f, 0.f);
 
+		CGameObject* pGameObject = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref",
+		                                                             L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
 		_pScene->AddObject(pNMesh, GAME::LAYER::BG_OBJ);
 
 		/// Player NaviAgent Test
@@ -449,6 +436,10 @@ namespace
 
 		/// Load
 		//CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\test.map", L"navimap\\test.map").Get();
+		if (nullptr != pGameObject)
+		{
+			_pScene->AddObject(pGameObject, 31);
+		}
 	}
 
 	void LoadScene()
@@ -458,82 +449,27 @@ namespace
 		CSceneMgr::GetInst()->ChangeScene(pCurScene);
 	}
 
-	//void TestUI(CScene* _pScene)
-	//{
-	//	Ptr<CMesh>    pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-	//	Ptr<CTexture> pPanelTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\UI_NameBox_Tex.png",
-	//	                                                             L"texture\\UI\\UI_NameBox_Tex.png");
-	//	Ptr<CTexture> pTexture_1 = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\StageBGUI_Tex.png",
-	//	                                                              L"texture\\UI\\StageBGUI_Tex.png");
-	//	Ptr<CTexture> pTexture_2 = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\Cursor.png",
-	//	                                                              L"texture\\UI\\Cursor.png");
-	//	Ptr<CMaterial> pUIMaterial = CResMgr::GetInst()->Load<CMaterial>(L"material\\UIMtrl.mtrl",
-	//	                                                                 L"material\\UIMtrl.mtrl");
-	//	//UI CAMERA
-	//	CGameObject* pUICamera = new CGameObject{};
-	//	pUICamera->SetName(L"UICamera");
-	//	pUICamera->AddComponent(new CTransform{});
-	//	pUICamera->AddComponent(new CCamera{});
-	//	pUICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
-	//	pUICamera->Camera()->CheckLayerMask(L"UI_STATIC");
-	//	pUICamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
-	//	pUICamera->AddComponent(new CameraMoveScript{});
-	//	_pScene->AddObject(pUICamera, L"CAMERA");
+	void TestUI(CScene* _pScene)
+	{
+		CGameObject* pUICamera = new CGameObject{};
+		pUICamera->SetName(L"UICamera");
+		pUICamera->AddComponent(new CTransform{});
+		pUICamera->AddComponent(new CCamera{});
+		pUICamera->Camera()->SetProjType(PROJ_TYPE::ORTHOGRAPHIC);
+		pUICamera->Camera()->CheckLayerMask(L"UI_STATIC");
+		pUICamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
+		_pScene->AddObject(pUICamera, L"CAMERA");
 
-	//	//PANEL UI
-	//	CGameObject* pPanelUI = new CGameObject{};
-	//	pPanelUI->SetName(L"UI_PANEL");
-	//	pPanelUI->AddComponent(new CTransform{});
-	//	pPanelUI->Transform()->SetRelativeScale(500.f, 500.f, 1.f);
-	//	pPanelUI->AddComponent(new CMeshRender{});
-	//	pPanelUI->MeshRender()->SetMesh(pRectMesh);
-	//	pPanelUI->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
-	//	pPanelUI->AddComponent(new UIPanelScript{});
-	//	pPanelUI->GetScript<UIPanelScript>()->SetTexture(L"texture\\UI\\UI_NameBox_Tex.png");
-	//	_pScene->AddObject(pPanelUI, L"UI_STATIC");
-
-	//	//IMAGE UI_1
-	//	CGameObject* pImageUI_1 = new CGameObject{};
-	//	pImageUI_1->SetName(L"UI_1");
-	//	pImageUI_1->AddComponent(new CTransform{});
-	//	pImageUI_1->Transform()->SetRelativeScale(400.f, 400.f, 1.f);
-	//	pImageUI_1->AddComponent(new CMeshRender{});
-	//	pImageUI_1->MeshRender()->SetMesh(pRectMesh);
-	//	pImageUI_1->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
-	//	pImageUI_1->AddComponent(new UIImageScript{});
-	//	pImageUI_1->GetScript<UIImageScript>()->SetPreserveRatio(true);
-	//	pImageUI_1->GetScript<UIImageScript>()->SetTexture(L"texture\\UI\\StageBGUI_Tex.png");
-	//	pPanelUI->AddChild(pImageUI_1);
-
-	//	//IMAMGE_UI_2
-	//	CGameObject* pImageUI_2 = new CGameObject{};
-	//	pImageUI_2->SetName(L"UI_2");
-	//	pImageUI_2->AddComponent(new CTransform{});
-	//	pImageUI_2->Transform()->SetRelativeScale(5.f, 5.f, 1.f);
-	//	pImageUI_2->AddComponent(new CMeshRender{});
-	//	pImageUI_2->MeshRender()->SetMesh(pRectMesh);
-	//	pImageUI_2->MeshRender()->SetSharedMaterial(pUIMaterial, 0);
-	//	pImageUI_2->AddComponent(new UIImageScript{});
-	//	pImageUI_2->GetScript<UIImageScript>()->SetPreserveRatio(true);
-	//	//pImageUI_2->GetScript<UIImageScript>()->SetAnchorH(ANCHOR_HORIZONTAL::LEFT);
-	//	pImageUI_2->GetScript<UIImageScript>()->SetTexture(L"texture\\UI\\Cursor.png");
-	//	auto pScript = new TestScript{};
-	//	pImageUI_2->AddComponent(pScript);
-	//	pImageUI_2->GetScript<UIImageScript>()->SetMouseHoverCallback(pScript, &TestScript::MouseHover);
-	//	pImageUI_2->AddComponent(new ButtonScript{});
-	//	pImageUI_2->GetScript<ButtonScript>()->SetCallback(pScript,
-	//	                                                   &TestScript::OneClick,
-	//	                                                   MOUSE_TYPE::LEFT,
-	//	                                                   CLICK_TYPE::ONE);
-	//	pPanelUI->AddChild(pImageUI_2);
-	//}	
+		CGameObject* pPlayerUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref",
+		                                                           L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
+		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
+	}
 
 	void CreateScene()
 	{
 		auto pCurScene = new CScene;
 		CSceneMgr::GetInst()->ChangeScene(pCurScene);
 		SetLayer(pCurScene);
-		LoadTextures();
 
 		CGameObject* pCamObj = AddCamera(pCurScene);
 		AddDirectionalLight(pCurScene);
@@ -545,20 +481,20 @@ namespace
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
 
-		AddPlayer(pCurScene, pCamObj);
+		//AddPlayer(pCurScene, pCamObj);
 		//AddBoss(pCurScene);
 
 		/// UI Test
-		//TestUI(pCurScene);
+		TestUI(pCurScene);
 		//TestObjectPicking(pCurScene);
 
 		/// NaviTest
-		TestNavi(pCurScene);
+		//TestNavi(pCurScene);
 
-		/// 충돌 레이어 설정
+		/*/// 충돌 레이어 설정
 		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);
 		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
-		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);*/
 
 		pCurScene->SetResKey(L"scene\\TestScene.scene");
 		wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();

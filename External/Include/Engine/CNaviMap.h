@@ -7,13 +7,14 @@ class CNaviMap : public CComponent
 {
 private:
 	CNaviMapData* m_pNeviMapData;
-
-	Ptr<CMesh>     m_pMesh;
-	Ptr<CMaterial> m_pMaterial;
+	Vec4          m_vDebugMeshColor;
+	Vec4          m_vDebugLineColor;
 
 public:
 	void          SetNaviMapData(CNaviMapData* _pData);
 	CNaviMapData* GetNaviMapData() const { return m_pNeviMapData; }
+	Vec4          GetDebugMeshColor() const { return m_vDebugMeshColor; }
+	Vec4          GetDebugLineColor() const { return m_vDebugLineColor; }
 
 	/**
 	 * \brief NaviMap의 삼각형(Cell)과 충돌 테스트를 진행하는 함수

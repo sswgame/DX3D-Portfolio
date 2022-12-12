@@ -329,7 +329,7 @@ void CTexture::UpdateData_CS(UINT _iRegisterNum, bool _bShaderResource)
 	}
 	else
 	{
-		constexpr UINT invalidIndex = -1;
+		const UINT invalidIndex = -1;
 		CONTEXT->CSSetUnorderedAccessViews(_iRegisterNum, 1, m_pUAV.GetAddressOf(), &invalidIndex);
 	}
 }
@@ -348,7 +348,7 @@ void CTexture::ClearCS(int _iRegisterNum)
 {
 	ID3D11UnorderedAccessView* pNullUAV     = nullptr;
 	ID3D11ShaderResourceView*  pNullSRV     = nullptr;
-	constexpr UINT             invalidIndex = -1;
+	const UINT                 invalidIndex = -1;
 
 	CONTEXT->CSSetUnorderedAccessViews(_iRegisterNum, 1, &pNullUAV, &invalidIndex);
 	CONTEXT->CSSetShaderResources(_iRegisterNum, 1, &pNullSRV);

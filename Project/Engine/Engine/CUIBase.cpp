@@ -26,17 +26,22 @@ CUIBase::~CUIBase() = default;
 
 void CUIBase::finalupdate()
 {
+	if (GetOwner()->IsDead())
+	{
+		CGameObject* pParent = GetOwner()->GetParent();
+		if (pParent && pParent->UIPanel())
+		{
+			pParent->UIPanel()->SetSorted(false);
+		}
+		return;
+	}
+
 	m_opacity = ClampData(m_opacity, 0.f, 1.f);
 
 	Vec3 adjustPos = Transform()->GetRelativePos();
 	adjustPos.x    = AdjustPositionWithAnchor(m_anchorH);
 	adjustPos.y    = AdjustPositionWithAnchor(m_anchorV);
 	Transform()->SetRelativePos(adjustPos);
-
-	//ºôº¸µåÈ­
-	CCamera*   pCamera        = CRenderMgr::GetInst()->GetMainCam();
-	const Vec3 cameraRotation = pCamera->Transform()->GetRelativeRotation();
-	Transform()->SetRelativeRotation(cameraRotation.x, cameraRotation.y, 0.f);
 
 	if (nullptr == GetOwner()->GetParent() || nullptr == GetOwner()->GetParent()->UIPanel())
 	{
@@ -47,7 +52,10 @@ void CUIBase::finalupdate()
 		}
 	}
 
-	if (nullptr == MeshRender() || nullptr == MeshRender()->GetMaterial(0) || nullptr == MeshRender()->GetMesh())
+	if (nullptr == MeshRender()
+	    || false == MeshRender()->IsActive()
+	    || nullptr == MeshRender()->GetMaterial(0)
+	    || nullptr == MeshRender()->GetMesh())
 	{
 		return;
 	}
