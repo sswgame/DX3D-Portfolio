@@ -143,6 +143,9 @@ void CRenderMgr::Render_Play()
 
 	// Post Process 
 	CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::FXAA);
+	CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::FADE_IN_PAPERBURN);
+	CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::FADE_OUT_PAPERBURN);
+
 
 }
 

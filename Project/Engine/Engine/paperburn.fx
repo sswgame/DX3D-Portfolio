@@ -7,7 +7,11 @@
 // ================
 // PaperBurn Shader
 // g_float_0 : Strength
-#define BurnColor g_vec4_0.rgb
+#define InputTexture    g_tex_0
+#define NoiseTexture    g_tex_1
+#define ResultTexture   g_tex_2
+#define BurnColor       g_vec4_0
+#define BurnStrength    g_float_0
 
 // g_tex_0 : Output Texture
 // Rasterizer : CULL_NONE
@@ -23,10 +27,23 @@ struct VTX_IN
 
 struct VTX_OUT
 {
-    float4 vPosition : SV_Position;
-    float2 vUV : TEXCOORD;
+    float4 vPosition    : SV_Position;
+    float2 vUV          : TEXCOORD;
 };
 
+
+VTX_OUT VS_PaperBurnFullScreen(uint vertexID : SV_VertexID)
+{
+    VTX_OUT output = (VTX_OUT) 0.f;
+
+    float2 grid = float2((vertexID << 1) & 2, vertexID & 2);
+    float2 xy = grid * float2(2.0f, -2.0f) + float2(-1.0f, 1.0f);
+
+    output.vUV = grid * float2(1.0f, 1.0f);
+    output.vPosition = float4(xy, 1.0f, 1.0f);
+
+    return output;
+}
 
 VTX_OUT VS_PaperBurn(VTX_IN _in)
 {
@@ -41,7 +58,7 @@ VTX_OUT VS_PaperBurn(VTX_IN _in)
 float4 PS_PaperBurn(VTX_OUT _in) : SV_Target
 {
     float4 vOutColor = (float4) 0.f;
-    
+
     // Animation 정보가 있는 경우
     if (g_useAnim2D)
     {
@@ -60,7 +77,7 @@ float4 PS_PaperBurn(VTX_OUT _in) : SV_Target
     {        
         if (g_btex_0)
         {
-            vOutColor = g_tex_0.Sample(g_sam_0, _in.vUV);
+            vOutColor = InputTexture.Sample(g_sam_0, _in.vUV);
         }
         else
         {
@@ -68,20 +85,20 @@ float4 PS_PaperBurn(VTX_OUT _in) : SV_Target
         }
     }
     
-    float fNoise = g_noise_cloud.Sample(g_sam_0, _in.vUV).g;
-    vOutColor.a -= ((fNoise * g_float_0) + g_float_0);
+    float fNoise = NoiseTexture.Sample(g_sam_0, _in.vUV).g;
+    vOutColor.a -= ((fNoise * BurnStrength) + BurnStrength);
         
     float fRatio = 0.f;
     
     if (0.2f <= vOutColor.a)
     {
         fRatio = 1.f - ((vOutColor.a - 0.2f) / 0.8f);
-        vOutColor.rgb = BurnColor * (fRatio) + (vOutColor.rgb * (1.f - fRatio));
+        vOutColor.rgb = BurnColor.rgb * (fRatio) + (vOutColor.rgb * (1.f - fRatio));
     }
     else if (0.05f < vOutColor.a)
     {
         fRatio = 1.f - ((vOutColor.a - 0.05f) / 0.15f);
-        vOutColor.rgb = float3(1.f, 1.f, 1.f) * (fRatio) + (BurnColor * (1.f - fRatio));
+        vOutColor.rgb = float3(1.f, 1.f, 1.f) * (fRatio) + (BurnColor.rgb * (1.f - fRatio));
     }
     else
     {
@@ -91,7 +108,9 @@ float4 PS_PaperBurn(VTX_OUT _in) : SV_Target
       
     if (vOutColor.a <= 0.f)
     {       
-        discard;
+        //discard;
+        vOutColor = ResultTexture.Sample(g_sam_0, _in.vUV); // TEX COLOR 
+        //vOutColor = float4(0.f, 0.f, 0.f, 1.f);           // BLACK
     }        
    
     return vOutColor;

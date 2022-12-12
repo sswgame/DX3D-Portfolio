@@ -409,6 +409,26 @@ void SceneOutliner::RenderAddObject()
 	else
 		CRenderEffectMgr::GetInst()->Disable_SSAO();
 
+	// [ FADE IN/OUT PaperBurn ]
+	ImGui::SameLine();
+	bool bFadeIn = CRenderEffectMgr::GetInst()->IsEnable_FadeInPaperBurn();
+	ImGui::Checkbox("FADEIN", &bFadeIn);
+	if (bFadeIn)
+		CRenderEffectMgr::GetInst()->Enable_FadeInPaperBurn();
+	else
+		CRenderEffectMgr::GetInst()->Disable_FadeInPaperBurn();
+
+	ImGui::SameLine();
+	bool bFadeOut = CRenderEffectMgr::GetInst()->IsEnable_FadeOutPaperBurn();
+	ImGui::Checkbox("FADEOUT", &bFadeOut);
+	if (bFadeOut)
+		CRenderEffectMgr::GetInst()->Enable_FadeOutPaperBurn();
+	else
+		CRenderEffectMgr::GetInst()->Disable_FadeOutPaperBurn();
+
+
+
+
 #pragma endregion
 
 

@@ -925,6 +925,22 @@ void CResMgr::CreateEngineShader()
 
 	AddRes<CGraphicsShader>(L"PaperBurnShader", pShader, true);
 
+	// PaperBurn_FullScreen Shader
+	pShader = new CGraphicsShader;
+	pShader->CreateVertexShader(L"shader\\paperburn.fx", "VS_PaperBurnFullScreen");
+	pShader->CreatePixelShader(L"shader\\paperburn.fx", "PS_PaperBurn");
+
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetBSType(BS_TYPE::NO_ALPHA_COVERAGE);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	pShader->AddScalarParamInfo(L"Burn Strength", SCALAR_PARAM::FLOAT_0);
+	pShader->AddTexParamInfo(L"OutputTex", TEX_PARAM::TEX_0);
+
+	AddRes<CGraphicsShader>(L"PaperBurnFullScreenShader", pShader, true);
+
+
 	// Column Flame Shader
 	pShader = new CGraphicsShader;
 	pShader->CreateVertexShader(L"shader\\boss.fx", "VS_ColumnFlame");
@@ -1145,6 +1161,12 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"PaperBurnShader"));
 	AddRes<CMaterial>(L"material\\PaperBurnMtrl.mtrl", pMtrl);
+
+	// PaperBurnFullScreenMtrl	
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"PaperBurnFullScreenShader"));
+	AddRes<CMaterial>(L"material\\PaperBurnFullScreenMtrl.mtrl", pMtrl);
+	
 
 	// TileMapMtrl
 	pMtrl = new CMaterial;
