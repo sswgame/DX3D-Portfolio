@@ -4,9 +4,11 @@ BossJugScript
 CameraMoveScript
 ColumnFlameScript
 DestroyScript
+EffectScript
 FieldMonsteScript
 GravityScript
 HandStateMgrScript
+ItemScript
 MagmaScript
 MissileScript
 MonsterGunScript

@@ -8,9 +8,11 @@
 #include "CameraMoveScript.h"
 #include "ColumnFlameScript.h"
 #include "DestroyScript.h"
+#include "EffectScript.h"
 #include "FieldMonsteScript.h"
 #include "GravityScript.h"
 #include "HandStateMgrScript.h"
+#include "ItemScript.h"
 #include "MagmaScript.h"
 #include "MissileScript.h"
 #include "MonsterGunScript.h"
@@ -32,9 +34,11 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"CameraMoveScript");
 	_vec.push_back(L"ColumnFlameScript");
 	_vec.push_back(L"DestroyScript");
+	_vec.push_back(L"EffectScript");
 	_vec.push_back(L"FieldMonsteScript");
 	_vec.push_back(L"GravityScript");
 	_vec.push_back(L"HandStateMgrScript");
+	_vec.push_back(L"ItemScript");
 	_vec.push_back(L"MagmaScript");
 	_vec.push_back(L"MissileScript");
 	_vec.push_back(L"MonsterGunScript");
@@ -64,12 +68,16 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new ColumnFlameScript;
 	if (L"DestroyScript"== _strScriptName)
 		return new DestroyScript;
+	if (L"EffectScript"== _strScriptName)
+		return new EffectScript;
 	if (L"FieldMonsteScript"== _strScriptName)
 		return new FieldMonsteScript;
 	if (L"GravityScript"== _strScriptName)
 		return new GravityScript;
 	if (L"HandStateMgrScript"== _strScriptName)
 		return new HandStateMgrScript;
+	if (L"ItemScript"== _strScriptName)
+		return new ItemScript;
 	if (L"MagmaScript"== _strScriptName)
 		return new MagmaScript;
 	if (L"MissileScript"== _strScriptName)
@@ -114,12 +122,16 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new ColumnFlameScript;
 	case SCRIPT_TYPE::DESTROYSCRIPT:
 		return new DestroyScript;
+	case SCRIPT_TYPE::EFFECTSCRIPT:
+		return new EffectScript;
 	case SCRIPT_TYPE::FIELDMONSTESCRIPT:
 		return new FieldMonsteScript;
 	case SCRIPT_TYPE::GRAVITYSCRIPT:
 		return new GravityScript;
 	case SCRIPT_TYPE::HANDSTATEMGRSCRIPT:
 		return new HandStateMgrScript;
+	case SCRIPT_TYPE::ITEMSCRIPT:
+		return new ItemScript;
 	case SCRIPT_TYPE::MAGMASCRIPT:
 		return new MagmaScript;
 	case SCRIPT_TYPE::MISSILESCRIPT:
@@ -165,12 +177,16 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"ColumnFlameScript";
 	case SCRIPT_TYPE::DESTROYSCRIPT:
 		return L"DestroyScript";
+	case SCRIPT_TYPE::EFFECTSCRIPT:
+		return L"EffectScript";
 	case SCRIPT_TYPE::FIELDMONSTESCRIPT:
 		return L"FieldMonsteScript";
 	case SCRIPT_TYPE::GRAVITYSCRIPT:
 		return L"GravityScript";
 	case SCRIPT_TYPE::HANDSTATEMGRSCRIPT:
 		return L"HandStateMgrScript";
+	case SCRIPT_TYPE::ITEMSCRIPT:
+		return L"ItemScript";
 	case SCRIPT_TYPE::MAGMASCRIPT:
 		return L"MagmaScript";
 	case SCRIPT_TYPE::MISSILESCRIPT:

@@ -139,6 +139,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="Deux_Hit.h" />
     <ClInclude Include="Deux_Idle.h" />
     <ClInclude Include="Deux_Walk.h" />
+    <ClInclude Include="EffectScript.h" />
     <ClInclude Include="FieldMonsteScript.h" />
     <ClInclude Include="FieldM_StateMgr.h" />
     <ClInclude Include="Homon_Attack.h" />
@@ -146,6 +147,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="Homon_Hit.h" />
     <ClInclude Include="Homon_Idle.h" />
     <ClInclude Include="Homon_Walk.h" />
+    <ClInclude Include="ItemScript.h" />
     <ClInclude Include="UITestScript.h" />
     <ClInclude Include="CIdle_Gun.h" />
     <ClInclude Include="CObjectManager.h" />
@@ -220,6 +222,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="Deux_Hit.cpp" />
     <ClCompile Include="Deux_Idle.cpp" />
     <ClCompile Include="Deux_Walk.cpp" />
+    <ClCompile Include="EffectScript.cpp" />
     <ClCompile Include="FieldMonsteScript.cpp" />
     <ClCompile Include="FieldM_StateMgr.cpp" />
     <ClCompile Include="Homon_Attack.cpp" />
@@ -227,6 +230,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="Homon_Hit.cpp" />
     <ClCompile Include="Homon_Idle.cpp" />
     <ClCompile Include="Homon_Walk.cpp" />
+    <ClCompile Include="ItemScript.cpp" />
     <ClCompile Include="UITestScript.cpp" />
     <ClCompile Include="CIdle_Gun.cpp" />
     <ClCompile Include="CObjectManager.cpp" />

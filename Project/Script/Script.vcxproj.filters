@@ -241,6 +241,12 @@
     <ClInclude Include="SwordTrailScript.h">
       <Filter>Script\Effect\Trail</Filter>
     </ClInclude>
+    <ClInclude Include="EffectScript.h">
+      <Filter>Script\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemScript.h">
+      <Filter>Script\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -474,6 +480,12 @@
     <ClCompile Include="SwordTrailScript.cpp">
       <Filter>Script\Effect\Trail</Filter>
     </ClCompile>
+    <ClCompile Include="EffectScript.cpp">
+      <Filter>Script\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemScript.cpp">
+      <Filter>Script\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -616,6 +628,9 @@
     </Filter>
     <Filter Include="TEST">
       <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Item">
+      <UniqueIdentifier>{0654eaf3-1cda-4915-8068-8c7eded74b80}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -44,6 +44,7 @@
 #include <Script/CObjectManager.h>
 #include <Script/CTranslateMgr.h>
 #include <Script/FieldMonsteScript.h>
+#include <Script/EffectScript.h>
 
 namespace
 {
@@ -219,6 +220,15 @@ namespace
 		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
 
 		_pScene->AddObject(pObject, L"Default");
+	}
+
+	void AddEffect(CScene* _pScene)
+	{
+		CGameObject* pObject = new CGameObject;
+		pObject->SetName(L"Effect");
+		pObject->AddComponent(new EffectScript);
+
+		_pScene->AddObject(pObject, L"BG");
 	}
 
 	void AddTessellation(CScene* _pScene)
@@ -479,6 +489,7 @@ namespace
 		//AddLandScape(pCurScene);
 		//AddDecal(pCurScene);
 		//AddSphere(pCureScene);
+		//AddEffect(pCurScene);
 		//AddTessellation(pCurScene);
 
 		AddPlayer(pCurScene, pCamObj);
