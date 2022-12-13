@@ -32,8 +32,8 @@ LAYERS:
         m_bFrustumCulling: false
         COMPONENTS:
           - TRANSFORM:
-              m_vRelativePos: [0, 500, 500]
-              m_vRelativeScale: [4000, 4000, 1]
+              m_vRelativePos: [-12, 246, -4085]
+              m_vRelativeScale: [2500, 2500, 1]
               m_vRelativeRot: [0, 0, 0]
               m_bIgnoreParentScale: false
           - MESHRENDER:

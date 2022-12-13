@@ -257,8 +257,8 @@ namespace
 		pObject->AddComponent(new CTransform);
 		pObject->AddComponent(new CMeshRender);
 
-		pObject->Transform()->SetRelativePos(0.f, 500.f, 500.f);
-		pObject->Transform()->SetRelativeScale(4000.f, 4000.f, 1.f);
+		pObject->Transform()->SetRelativePos(-12, 246, -4085);
+		pObject->Transform()->SetRelativeScale(2500, 2500, 1.f);
 
 		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 		pObject->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\fog.mtrl"), 0);
@@ -552,7 +552,7 @@ namespace
 		//AddDecal(pCurScene);
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
-		//AddFogTexture(pCurScene);
+		AddFogTexture(pCurScene);
 
 		AddPlayer(pCurScene, pCamObj);
 		//AddHomonculus(pCurScene);
