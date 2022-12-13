@@ -260,6 +260,9 @@ namespace
 		pObj->Animator3D()->MakeAnimationFromTXT_Extended("PlayerAnimInfo2.txt");
 		pObj->Animator3D()->SetPlayWithChild(true);
 
+		pObj->MeshRender()->SetDynamicShadow(true);
+
+
 		pObj->AddComponent(new CFSM);
 		pObj->AddComponent(new CRigidBody);
 		//pObj->AddComponent(new RigidBodyScript);
@@ -293,6 +296,8 @@ namespace
 		pObjWeapon->SetName(L"player_sword1");
 		pObjWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 		pObjWeapon->Animator3D()->Play(L"test", true);
+
+		pObjWeapon->MeshRender()->SetDynamicShadow(true);
 
 		pObj->AddChild(pObjWeapon);
 		pObj->Animator3D()->CopyAllAnimToChild();

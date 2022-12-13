@@ -84,7 +84,7 @@ PS_DIR_OUT PS_Directional(VS_DIR_OUT _in)
         && 0.f <= vShadowMapUV.y && vShadowMapUV.y <= 1.f
         && vLightProj.z >= fShadowMapDepth + 0.0001f)
     {
-        fShadowPow = 0.9f;
+        fShadowPow = 0.6f;
     }
     
     float fSpecData = DataTarget.Sample(g_sam_0, vUV).r;
@@ -364,6 +364,14 @@ float4 PS_Merge(VS_MERGE_OUT _in) : SV_Target0
 struct VS_SHADOW_IN
 {
     float3 vPos : POSITION;
+    float2 vUV : TEXCOORD;
+
+    float3 vTangent : TANGENT;
+    float3 vNormal : NORMAL;
+    float3 vBinormal : BINORMAL;
+
+    float4 vWeights : BLENDWEIGHT;
+    float4 vIndices : BLENDINDICES;
 };
 
 struct VS_SHADOW_OUT
@@ -376,6 +384,11 @@ VS_SHADOW_OUT VS_ShadowMap(VS_SHADOW_IN _in)
 {
     VS_SHADOW_OUT output = (VS_SHADOW_OUT) 0.f;
 
+    if (g_iAnim)
+    {
+        Skinning(_in.vPos, _in.vTangent, _in.vBinormal, _in.vNormal, _in.vWeights, _in.vIndices, 0);
+    }
+    
     output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
     output.vProjPos = output.vPosition;
     

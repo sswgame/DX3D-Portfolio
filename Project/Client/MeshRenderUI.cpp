@@ -13,7 +13,7 @@ MeshRenderUI::MeshRenderUI()
 	:
 	ComponentUI("MeshRender", COMPONENT_TYPE::MESHRENDER)
 {
-	SetSize(Vec2(0.f, 70.f));
+	SetSize(Vec2(0.f, 100.f));
 }
 
 MeshRenderUI::~MeshRenderUI() {}
@@ -27,7 +27,7 @@ void MeshRenderUI::render_update()
 {
 	ComponentUI::render_update();
 	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
-	else { SetSize(Vec2(0.f, 70.f)); }
+	else { SetSize(Vec2(0.f, 100.f)); }
 
 	ImGui::PushItemWidth(200);
 
@@ -98,6 +98,15 @@ void MeshRenderUI::render_update()
 		pListUI->Activate();
 		pListUI->SetDBCEvent(this, (DBCLKED)&MeshRenderUI::MtrlSelect);
 	}
+
+
+	bool bDynamicShadow = GetTargetObject()->GetRenderComponent()->IsDynamicShadow();
+	ImGui::Checkbox("Shadow", &bDynamicShadow);
+	if (bDynamicShadow)
+		GetTargetObject()->GetRenderComponent()->SetDynamicShadow(true);
+	else
+		GetTargetObject()->GetRenderComponent()->SetDynamicShadow(false);
+
 }
 
 void MeshRenderUI::MeshSelect(DWORD_PTR _param)

@@ -24,6 +24,8 @@ private:
 	CGameObject*	m_pSwordCollider;	// 무기		충돌체
 	CGameObject*	m_pSword_Trail;		// 무기		트레일 
 
+	CGameObject*	m_pDirectionalLight;
+
 
 public:
 	virtual void start();
@@ -52,6 +54,8 @@ public:
 public:
 	void UpdateCamera();
 	void UpdateSwordCollider();
+	void UpdateDirectionalLight();
+
 
 	CGameObject* GetChildObj(CGameObject* _parent, wstring _name);
 

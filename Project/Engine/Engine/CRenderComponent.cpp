@@ -6,6 +6,7 @@
 
 #include "CTransform.h"
 #include "CSerializer.h"
+#include "CAnimator3D.h"
 
 CRenderComponent::CRenderComponent(COMPONENT_TYPE _type)
 	: CComponent(_type)
@@ -155,9 +156,22 @@ void CRenderComponent::render_shadowmap()
 {
 	Transform()->UpdateData();
 	Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ShadowMap.mtrl");
-	pMtrl->UpdateData();
 
+
+	CAnimator3D* pAnim3D = GetOwner()->Animator3D();
+	if (pAnim3D)
+	{
+		pAnim3D->UpdateData();
+
+		pMtrl->SetAnim3D(true);
+		pMtrl->SetBoneCount(pAnim3D->GetBoneCount());
+	}
+
+	pMtrl->UpdateData();
 	m_pMesh->render(0);
+
+	if (pAnim3D)
+		pAnim3D->ClearData();
 }
 
 void CRenderComponent::SaveToScene(FILE* _pFile)

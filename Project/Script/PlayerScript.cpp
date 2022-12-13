@@ -133,6 +133,15 @@ void PlayerScript::start()
 			m_pSword_Trail->Transform()->SetRelativeScale(Vec3(100.f, 100.f, 100.f));
 		}
 	}
+
+	// 빛 초기화
+	if (!m_pDirectionalLight)
+	{
+		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"BG_OBJ");
+		if(pLayer)
+			m_pDirectionalLight = pLayer->FindRootObject(L"Directional Light");
+
+	}
 }
 
 void PlayerScript::update()
@@ -155,6 +164,10 @@ void PlayerScript::update()
 
 	// 5. 무기 충돌체 업데이트 
 	UpdateSwordCollider();
+
+	// 6. 빛 업데이트 
+	UpdateDirectionalLight();
+
 }
 
 void PlayerScript::lateupdate()
@@ -210,6 +223,23 @@ void PlayerScript::UpdateSwordCollider()
 			m_pSwordCollider->Collider3D()->SetOffsetPos(vOffsetTrans); // 임의로 위치 조정  
 		}
 	}
+
+}
+
+void PlayerScript::UpdateDirectionalLight()
+{
+	if (!m_pDirectionalLight)
+		return;
+
+	Vec3 vCamPos      = m_pCamera->Transform()->GetRelativePos();
+	Vec3 vCamForward  = m_pCamera->Transform()->GetWorldFrontDir();
+	Vec3 vCamBackward = -1 * vCamForward;
+
+	Vec3 vLightPos = Vec3(vCamPos.x + vCamBackward.x * 500.f,
+						  vCamPos.y + 500.f,
+						  vCamPos.z + vCamBackward.z * 500.f);
+
+	m_pDirectionalLight->Transform()->SetRelativePos(vLightPos);
 
 }
 

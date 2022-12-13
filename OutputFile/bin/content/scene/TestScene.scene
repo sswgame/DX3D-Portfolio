@@ -944,5 +944,5 @@ LAYERS:
                   0: texture\FBXTexture\ch_chuchotteur_v2_vcols.png
                   1: texture\FBXTexture\chuchotteur_normals.png
                   2: texture\FBXTexture\ch_chuchotteur_v2_vcols.png
-                m_bDynamicShadow: false
+                m_bDynamicShadow: true
                 m_bFrustumCulling: false
