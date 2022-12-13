@@ -1,0 +1,48 @@
+NAME: player_sprint
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 0, 0]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+  - PARTICLESYSTEM:
+      MESH: [PointMesh, PointMesh]
+      MATERIAL COUNT: 1
+      0: [material\ParticleRenderMtrl.mtrl, material\ParticleRenderMtrl.mtrl]
+      USE DYNAMIC 0: false
+      MATERIAL 0 TEXTURE LIST:
+        {}
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+      SHADER: [ParticleUpdateShader, ParticleUpdateShader]
+      m_iMaxCount: 1000
+      m_bPosInherit: 0
+      m_iAliveCount: 500
+      m_fMinLifeTime: 1
+      m_fMaxLifeTime: 1
+      m_fStartSpeed: 100
+      m_fEndSpeed: 50
+      m_vStartColor: [1, 1, 1, 1]
+      m_vEndColor: [1, 1, 1, 1]
+      m_fParticleCreateDistance: 10
+      m_fParticleCreateTerm: 0.100000001
+      m_vDirection: [0, 1]
+      m_iEmissive: 0
+      m_iLighting: 0
+      m_fAngle: 270
+      m_iSpeedDetail_Func: 2
+      m_vStartEmissiveColor: [0, 0, 0, 1]
+      m_vEndEmissiveColor: [0, 0, 0, 1]
+      SOUND_NAME: ""
+      m_bLinearParicle: false
+      m_bUseSoftParticle: false
+      m_bUseEmissive: false
+      m_vStartScale: [2, 2, 1]
+      m_vEndScale: [1, 1, 1]
+SCRIPTS:
+  []
+CHILDREN:
+  []
