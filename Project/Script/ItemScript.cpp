@@ -5,6 +5,8 @@
 
 #include <Engine/CLight3D.h>
 #include <Engine/CSerializer.h>
+#include <Engine/CParticleSystem.h>
+
 
 ItemScript::ItemScript()
 	: CScript{ (int)SCRIPT_TYPE::ITEMSCRIPT }
@@ -46,6 +48,8 @@ void ItemScript::SetParticleObject(CGameObject* _particle)
 
 void ItemScript::start()
 {
+	//CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item.pref", L"prefab\\item.pref").Get();
+	//SetParticleObject(pPrefab->GetProto()->ParticleSystem());
 }
 
 void ItemScript::update()
@@ -66,7 +70,17 @@ void ItemScript::OnCollision(CGameObject* _OtherObject)
 	{
 		if (m_eItemType == ItemType::ITEM_HEALING)
 		{
-			//_OtherObject->GetScript<PlayerScript>()->Cure()
+			GetOwner()->ParticleSystem()->SetAliveCount(0);
+			//_OtherObject->GetScript<PlayerScript>()->
+
+
+			// 회복 particle 추가
+			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item.pref", L"prefab\\item.pref").Get();
+			CGameObject* pParticle = pPrefab->Instantiate();
+			pParticle->ParticleSystem()->SetLifeTime(3.f);
+			pParticle->ParticleSystem()->SetParticlePlayOneTime();
+			pParticle->ParticleSystem()->SetMaterial(L"material\\item.mtrl");
+			_OtherObject->AddChild(pParticle);
 		}
 		else if (m_eItemType == ItemType::ITME_HP_POTION)
 		{
@@ -84,8 +98,8 @@ void ItemScript::OnCollisionExit(CGameObject* _OtherObject)
 void ItemScript::Serialize(YAML::Emitter& emitter)
 {
 	//emitter << YAML::Key << NAME_OF(m_eItemType) << YAML::Value << m_eItemType;
-	m_pOwnerObject->Serialize(emitter);
-	m_pParticleObject->Serialize(emitter);
+	//m_pOwnerObject->Serialize(emitter);
+	//m_pParticleObject->Serialize(emitter);
 	emitter << YAML::Key << NAME_OF(m_fColliderSphereSize) << YAML::Value << m_fColliderSphereSize;
 
 	CScript::Serialize(emitter);
@@ -93,8 +107,8 @@ void ItemScript::Serialize(YAML::Emitter& emitter)
 
 void ItemScript::Deserialize(const YAML::Node& node)
 {
-	m_pOwnerObject->Deserialize(node);
-	m_pParticleObject->Deserialize(node);
+	//m_pOwnerObject->Deserialize(node);
+	//m_pParticleObject->Deserialize(node);
 	m_fColliderSphereSize = node[NAME_OF(m_fColliderSphereSize)].as<float>();
 
 	CScript::Deserialize(node);

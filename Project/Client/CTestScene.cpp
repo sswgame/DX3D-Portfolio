@@ -44,6 +44,7 @@
 #include <Script/CObjectManager.h>
 #include <Script/CTranslateMgr.h>
 #include <Script/FieldMonsteScript.h>
+#include <Script/ItemScript.h>
 
 namespace
 {
@@ -138,8 +139,8 @@ namespace
 
 	void AddSkybox(CScene* _pScene)
 	{
-		const Ptr<CTexture> pSkyTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyDawn.dds",
-		                                                                 L"texture\\skybox\\SkyDawn.dds");
+		const Ptr<CTexture> pSkyTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\nebula04.dds",
+		                                                                 L"texture\\skybox\\nebula04.dds");
 		const auto pSkyBox = new CGameObject;
 
 		pSkyBox->SetName(L"SkyBox");
@@ -266,6 +267,31 @@ namespace
 		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1, (CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex")));
 
 		_pScene->AddObject(pObject, L"BG");
+
+		CGameObject* pObject1;
+		pObject1 = pObject->Clone();
+		_pScene->AddObject(pObject1, L"BG");
+
+	}
+
+	void AddItem(CScene* _pScene)
+	{
+		CGameObject* pParticleObj = new CGameObject;
+		pParticleObj->SetName(L"HP Cure");
+
+		pParticleObj->AddComponent(new CTransform);
+		pParticleObj->AddComponent(new CCollider3D);
+		pParticleObj->AddComponent(new ItemScript);
+
+		pParticleObj->Transform()->SetRelativePos(Vec3(500.f, 100.f, 0.f));
+
+		pParticleObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+		pParticleObj->Collider3D()->SetOffsetPos(Vec3(0, 0.f, 0.f));
+		pParticleObj->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 100.f));
+
+		pParticleObj->GetScript<ItemScript>()->SetItemType(ItemType::ITEM_HEALING);
+
+		_pScene->AddObject(pParticleObj, L"BG");
 	}
 
 	void AddPlayer(CScene* _pScene, CGameObject* _pCamera)
@@ -398,6 +424,11 @@ namespace
 		pMonster->AddComponent(new CCollider3D);
 		pMonster->AddComponent(new CRigidBody);
 		pMonster->AddComponent(new CNaviAgent);
+
+		pMonster->MeshRender()->SetDynamicShadow(true);
+
+		pMonster->Collider3D()->SetOffsetScale(Vec3(100.f, 200.f, 100.f));
+		pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 100.f, 0.f));
 
 		pMonster->Transform()->SetRelativePos(Vec3(0.f, 5.f, 100.f));
 		pMonster->NaviAgent()->SetOffsetPos(Vec3(0.f, 100.f, 0.f));
@@ -553,9 +584,10 @@ namespace
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
 		AddFogTexture(pCurScene);
+		//AddItem(pCurScene);
 
 		AddPlayer(pCurScene, pCamObj);
-		//AddHomonculus(pCurScene);
+		AddHomonculus(pCurScene);
 		//AddBoss(pCurScene);
 
 		/// UI Test
@@ -568,10 +600,10 @@ namespace
 		/// MAP01
 		Map01(pCurScene);
 
-		/*/// 충돌 레이어 설정
+		/// 충돌 레이어 설정
 		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);
-		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
-		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);*/
+		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
+		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
 
 		pCurScene->SetResKey(L"scene\\TestScene.scene");
 		wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();

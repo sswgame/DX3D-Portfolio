@@ -18,10 +18,34 @@ LAYERS:
               0: [material\SkyBoxMtrl.mtrl, material\SkyBoxMtrl.mtrl]
               USE DYNAMIC 0: false
               MATERIAL 0 TEXTURE LIST:
-                6: texture\skybox\SkyDawn.dds
+                6: texture\skybox\nebula04.dds
               m_bDynamicShadow: false
               m_bFrustumCulling: false
               m_eType: 1
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: Fog
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [-12, 246, -4085]
+              m_vRelativeScale: [2500, 2500, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\fog.mtrl, material\fog.mtrl]
+              USE DYNAMIC 0: false
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\particle\smokeparticle.png
+                1: PositionTargetTex
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
         SCRIPTS:
           []
         CHILDREN:

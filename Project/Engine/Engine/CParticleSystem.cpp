@@ -218,6 +218,8 @@ void CParticleSystem::finalupdate()
 		if (m_bPlayOnce)
 			m_iAliveCount = 0;
 	}
+	float liner = (float)m_bLinearParicle;
+	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &liner);
 
 	m_CS->SetParticleCreateDistance(m_fParticleCreateDistance);
 	m_CS->SetParticleBuffer(m_ParticleBuffer);
@@ -367,6 +369,8 @@ void CParticleSystem::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_bLinearParicle) << YAML::Value << m_bLinearParicle;
 	emitter << YAML::Key << NAME_OF(m_bUseSoftParticle) << YAML::Value << m_bUseSoftParticle;
 	emitter << YAML::Key << NAME_OF(m_bUseEmissive) << YAML::Value << m_bUseEmissive;
+	emitter << YAML::Key << NAME_OF(m_vStartScale) << YAML::Value << m_vStartScale;
+	emitter << YAML::Key << NAME_OF(m_vEndScale) << YAML::Value << m_vEndScale;
 
 }
 
@@ -399,5 +403,7 @@ void CParticleSystem::Deserialize(const YAML::Node& node)
 	m_bLinearParicle = node[NAME_OF(m_bLinearParicle)].as<bool>();
 	m_bUseSoftParticle = node[NAME_OF(m_bUseSoftParticle)].as<bool>();
 	m_bUseEmissive = node[NAME_OF(m_bUseEmissive)].as<bool>();
+	m_vStartScale = node[NAME_OF(m_vStartScale)].as<Vec3>();
+	m_vEndScale = node[NAME_OF(m_vEndScale)].as<Vec3>();
 
 }

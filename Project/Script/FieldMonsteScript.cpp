@@ -8,6 +8,8 @@
 #include <Engine/CAnimator3D.h>
 #include <Engine/CAnimation3D.h>
 #include <Engine/CSerializer.h>
+#include <Engine/CGameObject.h>
+#include <Engine/CParticleSystem.h>
 
 
 FieldMonsteScript::FieldMonsteScript()
@@ -283,6 +285,14 @@ void FieldMonsteScript::lateupdate()
 
 void FieldMonsteScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
+	// particle Ãß°¡
+	CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\attack_01.pref", L"prefab\\attack_01.pref").Get();
+	CGameObject* pParticle = pPrefab->Instantiate();
+	pParticle->ParticleSystem()->SetLifeTime(3.f);
+	pParticle->ParticleSystem()->SetLinearParticle(true);
+	pParticle->ParticleSystem()->SetParticlePlayOneTime();
+	pParticle->ParticleSystem()->SetMaterial(L"material\\attack_01.mtrl");
+	GetOwner()->AddChild(pParticle);
 }
 
 void FieldMonsteScript::OnCollision(CGameObject* _OtherObject)
@@ -295,6 +305,9 @@ void FieldMonsteScript::OnCollision(CGameObject* _OtherObject)
 		m_pMonsterMgr->SetNextState(L"HIT");
 		m_pMonsterMgr->SetRunTime(-1.f);
 		m_bCurAnimationDone = false;
+
+
+		
 	}
 }
 
