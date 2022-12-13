@@ -50,11 +50,10 @@ void ComponentUI::render_update()
 	CComponent* pComponent = m_pTargetObject->GetComponent(m_eComType);
 	if (pComponent->GetType() == COMPONENT_TYPE::TRANSFORM)
 	{
-		const TransformUI* pTransfomUI = (TransformUI*)(this);
 		ImGui::SameLine();
-		bool enableGuizmo = pTransfomUI->IsGuizmoEnabled();
+		bool enableGuizmo = TransformUI::IsGuizmoEnabled();
 		ImGui::Checkbox("ENABLE GUIZMO", &enableGuizmo);
-		pTransfomUI->SetEnableGuizmo(enableGuizmo);
+		TransformUI::SetEnableGuizmo(enableGuizmo);
 	}
 	if (pComponent->GetType() != COMPONENT_TYPE::TRANSFORM)
 	{

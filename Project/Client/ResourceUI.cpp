@@ -93,7 +93,6 @@ void ResourceUI::ItemDBClicked(DWORD_PTR _dwNode)
 	CSceneMgr::GetInst()->ChangeScene(pNewScene);
 }
 
-
 void ResourceUI::Reload()
 {
 	UsingMultiThread();
@@ -353,6 +352,14 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Start();
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("NAVIMAPDATA THREAD JOIN SUCCEDED");
+	//NAVMESHDATA
+	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::NAVIMAPDATA)])
+	{
+		CThreadPool::GetInst()->EnqueueJob(&ResourceUI::LoadResource<CNaviMapData>, this, resourceKey);
+	}
+	CThreadPool::GetInst()->Start();
+	CThreadPool::GetInst()->Join();
+	LOG_TRACE("NAVMESHDATA THREAD JOIN SUCCEDED");
 }
 
 void ResourceUI::WithOutMultiThead()

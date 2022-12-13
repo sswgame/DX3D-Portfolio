@@ -56,31 +56,6 @@ SceneOutliner::SceneOutliner()
 
 SceneOutliner::~SceneOutliner() = default;
 
-void SceneOutliner::ShowHierarchyAll(CGameObject* pGameObject, bool afterRenew)
-{
-	if (afterRenew)
-	{
-		m_pObjectForShow = pGameObject;
-	}
-
-	m_pSelectedGameObject = pGameObject;
-
-	TreeNode* pSelectedNode = m_TreeUI->FindNode(ToString(m_pSelectedGameObject->GetName()));
-	if (nullptr == pSelectedNode)
-	{
-		m_pSelectedGameObject = nullptr;
-		return;
-	}
-
-	TreeNode* pParentNode = pSelectedNode->GetParent();
-	while (pParentNode)
-	{
-		pParentNode->SetCheckOn();
-		pParentNode = pParentNode->GetParent();
-	}
-	m_TreeUI->SetSelectedNode(pSelectedNode);
-}
-
 void SceneOutliner::update()
 {
 	static bool bFirst = true;
@@ -596,6 +571,13 @@ void SceneOutliner::ObjectPicking()
 
 	for (const auto& pGameObject : vecPickObjects)
 	{
+		//UI의 경우 TOOL에서 따로 동작해야하므로 이에 대한 검사를 하지 않는다.
+		//TODO::단 오브젝트가 들고 있는 경우도 있으므로, 그게 대한 처리 필요
+		if (pGameObject->GetUIBaseComponenent())
+		{
+			continue;
+		}
+
 		CRenderComponent* pRenderComponent = pGameObject->GetRenderComponent();
 
 		const Matrix& matInverseWorld = pGameObject->Transform()->GetWorldInvMat();
@@ -769,4 +751,29 @@ void SceneOutliner::ResDrop(DWORD_PTR _dwResource)
 		CGameObject* pGameObject = pPrefab->Instantiate();
 		CSceneMgr::GetInst()->SpawnObject(pGameObject, 0);
 	}
+}
+
+void SceneOutliner::ShowHierarchyAll(CGameObject* pGameObject, bool afterRenew)
+{
+	if (afterRenew)
+	{
+		m_pObjectForShow = pGameObject;
+	}
+
+	m_pSelectedGameObject = pGameObject;
+
+	TreeNode* pSelectedNode = m_TreeUI->FindNode(ToString(m_pSelectedGameObject->GetName()));
+	if (nullptr == pSelectedNode)
+	{
+		m_pSelectedGameObject = nullptr;
+		return;
+	}
+
+	TreeNode* pParentNode = pSelectedNode->GetParent();
+	while (pParentNode)
+	{
+		pParentNode->SetCheckOn();
+		pParentNode = pParentNode->GetParent();
+	}
+	m_TreeUI->SetSelectedNode(pSelectedNode);
 }

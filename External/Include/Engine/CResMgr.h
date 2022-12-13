@@ -134,6 +134,8 @@ Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strRelativePath, bo
 		SAFE_DELETE(pDelete);
 		//MessageBox(nullptr, L"리소스 로딩 실패", L"리소스 로딩 오류", MB_OK);
 		LOG_ERROR("RESOURCE LOAD FAILED : %s", ToString(strFullPath).c_str());
+		//MessageBox(nullptr, L"리소스 로딩 실패", L"리소스 로딩 오류", MB_OK);
+		LOG_ERROR("RESOURCE LOAD FAILED :%s", ToString(strFullPath).c_str());
 		return nullptr;
 	}
 	{

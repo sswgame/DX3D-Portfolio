@@ -47,12 +47,10 @@ std::future<std::invoke_result_t<F, Args ...>> CThreadPool::EnqueueJob(F&& f, Ar
 	auto pWork = std::make_shared<std::packaged_task<return_t()>>(std::bind(std::forward<F>(f),
 	                                                                        std::forward<Args>(args)...));
 	std::future<return_t> resultFuture = pWork->get_future();
+
 	{
 		std::lock_guard<std::mutex> lock(m_lock);
-		m_vecWork.push([pWork]()
-		{
-			(*pWork)();
-		});
+		m_vecWork.push([pWork]() { (*pWork)(); });
 	}
 
 

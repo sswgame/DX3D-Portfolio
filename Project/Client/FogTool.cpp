@@ -20,6 +20,8 @@ void FogTool::SetData() {}
 
 void FogTool::update()
 {
+	return;
+
 	if (nullptr == m_pFog)
 	{
 		m_pFog = new CGameObject;

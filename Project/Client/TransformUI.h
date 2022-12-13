@@ -18,7 +18,7 @@ public:
 	static GUIZMO_TYPE GetGuizmoType() { return s_guizmoType; }
 
 private:
-	inline static bool        s_enableGuizmo = false;
+	inline static bool        s_enableGuizmo = true;
 	inline static GUIZMO_TYPE s_guizmoType   = GUIZMO_TYPE::TRANSLATE;
 private:
 	Vec3 m_vRelativePos;

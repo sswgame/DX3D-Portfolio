@@ -1,17 +1,16 @@
 #include "pch.h"
 #include "CToolObjMgr.h"
 
-#include "CGameObjectEx.h"
-#include "CCameraEx.h"
-
 #include <Engine/CTransform.h>
 #include <Engine/CRenderMgr.h>
 
+#include "CGameObjectEx.h"
+#include "CCameraEx.h"
 #include "CEditorCamScript.h"
 #include "CGridScript.h"
 
 
-CToolObjMgr::CToolObjMgr() {}
+CToolObjMgr::CToolObjMgr() = default;
 
 CToolObjMgr::~CToolObjMgr()
 {
