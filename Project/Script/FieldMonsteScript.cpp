@@ -195,6 +195,8 @@ void FieldMonsteScript::start()
 	}
 
 	m_iCurHP = m_iFullHP;
+	m_pMonsterMgr->SetNextState(L"IDLE");
+
 }
 
 void FieldMonsteScript::update()

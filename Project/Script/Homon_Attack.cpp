@@ -7,6 +7,7 @@
 // engine
 #include <Engine/CGameObject.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CCollider3D.h>
 
 Homon_Attack::Homon_Attack()
 	: CState{L"ATTACK"}
@@ -29,13 +30,13 @@ void Homon_Attack::Enter()
 		m_pOwnerMGR = (GetOwner()->GetScript<FieldMonsteScript>()->GetMonsterMGR());
 	}
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), false);
+	GetOwner()->Collider3D()->CreateAttackCollider(1.f, 100.f, GetOwner()->Transform()->GetRelativePos());
 }
 
 
 void Homon_Attack::Update()
 {
 	CState::Update();
-
 
 	if (nullptr == m_pAnimation)
 		return;

@@ -20,6 +20,8 @@ private:
 	Ptr<CMesh>     m_pMesh;
 	Ptr<CMaterial> m_pMaterial;
 
+	float m_fLifeTime;
+
 public:
 	void SetCollider3DType(COLLIDER3D_TYPE _type);
 	void SetOffsetPos(Vec3 _vOffsetPos);
@@ -42,6 +44,10 @@ public:
 public:
 	void SaveToScene(FILE* _pFile) override;
 	void LoadFromScene(FILE* _pFile) override;
+
+public:
+	void CreateAttackCollider(float _lifeTime, float _sphereSize, Vec3 _pos);
+	void SetLifeTime(float _time) { m_fLifeTime = _time; }
 
 public:
 	void UpdateData() override;

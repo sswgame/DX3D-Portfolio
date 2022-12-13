@@ -13,6 +13,7 @@ CCollider3D::CCollider3D()
 	, m_vOffsetScale{1.f, 1.f, 1.f}
 	, m_iCollisionCount{0}
 	, m_eCollider3DType{COLLIDER3D_TYPE::CUBE}
+	, m_fLifeTime(-1.f)
 {
 	// Debug Obj Ãß°¡
 	if (nullptr == m_pDebugObj)
@@ -34,7 +35,8 @@ CCollider3D::CCollider3D(const CCollider3D& _origin)
 	, m_iCollisionCount{0}
 	, m_eCollider3DType{_origin.m_eCollider3DType}
 	, m_pMesh{_origin.m_pMesh}
-	, m_pMaterial{_origin.m_pMaterial} {}
+	, m_pMaterial{_origin.m_pMaterial}
+	, m_fLifeTime(-1.f) {}
 
 CCollider3D::~CCollider3D() {}
 
@@ -142,6 +144,16 @@ void CCollider3D::UpdateData()
 
 void CCollider3D::finalupdate()
 {
+	if (-1.f != m_fLifeTime)
+	{
+		m_fLifeTime -= DT;
+		if (m_fLifeTime <= 0.f)
+		{
+			GetOwner()->Destroy();
+			return;
+		}
+	}
+
 	const Matrix matTranslation = XMMatrixTranslation(m_vOffsetPos.x, m_vOffsetPos.y, m_vOffsetPos.z);
 	const Matrix matRotation    = Matrix{};
 	const Matrix matScale       = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
@@ -203,6 +215,20 @@ void CCollider3D::LoadFromScene(FILE* _pFile)
 	fread(&m_eCollider3DType, sizeof(UINT), 1, _pFile);
 
 	SetCollider3DType(m_eCollider3DType);
+}
+
+void CCollider3D::CreateAttackCollider(float _lifeTime, float _sphereSize, Vec3 _pos)
+{
+	CGameObject* pAttackCollider = new CGameObject;
+	pAttackCollider->SetName(L"MonsterAttack");
+	pAttackCollider->AddComponent(new CTransform);
+	pAttackCollider->AddComponent(new CCollider3D);
+	pAttackCollider->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+	pAttackCollider->Collider3D()->SetOffsetPos(_pos);
+	pAttackCollider->Collider3D()->SetOffsetScale(Vec3(_sphereSize, _sphereSize, _sphereSize));
+	pAttackCollider->Collider3D()->SetLifeTime(_lifeTime);
+
+	CSceneMgr::GetInst()->SpawnObject(pAttackCollider, L"MONSTER_PARRING-ATTACK");
 }
 
 void CCollider3D::Serialize(YAML::Emitter& emitter)
