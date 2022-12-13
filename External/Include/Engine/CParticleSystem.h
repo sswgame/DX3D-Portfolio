@@ -118,6 +118,7 @@ public:
 	void SetMaterial(wstring _mtrl);
 
 public:
+	virtual void start() override;
 	virtual void finalupdate() override;
 	virtual void render() override;
 

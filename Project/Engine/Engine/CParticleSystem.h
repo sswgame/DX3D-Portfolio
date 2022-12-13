@@ -50,6 +50,8 @@ private:
 
 	Vec2 m_vDirection;
 
+	float m_fLifeTime;
+
 	wstring			m_strSoundName;
 	CSound* m_pSound;
 
@@ -117,7 +119,10 @@ public:
 
 	void SetMaterial(wstring _mtrl);
 
+	void SetLifeTime(float _time) { m_fLifeTime = _time; }
+
 public:
+	virtual void start() override;
 	virtual void finalupdate() override;
 	virtual void render() override;
 

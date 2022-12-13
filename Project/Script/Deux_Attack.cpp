@@ -35,9 +35,12 @@ void Deux_Attack::Update()
 {
 	CState::Update();
 
-
 	if (nullptr == m_pAnimation)
 		return;
+
+	// 특정 프레임에 아래 함수호출. 위치조정 필요
+	//	GetOwner()->Collider3D()->CreateAttackCollider(1.f, 100.f, GetOwner()->Transform()->GetRelativePos());
+
 
 	if (m_pOwnerMGR->IsRunTimeEXIST())
 	{

@@ -37,6 +37,7 @@ CParticleSystem::CParticleSystem()
 	, m_bUseSoftParticle(false)
 	, m_strSoundName()
 	, m_pSound(nullptr)
+	, m_fLifeTime(-1.f)
 	, m_bUseEmissive(false)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
@@ -182,8 +183,27 @@ void CParticleSystem::SetMaterial(const wstring _mtrl)
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(_mtrl), 0);
 }
 
+void CParticleSystem::start()
+{
+	if (nullptr == m_pSound)
+		return;
+
+	m_pSound->Play(1, 0.5f);
+
+}
+
 void CParticleSystem::finalupdate()
 {
+	if (-1.f != m_fLifeTime)
+	{
+		m_fLifeTime -= DT;
+		if (m_fLifeTime <= 0.f)
+		{
+			GetOwner()->Destroy();
+			return;
+		}
+	}
+
 	m_fAccTime += DT;
 	if (m_fParticleCreateTerm < m_fAccTime)
 	{
