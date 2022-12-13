@@ -83,6 +83,7 @@ bool CNaviAgent::CheckLinkedCell()
 		{
 			m_iCurCellIndex = vecLinkedCell[i];
 			m_vPrevPos      = Transform()->GetWorldPos();
+
 			return true;
 		}
 	}
@@ -93,24 +94,32 @@ bool CNaviAgent::CheckLinkedCell()
 Vec3 CNaviAgent::SetYPos(float _fDist)
 {
 	Vec3  vPos   = Transform()->GetWorldPos();
+	float fDir   = vPos.y - m_vPrevPos.y;
 	float fSpace = _fDist - m_vOffsetSize.y;
 
-	if (fSpace < 0.f)
+
+	if (m_pRigidBody->IsOnGround() == true) // 바닥 
 	{
 		Transform()->SetMovePosition(0.f, -fSpace, 0.f);
 		vPos.y -= fSpace;
-
-		if (nullptr != m_pRigidBody)
-			m_pRigidBody->SetOnGround(true);
 	}
-	else
+	else if (m_pRigidBody->IsOnGround() == false) // 공중
 	{
-		if (nullptr != m_pRigidBody && 0 != fSpace)
-			m_pRigidBody->SetOnGround(false);
+		if (fDir < 0.f)		// 하강중	
+		{
+			if (fSpace < 0.f)	// 지면을 파고 들었을 때
+			{
+				// 파고든 만큼 올려준다.
+				Transform()->SetMovePosition(0.f, -fSpace, 0.f);
+				vPos.y -= fSpace;
+				Transform()->SetRelativePos(vPos);
+
+				// 지면 체크
+				m_pRigidBody->SetOnGround(true);
+			}
+		}	
 	}
 
-	//if (10.f < fSpace)
-	//	m_iCurCellIndex = -1;
 
 	return vPos;
 }
@@ -146,7 +155,7 @@ void CNaviAgent::lateupdate()
 			{
 				Transform()->SetRelativePos(m_vPrevPos);
 			}
-		}
+		} 
 		else
 			m_vPrevPos = SetYPos(fDist);
 	}

@@ -302,7 +302,7 @@ namespace
 		                                                               L"meshdata\\player_sword0.mdat");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"player");
-		pObj->Transform()->SetRelativePos(Vec3(0.f, 10.f, 0.f));
+		pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 		pObj->Animator3D()->Play(L"test", true);
 		pObj->Animator3D()->GetCurAnim()->SetPlay(false);
 		pObj->Animator3D()->MakeAnimationFromTXT_Extended("PlayerAnimInfo2.txt");
@@ -323,8 +323,8 @@ namespace
 		pObj->Collider3D()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
 		pObj->Collider3D()->SetOffsetScale(Vec3(75.f, 175.f, 75.f));
 
-		pObj->NaviAgent()->SetOffsetSize(Vec3(75.f, 175.f, 75.f));
 		pObj->NaviAgent()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
+		pObj->NaviAgent()->SetOffsetSize(Vec3(75.f, 175.f, 75.f));
 
 		PlayerScript* pPlayerScript = new PlayerScript;
 		pPlayerScript->SetCamera(_pCamera);
@@ -555,7 +555,7 @@ namespace
 		                                             Get();
 		pNMesh->NaviMap()->SetNaviMapData(pNaviMap);
 		pNMesh->Transform()->SetRelativeScale(18.2f, 18.2f, 18.2f);
-		pNMesh->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+		pNMesh->Transform()->SetRelativePos(0.f, -5.f, 0.f);
 		Vec3 rot = Vec3(0.f, 180.4f, 0.f);
 		rot.ToRadian();
 		pNMesh->Transform()->SetRelativeRotation(rot);
@@ -563,9 +563,6 @@ namespace
 		pMap01->AddChild(pNMesh);
 
 		_pScene->AddObject(pMap01, GAME::LAYER::BG);
-
-		//CPrefab* pmappref = new CPrefab;
-		//pmappref->SetProto()
 	}
 
 	void CreateScene()
@@ -591,7 +588,7 @@ namespace
 		//AddBoss(pCurScene);
 
 		/// UI Test
-		TestUI(pCurScene);
+		//TestUI(pCurScene);
 		//TestObjectPicking(pCurScene);
 
 		/// NaviTest

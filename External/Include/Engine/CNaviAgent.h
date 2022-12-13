@@ -6,6 +6,7 @@ class CNaviAgent : public CComponent
 private:
 	CNaviMap*   m_pTargetNaviMap;
 	CRigidBody* m_pRigidBody;
+
 	Vec3        m_vOffsetSize;
 	Vec3        m_vOffsetPos;
 	Vec3        m_vPrevPos;

@@ -212,8 +212,9 @@ void CPlayerJumpState::UpdateJump()
 void CPlayerJumpState::UpdateJumpState()
 {
 
-	m_fPrevHeight = m_fCurHeight;
-	m_fCurHeight = GetOwner()->Transform()->GetRelativePos().y;
+	m_fPrevHeight   = m_fCurHeight;
+	m_fCurHeight    = GetOwner()->Transform()->GetRelativePos().y;
+	m_fCurHeightDir = m_fCurHeight - m_fPrevHeight;
 
 
 	// [ UP -> AIR -> DOWN ]

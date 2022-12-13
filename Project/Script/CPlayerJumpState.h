@@ -35,8 +35,9 @@ private:
     bool             m_bJumpAir_AnimStart;
     bool             m_bJumpDown_AnimStart;
 
-    float            m_fPrevHeight;          // 플레이어의 이전 y 값 
-    float            m_fCurHeight;           // 플레이어의 현재 y 값 
+    float m_fPrevHeight;          // 플레이어의 이전 y 값 
+    float m_fCurHeight;           // 플레이어의 현재 y 값 
+    float m_fCurHeightDir;
 
     JUMP_STATE       m_ePrevState;
     JUMP_STATE       m_eCurState;
@@ -59,9 +60,9 @@ public:
     virtual void Update();
     virtual void LateUpdate();
 
-    void PlayJumpAnim(wstring _sName, bool _bRepeat = true, float _fSpeed = 1.f);
-    void SetCurKeyInfo(tKey_Zip _keyInfo) { m_tCurKeyInfo = _keyInfo; }
-
+    void  PlayJumpAnim(wstring _sName, bool _bRepeat = true, float _fSpeed = 1.f);
+    void  SetCurKeyInfo(tKey_Zip _keyInfo) { m_tCurKeyInfo = _keyInfo; }
+    float GetHeightDir() { return m_fCurHeightDir; }
 public:
     void Jump(Vec3 _velocity);
     void ResetForDoubleJump();
