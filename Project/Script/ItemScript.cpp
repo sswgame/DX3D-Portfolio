@@ -72,17 +72,18 @@ void ItemScript::lateupdate()
 {
 	if (m_bItemUsed)
 	{
-		//GetOwner()->Deactivate();
-		vector<CGameObject*> vec = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"BG")->GetObjects();
-
-		for (size_t i = 0; i < vec.size(); i++)
+		if (m_eItemType == ItemType::ITEM_HEALING)
 		{
-			if (L"HP Cure Effect" == vec[i]->GetName())
+			vector<CGameObject*> vec = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"BG")->GetObjects();
+			for (size_t i = 0; i < vec.size(); i++)
 			{
-				vec[i]->ParticleSystem()->SetAliveCount(0);
-				
+				if (L"HP Cure Effect" == vec[i]->GetName())
+				{
+					vec[i]->ParticleSystem()->SetAliveCount(0);
+				}
 			}
 		}
+		
 	}
 }
 

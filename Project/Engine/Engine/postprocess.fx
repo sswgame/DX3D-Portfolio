@@ -147,7 +147,7 @@ float4 PS_FogPostProcess(VTX_OUT _in) : SV_Target
     if (vTargetViewPos.z < 1000.f)
         return vOutColor;
 
-    float fAlpha = (vTargetViewPos.z - 1000.f) / 3000.f;
+    float fAlpha = (vTargetViewPos.z - 1000.f) / 10000.f;
     fAlpha = clamp(fAlpha, 0.001f, 0.5f);
 
     fAlpha = 1.f - fAlpha;
