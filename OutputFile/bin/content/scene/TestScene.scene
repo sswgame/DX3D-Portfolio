@@ -26,6 +26,30 @@ LAYERS:
           []
         CHILDREN:
           []
+      - NAME: Fog
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 500, 500]
+              m_vRelativeScale: [4000, 4000, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\fog.mtrl, material\fog.mtrl]
+              USE DYNAMIC 0: false
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\particle\smokeparticle.png
+                1: PositionTargetTex
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
       - NAME: Map01
         m_bActive: true
         m_bDynamicShadow: false

@@ -161,15 +161,15 @@ float4 PS_Std3D_fog(VTX_OUT _in) : SV_Target
     float3 vTargetViewPos = g_tex_1.Sample(g_sam_1, vFullUV).xyz;
 
     float diff = vTargetViewPos.z - _in.vViewPos.z;
-    float fAlpha = diff / 100.f;
 
+    float fAlpha = diff / 500.f;
     fAlpha = clamp(fAlpha, 0.1f, 1.f);
     
     if (0 < diff)
     {
         vOutColor *= fAlpha;
     }
-    
+
     return vOutColor;
 }
 

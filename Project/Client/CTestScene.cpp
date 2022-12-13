@@ -246,6 +246,28 @@ namespace
 		_pScene->AddObject(pObject, L"Default");
 	}
 
+	void AddFogTexture(CScene* _pScene)
+	{
+		Ptr<CTexture> fogTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\particle\\smokeparticle.png",
+			L"texture\\particle\\smokeparticle.png");
+
+		CGameObject* pObject = new CGameObject;
+		pObject->SetName(L"Fog");
+
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CMeshRender);
+
+		pObject->Transform()->SetRelativePos(0.f, 500.f, 500.f);
+		pObject->Transform()->SetRelativeScale(4000.f, 4000.f, 1.f);
+
+		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+		pObject->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\fog.mtrl"), 0);
+		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, fogTex);
+		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1, (CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex")));
+
+		_pScene->AddObject(pObject, L"BG");
+	}
+
 	void AddPlayer(CScene* _pScene, CGameObject* _pCamera)
 	{
 		CGameObject* pObj = nullptr;
@@ -530,6 +552,7 @@ namespace
 		//AddDecal(pCurScene);
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
+		//AddFogTexture(pCurScene);
 
 		AddPlayer(pCurScene, pCamObj);
 		//AddHomonculus(pCurScene);

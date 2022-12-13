@@ -158,12 +158,17 @@ float4 PS_Std3D_fog(VTX_OUT _in) : SV_Target
     vScreenUV.y = (projPos.y / projPos.w) * -0.5f + 0.5f;
 
     float2 vFullUV = float2(_in.vPosition.x / vResolution.x, _in.vPosition.y / vResolution.y);
-    float3 vTargetViewPos = g_tex_2.Sample(g_sam_0, vFullUV).xyz;
+    float3 vTargetViewPos = g_tex_1.Sample(g_sam_1, vFullUV).xyz;
 
     float diff = vTargetViewPos.z - _in.vViewPos.z;
-    float fAlpha = diff / 100.f;
 
+    float fAlpha = diff / 500.f;
     fAlpha = clamp(fAlpha, 0.1f, 1.f);
+    
+    if (0 < diff)
+    {
+        vOutColor *= fAlpha;
+    }
 
     return vOutColor;
 }
