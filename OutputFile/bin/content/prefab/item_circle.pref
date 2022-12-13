@@ -1,4 +1,4 @@
-NAME: player_cure
+NAME: item_circle
 m_bActive: true
 m_bDynamicShadow: false
 m_bFrustumCulling: false
@@ -20,28 +20,28 @@ COMPONENTS:
       SHADER: [ParticleUpdateShader, ParticleUpdateShader]
       m_iMaxCount: 1000
       m_bPosInherit: 0
-      m_iAliveCount: 500
-      m_fMinLifeTime: 2
-      m_fMaxLifeTime: 5
-      m_fStartSpeed: 50
-      m_fEndSpeed: 150
-      m_vStartColor: [0.564766884, 1, 0.668881416, 0.996078432]
+      m_iAliveCount: 4
+      m_fMinLifeTime: 0.5
+      m_fMaxLifeTime: 2
+      m_fStartSpeed: 10
+      m_fEndSpeed: 10
+      m_vStartColor: [0.91191721, 1, 0, 1]
       m_vEndColor: [1, 1, 1, 0]
-      m_fParticleCreateDistance: 50
-      m_fParticleCreateTerm: 0.200000003
-      m_vDirection: [0, -1]
+      m_fParticleCreateDistance: 10
+      m_fParticleCreateTerm: 0.0199999996
+      m_vDirection: [1, 0]
       m_iEmissive: 0
       m_iLighting: 0
-      m_fAngle: 311
+      m_fAngle: 0
       m_iSpeedDetail_Func: 0
-      m_vStartEmissiveColor: [0.564766884, 1, 0.668881416, 0.996078432]
-      m_vEndEmissiveColor: [0.564766884, 1, 0.668881416, 0.996078432]
+      m_vStartEmissiveColor: [0.91191721, 1, 0, 1]
+      m_vEndEmissiveColor: [0.91191721, 1, 0, 1]
       SOUND_NAME: ""
       m_bLinearParicle: false
       m_bUseSoftParticle: false
       m_bUseEmissive: true
       m_vStartScale: [30, 30, 1]
-      m_vEndScale: [5, 5, 1]
+      m_vEndScale: [1, 1, 1]
 SCRIPTS:
   []
 CHILDREN:

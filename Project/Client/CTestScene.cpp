@@ -270,28 +270,40 @@ namespace
 
 		CGameObject* pObject1;
 		pObject1 = pObject->Clone();
+		pObject1->Transform()->SetRelativePos(-12, 3, -1615);
+		pObject1->Transform()->SetRelativeScale(10000, 10000, 1.f);
+		pObject1->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
 		_pScene->AddObject(pObject1, L"BG");
 
 	}
 
 	void AddItem(CScene* _pScene)
 	{
-		CGameObject* pParticleObj = new CGameObject;
-		pParticleObj->SetName(L"HP Cure");
+		CPrefab* pPrefabBall = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item_circle.pref", L"prefab\\item_circle.pref").Get();
+		CGameObject* parti = pPrefabBall->Instantiate();
+		parti->SetName(L"HP Cure Ball");
+		parti->AddComponent(new CCollider3D);
+		parti->AddComponent(new ItemScript);
 
-		pParticleObj->AddComponent(new CTransform);
-		pParticleObj->AddComponent(new CCollider3D);
-		pParticleObj->AddComponent(new ItemScript);
+		parti->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+		parti->Collider3D()->SetOffsetPos(Vec3(0, 0.f, 0.f));
+		parti->Collider3D()->SetOffsetScale(Vec3(50.f, 50.f, 50.f));
+		parti->Transform()->SetRelativePos(Vec3(500.f, 00.f, 0.f));
+		parti->Transform()->SetRelativeScale(Vec3(50.f, 50.f, 1.f));
+		parti->ParticleSystem()->SetLifeTime(-1.f);
+		parti->ParticleSystem()->SetMaterial(L"material\\item_circle.mtrl");
+		parti->GetScript<ItemScript>()->SetItemType(ItemType::ITEM_HEALING);
+		_pScene->AddObject(parti, L"ITEM");
 
-		pParticleObj->Transform()->SetRelativePos(Vec3(500.f, 100.f, 0.f));
 
-		pParticleObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-		pParticleObj->Collider3D()->SetOffsetPos(Vec3(0, 0.f, 0.f));
-		pParticleObj->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 100.f));
-
-		pParticleObj->GetScript<ItemScript>()->SetItemType(ItemType::ITEM_HEALING);
-
-		_pScene->AddObject(pParticleObj, L"BG");
+		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item.pref", L"prefab\\item.pref").Get();
+		CGameObject* partiEffect = pPrefab->Instantiate();
+		partiEffect->SetName(L"HP Cure Effect");
+		partiEffect->Transform()->SetRelativePos(Vec3(500.f, 0.f, 0.f));
+		partiEffect->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
+		partiEffect->ParticleSystem()->SetLifeTime(-1.f);
+		partiEffect->ParticleSystem()->SetMaterial(L"material\\item.mtrl");
+		_pScene->AddObject(partiEffect, L"BG");
 	}
 
 	void AddPlayer(CScene* _pScene, CGameObject* _pCamera)
@@ -599,6 +611,7 @@ namespace
 
 		/// 충돌 레이어 설정
 		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::ITEM);
 		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
 		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
 

@@ -6,14 +6,16 @@
 #include <Engine/CLight3D.h>
 #include <Engine/CSerializer.h>
 #include <Engine/CParticleSystem.h>
+#include <Engine/CCollider3D.h>
 
 
 ItemScript::ItemScript()
 	: CScript{ (int)SCRIPT_TYPE::ITEMSCRIPT }
 	, m_eItemType(ItemType::NONE)
 	, m_pOwnerObject(nullptr)
-	, m_pParticleObject(nullptr)
+	, m_pParticleSystem(nullptr)
 	, m_fColliderSphereSize(0.f)
+	, m_bItemUsed(false)
 
 {
 }
@@ -22,8 +24,9 @@ ItemScript::ItemScript(const ItemScript& _origin)
 	: CScript{ (int)SCRIPT_TYPE::ITEMSCRIPT }
 	, m_eItemType(_origin.m_eItemType)
 	, m_pOwnerObject(_origin.m_pOwnerObject)
-	, m_pParticleObject(_origin.m_pParticleObject)
+	, m_pParticleSystem(_origin.m_pParticleSystem)
 	, m_fColliderSphereSize(_origin.m_fColliderSphereSize)
+	, m_bItemUsed(_origin.m_bItemUsed)
 
 {
 }
@@ -41,15 +44,24 @@ void ItemScript::SetItemType(ItemType _type)
 
 void ItemScript::SetParticleObject(CGameObject* _particle)
 {
-	m_pParticleObject = _particle;
+	m_pParticleSystem = _particle;
 
-	m_pOwnerObject->AddChild(m_pParticleObject);
 }
 
 void ItemScript::start()
 {
-	//CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item.pref", L"prefab\\item.pref").Get();
-	//SetParticleObject(pPrefab->GetProto()->ParticleSystem());
+	if (m_eItemType == ItemType::ITEM_HEALING)
+	{
+		/*CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item.pref", L"prefab\\item.pref").Get();
+
+		CGameObject* parti = pPrefab->Instantiate();
+		parti->ParticleSystem()->SetMaterial(L"material\\item.mtrl");
+		GetOwner()->AddChild(parti);*/
+	}
+	else if (m_eItemType == ItemType::ITME_HP_POTION)
+	{
+
+	}
 }
 
 void ItemScript::update()
@@ -58,10 +70,25 @@ void ItemScript::update()
 
 void ItemScript::lateupdate()
 {
+	if (m_bItemUsed)
+	{
+		//GetOwner()->Deactivate();
+		vector<CGameObject*> vec = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"BG")->GetObjects();
+
+		for (size_t i = 0; i < vec.size(); i++)
+		{
+			if (L"HP Cure Effect" == vec[i]->GetName())
+			{
+				vec[i]->ParticleSystem()->SetAliveCount(0);
+				
+			}
+		}
+	}
 }
 
 void ItemScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
+
 }
 
 void ItemScript::OnCollision(CGameObject* _OtherObject)
@@ -73,21 +100,24 @@ void ItemScript::OnCollision(CGameObject* _OtherObject)
 			GetOwner()->ParticleSystem()->SetAliveCount(0);
 			//_OtherObject->GetScript<PlayerScript>()->
 
-
-			// 회복 particle 추가
-			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item.pref", L"prefab\\item.pref").Get();
-			CGameObject* pParticle = pPrefab->Instantiate();
-			pParticle->ParticleSystem()->SetLifeTime(3.f);
-			pParticle->ParticleSystem()->SetParticlePlayOneTime();
-			pParticle->ParticleSystem()->SetMaterial(L"material\\item.mtrl");
-			_OtherObject->AddChild(pParticle);
+			if (false == m_bItemUsed)
+			{
+				// 회복 particle 추가
+				CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\player_cure.pref", L"prefab\\player_cure.pref").Get();
+				CGameObject* pParticle = pPrefab->Instantiate();
+				pParticle->SetName(L"Player Cure");
+				pParticle->ParticleSystem()->SetLifeTime(3.f);
+				pParticle->ParticleSystem()->SetParticlePlayOneTime();
+				pParticle->ParticleSystem()->SetMaterial(L"material\\player_cure.mtrl");
+				_OtherObject->AddChild(pParticle);
+				m_bItemUsed = true;
+			}			
 		}
 		else if (m_eItemType == ItemType::ITME_HP_POTION)
 		{
 			//_OtherObject->GetScript<PlayerScript>()->AddHPPotion()
 		}
 
-		m_pOwnerObject->Destroy();
 	}
 }
 
