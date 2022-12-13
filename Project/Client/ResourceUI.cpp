@@ -299,6 +299,7 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Start();
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("MESH THREAD JOIN SUCCEDED");
+
 	//SOUND
 	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::SOUND)])
 	{
@@ -307,6 +308,7 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Start();
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("SOUND THREAD JOIN SUCCEDED");
+
 	//MATERIAL
 	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::MATERIAL)])
 	{
@@ -315,6 +317,7 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Start();
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("MATERIAL THREAD JOIN SUCCEDED");
+
 	//MESHDATA
 	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::MESHDATA)])
 	{
@@ -323,6 +326,7 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Start();
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("MESH-DATA THREAD JOIN SUCCEDED");
+
 	//PREFAB
 	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::PREFAB)])
 	{
@@ -331,6 +335,7 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Start();
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("PREFAB THREAD JOIN SUCCEDED");
+
 	//SCENEFILE
 	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::SCENEFILE)])
 	{
@@ -339,6 +344,15 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Start();
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("SCENE-FILE THREAD JOIN SUCCEDED");
+
+	//NaviMapDat
+	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::NAVIMAPDATA)])
+	{
+		CThreadPool::GetInst()->EnqueueJob(&ResourceUI::LoadResource<CSceneFile>, this, resourceKey);
+	}
+	CThreadPool::GetInst()->Start();
+	CThreadPool::GetInst()->Join();
+	LOG_TRACE("NAVIMAPDATA THREAD JOIN SUCCEDED");
 }
 
 void ResourceUI::WithOutMultiThead()

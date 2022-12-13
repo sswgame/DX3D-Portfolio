@@ -44,7 +44,6 @@
 #include <Script/CObjectManager.h>
 #include <Script/CTranslateMgr.h>
 #include <Script/FieldMonsteScript.h>
-#include <Script/EffectScript.h>
 
 namespace
 {
@@ -70,9 +69,8 @@ namespace
 		pCamera->SetName(L"MainCamera");
 		pCamera->AddComponent(new CTransform);
 		pCamera->AddComponent(new CCamera);
-		pCamera->AddComponent(new CameraMoveScript);
-		pCamera->AddComponent(new CameraMoveScript);
-		//pCamera->AddComponent(new PlayerCamScript);
+		//pCamera->AddComponent(new CameraMoveScript);
+		pCamera->AddComponent(new PlayerCamScript);
 
 		pCamera->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
 		pCamera->Camera()->SetCameraAsMain();
@@ -222,15 +220,6 @@ namespace
 		_pScene->AddObject(pObject, L"Default");
 	}
 
-	void AddEffect(CScene* _pScene)
-	{
-		CGameObject* pObject = new CGameObject;
-		pObject->SetName(L"Effect");
-		pObject->AddComponent(new EffectScript);
-
-		_pScene->AddObject(pObject, L"BG");
-	}
-
 	void AddTessellation(CScene* _pScene)
 	{
 		Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
@@ -265,7 +254,7 @@ namespace
 		                                                               L"meshdata\\player_sword0.mdat");
 		pObj = pMeshData->Instantiate();
 		pObj->SetName(L"player");
-		pObj->Transform()->SetRelativePos(Vec3(0.f, 5.f, 0.f));
+		pObj->Transform()->SetRelativePos(Vec3(0.f, 10.f, 0.f));
 		pObj->Animator3D()->Play(L"test", true);
 		pObj->Animator3D()->GetCurAnim()->SetPlay(false);
 		pObj->Animator3D()->MakeAnimationFromTXT_Extended("PlayerAnimInfo2.txt");
@@ -282,6 +271,9 @@ namespace
 		pObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 		pObj->Collider3D()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
 		pObj->Collider3D()->SetOffsetScale(Vec3(75.f, 175.f, 75.f));
+
+		pObj->NaviAgent()->SetOffsetSize(Vec3(75.f, 175.f, 75.f));
+		pObj->NaviAgent()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
 
 		PlayerScript* pPlayerScript = new PlayerScript;
 		pPlayerScript->SetCamera(_pCamera);
@@ -377,9 +369,17 @@ namespace
 		pMonster->AddComponent(new FieldMonsteScript);
 		pMonster->AddComponent(new CFSM);
 		pMonster->AddComponent(new CCollider3D);
-		pMonster->Collider3D()->SetOffsetScale(Vec3(100.f, 200.f, 100.f));
-		pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 100.f, 0.f));
+		pMonster->AddComponent(new CRigidBody);
+		pMonster->AddComponent(new CNaviAgent);
+
+		pMonster->Transform()->SetRelativePos(Vec3(0.f, 5.f, 100.f));
+		pMonster->NaviAgent()->SetOffsetPos(Vec3(0.f, 100.f, 0.f));
+		pMonster->NaviAgent()->SetOffsetSize(Vec3(15.f, 200.f, 15.f));
+
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::HOMONCULUS);
+		pMonster->GetScript<FieldMonsteScript>()->SetDetectRange(300.f);
+		pMonster->GetScript<FieldMonsteScript>()->SetAttackRange(30.f);
+		
 		_pScene->AddObject(pMonster, L"MONSTER");
 	}
 
@@ -404,53 +404,47 @@ namespace
 	void TestNavi(CScene* _pScene)
 	{
 		/// Navi Mesh Test
-		CGameObject* pNMesh = new CGameObject;
-		pNMesh->SetName(L"NaviMesh");
-		pNMesh->AddComponent(new CTransform);
-		pNMesh->AddComponent(new CNaviMap);
+		//CGameObject* pNMesh = new CGameObject;
+		//pNMesh->SetName(L"NaviMesh");
+		//pNMesh->AddComponent(new CTransform);
+		//pNMesh->AddComponent(new CNaviMap);
 
-		CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\arena.map", L"navimap\\arena.map").
-		                                             Get();
-		pNMesh->NaviMap()->SetNaviMapData(pNaviMap);
-		pNMesh->Transform()->SetRelativeScale(15.f, 15.f, 15.f);
-		pNMesh->Transform()->SetRelativePos(0.f, -6.f, 0.f);
+		//CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\arena.map", L"navimap\\arena.map").
+		//                                             Get();
+		//pNMesh->NaviMap()->SetNaviMapData(pNaviMap);
+		//pNMesh->Transform()->SetRelativeScale(30.f, 30.f, 30.f);
+		//pNMesh->Transform()->SetRelativePos(0.f, -200.f, 0.f);
 
-		CGameObject* pGameObject = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref",
-		                                                             L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
-		_pScene->AddObject(pNMesh, GAME::LAYER::BG_OBJ);
+		//_pScene->AddObject(pNMesh, GAME::LAYER::BG_OBJ);
 
 		/// Player NaviAgent Test
-		CGameObject* pPlayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(GAME::LAYER::PLAYER)->
-		                                             FindRootObject(L"player");
-		pPlayer->NaviAgent()->SetNaviMap(pNMesh->NaviMap());
-		pPlayer->NaviAgent()->SetOffsetSize(Vec3(10.f, 200.f, 100.f));
-		pPlayer->NaviAgent()->SetOffsetPos(Vec3(0.f, 100.f, 0.f));
+		//CGameObject* pPlayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(GAME::LAYER::PLAYER)->
+		//                                             FindRootObject(L"player");
+		//pPlayer->NaviAgent()->SetNaviMap(pNMesh->NaviMap());
+		//pPlayer->NaviAgent()->SetOffsetSize(Vec3(10.f, 200.f, 100.f));
+		//pPlayer->NaviAgent()->SetOffsetPos(Vec3(0.f, 100.f, 0.f));
 
 		/// NaviAgent Test
-		CGameObject* pAgent = new CGameObject;
-		pAgent->SetName(L"Agent");
-		pAgent->AddComponent(new CTransform);
-		pAgent->AddComponent(new CNaviAgent);
+		//CGameObject* pAgent = new CGameObject;
+		//pAgent->SetName(L"Agent");
+		//pAgent->AddComponent(new CTransform);
+		//pAgent->AddComponent(new CNaviAgent);
 
-		pAgent->Transform()->SetRelativePos(-300.f, 0.f, 11.f);
-		pAgent->Transform()->SetRelativeScale(300.f, 300.f, 300.f);
-		pAgent->NaviAgent()->SetNaviMap(pNMesh->NaviMap());
+		//pAgent->Transform()->SetRelativePos(-300.f, 0.f, 11.f);
+		//pAgent->Transform()->SetRelativeScale(300.f, 300.f, 300.f);
+		//pAgent->NaviAgent()->SetNaviMap(pNMesh->NaviMap());
 
-		_pScene->AddObject(pAgent, GAME::LAYER::PLAYER);
+		//_pScene->AddObject(pAgent, GAME::LAYER::PLAYER);
 
 
 		/// Save
-		//pNaviMap = new CNaviMapData;
-		//pNaviMap->CreateFromObj(L"boss_stage.obj", L"mesh\\Navi_boss_stage.mesh");
-		//wstring strPath = L"navimap\\boss_stage.map";
+		//CNaviMapData* pNaviMap = new CNaviMapData;
+		//pNaviMap->CreateFromObj(L"arena.obj", L"mesh\\Navi_arena.mesh");
+		//wstring strPath = L"navimap\\arena.map";
 		//pNaviMap->Save(CPathMgr::GetInst()->GetContentPath() + strPath);
 
 		/// Load
-		//CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\test.map", L"navimap\\test.map").Get();
-		if (nullptr != pGameObject)
-		{
-			_pScene->AddObject(pGameObject, 31);
-		}
+		//CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\arena.map", L"navimap\\arena.map").Get();
 	}
 
 	void LoadScene()
@@ -476,6 +470,46 @@ namespace
 		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
 	}
 
+	void Map01(CScene* _pScene)
+	{
+		CGameObject* pMap01 = new CGameObject;
+		pMap01->SetName(L"Map01");
+		pMap01->AddComponent(new CTransform);
+		pMap01->Transform()->SetRelativePos(Vec3(0.f, -200.f, 0.f));
+		for (size_t i = 0; i < 4; i++)
+		{
+			wstring path = L"meshdata\\arene_stage" + std::to_wstring(i) + L".mdat";
+			wstring name = L"arene_stage" + std::to_wstring(i);
+
+			Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(path, path);
+
+			CGameObject* pStage = pMeshData->Instantiate();
+			pStage->SetName(name);
+			pMap01->AddChild(pStage);
+		}
+
+		CGameObject* pNMesh = new CGameObject;
+		pNMesh->SetName(L"NaviMesh");
+		pNMesh->AddComponent(new CTransform);
+		pNMesh->AddComponent(new CNaviMap);
+
+		CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\arena.map", L"navimap\\arena.map").
+		                                             Get();
+		pNMesh->NaviMap()->SetNaviMapData(pNaviMap);
+		pNMesh->Transform()->SetRelativeScale(18.2f, 18.2f, 18.2f);
+		pNMesh->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+		Vec3 rot = Vec3(0.f, 180.4f, 0.f);
+		rot.ToRadian();
+		pNMesh->Transform()->SetRelativeRotation(rot);
+
+		pMap01->AddChild(pNMesh);
+
+		_pScene->AddObject(pMap01, GAME::LAYER::BG);
+
+		//CPrefab* pmappref = new CPrefab;
+		//pmappref->SetProto()
+	}
+
 	void CreateScene()
 	{
 		auto pCurScene = new CScene;
@@ -490,12 +524,11 @@ namespace
 		//AddLandScape(pCurScene);
 		//AddDecal(pCurScene);
 		//AddSphere(pCureScene);
-		//AddEffect(pCurScene);
 		//AddTessellation(pCurScene);
 
 		AddPlayer(pCurScene, pCamObj);
+		//AddHomonculus(pCurScene);
 		//AddBoss(pCurScene);
-		AddHomonculus(pCurScene);
 
 		/// UI Test
 		TestUI(pCurScene);
@@ -503,6 +536,9 @@ namespace
 
 		/// NaviTest
 		//TestNavi(pCurScene);
+
+		/// MAP01
+		Map01(pCurScene);
 
 		/*/// 충돌 레이어 설정
 		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);

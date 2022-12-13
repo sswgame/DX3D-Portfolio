@@ -28,6 +28,8 @@ private:
 	CGraphicsShader*	m_pMergeShader;
 	CMaterial*			m_pMergeMaterial;
 
+	bool m_bRenderDebugObject;
+
 private:
 	// [ CREATE ]
 	void CreateSwapChainMRT();

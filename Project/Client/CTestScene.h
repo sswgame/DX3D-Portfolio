@@ -4,3 +4,4 @@ class CTestScene
 public:
 	static void CreateTestScene();
 };
+ 

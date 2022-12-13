@@ -25,7 +25,9 @@ public:
 	 * \return 충돌 여부를 반환
 	 */
 	bool CheckIntersect(int _iCellidx, Vec3 _vPos, Vec3 _vDir, float& _fDist);
+	void SetNavimapToAgent();
 
+	void start() override;
 	void UpdateData() override;
 	void finalupdate() override;
 	void finalupdate_debug() override;

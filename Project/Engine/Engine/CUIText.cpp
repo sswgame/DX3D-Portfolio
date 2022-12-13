@@ -11,16 +11,20 @@
 
 CUIText::CUIText()
 	: CUIBase{COMPONENT_TYPE::UITEXT}
-	, m_text{"EMPTY"}
+	, m_text{""}
 	, m_fontSize{16.f}
 	, m_alphaEnable{false}
 	, m_color{1.f, 1.f, 1.f, 1.f}
 	, m_alignTextH{TEXT_ALIGN_HORIZONTAL::MIDDLE}
-	, m_alignTextV{TEXT_ALIGN_VERTICAL::MIDDLE} {}
+	, m_alignTextV{TEXT_ALIGN_VERTICAL::MIDDLE}
+{
+}
 
 CUIText::~CUIText() = default;
 
-void CUIText::start() { }
+void CUIText::start()
+{
+}
 
 void CUIText::finalupdate()
 {

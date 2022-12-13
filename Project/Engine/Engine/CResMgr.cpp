@@ -120,6 +120,10 @@ vector<Ptr<CMeshData>> CResMgr::LoadFBX(const wstring& _strPath)
 		ptrMeshData[i]->SetKey(strName);
 		ptrMeshData[i]->SetRelativePath(strName);
 		m_Res[(UINT)RES_TYPE::MESHDATA].insert(make_pair(strName, ptrMeshData[i].Get()));
+
+		wstring fullPath = CPathMgr::GetInst()->GetContentPath();
+		fullPath += strName;
+		ptrMeshData[i]->Save(fullPath);
 	}
 	//pMeshData->m_bEngineRes = true;
 

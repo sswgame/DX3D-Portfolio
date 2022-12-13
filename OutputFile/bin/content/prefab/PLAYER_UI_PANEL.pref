@@ -346,7 +346,7 @@ CHILDREN:
                   m_anchorV: 1
                   m_offsetPos: [-45, 0]
                   m_showDebugRect: 1
-                  m_text: EMPTY
+                  m_text: ""
                   m_fontSize: 16
                   m_fontName: font\fa-solid-900.ttf
                   m_alphaEnable: false

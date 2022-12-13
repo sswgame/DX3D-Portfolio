@@ -122,9 +122,9 @@ void FieldMonsteScript::MonsterRotation()
 
 	// 회전 방향을 찾는다
 	if (0.f < cross.y)
-		fSpeed = 50.f;
+		fSpeed = 60.f;
 	else if (0.f > cross.y)
-		fSpeed = -50.f;
+		fSpeed = -60.f;
 
 	// 각이 5도 이상이면 플레이어 방향으로 지속적으로 회전하고 5도 이하이면 플레이를 바로 바라본다.
 	if (fabsf(dot) > 5.f)

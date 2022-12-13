@@ -12,6 +12,7 @@
 #include "CTexture.h"
 #include "CGraphicsShader.h"
 #include "CComputeShader.h"
+#include "CLog.h"
 #include "CSceneFile.h"
 #include "CSound.h"
 #include "CMeshData.h"
@@ -131,7 +132,8 @@ Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strRelativePath, bo
 	{
 		CRes* pDelete = pRes.Get();
 		SAFE_DELETE(pDelete);
-		MessageBox(nullptr, L"리소스 로딩 실패", L"리소스 로딩 오류", MB_OK);
+		//MessageBox(nullptr, L"리소스 로딩 실패", L"리소스 로딩 오류", MB_OK);
+		LOG_ERROR("RESOURCE LOAD FAILED : %s", ToString(strFullPath).c_str());
 		return nullptr;
 	}
 	{

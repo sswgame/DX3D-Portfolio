@@ -1,11 +1,19 @@
 #include "pch.h"
 #include "CNaviMap.h"
 
-#include "CNaviMapData.h"
+#include "CScene.h"
+#include "CSceneMgr.h"
 
 #include "CTransform.h"
 #include"CMeshRender.h"
+#include "CNaviMapData.h"
+#include "CNaviAgent.h"
 #include "CSerializer.h"
+
+#include <Script/GameDefine.h>
+
+#include "CLayer.h"
+#include "CNaviAgent.h"
 
 CNaviMap::CNaviMap()
 	: CComponent{COMPONENT_TYPE::NAVIMAP}
@@ -69,7 +77,7 @@ void CNaviMap::SetNaviMapData(CNaviMapData* _pData)
 			ChildDebug->SetName(L"NaviMap_debug_wire");
 			ChildDebug->AddComponent(new CTransform);
 			ChildDebug->AddComponent(new CMeshRender);
-				
+
 			m_pDebugObj->AddChild(ChildDebug);
 		}
 		ChildDebug->MeshRender()->SetMesh(p_mesh);
@@ -89,6 +97,34 @@ bool CNaviMap::CheckIntersect(int _iCellidx, Vec3 _vPos, Vec3 _vDir, float& _fDi
 	vV3 = XMVector3Transform(vV3, Transform()->GetWorldMat());
 
 	return DirectX::TriangleTests::Intersects(_vPos, _vDir, vV1, vV2, vV3, _fDist);
+}
+
+void CNaviMap::SetNavimapToAgent()
+{
+	// player
+	CGameObject* pPlayer = CSceneMgr::GetInst()->FindObjectByName(L"player");
+	if (pPlayer != nullptr)
+	{
+		if (nullptr != pPlayer->NaviAgent())
+			if (nullptr == pPlayer->NaviAgent()->GetNaviMap())
+				pPlayer->NaviAgent()->SetNaviMap(this);
+	}
+
+	// monster
+	CLayer*              pLayer      = CSceneMgr::GetInst()->GetCurScene()->GetLayer(GAME::LAYER::MONSTER);
+	vector<CGameObject*> vecMonsters = pLayer->GetObjects();
+
+	for (auto mon : vecMonsters)
+	{
+		if (nullptr != mon->NaviAgent())
+			if (nullptr == mon->NaviAgent()->GetNaviMap())
+				mon->NaviAgent()->SetNaviMap(this);
+	}
+}
+
+void CNaviMap::start()
+{
+	SetNavimapToAgent();
 }
 
 void CNaviMap::UpdateData()
@@ -117,6 +153,7 @@ void CNaviMap::finalupdate_debug()
 			ChildDebug->MeshRender()->GetDynamicMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vDebugLineColor);
 
 		m_pDebugObj->finalupdate();
+		ChildDebug->finalupdate();
 	}
 }
 

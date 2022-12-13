@@ -109,6 +109,9 @@ Vec3 CNaviAgent::SetYPos(float _fDist)
 			m_pRigidBody->SetOnGround(false);
 	}
 
+	//if (10.f < fSpace)
+	//	m_iCurCellIndex = -1;
+
 	return vPos;
 }
 

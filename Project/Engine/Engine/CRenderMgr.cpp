@@ -19,6 +19,7 @@
 #include "CFXAA.h"
 #include "CKeyMgr.h"
 
+
 CRenderMgr::CRenderMgr()
 	: m_pEditorCamera(nullptr)
 	, m_pUICamera{nullptr}
@@ -39,7 +40,6 @@ CRenderMgr::~CRenderMgr()
 {
 	SAFE_DELETE(m_pLight2DBuffer);
 	SAFE_DELETE(m_pLight3DBuffer);
-
 	Safe_Del_Arr(m_arrMRT);
 
 	SAFE_DELETE(m_pMergeShader);
@@ -54,6 +54,10 @@ void CRenderMgr::render()
 
 	const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	pCurScene->GetSceneState() == SCENE_STATE::PLAY ? Render_Play() : Render_Editor();
+
+
+	if (KEY_TAP(KEY::F1))
+		m_bRenderDebugObject = !m_bRenderDebugObject;
 
 	RenderEnd();
 }
@@ -187,7 +191,8 @@ void CRenderMgr::Render(MRT_TYPE _eMRT, CCamera* _pCam)
 			_pCam->render_masked();				// Masked ¹°Ã¼ ·»´õ¸µ
 			_pCam->render_forward_decal();		// Foward Decal ·»´õ¸µ
 			_pCam->render_translucent();		// Alpha ¹°Ã¼ ·»´õ¸µ
-			_pCam->render_debug();				// Debug Object Render
+			if (m_bRenderDebugObject)
+				_pCam->render_debug();				// Debug Object Render
 			_pCam->render_postprocess();		// PostProcess ¹°Ã¼ ·»´õ¸µ
 		}
 		break;
