@@ -39,6 +39,7 @@ CParticleSystem::CParticleSystem()
 	, m_pSound(nullptr)
 	, m_fLifeTime(-1.f)
 	, m_bUseEmissive(false)
+	, m_bPlayOnce(false)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -81,6 +82,7 @@ CParticleSystem::CParticleSystem(const CParticleSystem& _origin)
 	, m_strSoundName(_origin.m_strSoundName)
 	, m_pSound(nullptr)
 	, m_bUseEmissive(_origin.m_bUseEmissive)
+	, m_bPlayOnce(false)
 {
 	SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"PointMesh"));
 	SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ParticleRenderMtrl.mtrl"), 0);
@@ -212,6 +214,9 @@ void CParticleSystem::finalupdate()
 		tParticleData data = {};
 		data.iAliveCount = m_iAliveCount;
 		m_DataBuffer->SetData(&data, 1);
+
+		if (m_bPlayOnce)
+			m_iAliveCount = 0;
 	}
 
 	m_CS->SetParticleCreateDistance(m_fParticleCreateDistance);

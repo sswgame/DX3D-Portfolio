@@ -15,7 +15,7 @@
 #include <Engine/CFSM.h>
 #include <Engine/CMeshData.h>
 #include <Engine/CRigidBody.h>
-
+#include <Engine/CParticleSystem.h>
 
 
 CPlayerJumpState::CPlayerJumpState()
@@ -48,7 +48,13 @@ void CPlayerJumpState::Enter()
 	CScript* pScript = CState::GetOwner()->GetScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT);
 	PlayerScript* pPlayerScript = (PlayerScript*)pScript;
 
-
+	// particle Ãß°¡
+	CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\player_sprint.pref", L"prefab\\player_sprint.pref").Get();
+	CGameObject* pParticle = pPrefab->Instantiate();
+	pParticle->ParticleSystem()->SetLifeTime(3.f);
+	pParticle->ParticleSystem()->SetParticlePlayOneTime();
+	pParticle->ParticleSystem()->SetMaterial(L"material\\player_sprint.mtrl");
+	GetOwner()->AddChild(pParticle);
 
 	if (m_pTranslateMgr == nullptr)
 	{

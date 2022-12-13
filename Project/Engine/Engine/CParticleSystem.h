@@ -55,6 +55,8 @@ private:
 	wstring			m_strSoundName;
 	CSound* m_pSound;
 
+	bool m_bPlayOnce;
+
 public:
 	void                       SetEmissive(bool _bEmissive);
 	void                       SetApplyLighting(bool _bLighting);
@@ -118,7 +120,7 @@ public:
 	wstring GetSoundName() { return m_strSoundName; }
 
 	void SetMaterial(wstring _mtrl);
-
+	void SetParticlePlayOneTime() { m_bPlayOnce = true; }
 	void SetLifeTime(float _time) { m_fLifeTime = _time; }
 
 public:
