@@ -28,7 +28,7 @@ COMPONENTS:
       m_vStartColor: [0.0717334524, 0.630919933, 0.865284979, 1]
       m_vEndColor: [0.105882354, 0.125490203, 0.278431386, 1]
       m_fParticleCreateDistance: 50
-      m_fParticleCreateTerm: 1
+      m_fParticleCreateTerm: 0.100000001
       m_vDirection: [1, 0]
       m_iEmissive: 0
       m_iLighting: 0

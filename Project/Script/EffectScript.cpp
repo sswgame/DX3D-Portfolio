@@ -40,8 +40,8 @@ void EffectScript::start()
 
 
 		CMesh* pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
-		m_pEffectTexture = CResMgr::GetInst()->Load<CTexture>(L"texture\\CircleImpact.png"
-			, L"texture\\CircleImpact.png").Get();
+		m_pEffectTexture = CResMgr::GetInst()->Load<CTexture>(L"texture\\particle\\CircleImpact.png"
+			, L"texture\\particle\\CircleImpact.png").Get();
 		GetOwner()->MeshRender()->SetMesh(pMesh);
 		const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std2DAlphaBlendMtrl.mtrl");
 		GetOwner()->MeshRender()->SetSharedMaterial(pMaterial, 0);

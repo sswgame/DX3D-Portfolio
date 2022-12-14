@@ -2,11 +2,13 @@
 #include "JugHand_Attack.h"
 
 #include "BossJugHandScript.h"
+#include "EffectScript.h"
 
 // Engine
 #include <Engine/CAnimation3D.h>
 #include <Engine/CAnimator3D.h>
 #include <Engine/CFSM.h>
+#include <Engine/CCollider3D.h>
 
 JugHand_Attack::JugHand_Attack()
 	: CState{ L"ATTACK" }
@@ -58,6 +60,20 @@ void JugHand_Attack::Hand01Attack()
 			// =======
 			// ³»·ÁÂï±â
 			// =======
+
+			// Landing Effect N Collider
+			if ((m_pAnimation->GetEndFrameIdx() - 5) <= m_pAnimation->GetCurFrameIdx())
+			{
+				CGameObject* pLandingEffect = new CGameObject;
+				pLandingEffect->SetName(L"Hand Landing Effect");
+				pLandingEffect->AddComponent(new EffectScript);
+				pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
+				pLandingEffect->GetScript<EffectScript>()->SetEffectLifeTime(2.f);
+
+				CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
+
+				GetOwner()->Collider3D()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
+			}
 		}
 		else
 		{
@@ -81,6 +97,21 @@ void JugHand_Attack::Hand01Attack()
 				// =======
 				// ³»·ÁÂï±â
 				// =======
+
+
+				// Landing Effect N Collider
+				if ((m_pAnimation->GetEndFrameIdx() - 5) <= m_pAnimation->GetCurFrameIdx())
+				{
+					CGameObject* pLandingEffect = new CGameObject;
+					pLandingEffect->SetName(L"Hand Landing Effect");
+					pLandingEffect->AddComponent(new EffectScript);
+					pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
+					pLandingEffect->GetScript<EffectScript>()->SetEffectLifeTime(2.f);
+
+					CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
+
+					GetOwner()->Collider3D()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
+				}
 			}
 		}
 	}
