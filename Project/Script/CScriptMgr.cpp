@@ -156,7 +156,7 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new SwordTrailScript;
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return new TrailScript;
-    }
+	}
 	return nullptr;
 }
 
@@ -211,7 +211,7 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"SwordTrailScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return L"TrailScript";
-    }
+		}
 	return nullptr;
 }
 

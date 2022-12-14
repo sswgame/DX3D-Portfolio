@@ -39,11 +39,18 @@ void CUIBase::finalupdate()
 
 	m_opacity = ClampData(m_opacity, 0.f, 1.f);
 
-	Vec3 adjustPos = Transform()->GetRelativePos();
-	adjustPos.x    = AdjustPositionWithAnchor(m_anchorH);
-	adjustPos.y    = AdjustPositionWithAnchor(m_anchorV);
-	Transform()->SetRelativePos(adjustPos);
-	Transform()->finalupdate_module();
+	if (nullptr == m_pTarget)
+	{
+		Vec3 adjustPos = Transform()->GetRelativePos();
+		adjustPos.x    = AdjustPositionWithAnchor(m_anchorH);
+		adjustPos.y    = AdjustPositionWithAnchor(m_anchorV);
+		Transform()->SetRelativePos(adjustPos);
+		Transform()->finalupdate_module();
+	}
+	else
+	{
+		UpdatePositionByObject();
+	}
 
 	if (nullptr == GetOwner()->GetParent())
 	{
@@ -242,6 +249,33 @@ float CUIBase::AdjustWithPanel(ANCHOR_VERTICAL type) const
 	assert(nullptr && "INVALID POS");
 	return m_offsetPos.y;
 }
+
+void CUIBase::UpdatePositionByObject()
+{
+	const CCamera* pPlayCamera = CRenderMgr::GetInst()->GetMainCam();
+	const CCamera* pUICamera   = CRenderMgr::GetInst()->GetUICamera();
+
+	const Vec3 targetPos           = m_pTarget->Transform()->GetWorldPos();
+	const Vec3 viewPosInPlayCamera = XMVector3TransformCoord(targetPos, pPlayCamera->GetViewMat());
+	const Vec4 projPosInPlayCamera = XMVector3TransformCoord(viewPosInPlayCamera, pPlayCamera->GetProjMat());
+
+	const Vec4 viewPosInUICamera = XMVector3TransformCoord(projPosInPlayCamera, pUICamera->GetProjInvMat());
+
+	const Vec3 diff = {viewPosInUICamera.x, viewPosInUICamera.y, 0.f};
+
+	Vec3 UIPos = Transform()->GetRelativePos();
+	UIPos.x    = diff.x;
+	UIPos.y    = diff.y;
+
+	//반대 방향으로 바라보는 경우에도 출력되기 때문에, (x,y만 보정하므로) 이를 계산하지 않기 위함
+	if (viewPosInUICamera.z > pUICamera->GetFar())
+	{
+		return;
+	}
+	Transform()->SetRelativePos(UIPos);
+	Transform()->finalupdate();
+}
+
 
 void CUIBase::Serialize(YAML::Emitter& emitter)
 {

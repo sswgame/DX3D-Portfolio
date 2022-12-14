@@ -31,6 +31,7 @@ class CUIBase
 	: public CComponent
 {
 	friend class CUIPanel;
+
 private:
 	int                               m_orderZ;
 	float                             m_opacity;
@@ -43,8 +44,9 @@ private:
 	ANCHOR_VERTICAL   m_anchorV;
 	ANCHOR_HORIZONTAL m_anchorH;
 
-	Vec2 m_offsetPos;
-	int  m_showDebugRect;
+	Vec2         m_offsetPos;
+	int          m_showDebugRect;
+	CGameObject* m_pTarget = nullptr;
 
 private:
 	float AdjustWithCamera(ANCHOR_HORIZONTAL type) const;
@@ -56,7 +58,12 @@ private:
 	float AdjustPositionWithAnchor(ANCHOR_HORIZONTAL type);
 	float AdjustPositionWithAnchor(ANCHOR_VERTICAL type);
 
+	void UpdatePositionByObject();
+
 public:
+	void         SetTarget(CGameObject* pGameObject) { m_pTarget = pGameObject; }
+	CGameObject* GetTarget() const { return m_pTarget; }
+
 	virtual bool CollisionMouse();
 
 	void SetOffsetPos(const Vec2 offsetPos) { m_offsetPos = offsetPos; }
@@ -100,6 +107,7 @@ public:
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
 	CUIBase(COMPONENT_TYPE type);
 	virtual ~CUIBase();

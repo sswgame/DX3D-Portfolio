@@ -28,9 +28,10 @@
 #include <Engine/CRigidBody.h>
 #include <Engine/CMesh.h>
 #include <Engine/CMaterial.h>
-
+#include <Engine/CUIBase.h>
 
 // [SCRIPT TYPE]
+#include <Engine/CRenderMgr.h>
 #include <Script/GameDefine.h>
 #include <Script/PlayerScript.h>
 #include <Script/CameraMoveScript.h>
@@ -70,8 +71,8 @@ namespace
 		pCamera->SetName(L"MainCamera");
 		pCamera->AddComponent(new CTransform);
 		pCamera->AddComponent(new CCamera);
-		//pCamera->AddComponent(new CameraMoveScript);
-		pCamera->AddComponent(new PlayerCamScript);
+		pCamera->AddComponent(new CameraMoveScript);
+		//pCamera->AddComponent(new PlayerCamScript);
 
 		pCamera->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
 		pCamera->Camera()->SetCameraAsMain();
@@ -276,12 +277,12 @@ namespace
 		pObject1->Transform()->SetRelativeScale(10000, 10000, 1.f);
 		pObject1->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
 		_pScene->AddObject(pObject1, L"BG");
-
 	}
 
 	void AddItem(CScene* _pScene)
 	{
-		CPrefab* pPrefabBall = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item_circle.pref", L"prefab\\item_circle.pref").Get();
+		CPrefab* pPrefabBall = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item_circle.pref",
+		                                                         L"prefab\\item_circle.pref").Get();
 		CGameObject* parti = pPrefabBall->Instantiate();
 		parti->SetName(L"HP Cure Ball");
 		parti->AddComponent(new CCollider3D);
@@ -298,7 +299,7 @@ namespace
 		_pScene->AddObject(parti, L"ITEM");
 
 
-		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item.pref", L"prefab\\item.pref").Get();
+		CPrefab*     pPrefab     = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\item.pref", L"prefab\\item.pref").Get();
 		CGameObject* partiEffect = pPrefab->Instantiate();
 		partiEffect->SetName(L"HP Cure Effect");
 		partiEffect->Transform()->SetRelativePos(Vec3(500.f, 0.f, 0.f));
@@ -537,12 +538,32 @@ namespace
 		pUICamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
 		_pScene->AddObject(pUICamera, L"CAMERA");
 
-		CGameObject* pPlayerUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref",
+		/*CGameObject* pPlayerUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref",
 		                                                           L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
 		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
 		CGameObject* pMainUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\MAIN_MENU.pref",
 		                                                           L"prefab\\MAIN_MENU.pref")->Instantiate();
-		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
+		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");*/
+
+		CGameObject* pObject = new CGameObject;
+		pObject->SetName(L"Sphere");
+
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CMeshRender);
+
+		pObject->Transform()->SetRelativePos(0.f, 0.f, 500.f);
+		pObject->Transform()->SetRelativeScale(300.f, 300.f, 300.f);
+
+		const Ptr<CMesh>     pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
+		const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3D_DeferredMtrl.mtrl");
+		pObject->MeshRender()->SetMesh(pMesh);
+		pObject->MeshRender()->SetSharedMaterial(pMaterial, 0);
+
+		_pScene->AddObject(pObject, L"BG");
+
+		CGameObject* pHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
+		pHP->GetUIBaseComponenent()->SetTarget(pObject);
+		_pScene->AddObject(pHP, L"UI_INTERACTIVE");
 	}
 
 	void Map01(CScene* _pScene)
@@ -602,12 +623,12 @@ namespace
 		//AddFogTexture(pCurScene);
 		//AddItem(pCurScene);
 
-		AddPlayer(pCurScene, pCamObj);
+		//AddPlayer(pCurScene, pCamObj);
 		//AddHomonculus(pCurScene);
-		AddBoss(pCurScene);
+		//AddBoss(pCurScene);
 
 		/// UI Test
-		//TestUI(pCurScene);
+		TestUI(pCurScene);
 		//TestObjectPicking(pCurScene);
 
 
