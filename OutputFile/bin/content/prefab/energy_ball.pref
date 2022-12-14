@@ -1,0 +1,48 @@
+NAME: energy_ball
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 0, 0]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+  - PARTICLESYSTEM:
+      MESH: [PointMesh, PointMesh]
+      MATERIAL COUNT: 1
+      0: [material\ParticleRenderMtrl.mtrl, material\ParticleRenderMtrl.mtrl]
+      USE DYNAMIC 0: false
+      MATERIAL 0 TEXTURE LIST:
+        {}
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+      SHADER: [ParticleUpdateShader, ParticleUpdateShader]
+      m_iMaxCount: 1000
+      m_bPosInherit: 0
+      m_iAliveCount: 10
+      m_fMinLifeTime: 0.5
+      m_fMaxLifeTime: 2
+      m_fStartSpeed: 100
+      m_fEndSpeed: 10
+      m_vStartColor: [0.393782377, 0.557115555, 1, 1]
+      m_vEndColor: [1, 1, 1, 0]
+      m_fParticleCreateDistance: 150
+      m_fParticleCreateTerm: 0.0199999996
+      m_vDirection: [1, 0]
+      m_iEmissive: 0
+      m_iLighting: 0
+      m_fAngle: 0
+      m_iSpeedDetail_Func: 1
+      m_vStartEmissiveColor: [0.393782377, 0.557115555, 1, 1]
+      m_vEndEmissiveColor: [0.393782377, 0.557115555, 1, 1]
+      SOUND_NAME: ""
+      m_bLinearParicle: true
+      m_bUseSoftParticle: false
+      m_bUseEmissive: true
+      m_vStartScale: [300, 300, 1]
+      m_vEndScale: [100, 100, 1]
+SCRIPTS:
+  []
+CHILDREN:
+  []
