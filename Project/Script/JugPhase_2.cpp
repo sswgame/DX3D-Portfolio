@@ -14,8 +14,10 @@
 #include "BossJugCombatMgrScript.h"
 #include "BossJugScript.h"
 #include "ColumnFlameScript.h"
+#include "EnergyBallScript.h"
 
 #define FLAME_COUNT 6
+#define ENERGYBALL_COUNT 3
 
 JugPhase_2::JugPhase_2()
 	: CState(L"JUG_PHASE_2")
@@ -57,6 +59,7 @@ void JugPhase_2::Init()
 	m_pCombatMgr = GetOwner()->GetScript<BossJugCombatMgrScript>();
 	assert(m_pCombatMgr);
 
+	// 불기둥 생성
 	if (m_vecColumnFlames.empty())
 	{
 		for (int i = 0; i < FLAME_COUNT; i++)
@@ -80,6 +83,31 @@ void JugPhase_2::Init()
 			m_vecColumnFlames.push_back(pFlame);
 			CSceneMgr::GetInst()->SpawnObject(pFlame, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
 			pFlame->Deactivate();
+		}
+	}
+
+	// 에너지볼 생성
+	if (m_vecEnergyBalls.empty())
+	{
+		for (int i = 0; i < ENERGYBALL_COUNT; i++)
+		{
+			//TODO:: 에너지볼 생성
+			CGameObject* pEnergyBall = new CGameObject;
+			pEnergyBall->SetName(L"ENERGYBALL_" + std::to_wstring(i));
+			pEnergyBall->AddComponent(new CTransform);
+			pEnergyBall->AddComponent(new CCollider3D);
+			pEnergyBall->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+			pEnergyBall->Collider3D()->SetOffsetScale(Vec3(10.f, 10.f, 10.f));
+			pEnergyBall->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
+
+			pEnergyBall->AddComponent(new EnergyBallScript);
+			EnergyBallScript* pEnergyScript = pEnergyBall->GetScript<EnergyBallScript>();
+			pEnergyScript->SetCurMode(ENERGYBALL_MODE::MISSILE);
+			pEnergyScript->SetTargetPos(Vec3(0.f, 100000.f, 0.f));
+			pEnergyScript->SetSpeed(100.f);
+
+			m_vecEnergyBalls.push_back(pEnergyBall);
+			CSceneMgr::GetInst()->SpawnObject(pEnergyBall, GAME::LAYER::MONSTER_PARRING_ATTACK);
 		}
 	}
 }

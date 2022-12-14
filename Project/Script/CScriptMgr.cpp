@@ -9,6 +9,7 @@
 #include "ColumnFlameScript.h"
 #include "DestroyScript.h"
 #include "EffectScript.h"
+#include "EnergyBallScript.h"
 #include "FieldMonsteScript.h"
 #include "GravityScript.h"
 #include "HandStateMgrScript.h"
@@ -35,6 +36,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"ColumnFlameScript");
 	_vec.push_back(L"DestroyScript");
 	_vec.push_back(L"EffectScript");
+	_vec.push_back(L"EnergyBallScript");
 	_vec.push_back(L"FieldMonsteScript");
 	_vec.push_back(L"GravityScript");
 	_vec.push_back(L"HandStateMgrScript");
@@ -70,6 +72,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new DestroyScript;
 	if (L"EffectScript"== _strScriptName)
 		return new EffectScript;
+	if (L"EnergyBallScript"== _strScriptName)
+		return new EnergyBallScript;
 	if (L"FieldMonsteScript"== _strScriptName)
 		return new FieldMonsteScript;
 	if (L"GravityScript"== _strScriptName)
@@ -124,6 +128,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new DestroyScript;
 	case SCRIPT_TYPE::EFFECTSCRIPT:
 		return new EffectScript;
+	case SCRIPT_TYPE::ENERGYBALLSCRIPT:
+		return new EnergyBallScript;
 	case SCRIPT_TYPE::FIELDMONSTESCRIPT:
 		return new FieldMonsteScript;
 	case SCRIPT_TYPE::GRAVITYSCRIPT:
@@ -179,6 +185,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"DestroyScript";
 	case SCRIPT_TYPE::EFFECTSCRIPT:
 		return L"EffectScript";
+	case SCRIPT_TYPE::ENERGYBALLSCRIPT:
+		return L"EnergyBallScript";
 	case SCRIPT_TYPE::FIELDMONSTESCRIPT:
 		return L"FieldMonsteScript";
 	case SCRIPT_TYPE::GRAVITYSCRIPT:

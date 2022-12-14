@@ -140,6 +140,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="Deux_Idle.h" />
     <ClInclude Include="Deux_Walk.h" />
     <ClInclude Include="EffectScript.h" />
+    <ClInclude Include="EnergyBallScript.h" />
     <ClInclude Include="FieldMonsteScript.h" />
     <ClInclude Include="FieldM_StateMgr.h" />
     <ClInclude Include="Homon_Attack.h" />
@@ -223,6 +224,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="Deux_Idle.cpp" />
     <ClCompile Include="Deux_Walk.cpp" />
     <ClCompile Include="EffectScript.cpp" />
+    <ClCompile Include="EnergyBallScript.cpp" />
     <ClCompile Include="FieldMonsteScript.cpp" />
     <ClCompile Include="FieldM_StateMgr.cpp" />
     <ClCompile Include="Homon_Attack.cpp" />

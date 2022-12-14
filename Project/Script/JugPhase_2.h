@@ -14,6 +14,7 @@ private:
 	CAnimator3D*            m_pBossAnimator;
 
 	vector<CGameObject*> m_vecColumnFlames;
+	vector<CGameObject*> m_vecEnergyBalls;
 
 	UINT m_iPrevAttackPattern;
 	UINT m_iAttackPattern;

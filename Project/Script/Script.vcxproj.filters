@@ -245,6 +245,7 @@
       <Filter>Script\Item</Filter>
     </ClInclude>
     <ClInclude Include="MainMenuScript.h" />
+    <ClInclude Include="EnergyBallScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -482,6 +483,7 @@
       <Filter>Script\Item</Filter>
     </ClCompile>
     <ClCompile Include="MainMenuScript.cpp" />
+    <ClCompile Include="EnergyBallScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
