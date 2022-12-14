@@ -50,7 +50,7 @@ VTX_OUT VS_ColumnFlame(VTX_IN _in)
     output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV)).xyz;
     output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV)).xyz;
 
-	output.vUV = _in.vUV;
+    output.vUV = _in.vUV;
     
     return output;
 }
@@ -70,12 +70,56 @@ float4 PS_ColumnFlame(VTX_OUT _in) : SV_Target
     
     vOutColor *= COLOR;
 
-    if ( 0.1f > vOutColor.b)
+    if (0.1f > vOutColor.b)
         vOutColor.a = 0.f;
 
     return vOutColor;
 }
 
+// =========================
+// Magma Shader
+// DOMAIN : DOMAIN_DEFERRED
+// Rasterizer : CULL_NONE
+// DepthStencilState : LESS
+// BlendState : DEFAULT
+// =========================
+
+#define EXPLODE_ON g_int_0
+
+VTX_OUT VS_Magma(VTX_IN _in)
+{
+    VTX_OUT output = (VTX_OUT) 0.f;
+
+    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+    
+    output.vViewPos = mul(float4(_in.vPos, 1.f), g_matWV).xyz;
+    output.vViewTangent = normalize(mul(float4(_in.vTangent, 0.f), g_matWV)).xyz;
+    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV)).xyz;
+    output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV)).xyz;
+
+    output.vUV = _in.vUV;
+    
+    return output;
+}
+
+
+float4 PS_Magma(VTX_OUT _in) : SV_Target
+{
+    float4 vOutColor = (float4) 0.f;
+    
+    if (g_btex_0)
+    {
+        vOutColor = g_tex_0.Sample(g_sam_0, _in.vUV);
+    }
+    
+    if (EXPLODE_ON == 1)
+    {
+        vOutColor *= 1.001f;
+    }
+    
+
+    return vOutColor;
+}
 
 
 #endif

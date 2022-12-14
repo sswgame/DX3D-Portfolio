@@ -2,6 +2,9 @@
 #include "EnergyBallScript.h"
 
 #include <Engine/CTransform.h>
+#include <Engine/CGameObject.h>
+#include <Engine/CParticleSystem.h>
+#include <Engine/CCollider3D.h>
 
 EnergyBallScript::EnergyBallScript()
 	: CScript((int)SCRIPT_TYPE::ENERGYBALLSCRIPT)
@@ -92,7 +95,17 @@ void EnergyBallScript::update()
 			    && abs(m_vTargetPos.y - vPos.y < 0.01f)
 			    && abs(m_vTargetPos.z - vPos.z < 0.01f))
 			{
-				// TODO:: 여기에 폭발 함수 추가하심 됩니다.
+				// Explode particle & collider
+				CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\explode.pref", L"prefab\\explode.pref").Get();
+				CGameObject* pParticle = pPrefab->Instantiate();
+				pParticle->SetName(L"magma explode effect");
+				pParticle->ParticleSystem()->SetLifeTime(5.f);
+				pParticle->ParticleSystem()->SetParticlePlayOneTime();
+				pParticle->ParticleSystem()->SetMaterial(L"material\\explode.mtrl");
+				CSceneMgr::GetInst()->SpawnObject(pParticle, 1);
+
+				GetOwner()->Collider3D()->CreateAttackCollider(1.f, 500.f, GetOwner()->Transform()->GetRelativePos());
+
 
 				m_bFinish  = true;
 				m_eCurMode = ENERGYBALL_MODE::NONE;

@@ -9,6 +9,7 @@
 #include <Engine/CGameObject.h>
 #include <Engine/CTransform.h>
 #include <Engine/CCollider3D.h>
+#include <Engine/CParticleSystem.h>
 
 // [ SCRIPT PART ]
 #include "BossJugCombatMgrScript.h"
@@ -91,9 +92,14 @@ void JugPhase_2::Init()
 	{
 		for (int i = 0; i < ENERGYBALL_COUNT; i++)
 		{
-			//TODO:: 에너지볼 생성
-			CGameObject* pEnergyBall = new CGameObject;
+			//에너지볼 생성
+			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\energy_ball.pref", L"prefab\\energy_ball.pref").Get();
+			CGameObject* pEnergyBall = pPrefab->Instantiate();
 			pEnergyBall->SetName(L"ENERGYBALL_" + std::to_wstring(i));
+			pEnergyBall->ParticleSystem()->SetLifeTime(5.f);
+			pEnergyBall->ParticleSystem()->SetParticlePlayOneTime();
+			pEnergyBall->ParticleSystem()->SetMaterial(L"material\\energy_ball.mtrl");
+
 			pEnergyBall->AddComponent(new CTransform);
 			pEnergyBall->AddComponent(new CCollider3D);
 			pEnergyBall->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
