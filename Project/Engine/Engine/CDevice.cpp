@@ -9,7 +9,8 @@ CDevice::CDevice()
 	: m_hWnd(nullptr)
 	, m_tSwapChainDesc{}
 	, m_arrRS{}
-	, m_arrCB{} {}
+	, m_arrCB{}
+	, m_isVsyncEnabled{false} {}
 
 CDevice::~CDevice()
 {

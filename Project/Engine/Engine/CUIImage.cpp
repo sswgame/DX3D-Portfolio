@@ -36,6 +36,7 @@ void CUIImage::finalupdate()
 				Transform()->SetRelativeScale(currentScale);
 			}
 		}
+		Transform()->finalupdate_module();
 	}
 	CUIBase::finalupdate();
 	if (nullptr == MeshRender()

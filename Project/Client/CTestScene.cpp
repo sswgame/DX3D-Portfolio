@@ -250,7 +250,7 @@ namespace
 	void AddFogTexture(CScene* _pScene)
 	{
 		Ptr<CTexture> fogTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\particle\\smokeparticle.png",
-			L"texture\\particle\\smokeparticle.png");
+		                                                          L"texture\\particle\\smokeparticle.png");
 
 		CGameObject* pObject = new CGameObject;
 		pObject->SetName(L"Fog");
@@ -264,7 +264,9 @@ namespace
 		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 		pObject->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\fog.mtrl"), 0);
 		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, fogTex);
-		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1, (CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex")));
+		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1,
+		                                                   (CResMgr::GetInst()->FindRes<
+			                                                   CTexture>(L"PositionTargetTex")));
 
 		_pScene->AddObject(pObject, L"BG");
 
@@ -449,7 +451,7 @@ namespace
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::HOMONCULUS);
 		pMonster->GetScript<FieldMonsteScript>()->SetDetectRange(300.f);
 		pMonster->GetScript<FieldMonsteScript>()->SetAttackRange(30.f);
-		
+
 		_pScene->AddObject(pMonster, L"MONSTER");
 	}
 
@@ -538,6 +540,9 @@ namespace
 		CGameObject* pPlayerUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref",
 		                                                           L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
 		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
+		CGameObject* pMainUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\MAIN_MENU.pref",
+		                                                           L"prefab\\MAIN_MENU.pref")->Instantiate();
+		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 	}
 
 	void Map01(CScene* _pScene)
@@ -577,6 +582,8 @@ namespace
 		_pScene->AddObject(pMap01, GAME::LAYER::BG);
 	}
 
+	void TestBossUI(CScene* _pScene);
+
 	void CreateScene()
 	{
 		auto pCurScene = new CScene;
@@ -592,10 +599,10 @@ namespace
 		//AddDecal(pCurScene);
 		//AddSphere(pCureScene);
 		//AddTessellation(pCurScene);
-		AddFogTexture(pCurScene);
+		//AddFogTexture(pCurScene);
 		//AddItem(pCurScene);
 
-		AddPlayer(pCurScene, pCamObj);
+		//AddPlayer(pCurScene, pCamObj);
 		AddHomonculus(pCurScene);
 		//AddBoss(pCurScene);
 
@@ -607,7 +614,7 @@ namespace
 		//TestNavi(pCurScene);
 
 		/// MAP01
-		Map01(pCurScene);
+		//Map01(pCurScene);
 
 		/// 충돌 레이어 설정
 		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);

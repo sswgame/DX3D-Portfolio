@@ -1,0 +1,649 @@
+NAME: OPTION
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, -60, 0]
+      m_vRelativeScale: [400, 400, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: true
+  - UIPANEL:
+      m_orderZ: 0
+      m_opacity: 1
+      m_mouseCollisionEnable: true
+      m_anchorH: 1
+      m_anchorV: 1
+      m_offsetPos: [0, -60]
+      m_showDebugRect: 0
+      m_useInfo: 0
+      m_info.imagePos: [0, 0]
+      m_info.imageSize: [0, 0]
+      m_preserveRatio: false
+  - MESHRENDER:
+      MESH: [RectMesh, RectMesh]
+      MATERIAL COUNT: 1
+      0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+      USE DYNAMIC 0: true
+      MATERIAL 0 TEXTURE LIST:
+        {}
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  []
+CHILDREN:
+  - NAME: FXAA
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 150, 0]
+          m_vRelativeScale: [225, 20, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIPANEL:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 1
+          m_anchorV: 0
+          m_offsetPos: [0, -40]
+          m_showDebugRect: 0
+          m_useInfo: 0
+          m_info.imagePos: [0, 0]
+          m_info.imageSize: [0, 0]
+          m_preserveRatio: false
+      - UIBUTTON:
+          m_clickTerm: 0.300000012
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+          USE DYNAMIC 0: true
+          MATERIAL 0 TEXTURE LIST:
+            {}
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      - NAME: SELECTOR
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [200, 35.3591156, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                {}
+              m_useInfo: 0
+              m_currentFrameName: NO DATA
+              m_currentInfo.imagePos: [0, 0]
+              m_currentInfo.imageSize: [0, 0]
+              m_preserveRatio: true
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIInterface2.mtrl, material\UIInterface2.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\StartMenu\startMenu_UI_Selector.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: TEXT
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [80, 20, 0]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UITEXT:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              m_text: FXAA
+              m_fontSize: 20
+              m_fontName: font\fa-solid-900.ttf
+              m_alphaEnable: false
+              m_color: [1, 1, 1, 1]
+              m_alignTextH: 1
+              m_alignTextV: 1
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                {}
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: CHECK_BOX
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [100, 0, 0]
+              m_vRelativeScale: [25, 25, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 2
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                NOT_SELECTED:
+                  info.imagePos: [730.723267, 253.408325]
+                  info.imageSize: [233.041473, 232.674911]
+                SELECTED:
+                  info.imagePos: [588.528442, 513.727783]
+                  info.imageSize: [108.621025, 99.0596161]
+              m_useInfo: 1
+              m_currentFrameName: NOT_SELECTED
+              m_currentInfo.imagePos: [730.723267, 253.408325]
+              m_currentInfo.imageSize: [233.041473, 232.674911]
+              m_preserveRatio: false
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\PlayerUI_Tex.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+  - NAME: SSAO
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 120, 0]
+          m_vRelativeScale: [225, 20, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIPANEL:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 1
+          m_anchorV: 0
+          m_offsetPos: [0, -70]
+          m_showDebugRect: 0
+          m_useInfo: 0
+          m_info.imagePos: [0, 0]
+          m_info.imageSize: [0, 0]
+          m_preserveRatio: false
+      - UIBUTTON:
+          m_clickTerm: 0.300000012
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+          USE DYNAMIC 0: true
+          MATERIAL 0 TEXTURE LIST:
+            {}
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      - NAME: SELECTOR
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [200, 35.3591156, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                {}
+              m_useInfo: 0
+              m_currentFrameName: NO DATA
+              m_currentInfo.imagePos: [0, 0]
+              m_currentInfo.imageSize: [0, 0]
+              m_preserveRatio: true
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIInterface2.mtrl, material\UIInterface2.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\StartMenu\startMenu_UI_Selector.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: TEXT
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [80, 20, 0]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UITEXT:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              m_text: SSAO
+              m_fontSize: 20
+              m_fontName: font\fa-solid-900.ttf
+              m_alphaEnable: false
+              m_color: [0.993039429, 0.993039429, 0.993039429, 1]
+              m_alignTextH: 1
+              m_alignTextV: 1
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                {}
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: CHECK_BOX
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [100, 0, 0]
+              m_vRelativeScale: [25, 25, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 2
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                NOT_SELECTED:
+                  info.imagePos: [730.723267, 253.408325]
+                  info.imageSize: [233.041473, 232.674911]
+                SELECTED:
+                  info.imagePos: [588.528442, 513.727783]
+                  info.imageSize: [108.621025, 99.0596161]
+              m_useInfo: 1
+              m_currentFrameName: NOT_SELECTED
+              m_currentInfo.imagePos: [730.723267, 253.408325]
+              m_currentInfo.imageSize: [233.041473, 232.674911]
+              m_preserveRatio: false
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\PlayerUI_Tex.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+  - NAME: VSYNC
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 90, 0]
+          m_vRelativeScale: [225, 20, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIPANEL:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 1
+          m_anchorV: 0
+          m_offsetPos: [0, -100]
+          m_showDebugRect: 0
+          m_useInfo: 0
+          m_info.imagePos: [0, 0]
+          m_info.imageSize: [0, 0]
+          m_preserveRatio: false
+      - UIBUTTON:
+          m_clickTerm: 0.300000012
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+          USE DYNAMIC 0: true
+          MATERIAL 0 TEXTURE LIST:
+            {}
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      - NAME: SELECTOR
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [200, 35.3591156, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                {}
+              m_useInfo: 0
+              m_currentFrameName: NO DATA
+              m_currentInfo.imagePos: [0, 0]
+              m_currentInfo.imageSize: [0, 0]
+              m_preserveRatio: true
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIInterface2.mtrl, material\UIInterface2.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\StartMenu\startMenu_UI_Selector.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: TEXT
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [120, 20, 0]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UITEXT:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              m_text: V-SYNC
+              m_fontSize: 20
+              m_fontName: font\fa-solid-900.ttf
+              m_alphaEnable: false
+              m_color: [1, 1, 1, 1]
+              m_alignTextH: 1
+              m_alignTextV: 1
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                {}
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: CHECK_BOX
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [100, 0, 0]
+              m_vRelativeScale: [25, 25, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 2
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                NOT_SELECTED:
+                  info.imagePos: [730.723267, 253.408325]
+                  info.imageSize: [233.041473, 232.674911]
+                SELECTED:
+                  info.imagePos: [588.528442, 513.727783]
+                  info.imageSize: [108.621025, 99.0596161]
+              m_useInfo: 1
+              m_currentFrameName: NOT_SELECTED
+              m_currentInfo.imagePos: [730.723267, 253.408325]
+              m_currentInfo.imageSize: [233.041473, 232.674911]
+              m_preserveRatio: false
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\PlayerUI_Tex.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+  - NAME: BACK
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 60, 0]
+          m_vRelativeScale: [200, 20, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UIPANEL:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: true
+          m_anchorH: 1
+          m_anchorV: 0
+          m_offsetPos: [0, -130]
+          m_showDebugRect: 0
+          m_useInfo: 0
+          m_info.imagePos: [0, 0]
+          m_info.imageSize: [0, 0]
+          m_preserveRatio: false
+      - UIBUTTON:
+          m_clickTerm: 0.300000012
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+          USE DYNAMIC 0: true
+          MATERIAL 0 TEXTURE LIST:
+            {}
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      - NAME: SELECTOR
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [200, 35.3591156, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UIIMAGE:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              IMAGE INFO LIST:
+                {}
+              m_useInfo: 0
+              m_currentFrameName: NO DATA
+              m_currentInfo.imagePos: [0, 0]
+              m_currentInfo.imageSize: [0, 0]
+              m_preserveRatio: true
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIInterface2.mtrl, material\UIInterface2.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\UI\StartMenu\startMenu_UI_Selector.png
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: TEXT
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [0, 0, 0]
+              m_vRelativeScale: [80, 20, 0]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: true
+          - UITEXT:
+              m_orderZ: 0
+              m_opacity: 1
+              m_mouseCollisionEnable: false
+              m_anchorH: 1
+              m_anchorV: 1
+              m_offsetPos: [0, 0]
+              m_showDebugRect: 0
+              m_text: BACK
+              m_fontSize: 20
+              m_fontName: font\fa-solid-900.ttf
+              m_alphaEnable: false
+              m_color: [1, 1, 1, 1]
+              m_alignTextH: 1
+              m_alignTextV: 1
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+              USE DYNAMIC 0: true
+              MATERIAL 0 TEXTURE LIST:
+                {}
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+  - NAME: TITLE
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 185, 0]
+          m_vRelativeScale: [240, 30, 0]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: true
+      - UITEXT:
+          m_orderZ: 0
+          m_opacity: 1
+          m_mouseCollisionEnable: false
+          m_anchorH: 1
+          m_anchorV: 0
+          m_offsetPos: [0, 0]
+          m_showDebugRect: 0
+          m_text: SETTINGS
+          m_fontSize: 30
+          m_fontName: font\fa-solid-900.ttf
+          m_alphaEnable: false
+          m_color: [1, 1, 1, 1]
+          m_alignTextH: 1
+          m_alignTextV: 1
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+          USE DYNAMIC 0: true
+          MATERIAL 0 TEXTURE LIST:
+            {}
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      []
+    CHILDREN:
+      []

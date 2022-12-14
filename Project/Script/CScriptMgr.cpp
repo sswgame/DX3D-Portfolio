@@ -14,6 +14,7 @@
 #include "HandStateMgrScript.h"
 #include "ItemScript.h"
 #include "MagmaScript.h"
+#include "MainMenuScript.h"
 #include "MissileScript.h"
 #include "MonsterGunScript.h"
 #include "MonsterSearchScript.h"
@@ -24,7 +25,6 @@
 #include "RigidBodyScript.h"
 #include "SwordTrailScript.h"
 #include "TrailScript.h"
-#include "UITestScript.h"
 
 void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 {
@@ -40,6 +40,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"HandStateMgrScript");
 	_vec.push_back(L"ItemScript");
 	_vec.push_back(L"MagmaScript");
+	_vec.push_back(L"MainMenuScript");
 	_vec.push_back(L"MissileScript");
 	_vec.push_back(L"MonsterGunScript");
 	_vec.push_back(L"MonsterSearchScript");
@@ -50,7 +51,6 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"RigidBodyScript");
 	_vec.push_back(L"SwordTrailScript");
 	_vec.push_back(L"TrailScript");
-	_vec.push_back(L"UITestScript");
 }
 
 
@@ -80,6 +80,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new ItemScript;
 	if (L"MagmaScript"== _strScriptName)
 		return new MagmaScript;
+	if (L"MainMenuScript"== _strScriptName)
+		return new MainMenuScript;
 	if (L"MissileScript"== _strScriptName)
 		return new MissileScript;
 	if (L"MonsterGunScript"== _strScriptName)
@@ -100,8 +102,6 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new SwordTrailScript;
 	if (L"TrailScript"== _strScriptName)
 		return new TrailScript;
-	if (L"UITestScript"== _strScriptName)
-		return new UITestScript;
 	return nullptr;
 }
 
@@ -134,6 +134,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new ItemScript;
 	case SCRIPT_TYPE::MAGMASCRIPT:
 		return new MagmaScript;
+	case SCRIPT_TYPE::MAINMENUSCRIPT:
+		return new MainMenuScript;
 	case SCRIPT_TYPE::MISSILESCRIPT:
 		return new MissileScript;
 	case SCRIPT_TYPE::MONSTERGUNSCRIPT:
@@ -154,8 +156,6 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new SwordTrailScript;
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return new TrailScript;
-	case SCRIPT_TYPE::UITESTSCRIPT:
-		return new UITestScript;
 	}
 	return nullptr;
 }
@@ -189,6 +189,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"ItemScript";
 	case SCRIPT_TYPE::MAGMASCRIPT:
 		return L"MagmaScript";
+	case SCRIPT_TYPE::MAINMENUSCRIPT:
+		return L"MainMenuScript";
 	case SCRIPT_TYPE::MISSILESCRIPT:
 		return L"MissileScript";
 	case SCRIPT_TYPE::MONSTERGUNSCRIPT:
@@ -209,8 +211,6 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"SwordTrailScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return L"TrailScript";
-	case SCRIPT_TYPE::UITESTSCRIPT:
-		return L"UITestScript";
 		}
 	return nullptr;
 }

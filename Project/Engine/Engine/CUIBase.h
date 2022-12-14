@@ -32,11 +32,13 @@ class CUIBase
 {
 	friend class CUIPanel;
 private:
-	int                   m_orderZ;
-	float                 m_opacity;
-	bool                  m_isMouseHovered;
-	bool                  m_mouseCollisionEnable;
-	std::function<void()> m_hoverCallback;
+	int                               m_orderZ;
+	float                             m_opacity;
+	bool                              m_isMouseHovered;
+	bool                              m_prevMouseHovered;
+	bool                              m_mouseCollisionEnable;
+	std::function<void(CGameObject*)> m_hoverCallback;
+	std::function<void(CGameObject*)> m_leaveCallback;
 
 	ANCHOR_VERTICAL   m_anchorV;
 	ANCHOR_HORIZONTAL m_anchorH;
@@ -63,7 +65,7 @@ public:
 	void SetOrderZ(int iOrderZ);
 	int  GetOrderZ() const { return m_orderZ; }
 
-	void  SetOpacity(float fOpacity) { m_opacity = fOpacity; }
+	void  SetOpacity(float fOpacity) { m_opacity = ClampData(fOpacity, 0.f, 1.f); }
 	float GetOpacity() const { return m_opacity; }
 
 	void SetMouseCollision(bool enable) { m_mouseCollisionEnable = enable; }
@@ -81,12 +83,16 @@ public:
 	bool IsShowDebugRect() const { return m_showDebugRect; }
 
 	template <typename T>
-	void SetMouseHoverCallback(T* pInstance, void (T::*func)())
+	void SetMouseHoverCallback(T* pInstance, void (T::*func)(CGameObject*))
 	{
-		m_hoverCallback = std::bind(func, pInstance);
+		m_hoverCallback = std::bind(func, pInstance, std::placeholders::_1);
 	}
 
-	void FireCallback() const;
+	template <typename T>
+	void SetMouseLeaveCallback(T* pInstance, void (T::*func)(CGameObject*))
+	{
+		m_leaveCallback = std::bind(func, pInstance, std::placeholders::_1);
+	}
 
 public:
 	void finalupdate() override;

@@ -54,7 +54,7 @@ bool CUIButton::DoubleClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 	if (m_prevClick[static_cast<int>(mouseType)]
 	    && m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)])
 	{
-		m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)]();
+		m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)](GetOwner());
 		return true;
 	}
 	return false;
@@ -64,7 +64,7 @@ bool CUIButton::OneClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 {
 	if (m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)])
 	{
-		m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)]();
+		m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)](GetOwner());
 		return true;
 	}
 	return false;
@@ -116,21 +116,21 @@ void CUIButton::HandleDragEvent()
 	{
 		if (m_arrCallback[static_cast<int>(MOUSE_TYPE::LEFT)][static_cast<int>(CLICK_TYPE::DRAG)])
 		{
-			m_arrCallback[static_cast<int>(MOUSE_TYPE::LEFT)][static_cast<int>(CLICK_TYPE::DRAG)]();
+			m_arrCallback[static_cast<int>(MOUSE_TYPE::LEFT)][static_cast<int>(CLICK_TYPE::DRAG)](GetOwner());
 		}
 	}
 	else if (KEY_PRESSED(KEY::MBTN))
 	{
 		if (m_arrCallback[static_cast<int>(MOUSE_TYPE::MIDDLE)][static_cast<int>(CLICK_TYPE::DRAG)])
 		{
-			m_arrCallback[static_cast<int>(MOUSE_TYPE::MIDDLE)][static_cast<int>(CLICK_TYPE::DRAG)]();
+			m_arrCallback[static_cast<int>(MOUSE_TYPE::MIDDLE)][static_cast<int>(CLICK_TYPE::DRAG)](GetOwner());
 		}
 	}
 	else if (KEY_PRESSED(KEY::RBTN))
 	{
 		if (m_arrCallback[static_cast<int>(MOUSE_TYPE::RIGHT)][static_cast<int>(CLICK_TYPE::DRAG)])
 		{
-			m_arrCallback[static_cast<int>(MOUSE_TYPE::RIGHT)][static_cast<int>(CLICK_TYPE::DRAG)]();
+			m_arrCallback[static_cast<int>(MOUSE_TYPE::RIGHT)][static_cast<int>(CLICK_TYPE::DRAG)](GetOwner());
 		}
 	}
 }
@@ -141,21 +141,21 @@ void CUIButton::HandleReleaseEvent()
 	{
 		if (m_arrCallback[static_cast<int>(MOUSE_TYPE::LEFT)][static_cast<int>(CLICK_TYPE::RELEASE)])
 		{
-			m_arrCallback[static_cast<int>(MOUSE_TYPE::LEFT)][static_cast<int>(CLICK_TYPE::RELEASE)]();
+			m_arrCallback[static_cast<int>(MOUSE_TYPE::LEFT)][static_cast<int>(CLICK_TYPE::RELEASE)](GetOwner());
 		}
 	}
 	else if (KEY_AWAY(KEY::MBTN))
 	{
 		if (m_arrCallback[static_cast<int>(MOUSE_TYPE::MIDDLE)][static_cast<int>(CLICK_TYPE::RELEASE)])
 		{
-			m_arrCallback[static_cast<int>(MOUSE_TYPE::MIDDLE)][static_cast<int>(CLICK_TYPE::RELEASE)]();
+			m_arrCallback[static_cast<int>(MOUSE_TYPE::MIDDLE)][static_cast<int>(CLICK_TYPE::RELEASE)](GetOwner());
 		}
 	}
 	else if (KEY_AWAY(KEY::RBTN))
 	{
 		if (m_arrCallback[static_cast<int>(MOUSE_TYPE::RIGHT)][static_cast<int>(CLICK_TYPE::RELEASE)])
 		{
-			m_arrCallback[static_cast<int>(MOUSE_TYPE::RIGHT)][static_cast<int>(CLICK_TYPE::RELEASE)]();
+			m_arrCallback[static_cast<int>(MOUSE_TYPE::RIGHT)][static_cast<int>(CLICK_TYPE::RELEASE)](GetOwner());
 		}
 	}
 }

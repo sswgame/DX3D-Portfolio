@@ -32,7 +32,7 @@ private:
 
 	std::bitset<(int)MOUSE_TYPE::END> m_prevClick;
 
-	using ClickFunc = std::array<std::function<void()>, (int)CLICK_TYPE::END>;
+	using ClickFunc = std::array<std::function<void(CGameObject*)>, (int)CLICK_TYPE::END>;
 	std::array<ClickFunc, (int)MOUSE_TYPE::END> m_arrCallback;
 
 private:
@@ -46,9 +46,9 @@ public:
 	void finalupdate() override;
 public:
 	template <typename T>
-	void SetCallback(T* pInstance, void (T::*func)(), MOUSE_TYPE mouseType, CLICK_TYPE clickType)
+	void SetCallback(T* pInstance, void (T::*func)(CGameObject*), MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 	{
-		m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)] = std::bind(func, pInstance);
+		m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)] = std::bind(func, pInstance,std::placeholders::_1);
 	}
 
 public:

@@ -23,7 +23,7 @@ COMPONENTS:
   - MESHRENDER:
       MESH: [RectMesh, RectMesh]
       MATERIAL COUNT: 1
-      0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+      0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
       USE DYNAMIC 0: true
       MATERIAL 0 TEXTURE LIST:
         {}
@@ -334,8 +334,8 @@ CHILDREN:
             m_bFrustumCulling: false
             COMPONENTS:
               - TRANSFORM:
-                  m_vRelativePos: [-67.5, 0, 0]
-                  m_vRelativeScale: [80, 16, 0]
+                  m_vRelativePos: [-27.5, 0, 0]
+                  m_vRelativeScale: [0, 16, 0]
                   m_vRelativeRot: [0, 0, 0]
                   m_bIgnoreParentScale: true
               - UITEXT:
@@ -359,7 +359,7 @@ CHILDREN:
                   0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
                   USE DYNAMIC 0: false
                   MATERIAL 0 TEXTURE LIST:
-                    {}
+                    0: texture\UI\PlayerUI_Tex.png
                   m_bDynamicShadow: false
                   m_bFrustumCulling: false
             SCRIPTS:
@@ -425,8 +425,8 @@ CHILDREN:
           - MESHRENDER:
               MESH: [RectMesh, RectMesh]
               MATERIAL COUNT: 1
-              0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
-              USE DYNAMIC 0: false
+              0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+              USE DYNAMIC 0: true
               MATERIAL 0 TEXTURE LIST:
                 {}
               m_bDynamicShadow: false
@@ -561,7 +561,7 @@ CHILDREN:
                   m_anchorV: 2
                   m_offsetPos: [0, 0]
                   m_showDebugRect: 0
-                  m_text: "    "
+                  m_text: ""
                   m_fontSize: 20
                   m_fontName: font\fa-solid-900.ttf
                   m_alphaEnable: false
@@ -571,8 +571,8 @@ CHILDREN:
               - MESHRENDER:
                   MESH: [RectMesh, RectMesh]
                   MATERIAL COUNT: 1
-                  0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
-                  USE DYNAMIC 0: false
+                  0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+                  USE DYNAMIC 0: true
                   MATERIAL 0 TEXTURE LIST:
                     {}
                   m_bDynamicShadow: false
@@ -606,8 +606,8 @@ CHILDREN:
           - MESHRENDER:
               MESH: [RectMesh, RectMesh]
               MATERIAL COUNT: 1
-              0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
-              USE DYNAMIC 0: false
+              0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+              USE DYNAMIC 0: true
               MATERIAL 0 TEXTURE LIST:
                 {}
               m_bDynamicShadow: false
@@ -742,7 +742,7 @@ CHILDREN:
                   m_anchorV: 2
                   m_offsetPos: [0, 0]
                   m_showDebugRect: 0
-                  m_text: "  "
+                  m_text: ""
                   m_fontSize: 20
                   m_fontName: font\fa-solid-900.ttf
                   m_alphaEnable: false
@@ -752,8 +752,8 @@ CHILDREN:
               - MESHRENDER:
                   MESH: [RectMesh, RectMesh]
                   MATERIAL COUNT: 1
-                  0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
-                  USE DYNAMIC 0: false
+                  0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+                  USE DYNAMIC 0: true
                   MATERIAL 0 TEXTURE LIST:
                     {}
                   m_bDynamicShadow: false
@@ -787,8 +787,8 @@ CHILDREN:
           - MESHRENDER:
               MESH: [RectMesh, RectMesh]
               MATERIAL COUNT: 1
-              0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
-              USE DYNAMIC 0: false
+              0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+              USE DYNAMIC 0: true
               MATERIAL 0 TEXTURE LIST:
                 {}
               m_bDynamicShadow: false
@@ -923,7 +923,7 @@ CHILDREN:
                   m_anchorV: 2
                   m_offsetPos: [0, 0]
                   m_showDebugRect: 0
-                  m_text: "  "
+                  m_text: ""
                   m_fontSize: 20
                   m_fontName: font\fa-solid-900.ttf
                   m_alphaEnable: false
@@ -933,8 +933,8 @@ CHILDREN:
               - MESHRENDER:
                   MESH: [RectMesh, RectMesh]
                   MATERIAL COUNT: 1
-                  0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
-                  USE DYNAMIC 0: false
+                  0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+                  USE DYNAMIC 0: true
                   MATERIAL 0 TEXTURE LIST:
                     {}
                   m_bDynamicShadow: false

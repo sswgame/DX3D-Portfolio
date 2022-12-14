@@ -608,15 +608,14 @@ void UITool::ShowPanel(CUIPanel* pScript)
 		pScript->SetUseInfo(useWholeTexture ? false : true);
 	}
 
+	bool preserveRatio = pScript->IsPreserveRatio();
+	ImGui::Text("PRESERVE RATIO");
+	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+	ImGui::Checkbox("##PANEL_PRESERVE_RATIO", &preserveRatio);
+	pScript->SetPreserveRatio(preserveRatio);
+
 	if (false == useWholeTexture)
 	{
-		bool preserveRatio = pScript->IsPreserveRatio();
-		ImGui::Text("PRESERVE RATIO");
-		ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
-		ImGui::Checkbox("##PANEL_PRESERVE_RATIO", &preserveRatio);
-		pScript->SetPreserveRatio(preserveRatio);
-
-
 		ImGui::PushID(0);
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(220.f / 255.f, 10.f / 255.f, 10.f / 255.f, 1.f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(220.f / 255.f, 10.f / 255.f, 10.f / 255.f, 1.f));
@@ -660,10 +659,6 @@ void UITool::ShowImage(CUIImage* pScript)
 	ImGui::PopStyleColor(3);
 	ImGui::PopID();
 
-	ImGui::Text("TEXTURE");
-	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
-
-
 	CMeshRender*  pMeshRender = pScript->GetOwner()->MeshRender();
 	Ptr<CTexture> pTexture    = pMeshRender->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
 
@@ -674,6 +669,9 @@ void UITool::ShowImage(CUIImage* pScript)
 	{
 		pMeshRender->SetUseDynamicMaterial(0, useDynamicMaterial);
 	}
+
+	ImGui::Text("TEXTURE");
+	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
 
 	ImGui::Text((nullptr != pTexture) ? ToString(pTexture->GetKey()).c_str() : "NO TEXTURE");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING + ImGui::GetItemRectSize().x);
@@ -709,20 +707,18 @@ void UITool::ShowImage(CUIImage* pScript)
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
 	const bool  hasInfo = pScript->GetInfoList().empty();
 	static bool useWholeTexture{};
-	useWholeTexture = (false == hasInfo) && useWholeTexture;
-	if (ImGui::Checkbox("##UI_USE_WHOLE", &useWholeTexture))
-	{
-		int a = 0;
-	}
+	static bool useSelected{};
+	useWholeTexture = hasInfo || useSelected;
+	ImGui::Checkbox("##UI_USE_WHOLE", &useWholeTexture);
+
+	bool preserveRatio = pScript->IsPreserveRatio();
+	ImGui::Text("PRESERVE RATIO");
+	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+	ImGui::Checkbox("##PRESERVE_RATIO", &preserveRatio);
+	pScript->SetPreserveRatio(preserveRatio);
 
 	if (false == useWholeTexture)
 	{
-		bool preserveRatio = pScript->IsPreserveRatio();
-		ImGui::Text("PRESERVE RATIO");
-		ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
-		ImGui::Checkbox("##PRESERVE_RATIO", &preserveRatio);
-		pScript->SetPreserveRatio(preserveRatio);
-
 		if (pScript->HasCurrentInfo())
 		{
 			ImGui::PushID(0);
@@ -836,6 +832,16 @@ void UITool::ShowImage(CUIImage* pScript)
 void UITool::ShowText(CUIText* pScript)
 {
 	ShowDefault(pScript);
+	CMeshRender*  pMeshRender        = pScript->GetOwner()->MeshRender();
+	Ptr<CTexture> pTexture           = pMeshRender->GetMaterial(0)->GetTexParam(TEX_PARAM::TEX_0);
+	bool          useDynamicMaterial = pMeshRender->IsUsingDynamicMaterial(0);
+
+	ImGui::Text("USE DYNAMIC MATERIAL");
+	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+	if (ImGui::Checkbox("##DYNAMIC", &useDynamicMaterial))
+	{
+		pMeshRender->SetUseDynamicMaterial(0, useDynamicMaterial);
+	}
 
 	ImGui::PushID(0);
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(220.f / 255.f, 10.f / 255.f, 10.f / 255.f, 1.f));
@@ -932,6 +938,7 @@ void UITool::ShowText(CUIText* pScript)
 		MultiByteToWideChar(CP_UTF8, 0, szText, (int)strlen(szText), szwText, nLen);
 		pScript->SetText(szwText);
 		std::memset(szText, 0, std::size(szText));
+		std::memset(szwText, 0, std::size(szwText));
 	}
 }
 

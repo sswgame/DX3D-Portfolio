@@ -46,6 +46,7 @@ void CUIPanel::finalupdate()
 				Transform()->SetRelativeScale(currentScale);
 			}
 		}
+		Transform()->finalupdate_module();
 	}
 
 	CUIBase::finalupdate();
@@ -93,16 +94,22 @@ void CUIPanel::SortGameObject()
 
 bool CUIPanel::CollisionMouse()
 {
+	if (false == m_mouseCollisionEnable)
+	{
+		return false;
+	}
+	//패널이 아닌 자식에서 점검하는 경우
 	for (const auto& pUIWidget : m_vecUIChild)
 	{
-		if (pUIWidget->CollisionMouse() && pUIWidget->m_hoverCallback)
+		if (pUIWidget->CollisionMouse())
 		{
-			pUIWidget->m_isMouseHovered = true;
-			pUIWidget->m_hoverCallback();
 			return true;
 		}
-		pUIWidget->m_isMouseHovered = false;
-		return false;
+	}
+	//패널 자체가 이벤트가 발생하는 경우
+	if (CUIBase::CollisionMouse())
+	{
+		return true;
 	}
 	return false;
 }

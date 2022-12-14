@@ -10,118 +10,102 @@
 #include "CDevice.h"
 
 
-
-
-
 CRenderEffectMgr::CRenderEffectMgr()
-	: m_bEnable_FXAA(true)
-	, m_bEnable_SSAO(true)
-	, m_fPaperBurn_Timer(0.f)
-{
+	: m_bEnable_SSAO(true)
+	, m_bEnable_FXAA(true)
+	, m_bEnable_FadeIn_PaperBurn{false}
+	, m_bEnable_FadeOut_PaperBurn{false}
+	, m_fPaperBurn_Timer(0.f) {}
 
-}
-
-CRenderEffectMgr::~CRenderEffectMgr()
-{
-
-}
+CRenderEffectMgr::~CRenderEffectMgr() {}
 
 void CRenderEffectMgr::Init()
 {
 	CFXAA::GetInst()->Init();
 	CSSAO::GetInst()->Init();
-
-
 }
 
 void CRenderEffectMgr::Apply(EFFECT_TYPE _eType)
 {
-
 	switch (_eType)
 	{
 	case EFFECT_TYPE::FXAA:
-	{
-		if (!m_bEnable_FXAA)
-			break;
+		{
+			if (!m_bEnable_FXAA)
+				break;
 
-		CRenderMgr::GetInst()->CopyTargetToPostProcess();
-		D3D11_VIEWPORT SwapChain_VP = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->GetViewPort();
-		CFXAA::GetInst()->SetViewPort(SwapChain_VP);
-		CFXAA::GetInst()->Apply();
-	}
-	break;
+			CRenderMgr::GetInst()->CopyTargetToPostProcess();
+			D3D11_VIEWPORT SwapChain_VP = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->GetViewPort();
+			CFXAA::GetInst()->SetViewPort(SwapChain_VP);
+			CFXAA::GetInst()->Apply();
+		}
+		break;
 	case EFFECT_TYPE::SSAO:
-	{
-		if (!m_bEnable_SSAO)
-			break;
+		{
+			if (!m_bEnable_SSAO)
+				break;
 
-		CSSAO::GetInst()->Apply();
-	}
-	break;
+			CSSAO::GetInst()->Apply();
+		}
+		break;
 
 	case EFFECT_TYPE::SSAO_BLUR:
-	{
-		if (!m_bEnable_SSAO)
-			break;
-
-		CSSAO::GetInst()->BlurAmbientMap();
-	}
-	break;
-	case EFFECT_TYPE::FADE_IN_PAPERBURN:
-	{
-		if (!m_bEnable_FadeIn_PaperBurn)
-			break;
-
-		m_fPaperBurn_Timer += DT;
-		if (m_fPaperBurn_Timer >= 1.f)
-			m_fPaperBurn_Timer = 1.f;
-
-		CRenderMgr::GetInst()->CopyTargetToPostProcess();
-		Apply_FadeInOut_PaperBurn();
-
-		
-	}
-	break;
-	case EFFECT_TYPE::FADE_OUT_PAPERBURN:
-	{
-		if (!m_bEnable_FadeOut_PaperBurn)
-			break;
-
-		m_fPaperBurn_Timer -= DT;
-		if (m_fPaperBurn_Timer <= 0.f)
 		{
-			m_fPaperBurn_Timer = 0.f;
-			break;
+			if (!m_bEnable_SSAO)
+				break;
+
+			CSSAO::GetInst()->BlurAmbientMap();
 		}
+		break;
+	case EFFECT_TYPE::FADE_IN_PAPERBURN:
+		{
+			if (!m_bEnable_FadeIn_PaperBurn || m_bFadeInOutFinished)
+				break;
 
-		CRenderMgr::GetInst()->CopyTargetToPostProcess();
-		Apply_FadeInOut_PaperBurn();
+			m_fPaperBurn_Timer += DT / m_fDuration;
+			if (m_fPaperBurn_Timer >= 1.f)
+			{
+				m_fPaperBurn_Timer   = 1.f;
+				m_bFadeInOutFinished = true;
+			}
 
+			CRenderMgr::GetInst()->CopyTargetToPostProcess();
+			Apply_FadeInOut_PaperBurn();
+		}
+		break;
+	case EFFECT_TYPE::FADE_OUT_PAPERBURN:
+		{
+			if (!m_bEnable_FadeOut_PaperBurn || m_bFadeInOutFinished)
+				break;
+
+			m_fPaperBurn_Timer -= DT / m_fDuration;
+			if (m_fPaperBurn_Timer <= 0.f)
+			{
+				m_fPaperBurn_Timer   = 0.f;
+				m_bFadeInOutFinished = true;
+			}
+
+			CRenderMgr::GetInst()->CopyTargetToPostProcess();
+			Apply_FadeInOut_PaperBurn();
+		}
+		break;
 	}
-	break;
-
-
-	}
-
-
 }
 
-void CRenderEffectMgr::Init_FadePaperBurn()
-{
-}
+void CRenderEffectMgr::Init_FadePaperBurn() {}
 
 void CRenderEffectMgr::Apply_FadeInOut_PaperBurn()
 {
-	D3D11_VIEWPORT	SwapChain_VP   = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->GetViewPort();
-	Ptr<CMesh>		pRectMesh      = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
-	Ptr<CMaterial>	pPaperBurnMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\PaperBurnFullScreenMtrl.mtrl");
-	Ptr<CTexture>	pPostTex       = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
-	Vec4			vColor         = WHITE;
+	D3D11_VIEWPORT SwapChain_VP   = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->GetViewPort();
+	Ptr<CMesh>     pRectMesh      = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+	Ptr<CMaterial> pPaperBurnMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\PaperBurnFullScreenMtrl.mtrl");
+	Ptr<CTexture>  pPostTex       = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
+	Vec4           vColor         = WHITE;
 
 	Ptr<CTexture> pNoiseTex = CResMgr::GetInst()->Load<CTexture>(L"texturetexture\\UI\\FX\\UI_StylizedClouds_FX.png",
-		L"texture\\UI\\FX\\UI_StylizedClouds_FX.png");
+	                                                             L"texture\\UI\\FX\\UI_StylizedClouds_FX.png");
 	Ptr<CTexture> pResultTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\StartMenu\\StartMenu_UI_BG.png",
-		L"texture\\UI\\StartMenu\\StartMenu_UI_BG.png");
+	                                                              L"texture\\UI\\StartMenu\\StartMenu_UI_BG.png");
 
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_0, pPostTex);
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_1, pNoiseTex);
@@ -137,6 +121,4 @@ void CRenderEffectMgr::Apply_FadeInOut_PaperBurn()
 
 	CONTEXT->RSSetViewports(1, &SwapChain_VP);
 	CONTEXT->Draw(3, 0);
-
 }
-

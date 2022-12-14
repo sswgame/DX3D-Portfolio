@@ -192,6 +192,10 @@ void SceneOutliner::ResetTreeUI()
 		for (size_t k = 0; k < vecRoots.size(); ++k)
 		{
 			// 3. GAMEOBJECT NODE
+			if (vecRoots[k]->GetName() == L"ManagerScript")
+			{
+				continue;
+			}
 			AddGameObjectToTree(vecRoots[k], pLayerNode);
 		}
 	}
@@ -259,8 +263,6 @@ void SceneOutliner::RenderAddObject()
 	ImGui::PopStyleColor(2);
 
 
-
-
 	bool unused_open = true;
 	if (ImGui::BeginPopupModal("Create New Obj", &unused_open))
 	{
@@ -292,7 +294,7 @@ void SceneOutliner::RenderAddObject()
 		if (ImGui::Button("##PrefabListbtn", Vec2(15, 15)))
 		{
 			// ListUI 활성화한다.
-			const map<wstring, CRes*>& mapRes = CResMgr::GetInst()->GetResList(RES_TYPE::PREFAB);
+			const map<wstring, CRes*>& mapRes  = CResMgr::GetInst()->GetResList(RES_TYPE::PREFAB);
 			auto                       pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 			pListUI->Clear();
 			pListUI->SetTitle("Prefab List");
@@ -312,7 +314,7 @@ void SceneOutliner::RenderAddObject()
 
 		if (ImGui::Button("Complete"))
 		{
-			string name = buf;
+			string name    = buf;
 			auto   newName = wstring(name.begin(), name.end());
 
 			auto NewObj = new CGameObject;
@@ -332,7 +334,7 @@ void SceneOutliner::RenderAddObject()
 
 				// TReeUI 에 추가하기 위해서 Reset() 
 				ResetTreeUI();
-				char empty[512] = { NULL, };
+				char empty[512] = {NULL,};
 				strcpy_s(buf, empty);
 				ImGui::CloseCurrentPopup();
 			}
@@ -356,8 +358,8 @@ void SceneOutliner::RenderAddObject()
 	ImGui::Checkbox("Enable Picking", &m_bEnablePicking);
 
 	if (m_bEnablePicking
-		&& KEY_TAP(KEY::LBTN)
-		&& CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
+	    && KEY_TAP(KEY::LBTN)
+	    && CSceneMgr::GetInst()->GetCurScene()->GetSceneState() != SCENE_STATE::PLAY)
 	{
 		ObjectPicking();
 	}
@@ -368,45 +370,46 @@ void SceneOutliner::RenderAddObject()
 	// [ FXAA BUTTON ]
 	ImGui::SameLine();
 	bool bFXAA = CRenderEffectMgr::GetInst()->IsEnable_FXAA();
-	ImGui::Checkbox("FXAA", &bFXAA);
-	if (bFXAA)
-		CRenderEffectMgr::GetInst()->Enable_FXAA();
-	else
-		CRenderEffectMgr::GetInst()->Disable_FXAA();
+	if (ImGui::Checkbox("FXAA", &bFXAA))
+	{
+		if (bFXAA)
+			CRenderEffectMgr::GetInst()->Enable_FXAA();
+		else
+			CRenderEffectMgr::GetInst()->Disable_FXAA();
+	}
 
 
 	// [ SSAO BUTTON ]
 	ImGui::SameLine();
 	bool bSSAO = CRenderEffectMgr::GetInst()->IsEnable_SSAO();
-	ImGui::Checkbox("SSAO", &bSSAO);
-	if (bSSAO)
-		CRenderEffectMgr::GetInst()->Enable_SSAO();
-	else
-		CRenderEffectMgr::GetInst()->Disable_SSAO();
-
+	if (ImGui::Checkbox("SSAO", &bSSAO))
+	{
+		if (bSSAO)
+			CRenderEffectMgr::GetInst()->Enable_SSAO();
+		else
+			CRenderEffectMgr::GetInst()->Disable_SSAO();
+	}
 	// [ FADE IN/OUT PaperBurn ]
 	ImGui::SameLine();
 	bool bFadeIn = CRenderEffectMgr::GetInst()->IsEnable_FadeInPaperBurn();
-	ImGui::Checkbox("FADEIN", &bFadeIn);
-	if (bFadeIn)
-		CRenderEffectMgr::GetInst()->Enable_FadeInPaperBurn();
-	else
-		CRenderEffectMgr::GetInst()->Disable_FadeInPaperBurn();
+	if (ImGui::Checkbox("FADEIN", &bFadeIn))
+	{
+		if (bFadeIn)
+			CRenderEffectMgr::GetInst()->Enable_FadeInPaperBurn();
+		else
+			CRenderEffectMgr::GetInst()->Disable_FadeInPaperBurn();
+	}
 
 	ImGui::SameLine();
 	bool bFadeOut = CRenderEffectMgr::GetInst()->IsEnable_FadeOutPaperBurn();
-	ImGui::Checkbox("FADEOUT", &bFadeOut);
-	if (bFadeOut)
-		CRenderEffectMgr::GetInst()->Enable_FadeOutPaperBurn();
-	else
-		CRenderEffectMgr::GetInst()->Disable_FadeOutPaperBurn();
-
-
-
-
+	if (ImGui::Checkbox("FADEOUT", &bFadeOut))
+	{
+		if (bFadeOut)
+			CRenderEffectMgr::GetInst()->Enable_FadeOutPaperBurn();
+		else
+			CRenderEffectMgr::GetInst()->Disable_FadeOutPaperBurn();
+	}
 #pragma endregion
-
-
 }
 
 void SceneOutliner::RenderGuizmo() const

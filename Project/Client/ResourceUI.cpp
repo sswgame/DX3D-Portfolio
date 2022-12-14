@@ -299,15 +299,6 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("MESH THREAD JOIN SUCCEDED");
 
-	//SOUND
-	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::SOUND)])
-	{
-		CThreadPool::GetInst()->EnqueueJob(&ResourceUI::LoadResource<CSound>, this, resourceKey);
-	}
-	CThreadPool::GetInst()->Start();
-	CThreadPool::GetInst()->Join();
-	LOG_TRACE("SOUND THREAD JOIN SUCCEDED");
-
 	//MATERIAL
 	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::MATERIAL)])
 	{
@@ -360,6 +351,15 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Start();
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("NAVMESHDATA THREAD JOIN SUCCEDED");
+
+	//SOUND
+	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::SOUND)])
+	{
+		CThreadPool::GetInst()->EnqueueJob(&ResourceUI::LoadResource<CSound>, this, resourceKey);
+	}
+	CThreadPool::GetInst()->Start();
+	CThreadPool::GetInst()->Join();
+	LOG_TRACE("SOUND THREAD JOIN SUCCEDED");
 }
 
 void ResourceUI::WithOutMultiThead()

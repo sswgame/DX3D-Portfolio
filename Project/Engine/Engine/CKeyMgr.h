@@ -33,7 +33,9 @@ struct tKeyInfo
 class CKeyMgr
 	: public CSingleton<CKeyMgr>
 {
+private:
 	SINGLE(CKeyMgr);
+
 private:
 	vector<tKeyInfo> m_vecKey;
 	Vec2             m_vMousePos;

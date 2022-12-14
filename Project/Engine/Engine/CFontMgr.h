@@ -7,6 +7,7 @@
 class CFontMgr : public CSingleton<CFontMgr>
 {
 	SINGLE(CFontMgr);
+
 private:
 	ComPtr<IDWriteFactory5>                                m_pFactory;
 	std::map<std::wstring, ComPtr<IDWriteFontCollection1>> m_mapCollection;
@@ -28,6 +29,7 @@ private:
 	                                             const std::wstring& _locale      = L"en_us");
 	ComPtr<ID2D1SolidColorBrush> FindColor(const Vec4& _color);
 	UINT                         GetColorID(const Vec4& _color);
+
 public:
 	std::vector<std::wstring>    GetFonts() const;
 	void                         Init();
@@ -37,5 +39,5 @@ public:
 	ComPtr<IDWriteTextLayout>    CreateTextLayout(const std::wstring&       text,
 	                                              ComPtr<IDWriteTextFormat> pFont,
 	                                              float                     width,
-	                                              float                     height);
+	                                              float                     height) const;
 };

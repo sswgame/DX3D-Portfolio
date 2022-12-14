@@ -14,24 +14,23 @@ enum class EFFECT_TYPE
 };
 
 
-
 class CRenderEffectMgr
 	: public CSingleton<CRenderEffectMgr>
 {
 	SINGLE(CRenderEffectMgr);
 private:
 	// [ SSAO ]
-	bool		m_bEnable_SSAO;
+	bool m_bEnable_SSAO;
 
 	// [ FXAA ] 
-	bool		m_bEnable_FXAA;
+	bool m_bEnable_FXAA;
 
 	// [ FADE_INOUT_PAPERBURN ]
-	bool		m_bEnable_FadeIn_PaperBurn;
-	bool		m_bEnable_FadeOut_PaperBurn;
-	float		m_fPaperBurn_Timer;
-
-
+	bool  m_bEnable_FadeIn_PaperBurn;
+	bool  m_bEnable_FadeOut_PaperBurn;
+	float m_fPaperBurn_Timer;
+	bool  m_bFadeInOutFinished = false;
+	float m_fDuration;
 public:
 	void Init();
 	void Apply(EFFECT_TYPE _eType);
@@ -51,13 +50,39 @@ public:
 	void Init_FadePaperBurn();
 	void Apply_FadeInOut_PaperBurn();
 
+	bool IsFadeOutFinished() const { return m_bEnable_FadeOut_PaperBurn && m_bFadeInOutFinished; }
+	bool IsFadeInFinished() const { return m_bEnable_FadeIn_PaperBurn && m_bFadeInOutFinished; }
+
 	bool IsEnable_FadeInPaperBurn() { return m_bEnable_FadeIn_PaperBurn; }
-	void Enable_FadeInPaperBurn()   { m_bEnable_FadeIn_PaperBurn = true; m_bEnable_FadeOut_PaperBurn = false; }
-	void Disable_FadeInPaperBurn()  { m_bEnable_FadeIn_PaperBurn = false; m_bEnable_FadeOut_PaperBurn = true;}
+
+	void Enable_FadeInPaperBurn(float _fDuration = 1.f)
+	{
+		m_bFadeInOutFinished = false;
+		m_bEnable_FadeIn_PaperBurn = true;
+		m_bEnable_FadeOut_PaperBurn = false;
+		m_fPaperBurn_Timer = 0.f;
+		m_fDuration = ClampData(_fDuration, 1.f, D3D11_FLOAT32_MAX);
+	}
+
+	void Disable_FadeInPaperBurn()
+	{
+		m_bEnable_FadeIn_PaperBurn = false;
+	}
+
 
 	bool IsEnable_FadeOutPaperBurn() { return m_bEnable_FadeOut_PaperBurn; }
-	void Enable_FadeOutPaperBurn()   { m_bEnable_FadeOut_PaperBurn = true; m_bEnable_FadeIn_PaperBurn = false; }
-	void Disable_FadeOutPaperBurn()  { m_bEnable_FadeOut_PaperBurn = false;m_bEnable_FadeIn_PaperBurn = true; }
 
+	void Enable_FadeOutPaperBurn(float _fDuration = 1.f)
+	{
+		m_bFadeInOutFinished = false;
+		m_bEnable_FadeOut_PaperBurn = true;
+		m_bEnable_FadeIn_PaperBurn = false;
+		m_fPaperBurn_Timer = 1.f;
+		m_fDuration = ClampData(_fDuration, 1.f, D3D11_FLOAT32_MAX);
+	}
+
+	void Disable_FadeOutPaperBurn()
+	{
+		m_bEnable_FadeOut_PaperBurn = false;
+	}
 };
-

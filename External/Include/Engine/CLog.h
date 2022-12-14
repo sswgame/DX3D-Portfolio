@@ -68,6 +68,7 @@ public:
 	static void Init();
 	static void WriteLog(LOG_LEVEL level, const char* pMessage, ...);
 	static void LogAssert(const char* pExpression, const char* pMessage, const char* pFile, int line);
+
 public:
 };
 
@@ -87,7 +88,7 @@ public:
 #define LOG_WARN(message,...) 
 #define LOG_INFO(message,...) 
 #define LOG_TRACE(message,...)
-#define LOG_ASSERT(expr...)
+#define LOG_ASSERT(expr,...)
 #endif
 
 #endif

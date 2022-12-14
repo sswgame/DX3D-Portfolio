@@ -100,11 +100,22 @@ Ptr<CMaterial> CRenderComponent::GetDynamicMaterial(UINT _iIdx)
 	//EDITOR에서 확인하는 용도
 	if (IsUsingDynamicMaterial(_iIdx))
 	{
+		if (nullptr != m_vecMtrls[_iIdx].pDynamicMtrl)
+		{
+			if (m_vecMtrls[_iIdx].pDynamicMtrl->GetMasterMtrl() != m_vecMtrls[_iIdx].pSharedMtrl)
+			{
+				CMaterial* pMtrl = m_vecMtrls[_iIdx].pDynamicMtrl.Get();
+				delete(pMtrl);
+				m_vecMtrls[_iIdx].pDynamicMtrl = nullptr;
+			}
+		}
+
 		if (nullptr == m_vecMtrls[_iIdx].pDynamicMtrl)
 		{
 			m_vecMtrls[_iIdx].pDynamicMtrl = m_vecMtrls[_iIdx].pSharedMtrl->GetMtrlInst();
 			m_vecMtrls[_iIdx].pMtrl        = m_vecMtrls[_iIdx].pDynamicMtrl;
 		}
+
 		return m_vecMtrls[_iIdx].pMtrl;
 	}
 
@@ -264,7 +275,7 @@ void CRenderComponent::Deserialize(const YAML::Node& node)
 		SetSharedMaterial(pMaterial, i);
 		if (m_vecUseDynamicMaterial[i])
 		{
-			m_vecMtrls[i].pDynamicMtrl = pMaterial->Clone();
+			m_vecMtrls[i].pDynamicMtrl = pMaterial->GetMtrlInst();
 			m_vecMtrls[i].pMtrl        = m_vecMtrls[i].pDynamicMtrl;
 		}
 	}

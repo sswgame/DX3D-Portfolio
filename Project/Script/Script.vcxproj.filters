@@ -191,9 +191,6 @@
       <Filter>Script\MIssile</Filter>
     </ClInclude>
     <ClInclude Include="MagmaScript.h" />
-    <ClInclude Include="UITestScript.h">
-      <Filter>TEST</Filter>
-    </ClInclude>
     <ClInclude Include="MagmaScript.h" />
     <ClInclude Include="SwordTrailScript.h" />
     <ClInclude Include="ColumnFlameScript.h">
@@ -247,6 +244,7 @@
     <ClInclude Include="ItemScript.h">
       <Filter>Script\Item</Filter>
     </ClInclude>
+    <ClInclude Include="MainMenuScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -430,9 +428,6 @@
       <Filter>Script\MIssile</Filter>
     </ClCompile>
     <ClCompile Include="MagmaScript.cpp" />
-    <ClCompile Include="UITestScript.cpp">
-      <Filter>TEST</Filter>
-    </ClCompile>
     <ClCompile Include="MagmaScript.cpp" />
     <ClCompile Include="SwordTrailScript.cpp" />
     <ClCompile Include="ColumnFlameScript.cpp">
@@ -486,6 +481,7 @@
     <ClCompile Include="ItemScript.cpp">
       <Filter>Script\Item</Filter>
     </ClCompile>
+    <ClCompile Include="MainMenuScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">

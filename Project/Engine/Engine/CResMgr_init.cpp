@@ -70,7 +70,7 @@ namespace
 
 		//UI_INTERFACE1
 		pMtrl = new CMaterial;
-		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UIShader"));
+		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UITranslucentShader"));
 		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIInterface1.mtrl", pMtrl);
 
 		//UI_INTERFACE2
@@ -1166,7 +1166,7 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"PaperBurnFullScreenShader"));
 	AddRes<CMaterial>(L"material\\PaperBurnFullScreenMtrl.mtrl", pMtrl);
-	
+
 
 	// TileMapMtrl
 	pMtrl = new CMaterial;

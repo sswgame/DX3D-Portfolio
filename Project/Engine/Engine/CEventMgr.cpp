@@ -245,6 +245,10 @@ void CEventMgr::update()
 			{
 				CUIText* pUIText = (CUIText*)m_vecEvent[i].lParam;
 
+				if (pUIText->GetText().empty())
+				{
+					break;
+				}
 				CDevice::GetInst()->GetRtv2D()->BeginDraw();
 				const Vec3 worldPos       = pUIText->Transform()->GetWorldPos();
 				const Vec3 halfWorldScale = pUIText->Transform()->GetWorldScale() * 0.5f;

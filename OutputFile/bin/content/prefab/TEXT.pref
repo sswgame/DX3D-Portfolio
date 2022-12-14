@@ -1,0 +1,38 @@
+NAME: TEXT
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 0, 0]
+      m_vRelativeScale: [624, 24, 0]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: true
+  - UITEXT:
+      m_orderZ: 0
+      m_opacity: 1
+      m_mouseCollisionEnable: false
+      m_anchorH: 1
+      m_anchorV: 1
+      m_offsetPos: [0, 0]
+      m_showDebugRect: 0
+      m_text: TALE OF THE FORGOTTEN KING
+      m_fontSize: 24
+      m_fontName: font\fa-solid-900.ttf
+      m_alphaEnable: false
+      m_color: [1, 1, 1, 1]
+      m_alignTextH: 1
+      m_alignTextV: 1
+  - MESHRENDER:
+      MESH: [RectMesh, RectMesh]
+      MATERIAL COUNT: 1
+      0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
+      USE DYNAMIC 0: true
+      MATERIAL 0 TEXTURE LIST:
+        {}
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  []
+CHILDREN:
+  []

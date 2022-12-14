@@ -16,6 +16,7 @@ CUIBase::CUIBase(COMPONENT_TYPE type)
 	, m_orderZ{0}
 	, m_opacity{1.f}
 	, m_isMouseHovered{false}
+	, m_prevMouseHovered{false}
 	, m_mouseCollisionEnable{true}
 	, m_anchorV{ANCHOR_VERTICAL::MIDDLE}
 	, m_anchorH{ANCHOR_HORIZONTAL::MIDDLE}
@@ -42,14 +43,11 @@ void CUIBase::finalupdate()
 	adjustPos.x    = AdjustPositionWithAnchor(m_anchorH);
 	adjustPos.y    = AdjustPositionWithAnchor(m_anchorV);
 	Transform()->SetRelativePos(adjustPos);
+	Transform()->finalupdate_module();
 
-	if (nullptr == GetOwner()->GetParent() || nullptr == GetOwner()->GetParent()->UIPanel())
+	if (nullptr == GetOwner()->GetParent())
 	{
-		m_isMouseHovered = CollisionMouse();
-		if (m_isMouseHovered && m_hoverCallback)
-		{
-			m_hoverCallback();
-		}
+		CollisionMouse();
 	}
 
 	if (nullptr == MeshRender()
@@ -72,7 +70,7 @@ void CUIBase::finalupdate()
 
 bool CUIBase::CollisionMouse()
 {
-	if (false == m_mouseCollisionEnable)
+	if (false == m_mouseCollisionEnable || false == IsActive())
 	{
 		return false;
 	}
@@ -97,10 +95,23 @@ bool CUIBase::CollisionMouse()
 	const Vec2 leftTop     = {uiPos.x - halfUISize.x, uiPos.y + halfUISize.y};
 	const Vec2 rightBottom = {uiPos.x + halfUISize.x, uiPos.y - halfUISize.y};
 
-	const bool isInside = (leftTop.x < mousePos.x && mousePos.x < rightBottom.x
-	                       && rightBottom.y < mousePos.y && mousePos.y < leftTop.y);
+	m_isMouseHovered = (leftTop.x < mousePos.x && mousePos.x < rightBottom.x
+	                    && rightBottom.y < mousePos.y && mousePos.y < leftTop.y);
 
-	return isInside;
+	bool isHandled = false;
+	if (m_isMouseHovered && m_prevMouseHovered != m_isMouseHovered && m_hoverCallback)
+	{
+		m_hoverCallback(GetOwner());
+		isHandled = true;
+	}
+	if (m_prevMouseHovered != m_isMouseHovered && m_isMouseHovered == false && m_leaveCallback)
+	{
+		m_leaveCallback(GetOwner());
+		isHandled = true;
+	}
+	m_prevMouseHovered = m_isMouseHovered;
+
+	return isHandled;
 }
 
 void CUIBase::SetOrderZ(int iOrderZ)
@@ -118,15 +129,6 @@ void CUIBase::SetShowDebugRect(bool enable)
 {
 	m_showDebugRect = enable;
 }
-
-void CUIBase::FireCallback() const
-{
-	if (m_hoverCallback)
-	{
-		m_hoverCallback();
-	}
-}
-
 
 float CUIBase::AdjustPositionWithAnchor(ANCHOR_HORIZONTAL type)
 {

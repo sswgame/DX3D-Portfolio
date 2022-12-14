@@ -148,7 +148,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="Homon_Idle.h" />
     <ClInclude Include="Homon_Walk.h" />
     <ClInclude Include="ItemScript.h" />
-    <ClInclude Include="UITestScript.h" />
+    <ClInclude Include="MainMenuScript.h" />
     <ClInclude Include="CIdle_Gun.h" />
     <ClInclude Include="CObjectManager.h" />
     <ClInclude Include="ColumnFlameScript.h" />
@@ -231,7 +231,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="Homon_Idle.cpp" />
     <ClCompile Include="Homon_Walk.cpp" />
     <ClCompile Include="ItemScript.cpp" />
-    <ClCompile Include="UITestScript.cpp" />
+    <ClCompile Include="MainMenuScript.cpp" />
     <ClCompile Include="CIdle_Gun.cpp" />
     <ClCompile Include="CObjectManager.cpp" />
     <ClCompile Include="ColumnFlameScript.cpp" />

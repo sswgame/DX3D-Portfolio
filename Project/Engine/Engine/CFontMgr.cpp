@@ -175,7 +175,7 @@ ComPtr<ID2D1SolidColorBrush> CFontMgr::GetBrush(const D2D1::ColorF& _color)
 ComPtr<IDWriteTextLayout> CFontMgr::CreateTextLayout(const std::wstring&       text,
                                                      ComPtr<IDWriteTextFormat> pFont,
                                                      float                     width,
-                                                     float                     height)
+                                                     float                     height) const
 {
 	ComPtr<IDWriteTextLayout> pLayout{};
 	const HRESULT             hr = m_pFactory->CreateTextLayout(text.c_str(),

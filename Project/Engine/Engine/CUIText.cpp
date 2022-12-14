@@ -11,20 +11,16 @@
 
 CUIText::CUIText()
 	: CUIBase{COMPONENT_TYPE::UITEXT}
-	, m_text{""}
+	, m_text{}
 	, m_fontSize{16.f}
 	, m_alphaEnable{false}
 	, m_color{1.f, 1.f, 1.f, 1.f}
 	, m_alignTextH{TEXT_ALIGN_HORIZONTAL::MIDDLE}
-	, m_alignTextV{TEXT_ALIGN_VERTICAL::MIDDLE}
-{
-}
+	, m_alignTextV{TEXT_ALIGN_VERTICAL::MIDDLE} {}
 
 CUIText::~CUIText() = default;
 
-void CUIText::start()
-{
-}
+void CUIText::start() {}
 
 void CUIText::finalupdate()
 {
@@ -54,12 +50,17 @@ ComPtr<IDWriteTextFormat> CUIText::GetFontFormat()
 
 void CUIText::CreateTextLayout()
 {
+	GetFontFormat();
 	LOG_ASSERT(nullptr!= GetFontFormat(), "FONT NOT FOUND");
 
 	Vec3 size{};
 	size.x = m_text.size() * m_fontSize;
 	size.y = m_fontSize;
 	Transform()->SetRelativeScale(size);
+	if (m_text.empty())
+	{
+		return;
+	}
 	m_pLayout = CFontMgr::GetInst()->CreateTextLayout(ToWString(m_text), m_pFont, size.x, size.y);
 
 	DWRITE_TEXT_RANGE range{};
