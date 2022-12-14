@@ -343,6 +343,7 @@ void ResourceUI::UsingMultiThread()
 	CThreadPool::GetInst()->Start();
 	CThreadPool::GetInst()->Join();
 	LOG_TRACE("NAVIMAPDATA THREAD JOIN SUCCEDED");
+
 	//NAVMESHDATA
 	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::NAVIMAPDATA)])
 	{
@@ -355,10 +356,8 @@ void ResourceUI::UsingMultiThread()
 	//SOUND
 	for (auto& resourceKey : vecData[static_cast<UINT>(RES_TYPE::SOUND)])
 	{
-		CThreadPool::GetInst()->EnqueueJob(&ResourceUI::LoadResource<CSound>, this, resourceKey);
+		LoadResource<CSound>(resourceKey);
 	}
-	CThreadPool::GetInst()->Start();
-	CThreadPool::GetInst()->Join();
 	LOG_TRACE("SOUND THREAD JOIN SUCCEDED");
 }
 
