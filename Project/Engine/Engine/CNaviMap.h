@@ -6,15 +6,17 @@ class CNaviMapData;
 class CNaviMap : public CComponent
 {
 private:
-	CNaviMapData* m_pNeviMapData;
-	Vec4          m_vDebugMeshColor;
-	Vec4          m_vDebugLineColor;
+	Ptr<CNaviMapData> m_pNeviMapData;
+	Vec4              m_vDebugMeshColor;
+	Vec4              m_vDebugLineColor;
 
 public:
 	void          SetNaviMapData(CNaviMapData* _pData);
-	CNaviMapData* GetNaviMapData() const { return m_pNeviMapData; }
-	Vec4          GetDebugMeshColor() const { return m_vDebugMeshColor; }
-	Vec4          GetDebugLineColor() const { return m_vDebugLineColor; }
+	CNaviMapData* GetNaviMapData() const { return m_pNeviMapData.Get(); }
+	void          SetDebugMeshColor(Vec4 _color) { m_vDebugMeshColor = _color; }
+	void          SetDebugLineColor(Vec4 _color) { m_vDebugLineColor = _color; }
+	Vec4          GetDebugMeshColor() { return m_vDebugMeshColor; }
+	Vec4          GetDebugLineColor() { return m_vDebugLineColor; }
 
 	/**
 	 * \brief NaviMap의 삼각형(Cell)과 충돌 테스트를 진행하는 함수
@@ -37,6 +39,9 @@ public:
 
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 
 public:
 	CNaviMap();

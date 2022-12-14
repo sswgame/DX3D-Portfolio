@@ -31,7 +31,7 @@ enum class SCRIPT_TYPE
 	TRAILSCRIPT,
 	UITESTSCRIPT,
 
-    END
+	END
 };
 
 class CScript;

@@ -21,3 +21,4 @@ PlayerScript
 RigidBodyScript
 SwordTrailScript
 TrailScript
+UITestScript

@@ -30,7 +30,7 @@ enum class SCRIPT_TYPE
 	SWORDTRAILSCRIPT,
 	TRAILSCRIPT,
 
-    END
+	END
 };
 
 class CScript;

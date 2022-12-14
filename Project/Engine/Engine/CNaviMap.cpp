@@ -175,3 +175,22 @@ void CNaviMap::Serialize(YAML::Emitter& emitter)
 void CNaviMap::Deserialize(const YAML::Node& node)
 {
 }
+
+void CNaviMap::SaveToScene(FILE* _pFile)
+{
+	CComponent::SaveToScene(_pFile);
+
+	SaveResPtr(m_pNeviMapData, _pFile);
+	fwrite(&m_vDebugMeshColor, sizeof(Vec4), 1, _pFile);
+	fwrite(&m_vDebugLineColor, sizeof(Vec4), 1, _pFile);
+	
+}
+
+void CNaviMap::LoadFromScene(FILE* _pFile)
+{
+	CComponent::LoadFromScene(_pFile);
+
+	LoadResPtr(m_pNeviMapData, _pFile);
+	fread(&m_vDebugMeshColor, sizeof(Vec4), 1, _pFile);
+	fread(&m_vDebugLineColor, sizeof(Vec4), 1, _pFile);
+}

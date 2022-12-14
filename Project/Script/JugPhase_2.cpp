@@ -98,6 +98,9 @@ void JugPhase_2::Enter()
 
 void JugPhase_2::Update()
 {
+	if (nullptr == m_pCombatMgr->GetPlayer())
+		return;
+
 	CState::Update();
 
 	CState* pCurState = m_pBossFSM->GetCurState();
@@ -120,7 +123,7 @@ void JugPhase_2::Update()
 	{
 		RotTowardPlayer();
 	}
-	
+
 	switch (m_iAttackPattern)
 	{
 	case 0:

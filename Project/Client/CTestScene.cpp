@@ -139,8 +139,8 @@ namespace
 
 	void AddSkybox(CScene* _pScene)
 	{
-		const Ptr<CTexture> pSkyTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\nebula04.dds",
-		                                                                 L"texture\\skybox\\nebula04.dds");
+		const Ptr<CTexture> pSkyTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyDawn.dds",
+		                                                                 L"texture\\skybox\\SkyDawn.dds");
 		const auto pSkyBox = new CGameObject;
 
 		pSkyBox->SetName(L"SkyBox");
@@ -602,16 +602,14 @@ namespace
 		//AddFogTexture(pCurScene);
 		//AddItem(pCurScene);
 
-		//AddPlayer(pCurScene, pCamObj);
-		AddHomonculus(pCurScene);
-		//AddBoss(pCurScene);
+		AddPlayer(pCurScene, pCamObj);
+		//AddHomonculus(pCurScene);
+		AddBoss(pCurScene);
 
 		/// UI Test
 		//TestUI(pCurScene);
 		//TestObjectPicking(pCurScene);
 
-		/// NaviTest
-		//TestNavi(pCurScene);
 
 		/// MAP01
 		//Map01(pCurScene);

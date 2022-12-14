@@ -42,7 +42,7 @@ void NaviMapUI::render_update()
 	// 현재 내비맵
 	string strNaviMapDataName = "Select NaviMap Data";
 	if (nullptr != pData)
-		strNaviMapDataName = ToString(pData->GetKey());
+		strNaviMapDataName = ToString(pData->GetRelativePath());
 
 	ImGui::Text("NaviMapData");
 	ImGui::SameLine(86.f);
@@ -50,16 +50,6 @@ void NaviMapUI::render_update()
 	                 (char*)strNaviMapDataName.c_str(),
 	                 strNaviMapDataName.capacity(),
 	                 ImGuiInputTextFlags_ReadOnly);
-	if (ImGui::BeginDragDropTarget())
-	{
-		DWORD_PTR dwData = 0;
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Resource"))
-		{
-			memcpy(&dwData, payload->Data, sizeof(DWORD_PTR));
-		}
-
-		ImGui::EndDragDropTarget();
-	}
 
 	ImGui::SameLine();
 	if (ImGui::Button("##NaviMapDataBtn", Vec2(15, 15)))
@@ -82,7 +72,7 @@ void NaviMapUI::render_update()
 
 	// 현재 메쉬
 	string strMeshName = "No Mesh";
-	if (pData->GetNaviMesh().Get() != nullptr)
+	if (pData->GetNaviMesh() != nullptr)
 		strMeshName = ToString(pData->GetNaviMesh()->GetKey());
 
 	ImGui::Text("Mesh");
@@ -98,20 +88,33 @@ void NaviMapUI::render_update()
 	ImGui::InputInt("##CellCount", &iCellCount, 1, 100, ImGuiInputTextFlags_ReadOnly);
 
 	// Debug Line Color
-	//static ImVec4 vLineColor = pNaviMap->GetDebugLineColor();
-	//ImGui::Text("Debug Line Color");
-	//ImGui::SameLine(86.f);
-	//ImGui::ColorEdit4("Debug Line Color##editor",
-	//                  (float*)&vLineColor,
-	//                  ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaPreview);
+	static float vLineColor[4] = {
+		pNaviMap->GetDebugLineColor().x, pNaviMap->GetDebugLineColor().y, pNaviMap->GetDebugLineColor().z,
+		pNaviMap->GetDebugLineColor().w
+	};
+	ImGui::Text("Debug Line Color");
+	ImGui::SameLine(86.f);
+	if (ImGui::ColorEdit4("Debug Line Color##editor",
+	                      vLineColor,
+	                      ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaPreview))
+	{
+		pNaviMap->SetDebugLineColor(Vec4(vLineColor[0], vLineColor[1], vLineColor[2], vLineColor[3]));
+	}
 
-	//// Debug Mesh Color
-	//static ImVec4 vMesholor = pNaviMap->GetDebugMeshColor();
-	//ImGui::Text("Debug Mesh Color");
-	//ImGui::SameLine(86.f);
-	//ImGui::ColorEdit4("Debug Mesh Color##editor",
-	//                  (float*)&vMesholor,
-	//                  ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaPreview);
+
+	// Debug Mesh Color
+	static float vMeshColor[4] = {
+		pNaviMap->GetDebugMeshColor().x, pNaviMap->GetDebugMeshColor().y, pNaviMap->GetDebugMeshColor().z,
+		pNaviMap->GetDebugMeshColor().w
+	};
+	ImGui::Text("Debug Mesh Color");
+	ImGui::SameLine(86.f);
+	if (ImGui::ColorEdit4("Debug Mesh Color##editor",
+	                      vMeshColor,
+	                      ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaPreview))
+	{
+		pNaviMap->SetDebugMeshColor(Vec4(vMeshColor[0], vMeshColor[1], vMeshColor[2], vMeshColor[3]));
+	}
 
 }
 

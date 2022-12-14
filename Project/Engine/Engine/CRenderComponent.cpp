@@ -30,10 +30,13 @@ CRenderComponent::CRenderComponent(const CRenderComponent& _origin)
 		for (size_t i = 0; i < m_vecMtrls.size(); ++i)
 		{
 			SetSharedMaterial(_origin.m_vecMtrls[i].pSharedMtrl, (UINT)i);
-			if (_origin.m_vecUseDynamicMaterial[i] && nullptr != _origin.m_vecMtrls[i].pDynamicMtrl)
+			if (_origin.m_vecUseDynamicMaterial.size() > i)
 			{
-				m_vecMtrls[i].pDynamicMtrl = _origin.m_vecMtrls[i].pDynamicMtrl.Get()->Clone();
-				m_vecMtrls[i].pMtrl        = m_vecMtrls[i].pDynamicMtrl;
+				if (_origin.m_vecUseDynamicMaterial[i] && nullptr != _origin.m_vecMtrls[i].pDynamicMtrl)
+				{
+					m_vecMtrls[i].pDynamicMtrl = _origin.m_vecMtrls[i].pDynamicMtrl.Get()->Clone();
+					m_vecMtrls[i].pMtrl        = m_vecMtrls[i].pDynamicMtrl;
+				}
 			}
 		}
 	}

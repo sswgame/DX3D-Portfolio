@@ -8,6 +8,8 @@
 #include <Engine/CTransform.h>
 #include <Engine/CAnimator3D.h>
 #include <Engine/CFSM.h>
+#include <Engine/CNaviMapData.h>
+#include <Engine/CNaviMap.h>
 
 #include <Engine/CResMgr.h>
 #include <Engine/CPrefab.h>
@@ -40,7 +42,9 @@ BossJugCombatMgrScript::BossJugCombatMgrScript()
 	AddScriptParam("PHASE INFO", SCRIPTPARAM_TYPE::TEXT, &m_strCurState);
 }
 
-BossJugCombatMgrScript::~BossJugCombatMgrScript() {}
+BossJugCombatMgrScript::~BossJugCombatMgrScript()
+{
+}
 
 void BossJugCombatMgrScript::SpawnStage()
 {
@@ -51,6 +55,22 @@ void BossJugCombatMgrScript::SpawnStage()
 		                                                            L"prefab\\BOSS_STAGE.pref");
 		m_pStage = pStagePref->Instantiate();
 		CSceneMgr::GetInst()->SpawnObject(m_pStage, L"BG");
+
+
+		CGameObject* pNMesh = new CGameObject;
+		pNMesh->SetName(L"NaviMesh");
+		pNMesh->AddComponent(new CTransform);
+		pNMesh->AddComponent(new CNaviMap);
+
+		CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\boss_stage.map",
+		                                                                L"navimap\\boss_stage.map").
+		                                             Get();
+		pNMesh->NaviMap()->SetNaviMapData(pNaviMap);
+		pNMesh->Transform()->SetRelativeScale(2.5f, 2.5f, 2.5f);
+		pNMesh->Transform()->SetRelativePos(0.f, -345.f, 0.f);
+
+		m_pStage->AddChild(pNMesh);
+
 	}
 
 	/* 보스 생성 */
@@ -192,7 +212,9 @@ void BossJugCombatMgrScript::update()
 	CheckPhase();
 }
 
-void BossJugCombatMgrScript::lateupdate() {}
+void BossJugCombatMgrScript::lateupdate()
+{
+}
 
 void BossJugCombatMgrScript::Serialize(YAML::Emitter& emitter)
 {
