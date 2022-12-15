@@ -63,6 +63,12 @@ void ParticleSystemUI::SetData()
 void ParticleSystemUI::render_update()
 {
 	ComponentUI::render_update();
+
+	m_fArrDirection[0] = GetTargetObject()->ParticleSystem()->GetDirection().x;
+	m_fArrDirection[1] = GetTargetObject()->ParticleSystem()->GetDirection().y;
+
+	return;
+
 	if (ComponentUI::IsFold())
 	{
 		SetSize(Vec2(0.f, 25.f));
