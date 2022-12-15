@@ -3,7 +3,7 @@
 #include <Engine/CScript.h>
 
 class MagmaScript :
-    public CScript
+	public CScript
 {
 private:
 	float	m_fLifeTime;
@@ -12,8 +12,8 @@ private:
 	float	m_fExplodeScale;
 
 public:
-	void	Update();
-	void	LateUpdate();
+	void	update() override;
+	void	lateupdate() override;
 
 	CLONE(MagmaScript)
 

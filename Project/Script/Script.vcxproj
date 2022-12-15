@@ -208,6 +208,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="CScriptMgr.h" />
     <ClInclude Include="CStateMgr.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SocketColliderScript.h" />
     <ClInclude Include="SwordTrailScript.h" />
     <ClInclude Include="TrailScript.h" />
   </ItemGroup>
@@ -293,6 +294,7 @@ call CodeGen.exe</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SocketColliderScript.cpp" />
     <ClCompile Include="SwordTrailScript.cpp" />
     <ClCompile Include="TrailScript.cpp" />
   </ItemGroup>

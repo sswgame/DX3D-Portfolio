@@ -1,7 +1,6 @@
 #pragma once
 #include <Engine/CScript.h>
 
-
 class SocketColliderScript :
     public CScript
 {
@@ -59,4 +58,3 @@ public:
 	virtual ~SocketColliderScript();
 
 };
-

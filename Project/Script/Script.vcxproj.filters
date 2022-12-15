@@ -250,6 +250,9 @@
     <ClInclude Include="PaperBurnScript.h">
       <Filter>Script\Effect\PaperBurn</Filter>
     </ClInclude>
+    <ClInclude Include="SocketColliderScript.h">
+      <Filter>Script\SocketCollider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -492,6 +495,9 @@
     <ClCompile Include="PaperBurnScript.cpp">
       <Filter>Script\Effect\PaperBurn</Filter>
     </ClCompile>
+    <ClCompile Include="SocketColliderScript.cpp">
+      <Filter>Script\SocketCollider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -634,6 +640,9 @@
     </Filter>
     <Filter Include="Script\Effect\PaperBurn">
       <UniqueIdentifier>{09410adb-860f-484d-b53b-d31774dd162a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\SocketCollider">
+      <UniqueIdentifier>{804c38d3-c8fa-4d60-9bf2-fa92f72e2c40}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

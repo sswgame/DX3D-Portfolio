@@ -14,7 +14,7 @@ SocketColliderScript::SocketColliderScript()
 	, m_vSocket_OffsetPos(Vec3(0.f, 0.f, 0.f))
 	, m_SocketMatrix(Matrix{})
 	, m_iSocketIdx(0)
-	,m_pColliderObj(nullptr)
+	, m_pColliderObj(nullptr)
 
 {
 	SetName(L"SocketColliderScript");
@@ -22,7 +22,7 @@ SocketColliderScript::SocketColliderScript()
 
 SocketColliderScript::SocketColliderScript(const SocketColliderScript& _origin)
 	: CScript((int)SCRIPT_TYPE::SOCKETCOLLIDERSCRIPT)
-	
+
 {
 	SetName(L"SocketColliderScript");
 }
@@ -44,7 +44,7 @@ void SocketColliderScript::start()
 	if (!m_pAnimObj)
 		m_pAnimObj = GetOwner()->GetParent();
 
-	
+
 	if (!m_pColliderObj->Collider3D())
 	{
 		m_pColliderObj->AddComponent(new CCollider3D);
@@ -89,14 +89,14 @@ void SocketColliderScript::update()
 		CAnimation3D* pAnim = pAnimator3D->GetCurAnim();
 		if (pAnim)
 		{
-			m_SocketMatrix  = pAnimator3D->GetSocket(m_iSocketIdx);
-			m_vSocketRot    = DecomposeRotMat(m_SocketMatrix);
-			m_vSocketPos    = Vec3(m_SocketMatrix._41, m_SocketMatrix._42, m_SocketMatrix._43);
+			m_SocketMatrix = pAnimator3D->GetSocket(m_iSocketIdx);
+			m_vSocketRot = DecomposeRotMat(m_SocketMatrix);
+			m_vSocketPos = Vec3(m_SocketMatrix._41, m_SocketMatrix._42, m_SocketMatrix._43);
 
 
 			m_pColliderObj->Transform()->SetRelativeRotation(m_vSocketRot);	// 회전 적용 
 			m_pColliderObj->Transform()->SetRelativePos(m_vSocketPos);		// 메인 위치 적용 
-			
+
 			m_pColliderObj->Collider3D()->SetOffsetPos(m_vSocket_OffsetPos); // 메인 위치 + OffsetPos  
 
 		}
