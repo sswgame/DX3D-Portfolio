@@ -17,25 +17,23 @@
 
 #include "SwordTrailScript.h"
 
-PlayerScript::PlayerScript() :
-	CScript((int)SCRIPT_TYPE::PLAYERSCRIPT)
+PlayerScript::PlayerScript()
+	: CScript((int)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_pKeyMgr(nullptr)
 	, m_pStateMgr(nullptr)
 	, m_pStat(nullptr)
 {
 	SetName(L"PlayerScript");
-
 }
 
 PlayerScript::PlayerScript(const PlayerScript& _origin)
-	:CScript((int)SCRIPT_TYPE::PLAYERSCRIPT)
+	: CScript((int)SCRIPT_TYPE::PLAYERSCRIPT)
 	, m_pKeyMgr(nullptr)
 	, m_pCamera(nullptr)
 	, m_pStateMgr(nullptr)
 	, m_pStat(nullptr)
 {
 	SetName(L"PlayerScript");
-
 }
 
 
@@ -48,7 +46,6 @@ PlayerScript::~PlayerScript()
 
 void PlayerScript::start()
 {
-
 	// 키 정보 관리 초기화
 	if (nullptr == m_pKeyMgr)
 	{
@@ -119,7 +116,6 @@ void PlayerScript::start()
 
 			CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pSwordCollider, L"PLAYER");
 			GetOwner()->AddChild(m_pSwordCollider);
-
 		}
 	}
 
@@ -138,9 +134,8 @@ void PlayerScript::start()
 	if (!m_pDirectionalLight)
 	{
 		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"BG_OBJ");
-		if(pLayer)
+		if (pLayer)
 			m_pDirectionalLight = pLayer->FindRootObject(L"Directional Light");
-
 	}
 }
 
@@ -148,7 +143,7 @@ void PlayerScript::update()
 {
 	// 1. 키 상태 업데이트 
 	m_pKeyMgr->update();
-	tKey_Zip tCurKeyInfo = m_pKeyMgr->GetCurKeyInfo();
+	tKey_Zip tCurKeyInfo  = m_pKeyMgr->GetCurKeyInfo();
 	tKey_Zip tPrevKeyInfo = m_pKeyMgr->GetPrevKeyInfo();
 
 	// 2. 플레이어 상태 업데이트 
@@ -167,18 +162,15 @@ void PlayerScript::update()
 
 	// 6. 빛 업데이트 
 	UpdateDirectionalLight();
-
 }
 
 void PlayerScript::lateupdate()
 {
-
 	m_pKeyMgr->lateupdate();
 
 	m_pStateMgr->LateUpdate();
 
 	m_pStat->lateupdate();
-
 }
 
 void PlayerScript::UpdateCamera()
@@ -191,7 +183,6 @@ void PlayerScript::UpdateCamera()
 	{
 		// 카메라 스크립트에 플레이어의 위치 정보를 넘긴다 .  
 		pCamScript->SetTargetPos(GetOwner()->Transform()->GetRelativePos());
-
 	}
 }
 
@@ -206,16 +197,16 @@ void PlayerScript::UpdateSwordCollider()
 		CAnimation3D* pAnim = pAnimator3D->GetCurAnim();
 		if (pAnim)
 		{
-			int		SocketIdx = 0;
-			Matrix	SocketMat = pAnimator3D->GetSocket(SocketIdx);
-			Vec3	SocketRot = DecomposeRotMat(SocketMat);
-			Vec3	SocketTrans = Vec3(SocketMat._41, SocketMat._42, SocketMat._43);
+			int    SocketIdx   = 0;
+			Matrix SocketMat   = pAnimator3D->GetSocket(SocketIdx);
+			Vec3   SocketRot   = DecomposeRotMat(SocketMat);
+			Vec3   SocketTrans = Vec3(SocketMat._41, SocketMat._42, SocketMat._43);
 
 			// 회전 적용 
 			m_pSwordCollider->Transform()->SetRelativeRotation(SocketRot);
 
-			Vec3 vScale = m_pSwordCollider->Collider3D()->GetOffsetScale();
-			Vec3 vForward = m_pSwordCollider->Transform()->GetWorldFrontDir();
+			Vec3 vScale       = m_pSwordCollider->Collider3D()->GetOffsetScale();
+			Vec3 vForward     = m_pSwordCollider->Transform()->GetWorldFrontDir();
 			Vec3 vOffsetTrans = vForward * (vScale.z / 2.f);
 
 			// 위치 적용 
@@ -223,7 +214,6 @@ void PlayerScript::UpdateSwordCollider()
 			m_pSwordCollider->Collider3D()->SetOffsetPos(vOffsetTrans); // 임의로 위치 조정  
 		}
 	}
-
 }
 
 void PlayerScript::UpdateDirectionalLight()
@@ -236,11 +226,10 @@ void PlayerScript::UpdateDirectionalLight()
 	Vec3 vCamBackward = -1 * vCamForward;
 
 	Vec3 vLightPos = Vec3(vCamPos.x + vCamBackward.x * 500.f,
-						  vCamPos.y + 500.f,
-						  vCamPos.z + vCamBackward.z * 500.f);
+	                      vCamPos.y + 500.f,
+	                      vCamPos.z + vCamBackward.z * 500.f);
 
 	m_pDirectionalLight->Transform()->SetRelativePos(vLightPos);
-
 }
 
 CGameObject* PlayerScript::GetChildObj(CGameObject* _parent, wstring _name)
@@ -257,9 +246,7 @@ CGameObject* PlayerScript::GetChildObj(CGameObject* _parent, wstring _name)
 			CGameObject* pObj = GetChildObj(vecChild[i], _name);
 			if (pObj != nullptr)
 				return pObj;
-
 		}
-
 	}
 
 	return nullptr;
@@ -273,7 +260,7 @@ void PlayerScript::OnCollisionEnter(CGameObject* _OtherObject)
 		return;
 
 	// 충돌체 레이어 인덱스 
-	int iLayerIdx = _OtherObject->GetLayerIndex();
+	int           iLayerIdx       = _OtherObject->GetLayerIndex();
 	const wstring _OtherLayerName = CSceneMgr::GetInst()->GetCurScene()->GetLayerNameFromIdx(iLayerIdx);
 
 
@@ -320,55 +307,50 @@ void PlayerScript::Stat_Up(STAT_TYPE _eType, float _fPercent)
 	switch (_eType)
 	{
 	case STAT_TYPE::HP:
-	{
-		float fHP = MaxStat.fHp * _fPercent;
-		m_pStat->AddHp(fHP);
-
-	}
+		{
+			float fHP = MaxStat.fHp * _fPercent;
+			m_pStat->AddHp(fHP);
+		}
 		
 		break;
 	case STAT_TYPE::STAMINA:
-	{
-		float fStamina = MaxStat.fStamina * _fPercent;
-		m_pStat->AddStamina(fStamina);
-
-	}
+		{
+			float fStamina = MaxStat.fStamina * _fPercent;
+			m_pStat->AddStamina(fStamina);
+		}
 		
 		break;
 	case STAT_TYPE::ETHER:
-	{
-		float fEther = MaxStat.fEther * _fPercent;
-		m_pStat->AddEther(fEther);
-
-	}
+		{
+			float fEther = MaxStat.fEther * _fPercent;
+			m_pStat->AddEther(fEther);
+		}
 		
 		break;
 	case STAT_TYPE::ATTACK:
-	{
-		float fAttack = MaxStat.fEther * _fPercent;
-		m_pStat->AddAttack(fAttack);
-
-	}
+		{
+			float fAttack = MaxStat.fEther * _fPercent;
+			m_pStat->AddAttack(fAttack);
+		}
 		
 		break;
 	case STAT_TYPE::ARMOR:
-	{
-		float fArmor = MaxStat.fArmor * _fPercent;
-		m_pStat->AddArmor(fArmor);
-
-	}
+		{
+			float fArmor = MaxStat.fArmor * _fPercent;
+			m_pStat->AddArmor(fArmor);
+		}
 		
 		break;
 	case STAT_TYPE::SPEED:
-	{
-		float fSpeed = MaxStat.fSpeed * _fPercent;
-		m_pStat->AddSpeed(fSpeed);
-
-	}
+		{
+			float fSpeed = MaxStat.fSpeed * _fPercent;
+			m_pStat->AddSpeed(fSpeed);
+		}
 		
 		break;
 	}
 }
+
 void PlayerScript::Stat_Down(STAT_TYPE _eType, float _fPercent)
 {
 	tSTAT MaxStat = m_pStat->GetMaxStat();
@@ -376,51 +358,45 @@ void PlayerScript::Stat_Down(STAT_TYPE _eType, float _fPercent)
 	switch (_eType)
 	{
 	case STAT_TYPE::HP:
-	{
-		float fHP = MaxStat.fHp * _fPercent;
-		m_pStat->SubHp(fHP);
-
-	}
+		{
+			float fHP = MaxStat.fHp * _fPercent;
+			m_pStat->SubHp(fHP);
+		}
 		
 		break;
 	case STAT_TYPE::STAMINA:
-	{
-		float fStamina = MaxStat.fStamina * _fPercent;
-		m_pStat->SubStamina(fStamina);
-
-	}
+		{
+			float fStamina = MaxStat.fStamina * _fPercent;
+			m_pStat->SubStamina(fStamina);
+		}
 		
 		break;
 	case STAT_TYPE::ETHER:
-	{
-		float fEther = MaxStat.fEther * _fPercent;
-		m_pStat->SubEther(fEther);
-
-	}
+		{
+			float fEther = MaxStat.fEther * _fPercent;
+			m_pStat->SubEther(fEther);
+		}
 		
 		break;
 	case STAT_TYPE::ATTACK:
-	{
-		float fAttack = MaxStat.fEther * _fPercent;
-		m_pStat->SubAttack(fAttack);
-
-	}
+		{
+			float fAttack = MaxStat.fEther * _fPercent;
+			m_pStat->SubAttack(fAttack);
+		}
 		
 		break;
 	case STAT_TYPE::ARMOR:
-	{
-		float fArmor = MaxStat.fArmor * _fPercent;
-		m_pStat->SubArmor(fArmor);
-
-	}
+		{
+			float fArmor = MaxStat.fArmor * _fPercent;
+			m_pStat->SubArmor(fArmor);
+		}
 		
 		break;
 	case STAT_TYPE::SPEED:
-	{
-		float fSpeed = MaxStat.fSpeed * _fPercent;
-		m_pStat->SubSpeed(fSpeed);
-
-	}
+		{
+			float fSpeed = MaxStat.fSpeed * _fPercent;
+			m_pStat->SubSpeed(fSpeed);
+		}
 		
 		break;
 	}

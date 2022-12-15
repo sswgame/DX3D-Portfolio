@@ -34,8 +34,7 @@ private:
 
 	void Attack_1();	// 빛 기둥 공격
 	void Attack_2();	// 망치 공격
-	void Attack_3();	// 번개 공격
-	void Attack_4();	// 투사체 공격
+	void Attack_3();	// 투사체 공격
 
 public:
 	void         SetDamage(int _idx, float _dmg);

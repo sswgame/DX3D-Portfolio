@@ -260,7 +260,7 @@ CHILDREN:
     m_bFrustumCulling: false
     COMPONENTS:
       - TRANSFORM:
-          m_vRelativePos: [0, -73, 0]
+          m_vRelativePos: [0, -340, 0]
           m_vRelativeScale: [0.300000012, 0.300000012, 0.300000012]
           m_vRelativeRot: [0, 0, 0]
           m_bIgnoreParentScale: false
@@ -303,8 +303,8 @@ CHILDREN:
     m_bFrustumCulling: false
     COMPONENTS:
       - TRANSFORM:
-          m_vRelativePos: [0, -112, 0]
-          m_vRelativeScale: [0.256700009, 0.300000012, 0.100000001]
+          m_vRelativePos: [16, -370, 0]
+          m_vRelativeScale: [0.270000011, 0.300000012, 0.100000001]
           m_vRelativeRot: [0, 0, 0]
           m_bIgnoreParentScale: false
       - ANIMATOR3D:

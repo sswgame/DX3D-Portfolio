@@ -16,6 +16,7 @@
 #include "BossJugScript.h"
 #include "ColumnFlameScript.h"
 #include "EnergyBallScript.h"
+#include "HammerScript.h"
 
 #define FLAME_COUNT 6
 #define ENERGYBALL_COUNT 3
@@ -26,11 +27,11 @@ JugPhase_2::JugPhase_2()
 	, m_pBossFSM(nullptr)
 	, m_pBossAnimator(nullptr)
 	, m_fIdleTime(3.f)
+	, m_fAttackTime(4.f)
 	, m_iPrevAttackPattern(0)
 	, m_iAttackPattern(0)
+	, m_bRot(false)
 	, m_bAttackProceeding(false)
-	, m_bRot(true)
-	, m_fAttackTime(5.f)
 	, m_fDMG{80.f, 30.f, 0.f, 0.f}
 {
 }
@@ -44,7 +45,7 @@ JugPhase_2::JugPhase_2(const JugPhase_2& _origin)
 	, m_iPrevAttackPattern(0)
 	, m_iAttackPattern(0)
 	, m_bAttackProceeding(false)
-	, m_bRot(true)
+	, m_bRot(false)
 	, m_fAttackTime(_origin.m_fAttackTime)
 	, m_fDMG{80.f, 30.f, 0.f, 0.f}
 {
@@ -93,14 +94,14 @@ void JugPhase_2::Init()
 		for (int i = 0; i < ENERGYBALL_COUNT; i++)
 		{
 			//에너지볼 생성
-			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\energy_ball.pref", L"prefab\\energy_ball.pref").Get();
+			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\energy_ball.pref",
+			                                                     L"prefab\\energy_ball.pref").Get();
 			CGameObject* pEnergyBall = pPrefab->Instantiate();
 			pEnergyBall->SetName(L"ENERGYBALL_" + std::to_wstring(i));
 			pEnergyBall->ParticleSystem()->SetLifeTime(5.f);
 			pEnergyBall->ParticleSystem()->SetParticlePlayOneTime();
 			pEnergyBall->ParticleSystem()->SetMaterial(L"material\\energy_ball.mtrl");
 
-			pEnergyBall->AddComponent(new CTransform);
 			pEnergyBall->AddComponent(new CCollider3D);
 			pEnergyBall->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
 			pEnergyBall->Collider3D()->SetOffsetScale(Vec3(10.f, 10.f, 10.f));
@@ -116,6 +117,16 @@ void JugPhase_2::Init()
 			CSceneMgr::GetInst()->SpawnObject(pEnergyBall, GAME::LAYER::MONSTER_PARRING_ATTACK);
 		}
 	}
+
+	// Hammer 충돌체 적용
+	CGameObject* pHammerCollider = new CGameObject;
+	pHammerCollider->SetName(L"HammerCollider");
+	pHammerCollider->AddComponent(new CTransform);
+	pHammerCollider->AddComponent(new CCollider3D);
+	pHammerCollider->AddComponent(new HammerScript);
+	pHammerCollider->Collider3D()->SetOffsetScale(Vec3(250.f, 500.f, 250.f));
+	pHammerCollider->GetScript<HammerScript>()->SetHammerColliderOffsetPos(Vec3(0.f, 0.f, 200.f));
+	m_pCombatMgr->GetHammer()->AddChild(pHammerCollider);
 }
 
 void JugPhase_2::Enter()
@@ -147,13 +158,14 @@ void JugPhase_2::Update()
 
 		else
 		{
+			// 507 
 			if (507 == m_pBossAnimator->GetCurAnim()->GetCurFrameIdx())
 				m_pCombatMgr->GetHammer()->Activate();
 		}
 	}
-
+	
 	// 플래이어 방향으로 회전
-	if (m_bRot && m_bAttackProceeding)
+	if (m_bRot)
 	{
 		RotTowardPlayer();
 	}
@@ -172,9 +184,6 @@ void JugPhase_2::Update()
 		break;
 	case 3:
 		Attack_3();
-		break;
-	case 4:
-		Attack_4();
 		break;
 	}
 }
@@ -243,7 +252,7 @@ void JugPhase_2::ChangePattern()
 
 	std::random_device                 rd;
 	std::mt19937                       gen(rd());
-	std::uniform_int_distribution<int> dis(1, 4);
+	std::uniform_int_distribution<int> dis(1, 3);
 
 	m_iAttackPattern = dis(gen);
 
@@ -251,13 +260,14 @@ void JugPhase_2::ChangePattern()
 	{
 		++m_iAttackPattern;
 
-		if (m_iAttackPattern > 4)
+		if (m_iAttackPattern > 3)
 			m_iAttackPattern = 1;
 
 		m_iPrevAttackPattern = 0;
 	}
 }
 
+// 망치 공격
 void JugPhase_2::Attack_1()
 {
 	if (!m_bAttackProceeding)
@@ -271,13 +281,21 @@ void JugPhase_2::Attack_1()
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
+			m_bRot               = true;
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
 			ResetTimer();
+
+			return;
 		}
+
+
+		if (m_pBossAnimator->GetCurAnim()->IsFinish())
+			m_bRot = false;
 	}
 }
 
+// 화염 공격
 void JugPhase_2::Attack_2()
 {
 	if (!m_bAttackProceeding)
@@ -292,6 +310,7 @@ void JugPhase_2::Attack_2()
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
+			m_bRot               = true;
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
 			ResetTimer();
@@ -302,6 +321,9 @@ void JugPhase_2::Attack_2()
 		// 공격
 		if (GetTimer() > 1.5f)
 		{
+			if (m_pBossAnimator->GetCurAnim()->IsFinish())
+				m_bRot = false;
+
 			if (FLAME_COUNT == 0)
 				return;
 
@@ -327,6 +349,7 @@ void JugPhase_2::Attack_2()
 	}
 }
 
+// 에너지볼 공격
 void JugPhase_2::Attack_3()
 {
 	if (!m_bAttackProceeding)
@@ -340,29 +363,18 @@ void JugPhase_2::Attack_3()
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
+			m_bRot               = true;
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
 			ResetTimer();
-		}
-	}
-}
 
-void JugPhase_2::Attack_4()
-{
-	if (!m_bAttackProceeding)
-	{
-		m_bAttackProceeding = true;
-		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_0);
-	}
-	else
-	{
-		if (GetTimer() > m_fAttackTime)
+			return;
+		}
+
+		if (GetTimer() > 1.f)
 		{
-			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
-			m_bAttackProceeding  = false;
-			m_iPrevAttackPattern = m_iAttackPattern;
-			m_iAttackPattern     = 0;
-			ResetTimer();
+			if (m_pBossAnimator->GetCurAnim()->IsFinish())
+				m_bRot = false;
 		}
 	}
 }
@@ -370,7 +382,7 @@ void JugPhase_2::Attack_4()
 void JugPhase_2::SetDamage(int _idx, float _dmg)
 {
 	// 공격 패턴 개수 이상의 인덱스를 입력하면 경고 
-	if (4 < _idx)
+	if (3 < _idx)
 		return;
 
 	m_fDMG[_idx] = _dmg;

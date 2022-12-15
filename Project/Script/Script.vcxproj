@@ -143,6 +143,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="EnergyBallScript.h" />
     <ClInclude Include="FieldMonsteScript.h" />
     <ClInclude Include="FieldM_StateMgr.h" />
+    <ClInclude Include="HammerScript.h" />
     <ClInclude Include="Homon_Attack.h" />
     <ClInclude Include="Homon_Die.h" />
     <ClInclude Include="Homon_Hit.h" />
@@ -226,6 +227,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="EnergyBallScript.cpp" />
     <ClCompile Include="FieldMonsteScript.cpp" />
     <ClCompile Include="FieldM_StateMgr.cpp" />
+    <ClCompile Include="HammerScript.cpp" />
     <ClCompile Include="Homon_Attack.cpp" />
     <ClCompile Include="Homon_Die.cpp" />
     <ClCompile Include="Homon_Hit.cpp" />

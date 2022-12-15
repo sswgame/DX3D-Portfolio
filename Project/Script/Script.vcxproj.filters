@@ -235,7 +235,12 @@
     <ClInclude Include="ItemScript.h">
       <Filter>Script\Item</Filter>
     </ClInclude>
-    <ClInclude Include="EnergyBallScript.h" />
+    <ClInclude Include="EnergyBallScript.h">
+      <Filter>Script\Boss\Jug\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="HammerScript.h">
+      <Filter>Script\Boss\Jug\Attack</Filter>
+    </ClInclude>
     <ClInclude Include="MainMenuScript.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -472,7 +477,12 @@
     <ClCompile Include="ItemScript.cpp">
       <Filter>Script\Item</Filter>
     </ClCompile>
-    <ClCompile Include="EnergyBallScript.cpp" />
+    <ClCompile Include="EnergyBallScript.cpp">
+      <Filter>Script\Boss\Jug\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="HammerScript.cpp">
+      <Filter>Script\Boss\Jug\Attack</Filter>
+    </ClCompile>
     <ClCompile Include="MainMenuScript.cpp">
       <Filter>UI</Filter>
     </ClCompile>

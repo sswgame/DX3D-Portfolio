@@ -11,6 +11,7 @@
 #include "EffectScript.h"
 #include "EnergyBallScript.h"
 #include "FieldMonsteScript.h"
+#include "HammerScript.h"
 #include "HandStateMgrScript.h"
 #include "ItemScript.h"
 #include "MagmaScript.h"
@@ -37,6 +38,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"EffectScript");
 	_vec.push_back(L"EnergyBallScript");
 	_vec.push_back(L"FieldMonsteScript");
+	_vec.push_back(L"HammerScript");
 	_vec.push_back(L"HandStateMgrScript");
 	_vec.push_back(L"ItemScript");
 	_vec.push_back(L"MagmaScript");
@@ -74,6 +76,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new EnergyBallScript;
 	if (L"FieldMonsteScript"== _strScriptName)
 		return new FieldMonsteScript;
+	if (L"HammerScript"== _strScriptName)
+		return new HammerScript;
 	if (L"HandStateMgrScript"== _strScriptName)
 		return new HandStateMgrScript;
 	if (L"ItemScript"== _strScriptName)
@@ -128,6 +132,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new EnergyBallScript;
 	case SCRIPT_TYPE::FIELDMONSTESCRIPT:
 		return new FieldMonsteScript;
+	case SCRIPT_TYPE::HAMMERSCRIPT:
+		return new HammerScript;
 	case SCRIPT_TYPE::HANDSTATEMGRSCRIPT:
 		return new HandStateMgrScript;
 	case SCRIPT_TYPE::ITEMSCRIPT:
@@ -183,6 +189,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"EnergyBallScript";
 	case SCRIPT_TYPE::FIELDMONSTESCRIPT:
 		return L"FieldMonsteScript";
+	case SCRIPT_TYPE::HAMMERSCRIPT:
+		return L"HammerScript";
 	case SCRIPT_TYPE::HANDSTATEMGRSCRIPT:
 		return L"HandStateMgrScript";
 	case SCRIPT_TYPE::ITEMSCRIPT:

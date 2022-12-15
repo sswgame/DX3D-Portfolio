@@ -70,7 +70,6 @@ void BossJugCombatMgrScript::SpawnStage()
 		pNMesh->Transform()->SetRelativePos(0.f, -345.f, 0.f);
 
 		m_pStage->AddChild(pNMesh);
-
 	}
 
 	/* 보스 생성 */
@@ -93,7 +92,6 @@ void BossJugCombatMgrScript::SpawnStage()
 			                                                L"meshdata\\jugulus+hammer_final1.mdat");
 			m_pHammer = pMeshData->Instantiate();
 			m_pHammer->SetName(L"JUG_Hammer");
-			m_pHammer->AddComponent(new CCollider3D);
 
 			m_pHammer->Transform()->SetRelativePos(-320.f, 0.f, -40.f);
 			Vec3 Rot(-90.f, 0.f, 0.f);
