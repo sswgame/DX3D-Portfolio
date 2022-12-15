@@ -969,7 +969,7 @@ void CResMgr::CreateEngineShader()
 	pShader->SetBSType(BS_TYPE::DEFAULT);
 
 	pShader->AddTexParamInfo(L"OutputTex", TEX_PARAM::TEX_0);
-	pShader->AddScalarParamInfo(L"Explode On", SCALAR_PARAM::INT_0);
+	pShader->AddScalarParamInfo(L"Explode On", SCALAR_PARAM::FLOAT_0);
 
 	AddRes<CGraphicsShader>(L"MagmaShader", pShader, true);
 

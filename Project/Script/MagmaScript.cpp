@@ -20,9 +20,11 @@ MagmaScript::MagmaScript()
 
 MagmaScript::~MagmaScript() {}
 
-void MagmaScript::Update()
+void MagmaScript::update()
 {
 	m_fAddTime += DT;
+	float nonAplha = 0.f;
+	GetOwner()->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &nonAplha);
 
 	if (m_fLifeTime <= m_fAddTime)
 	{
@@ -35,12 +37,12 @@ void MagmaScript::Update()
 
 
 		// explode particle 추가
-		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\explode.pref", L"prefab\\explode.pref").Get();
+		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\explosion.pref", L"prefab\\explosion.pref").Get();
 		CGameObject* pParticle = pPrefab->Instantiate();
 		pParticle->SetName(L"magma explode effect");
 		pParticle->ParticleSystem()->SetLifeTime(5.f);
 		pParticle->ParticleSystem()->SetParticlePlayOneTime();
-		pParticle->ParticleSystem()->SetMaterial(L"material\\explode.mtrl");
+		pParticle->ParticleSystem()->SetMaterial(L"material\\explosion.mtrl");
 		CSceneMgr::GetInst()->SpawnObject(pParticle, 1);
 
 
@@ -53,8 +55,14 @@ void MagmaScript::Update()
 		// =====================
 
 		// 점점 하얗게 만들어주는 trigger On
-		int i = 1;
-		GetOwner()->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &i);
+		float fAplha = (m_fAddTime - 4.f) * 4.f;;
+		const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\MagmaMtrl.mtrl");
+		const Ptr<CTexture> pmagmaTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\FBXTexture\\T_Lava02.png",
+			L"texture\\FBXTexture\\T_Lava02.png");
+
+		GetOwner()->MeshRender()->SetSharedMaterial(pMaterial, 0);
+		GetOwner()->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pmagmaTex);
+		GetOwner()->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &fAplha);
 
 	}
 	else if (2.f < m_fAddTime && m_fAddTime <= 4.f)
@@ -80,7 +88,7 @@ void MagmaScript::Update()
 	}
 }
 
-void MagmaScript::LateUpdate() {}
+void MagmaScript::lateupdate() {}
 
 void MagmaScript::Serialize(YAML::Emitter& emitter)
 {

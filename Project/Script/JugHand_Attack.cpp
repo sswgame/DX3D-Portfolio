@@ -149,15 +149,15 @@ void JugHand_Attack::Hand02Attack()
 				// ==========================
 				//	       magma »ý¼º  
 				// ==========================
-				//CGameObject* pMagma = new CGameObject;
+				//CGameObject* pMagma = new nullptr;
 				//wstring pMagmaName = L"";
-				//pMagmaName = L"meshdata//magma0.mdat";
+				//pMagmaName = L"meshdata//magma.mdat";
 				//Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
 				//	pMagmaName.c_str());
 				//pMagma = pMagmaMeshData->Instantiate();
 				//pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
 				//pMagma->SetName(L"Magma");
-				////pMagma->AddComponent(new MagmaScript);
+				//pMagma->AddComponent(new MagmaScript);
 				//GetOwner()->AddChild(pMagma);
 
 			}
