@@ -66,6 +66,9 @@ using std::make_pair;
 #pragma comment(lib,"yaml-cpp/yaml-cpp")
 #endif
 
+//MAGIC_ENUM
+#include <MagicEnum/magic_enum.hpp>
+
 #include "define.h"
 #include "struct.h"
 #include "extern.h"

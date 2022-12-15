@@ -42,14 +42,27 @@ private:
 	Vec2             m_vMousePrevPos;
 	Vec2             m_vMouseDir;
 
+	std::bitset<(UINT)KEY::KEY_END> m_arrEnabled;
+
 public:
 	void init();
 	void update();
 
+	void SetEnableInput(KEY _key, bool _enable);
+	void EnableAll(bool _enable);
+
 public:
-	KEY_STATE GetKeyState(KEY _eKey) const { return m_vecKey[(UINT)_eKey].eState; }
-	Vec2      GetMousePos() const { return m_vMousePos; }
-	Vec2      GetMouseDir() const { return m_vMouseDir; }
+	KEY_STATE GetKeyState(KEY _eKey) const
+	{
+		if (m_arrEnabled[(UINT)_eKey])
+		{
+			return m_vecKey[(UINT)_eKey].eState;
+		}
+		return KEY_STATE::NONE;
+	}
+
+	Vec2 GetMousePos() const { return m_vMousePos; }
+	Vec2 GetMouseDir() const { return m_vMouseDir; }
 
 	Vec2 GetMouseDelta() const
 	{

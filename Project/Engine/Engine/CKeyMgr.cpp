@@ -2,6 +2,7 @@
 #include "CKeyMgr.h"
 #include "CCore.h"
 
+
 int g_iVK[(UINT)KEY::KEY_END] =
 {
 	'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
@@ -23,6 +24,7 @@ CKeyMgr::~CKeyMgr() = default;
 void CKeyMgr::init()
 {
 	m_vecKey.assign((UINT)KEY::KEY_END, tKeyInfo{KEY_STATE::NONE, false});
+	m_arrEnabled.set(true);
 }
 
 void CKeyMgr::update()
@@ -91,4 +93,17 @@ void CKeyMgr::update()
 			}
 		}
 	}
+}
+
+void CKeyMgr::SetEnableInput(KEY _key, bool _enable)
+{
+	LOG_INFO("KEY <%s> ENABLED : %s", magic_enum::enum_name(_key).data(), (_enable)? "TRUE" :"FALSE");
+
+	m_arrEnabled[(UINT)_key] = _enable;
+}
+
+void CKeyMgr::EnableAll(bool _enable)
+{
+	LOG_INFO("ALL KEY ENABLED : %s", _enable ? "TRUE" : "FALSE");
+	m_arrEnabled.set(_enable);
 }

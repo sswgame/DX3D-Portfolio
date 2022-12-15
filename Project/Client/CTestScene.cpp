@@ -49,6 +49,62 @@
 
 namespace
 {
+	CGameObject* AddCamera(CScene* _pScene);
+	void         AddDirectionalLight(CScene* _pScene);
+	void         AddSkybox(CScene* _pScene);
+
+	void AddPointLight(CScene* _pScene);
+	void AddParticle(CScene* _pScene);
+	void AddLandScape(CScene* _pScene);
+	void AddDecal(CScene* _pScene);
+	void AddSphere(CScene* _pScene);
+	void AddTessellation(CScene* _pScene);
+
+	void AddFogTexture(CScene* _pScene);
+
+	void AddItem(CScene* _pScene);
+	void AddPlayer(CScene* _pScene, CGameObject* _pCamera);
+	void AddBoss(CScene* _pScene);
+	void AddHomonculus(CScene* _pScene);
+	void AddDeuxiemie(CScene* _pScene);
+
+	void TestNavi(CScene* _pScene);
+
+	void TestUI(CScene* _pScene);
+	void Map01(CScene* _pScene);
+	void TestBossUI(CScene* _pScene);
+
+	void SetLayer(CScene* _pScene);
+	void SetCollision();
+	void LoadScene();
+	void SaveScene(CScene* _pScene, const std::wstring& _relativePath);
+
+	void CreateScene()
+	{
+		const auto pCurScene = new CScene;
+		CSceneMgr::GetInst()->ChangeScene(pCurScene);
+		SetLayer(pCurScene);
+
+		CGameObject* pCamObj = AddCamera(pCurScene);
+		AddDirectionalLight(pCurScene);
+		AddSkybox(pCurScene);
+
+		SetCollision();
+
+		SaveScene(pCurScene, L"scene\\TestScene.scene");
+
+		pCurScene->SetSceneState(SCENE_STATE::STOP);
+	}
+}
+
+void CTestScene::CreateTestScene()
+{
+	CreateScene();
+}
+
+//IMPLEMENTATION
+namespace
+{
 	void SetLayer(CScene* _pScene)
 	{
 		_pScene->SetLayerName(0, L"BG");
@@ -63,6 +119,22 @@ namespace
 		_pScene->SetLayerName(9, L"CAMERA");
 		_pScene->SetLayerName(30, L"UI_STATIC");
 		_pScene->SetLayerName(31, L"UI_INTERACTIVE");
+	}
+
+	void SetCollision()
+	{
+		/// 충돌 레이어 설정
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::ITEM);
+		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
+		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
+	}
+
+	void SaveScene(CScene* _pScene, const std::wstring& _relativePath)
+	{
+		_pScene->SetResKey(_relativePath);
+		const wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
+		CSceneSaveLoad::SaveScene(_pScene, strSceneFilePath + _relativePath);
 	}
 
 	CGameObject* AddCamera(CScene* _pScene)
@@ -538,12 +610,12 @@ namespace
 		pUICamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
 		_pScene->AddObject(pUICamera, L"CAMERA");
 
-		/*CGameObject* pPlayerUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref",
+		CGameObject* pPlayerUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref",
 		                                                           L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
 		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
 		CGameObject* pMainUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\MAIN_MENU.pref",
-		                                                           L"prefab\\MAIN_MENU.pref")->Instantiate();
-		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");*/
+		                                                         L"prefab\\MAIN_MENU.pref")->Instantiate();
+		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 
 		CGameObject* pObject = new CGameObject;
 		pObject->SetName(L"Sphere");
@@ -563,6 +635,7 @@ namespace
 
 		CGameObject* pHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
 		pHP->GetUIBaseComponenent()->SetTarget(pObject);
+		pHP->Deactivate();
 		_pScene->AddObject(pHP, L"UI_INTERACTIVE");
 	}
 
@@ -603,53 +676,5 @@ namespace
 		_pScene->AddObject(pMap01, GAME::LAYER::BG);
 	}
 
-	void TestBossUI(CScene* _pScene);
-
-	void CreateScene()
-	{
-		auto pCurScene = new CScene;
-		CSceneMgr::GetInst()->ChangeScene(pCurScene);
-		SetLayer(pCurScene);
-
-		CGameObject* pCamObj = AddCamera(pCurScene);
-		AddDirectionalLight(pCurScene);
-		AddSkybox(pCurScene);
-		//AddPointLight(pCurScene);
-		//AddParticle(pCurScene);
-		//AddLandScape(pCurScene);
-		//AddDecal(pCurScene);
-		//AddSphere(pCureScene);
-		//AddTessellation(pCurScene);
-		//AddFogTexture(pCurScene);
-		//AddItem(pCurScene);
-
-		//AddPlayer(pCurScene, pCamObj);
-		//AddHomonculus(pCurScene);
-		//AddBoss(pCurScene);
-
-		/// UI Test
-		TestUI(pCurScene);
-		//TestObjectPicking(pCurScene);
-
-
-		/// MAP01
-		//Map01(pCurScene);
-
-		/// 충돌 레이어 설정
-		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);
-		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::ITEM);
-		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
-		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
-
-		pCurScene->SetResKey(L"scene\\TestScene.scene");
-		wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
-		CSceneSaveLoad::SaveScene(pCurScene, strSceneFilePath + L"scene\\TestScene.scene");
-
-		pCurScene->SetSceneState(SCENE_STATE::STOP);
-	}
-}
-
-void CTestScene::CreateTestScene()
-{
-	CreateScene();
+	void TestBossUI(CScene* _pScene) {}
 }

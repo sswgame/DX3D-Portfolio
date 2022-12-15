@@ -244,8 +244,10 @@
     <ClInclude Include="ItemScript.h">
       <Filter>Script\Item</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenuScript.h" />
     <ClInclude Include="EnergyBallScript.h" />
+    <ClInclude Include="MainMenuScript.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -482,8 +484,10 @@
     <ClCompile Include="ItemScript.cpp">
       <Filter>Script\Item</Filter>
     </ClCompile>
-    <ClCompile Include="MainMenuScript.cpp" />
     <ClCompile Include="EnergyBallScript.cpp" />
+    <ClCompile Include="MainMenuScript.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -624,11 +628,11 @@
     <Filter Include="Script\Monster\Mgr&amp;Script">
       <UniqueIdentifier>{a2b853d8-75fe-4752-b6e3-7e07dd227d6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TEST">
-      <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Script\Item">
       <UniqueIdentifier>{0654eaf3-1cda-4915-8068-8c7eded74b80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

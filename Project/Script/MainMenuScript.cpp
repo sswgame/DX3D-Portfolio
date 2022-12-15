@@ -12,11 +12,12 @@
 
 namespace MAIN_MENU
 {
-	constexpr float DURATION = 2.0f;
+	constexpr float DURATION = 1.5f;
 }
 
 MainMenuScript::MainMenuScript()
-	: CScript{(int)SCRIPT_TYPE::MAINMENUSCRIPT} {}
+	: CScript{static_cast<int>(SCRIPT_TYPE::MAINMENUSCRIPT)}
+	, m_pPlayerUI{nullptr} {}
 
 MainMenuScript::~MainMenuScript() = default;
 
@@ -27,6 +28,10 @@ void MainMenuScript::start()
 	CRenderEffectMgr::GetInst()->Enable_FadeOutPaperBurn(MAIN_MENU::DURATION);
 	m_pPlayerUI = CSceneMgr::GetInst()->FindObjectByName(L"PLAYER_UI_PANEL");
 	m_pPlayerUI->Deactivate();
+
+	//마우스를 제외한 인풋 일단 막기
+	CKeyMgr::GetInst()->EnableAll(false);
+	CKeyMgr::GetInst()->SetEnableInput(KEY::LBTN, true);
 }
 
 void MainMenuScript::update()
@@ -41,6 +46,7 @@ void MainMenuScript::update()
 		{
 			GetOwner()->Destroy();
 			m_pPlayerUI->Activate();
+			CKeyMgr::GetInst()->EnableAll(true);
 		}
 		else if (m_bitSelected[E_SETTING])
 		{
@@ -118,43 +124,37 @@ void MainMenuScript::update()
 
 void MainMenuScript::MainLoading()
 {
-	if (m_bitSelected.none())
+	if (m_bitSelected.none() && false == CRenderEffectMgr::GetInst()->IsFadeOutFinished())
 	{
-		if (false == CRenderEffectMgr::GetInst()->IsFadeOutFinished())
-		{
-			CGameObject* pTitleText = GetOwner()->GetChild(L"TITLE")->GetChild(L"TEXT");
-			pTitleText->UIText()->SetOpacity(pTitleText->UIText()->GetOpacity() + DT / MAIN_MENU::DURATION);
+		CGameObject* pTitleText = GetOwner()->GetChild(L"TITLE")->GetChild(L"TEXT");
+		pTitleText->UIText()->SetOpacity(pTitleText->UIText()->GetOpacity() + DT / MAIN_MENU::DURATION);
 
-			for (const auto& pMenu : m_vecSelectionMenu)
-			{
-				CGameObject* pText   = pMenu->GetChild(L"TEXT");
-				const float  opacity = ClampData(pText->UIText()->GetOpacity() + DT / MAIN_MENU::DURATION, 0.f, 0.5f);
-				pText->UIText()->SetOpacity(opacity);
-			}
+		for (const auto& pMenu : m_vecSelectionMenu)
+		{
+			CGameObject* pText   = pMenu->GetChild(L"TEXT");
+			const float  opacity = ClampData(pText->UIText()->GetOpacity() + DT / MAIN_MENU::DURATION, 0.f, 0.5f);
+			pText->UIText()->SetOpacity(opacity);
 		}
 	}
 }
 
 void MainMenuScript::OptionLoading()
 {
-	if (m_bitSelected[E_OPTION])
+	if (m_bitSelected[E_OPTION] && false == CRenderEffectMgr::GetInst()->IsFadeOutFinished())
 	{
-		if (false == CRenderEffectMgr::GetInst()->IsFadeOutFinished())
+		for (const auto& pMenu : m_vecOptionMenu)
 		{
-			for (const auto& pMenu : m_vecOptionMenu)
+			if (pMenu->GetName() != L"TITLE")
 			{
-				if (pMenu->GetName() != L"TITLE")
-				{
-					CGameObject* pText   = pMenu->GetChild(L"TEXT");
-					const float  opacity = ClampData(pText->UIText()->GetOpacity() + DT / MAIN_MENU::DURATION,
-					                                 0.f,
-					                                 0.5f);
-					pText->UIText()->SetOpacity(opacity);
-				}
-				else
-				{
-					pMenu->UIText()->SetOpacity(pMenu->UIText()->GetOpacity() + DT / MAIN_MENU::DURATION);
-				}
+				CGameObject* pText   = pMenu->GetChild(L"TEXT");
+				const float  opacity = ClampData(pText->UIText()->GetOpacity() + DT / MAIN_MENU::DURATION,
+				                                 0.f,
+				                                 0.5f);
+				pText->UIText()->SetOpacity(opacity);
+			}
+			else
+			{
+				pMenu->UIText()->SetOpacity(pMenu->UIText()->GetOpacity() + DT / MAIN_MENU::DURATION);
 			}
 		}
 	}
