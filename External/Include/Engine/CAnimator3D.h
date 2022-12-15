@@ -93,6 +93,7 @@ public:
 
 	CREATE_ANIMATION_MODE GetCreateMode() const { return m_eCreateMode; }
 	CStructuredBuffer*    GetSocketBuffer() const { return m_pSocketBuffer; }
+	int GetvecSocketMatSize() { return m_vecSocketMatrix.size(); }
 	void                  ResizeSocketMatrix();
 	void                  DisableSocket() { m_bUseSocket = false; }
 	const Matrix&         GetSocket(int index);

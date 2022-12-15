@@ -2,6 +2,8 @@
 #include "Collider3DUI.h"
 
 #include <Engine/CCollider3D.h>
+#include <Script/SocketColliderScript.h>
+
 
 Collider3DUI::Collider3DUI()
 	: ComponentUI{"Collider3D", COMPONENT_TYPE::COLLIDER3D}
@@ -107,4 +109,47 @@ void Collider3DUI::render_update()
 		}
 		ImGui::EndCombo();
 	}
+
+
+	
+	SocketColliderScript* pSocketScript = (SocketColliderScript*)GetTargetObject()->GetScriptByName(L"SocketColliderScript");
+	if (pSocketScript)
+	{
+		int SocketIdx = pSocketScript->GetSocketIdx();
+
+		ImGui::TextColored(ImVec4(1.f, 1.f, 1.f, 1.f), "SocketIdx");
+		ImGui::SameLine(0.f);
+		ImGui::PushItemWidth(60);
+		ImGui::DragInt("##SocketIdx", &SocketIdx);
+		ImGui::SameLine();
+		ImGui::PopItemWidth();
+		ClampData(SocketIdx, 0, (int)pSocketScript->GetvecSocketMaxSize() - 1);
+
+		pSocketScript->SetSocketIdx(SocketIdx);
+		ImGui::Text("Offset     ", 100.f);
+		ImGui::SameLine();
+		Vec3 vOffsetPos = pSocketScript->GetSocketOffsetPos();
+		ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "X");
+		ImGui::PushItemWidth(60);
+		ImGui::DragFloat("##OffsetPos_x", &vOffsetPos.x);
+		ImGui::SameLine();
+		ImGui::PopItemWidth();
+
+		ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), "Y");
+		ImGui::SameLine(0.f);
+		ImGui::PushItemWidth(60);
+		ImGui::DragFloat("##OffsetPos_y", &vOffsetPos.y);
+		ImGui::SameLine();
+		ImGui::PopItemWidth();
+
+		ImGui::TextColored(ImVec4(0.1f, 0.4f, 1.f, 1.f), "Z");
+		ImGui::SameLine(0.f);
+		ImGui::PushItemWidth(60);
+		ImGui::DragFloat("##OffsetPos_z", &vOffsetPos.z);
+		ImGui::PopItemWidth();
+
+		pSocketScript->SetSocketOffsetPos(vOffsetPos);
+
+	}
+
 }

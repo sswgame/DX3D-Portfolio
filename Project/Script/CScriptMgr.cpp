@@ -24,6 +24,7 @@
 #include "PaperBurnScript.h"
 #include "PlayerCamScript.h"
 #include "PlayerScript.h"
+#include "SocketColliderScript.h"
 #include "SwordTrailScript.h"
 #include "TrailScript.h"
 
@@ -51,6 +52,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"PaperBurnScript");
 	_vec.push_back(L"PlayerCamScript");
 	_vec.push_back(L"PlayerScript");
+	_vec.push_back(L"SocketColliderScript");
 	_vec.push_back(L"SwordTrailScript");
 	_vec.push_back(L"TrailScript");
 }
@@ -102,6 +104,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new PlayerCamScript;
 	if (L"PlayerScript"== _strScriptName)
 		return new PlayerScript;
+	if (L"SocketColliderScript"== _strScriptName)
+		return new SocketColliderScript;
 	if (L"SwordTrailScript"== _strScriptName)
 		return new SwordTrailScript;
 	if (L"TrailScript"== _strScriptName)
@@ -158,6 +162,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new PlayerCamScript;
 	case SCRIPT_TYPE::PLAYERSCRIPT:
 		return new PlayerScript;
+	case SCRIPT_TYPE::SOCKETCOLLIDERSCRIPT:
+		return new SocketColliderScript;
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
 		return new SwordTrailScript;
 	case SCRIPT_TYPE::TRAILSCRIPT:
@@ -215,6 +221,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"PlayerCamScript";
 	case SCRIPT_TYPE::PLAYERSCRIPT:
 		return L"PlayerScript";
+	case SCRIPT_TYPE::SOCKETCOLLIDERSCRIPT:
+		return L"SocketColliderScript";
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
 		return L"SwordTrailScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:

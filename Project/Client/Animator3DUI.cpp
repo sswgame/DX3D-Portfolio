@@ -13,6 +13,9 @@
 #include "CImGuiMgr.h"
 #include "IconsFontAwesome5.h"
 
+#include <Script/SocketColliderScript.h>
+
+
 
 Animator3DUI::Animator3DUI()
 	: ComponentUI("Animator3D", COMPONENT_TYPE::ANIMATOR3D)
@@ -202,6 +205,9 @@ void Animator3DUI::RenderComponentWindow()
 	ButtonName += " Play With Child";
 	ImGui::Checkbox(ButtonName.c_str(), &bPlayWithChild);
 	m_pAnimator3D->SetPlayWithChild(bPlayWithChild);
+
+
+
 }
 
 

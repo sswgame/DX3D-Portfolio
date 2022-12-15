@@ -20,5 +20,6 @@ MonsterSwordScript
 PaperBurnScript
 PlayerCamScript
 PlayerScript
+SocketColliderScript
 SwordTrailScript
 TrailScript

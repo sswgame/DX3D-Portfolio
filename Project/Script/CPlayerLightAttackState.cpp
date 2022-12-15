@@ -16,6 +16,7 @@
 
 
 
+
 CPlayerLightAttackState::CPlayerLightAttackState()
 	: CState(L"LIGHT_ATTACK")
 {
@@ -162,6 +163,14 @@ void CPlayerLightAttackState::UpdateWeaponTrailState()
 
 void CPlayerLightAttackState::Enter()
 {
+
+#define LIGHT_ATTACK_IGNORE
+#ifdef	LIGHT_ATTACK_IGNORE
+	GetOwner()->FSM()->ChangeState(L"IDLE");
+	return;
+
+#endif // !LIGHT_ATTACK_IGNORE
+
 	CState::ResetTimer();
 	m_eLA_State = LIGHT_ATTACK_STATE::COMBO_1;
 	m_tAttTimer.Clear();
