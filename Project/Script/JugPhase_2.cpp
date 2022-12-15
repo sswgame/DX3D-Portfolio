@@ -273,6 +273,7 @@ void JugPhase_2::Attack_1()
 	if (!m_bAttackProceeding)
 	{
 		m_bAttackProceeding = true;
+		m_bRot              = true;
 		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_0);
 	}
 	else
@@ -281,7 +282,6 @@ void JugPhase_2::Attack_1()
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
-			m_bRot               = true;
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
 			ResetTimer();
@@ -289,7 +289,7 @@ void JugPhase_2::Attack_1()
 			return;
 		}
 
-
+		// 공격 모션이 끝나면 회전하지 않는다.
 		if (m_pBossAnimator->GetCurAnim()->IsFinish())
 			m_bRot = false;
 	}
@@ -301,6 +301,7 @@ void JugPhase_2::Attack_2()
 	if (!m_bAttackProceeding)
 	{
 		m_bAttackProceeding = true;
+		m_bRot              = true;
 		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_0);
 	}
 	else
@@ -310,7 +311,6 @@ void JugPhase_2::Attack_2()
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
-			m_bRot               = true;
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
 			ResetTimer();
@@ -318,12 +318,13 @@ void JugPhase_2::Attack_2()
 			return;
 		}
 
+		// 공격 모션이 끝나면 회전하지 않는다.
+		if (m_pBossAnimator->GetCurAnim()->IsFinish())
+			m_bRot = false;
+
 		// 공격
 		if (GetTimer() > 1.5f)
 		{
-			if (m_pBossAnimator->GetCurAnim()->IsFinish())
-				m_bRot = false;
-
 			if (FLAME_COUNT == 0)
 				return;
 
@@ -355,6 +356,7 @@ void JugPhase_2::Attack_3()
 	if (!m_bAttackProceeding)
 	{
 		m_bAttackProceeding = true;
+		m_bRot              = true;
 		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_1);
 	}
 	else
@@ -363,7 +365,6 @@ void JugPhase_2::Attack_3()
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
-			m_bRot               = true;
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
 			ResetTimer();
@@ -371,10 +372,12 @@ void JugPhase_2::Attack_3()
 			return;
 		}
 
+		// 공격 모션이 끝나면 회전하지 않는다.
+		if (m_pBossAnimator->GetCurAnim()->IsFinish())
+			m_bRot = false;
+
 		if (GetTimer() > 1.f)
 		{
-			if (m_pBossAnimator->GetCurAnim()->IsFinish())
-				m_bRot = false;
 		}
 	}
 }

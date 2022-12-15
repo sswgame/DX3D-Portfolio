@@ -38,8 +38,6 @@
 #include <Script/PlayerCamScript.h>
 #include <Script/BossJugCombatMgrScript.h>
 #include <Script/CSceneSaveLoad.h>
-#include <Script/RigidBodyScript.h>
-#include <Script/GravityScript.h>
 #include <Script/TrailScript.h>
 #include <Script/SwordTrailScript.h>
 #include <Script/CObjectManager.h>
