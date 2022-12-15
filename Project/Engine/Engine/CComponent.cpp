@@ -22,26 +22,24 @@
 #include "CRigidBody.h"
 #include "CNaviAgent.h"
 #include "CNaviMap.h"
+#include "CRenderMgr.h"
 #include "CUIButton.h"
 #include "CUIImage.h"
 #include "CUIPanel.h"
 #include "CUIProgressBar.h"
 #include "CUIText.h"
-#include "CSerializer.h"
 
 CComponent::CComponent(COMPONENT_TYPE _eType)
 	: m_eComType(_eType)
 	, m_pOwner{nullptr}
 	, m_bActive(true)
-	, m_pDebugObj(nullptr)
-{
-}
+	, m_pDebugObj(nullptr) {}
 
 CComponent::~CComponent()
 {
 	if (nullptr != m_pDebugObj)
 	{
-		delete(m_pDebugObj);
+		delete m_pDebugObj;
 	}
 }
 
@@ -63,6 +61,40 @@ void CComponent::Deactivate()
 
 CComponent* CComponent::MakeComponent(const std::wstring& name)
 {
+	const COMPONENT_TYPE type = magic_enum::enum_cast<COMPONENT_TYPE>(ToString(name)).value_or(COMPONENT_TYPE::END);
+	switch (type)
+	{
+	case COMPONENT_TYPE::TRANSFORM: return new CTransform{};
+	case COMPONENT_TYPE::CAMERA: return new CCamera{};
+	case COMPONENT_TYPE::COLLIDER2D: return new CCollider2D{};
+	case COMPONENT_TYPE::COLLIDER3D: return new CCollider3D{};
+	case COMPONENT_TYPE::ANIMATOR2D: return new CAnimator2D{};
+	case COMPONENT_TYPE::ANIMATOR3D: return new CAnimator3D{};
+	case COMPONENT_TYPE::LIGHT2D: return new CLight2D{};
+	case COMPONENT_TYPE::LIGHT3D: return new CLight3D{};
+	case COMPONENT_TYPE::BOUNDINGBOX: return new CBoundingBox{};
+	case COMPONENT_TYPE::FSM: return new CFSM{};
+	case COMPONENT_TYPE::RIGIDBODY: return new CRigidBody{};
+	case COMPONENT_TYPE::NAVIMAP: return new CNaviMap{};
+	case COMPONENT_TYPE::NAVIAGENT: return new CNaviAgent{};
+	case COMPONENT_TYPE::UIPANEL: return new CUIPanel{};
+	case COMPONENT_TYPE::UIIMAGE: return new CUIImage{};
+	case COMPONENT_TYPE::UITEXT: return new CUIText{};
+	case COMPONENT_TYPE::UIPROGRESSBAR: return new CUIProgressBar{};
+	case COMPONENT_TYPE::UIBUTTON: return new CUIButton{};
+	case COMPONENT_TYPE::MESHRENDER: return new CMeshRender{};
+	case COMPONENT_TYPE::TILEMAP: return new CTileMap{};
+	case COMPONENT_TYPE::PARTICLESYSTEM: return new CParticleSystem{};
+	case COMPONENT_TYPE::LANDSCAPE: return new CLandScape{};
+	case COMPONENT_TYPE::DECAL: return new CDecal{};
+	case COMPONENT_TYPE::SKYBOX: return new CSkyBox{};
+	case COMPONENT_TYPE::END:
+	case COMPONENT_TYPE::SCRIPT:
+	default:
+		return nullptr;;
+	}
+	//기존 방식
+	/*
 	if (L"TRANSFORM" == name) return new CTransform{};
 	if (L"CAMERA" == name) return new CCamera{};
 	if (L"COLLIDER2D" == name) return new CCollider2D{};
@@ -88,5 +120,5 @@ CComponent* CComponent::MakeComponent(const std::wstring& name)
 	if (L"UIBUTTON" == name) return new CUIButton{};
 
 
-	return nullptr;
+	return nullptr;*/
 }

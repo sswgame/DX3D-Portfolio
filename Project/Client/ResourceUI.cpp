@@ -98,11 +98,12 @@ void ResourceUI::Reload()
 	UsingMultiThread();
 	//WithOutMultiThead();
 
+	const wstring strContentPath = CPathMgr::GetInst()->GetContentPath();
+
 	// 3. 로딩되어있는 리소스들의 실제 파일 존재 확인
 	for (UINT i = 0; i < static_cast<UINT>(RES_TYPE::END); ++i)
 	{
-		wstring     strContentPath = CPathMgr::GetInst()->GetContentPath();
-		const auto& mapResource    = CResMgr::GetInst()->GetResList(static_cast<RES_TYPE>(i));
+		const auto& mapResource = CResMgr::GetInst()->GetResList(static_cast<RES_TYPE>(i));
 		for (const auto& [resourceKey, pResource] : mapResource)
 		{
 			if (pResource->IsEngineRes())
@@ -378,7 +379,7 @@ void ResourceUI::WithOutMultiThead()
 		{
 		case RES_TYPE::PREFAB:
 			{
-				CResMgr::GetInst()->Load<CPrefab>(m_vecResPath[i], m_vecResPath[i]);
+				LoadResource<CPrefab>(m_vecResPath[i]);
 				break;
 			}
 		case RES_TYPE::MESHDATA:

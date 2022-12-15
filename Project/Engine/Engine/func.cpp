@@ -107,7 +107,10 @@ Matrix GetMatrixFromFbxMatrix(const FbxAMatrix& _mat)
 
 std::wstring ToWString(COMPONENT_TYPE _type)
 {
-	static const wchar_t* szWString[static_cast<UINT>(COMPONENT_TYPE::END)] =
+	LOG_ASSERT(_type != COMPONENT_TYPE::END && _type!=COMPONENT_TYPE::SCRIPT, "INVALID COMPONENT TYPE");
+
+	//°­»ç´Ô ¹öÀü
+	/*static const wchar_t* szWString[static_cast<UINT>(COMPONENT_TYPE::END)] =
 	{
 		L"TRANSFORM",
 		L"CAMERA",
@@ -134,18 +137,21 @@ std::wstring ToWString(COMPONENT_TYPE _type)
 		L"DECAL",
 		L"SKYBOX",
 	};
-
-	return szWString[static_cast<UINT>(_type)];
+	return szWString[static_cast<UINT>(_type)];*/
+	return ToWString(magic_enum::enum_name(_type).data());
 }
 
 std::string ToString(COMPONENT_TYPE _type)
 {
-	return ToString(ToWString(_type));
+	LOG_ASSERT(_type != COMPONENT_TYPE::END && _type!=COMPONENT_TYPE::SCRIPT, "INVALID COMPONENT TYPE");
+
+	return magic_enum::enum_name(_type).data();
 }
 
 std::wstring ToWString(RES_TYPE _type)
 {
-	static const wchar_t* szWString[static_cast<UINT>(RES_TYPE::END)] =
+	//°­»ç´Ô ¹öÀü
+	/*static const wchar_t* szWString[static_cast<UINT>(RES_TYPE::END)] =
 	{
 		L"PREFAB",
 		L"MESHDATA",
@@ -159,10 +165,13 @@ std::wstring ToWString(RES_TYPE _type)
 		L"NAVIMAP"
 	};
 
-	return szWString[static_cast<UINT>(_type)];
+	return szWString[static_cast<UINT>(_type)];*/
+	LOG_ASSERT(_type != RES_TYPE::END, "INVALID COMPONENT TYPE");
+	return ToWString(magic_enum::enum_name(_type).data());
 }
 
 std::string ToString(RES_TYPE _type)
 {
-	return ToString(ToWString(_type));
+	LOG_ASSERT(_type != RES_TYPE::END, "INVALID COMPONENT TYPE");
+	return magic_enum::enum_name(_type).data();
 }

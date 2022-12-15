@@ -1,24 +1,19 @@
 #include "pch.h"
 #include "CGameObject.h"
 
+#include "CSerializer.h"
+
 #include "CSceneMgr.h"
 #include "CScene.h"
 #include "CLayer.h"
 #include "CEventMgr.h"
 
 #include "CComponent.h"
-#include "CTransform.h"
-#include "CMeshRender.h"
 #include "CCollider2D.h"
 #include "CCollider3D.h"
-#include "CLight2D.h"
 #include "CRenderComponent.h"
-#include "CNaviMap.h"
-#include "CNaviAgent.h"
 #include "CUIBase.h"
-
 #include "CScript.h"
-#include "CSerializer.h"
 
 namespace GAMEOBJECT
 {
@@ -414,7 +409,7 @@ void CGameObject::AddComponent(CComponent* _pComponent)
 
 	if (COMPONENT_TYPE::SCRIPT != eType)
 	{
-		assert(nullptr == m_arrCom[(UINT)eType]);
+		LOG_ASSERT(nullptr == m_arrCom[static_cast<UINT>(eType)], "COMPONENT TYPE ALREADY EXISTS!");
 
 		m_arrCom[static_cast<UINT>(eType)] = _pComponent;
 		_pComponent->m_pOwner              = this;
@@ -425,7 +420,7 @@ void CGameObject::AddComponent(CComponent* _pComponent)
 		case COMPONENT_TYPE::UIPANEL:
 		case COMPONENT_TYPE::UITEXT:
 			{
-				assert(!m_pUIBase);
+				LOG_ASSERT(!m_pUIBase, "UI COMPONENT ALREADY EXISTS!");
 				m_pUIBase = static_cast<CUIBase*>(_pComponent);
 			}
 			break;
@@ -437,7 +432,7 @@ void CGameObject::AddComponent(CComponent* _pComponent)
 		case COMPONENT_TYPE::SKYBOX:
 			{
 				// 하나의 오브젝트에 Render 기능을 가진 컴포넌트는 2개이상 들어올 수 없다.
-				assert(!m_pRenderComponent);
+				LOG_ASSERT(!m_pRenderComponent, "RENDER COMPONENT ALREADY EXISTS!")
 				m_pRenderComponent = static_cast<CRenderComponent*>(_pComponent);
 			}
 			break;
@@ -500,15 +495,6 @@ void CGameObject::Destroy()
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
-
-#include "CCamera.h"
-#include "CCollider2D.h"
-//#include "CCollider3D.h"
-#include "CAnimator2D.h"
-#include "CAnimator3D.h"
-#include "CParticleSystem.h"
-#include "CTileMap.h"
-
 void CGameObject::SaveToScene(FILE* _pFile)
 {
 	CEntity::SaveToScene(_pFile);
@@ -517,11 +503,11 @@ void CGameObject::SaveToScene(FILE* _pFile)
 	fwrite(&m_bFrustumCulling, sizeof(BYTE), 1, _pFile);
 
 	// Component 저장
-	for (int i = 0; i < (int)COMPONENT_TYPE::END; ++i)
+	for (int i = 0; i < static_cast<int>(COMPONENT_TYPE::END); ++i)
 	{
 		if (nullptr != m_arrCom[i])
 		{
-			SaveWStringToFile(ToWString((COMPONENT_TYPE)i), _pFile);
+			SaveWStringToFile(ToWString(static_cast<COMPONENT_TYPE>(i)), _pFile);
 			m_arrCom[i]->SaveToScene(_pFile);
 		}
 	}
@@ -541,63 +527,15 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 	{
 		LoadWStringFromFile(strComponentName, _pFile);
 		if (strComponentName == L"END")
+		{
 			break;
-
-		if (strComponentName == ToWString(COMPONENT_TYPE::TRANSFORM))
-		{
-			AddComponent(new CTransform);
-			Transform()->LoadFromScene(_pFile);
 		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::CAMERA))
+		CComponent* pComponent = CComponent::MakeComponent(strComponentName);
+		LOG_ASSERT(pComponent, "INVALID COMPONENT ON LOAD");
+		if (nullptr != pComponent)
 		{
-			AddComponent(new CCamera);
-			Camera()->LoadFromScene(_pFile);
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER2D))
-		{
-			AddComponent(new CCollider2D);
-			Collider2D()->LoadFromScene(_pFile);
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::COLLIDER3D)) { }
-		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR2D))
-		{
-			AddComponent(new CAnimator2D);
-			Animator2D()->LoadFromScene(_pFile);
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::ANIMATOR3D)) { }
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT2D))
-		{
-			AddComponent(new CLight2D);
-			Light2D()->LoadFromScene(_pFile);
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LIGHT3D)) { }
-
-
-		else if (strComponentName == ToWString(COMPONENT_TYPE::BOUNDINGBOX)) { }
-		else if (strComponentName == ToWString(COMPONENT_TYPE::MESHRENDER))
-		{
-			AddComponent(new CMeshRender);
-			MeshRender()->LoadFromScene(_pFile);
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::PARTICLESYSTEM))
-		{
-			AddComponent(new CParticleSystem);
-			ParticleSystem()->LoadFromScene(_pFile);
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::TILEMAP))
-		{
-			AddComponent(new CTileMap);
-			TileMap()->LoadFromScene(_pFile);
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::LANDSCAPE)) { }
-		else if (strComponentName == ToWString(COMPONENT_TYPE::DECAL)) { }
-		else if (strComponentName == ToWString(COMPONENT_TYPE::NAVIMAP))
-		{
-			AddComponent(new CNaviMap);
-		}
-		else if (strComponentName == ToWString(COMPONENT_TYPE::NAVIAGENT))
-		{
-			//AddComponent(new CNaviAgent);
+			AddComponent(pComponent);
+			pComponent->LoadFromScene(_pFile);
 		}
 	}
 }
@@ -613,12 +551,9 @@ CGameObject* CGameObject::FindChild(wstring _name)
 			pChild = m_vecChild[i];
 			break;
 		}
-		else
-		{
-			pChild = m_vecChild[i]->FindChild(_name);
-			if (pChild != nullptr)
-				break;
-		}
+		pChild = m_vecChild[i]->FindChild(_name);
+		if (pChild != nullptr)
+			break;
 	}
 
 	return pChild;

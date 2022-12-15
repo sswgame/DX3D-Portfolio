@@ -172,7 +172,7 @@ struct tBone
 {
 	wstring           strBoneName;
 	int               iDepth;			// 계층구조 깊이
-	int               iParentIndx;	// 부모 Bone 의 인덱스
+	int               iParentIndx;		// 부모 Bone 의 인덱스
 	FbxAMatrix        matOffset;		// Offset 행렬( -> 뿌리 -> Local)
 	FbxAMatrix        matBone;
 	vector<tKeyFrame> vecKeyFrame;
@@ -295,7 +295,7 @@ struct tAnim2D
 
 struct tGlobal
 {
-	Vec2  vResolution; // RenderTarget Resolution
+	Vec2  vResolution;		// RenderTarget Resolution
 	Vec2  vNoiseResolution; // NoiseTexture Resolution
 	float fDT;
 	float fAccTime;
@@ -313,8 +313,8 @@ struct SB_PcikingData
 struct tSSAO_ChangesOnResize
 {
 	Matrix g_ViewToTexSpace;     // Proj * Texture
-	Vec4 g_FarPlanePoints[3];  // 원거리 삼각형(네 모서리를 덮음), 삼각형은 아래 참조
-	Vec2 g_TexelSize;          // (1.0f/W, 1.0f/H)
+	Vec4   g_FarPlanePoints[3];  // 원거리 삼각형(네 모서리를 덮음), 삼각형은 아래 참조
+	Vec2   g_TexelSize;          // (1.0f/W, 1.0f/H)
 
 	Vec2 padding;
 };
@@ -337,7 +337,6 @@ struct tSSAO_ChangesRarely
 	// 정적 변수는 상수 버퍼에 속하지 않습니다.
 	//static float s_BlurWeights[12] = (float[12]) g_BlurWeights;
 
-	int     g_BlurRadius;
-	Vec3	g_Pad;
-
+	int  g_BlurRadius;
+	Vec3 g_Pad;
 };

@@ -26,159 +26,6 @@ LAYERS:
           []
         CHILDREN:
           []
-      - NAME: Map01
-        m_bActive: true
-        m_bDynamicShadow: false
-        m_bFrustumCulling: false
-        COMPONENTS:
-          - TRANSFORM:
-              m_vRelativePos: [0, -200, 0]
-              m_vRelativeScale: [1, 1, 1]
-              m_vRelativeRot: [0, 0, 0]
-              m_bIgnoreParentScale: false
-        SCRIPTS:
-          []
-        CHILDREN:
-          - NAME: arene_stage0
-            m_bActive: true
-            m_bDynamicShadow: false
-            m_bFrustumCulling: false
-            COMPONENTS:
-              - TRANSFORM:
-                  m_vRelativePos: [0, 0, 0]
-                  m_vRelativeScale: [1, 1, 1]
-                  m_vRelativeRot: [0, 0, 0]
-                  m_bIgnoreParentScale: false
-              - MESHRENDER:
-                  MESH: [mesh\arene_stage0.mesh, mesh\arene_stage0.mesh]
-                  MATERIAL COUNT: 4
-                  0: [material\arene_base01.mtrl, material\arene_base01.mtrl]
-                  USE DYNAMIC 0: false
-                  MATERIAL 0 TEXTURE LIST:
-                    0: texture\FBXTexture\T_AckbarWall2.png
-                  1: [material\arene_base02.mtrl, material\arene_base02.mtrl]
-                  USE DYNAMIC 1: false
-                  MATERIAL 1 TEXTURE LIST:
-                    0: texture\FBXTexture\t_arene_marche1.png
-                  2: [material\arene_base03.mtrl, material\arene_base03.mtrl]
-                  USE DYNAMIC 2: false
-                  MATERIAL 2 TEXTURE LIST:
-                    0: texture\FBXTexture\t_arene_marche2.png
-                  3: [material\arene_base04.mtrl, material\arene_base04.mtrl]
-                  USE DYNAMIC 3: false
-                  MATERIAL 3 TEXTURE LIST:
-                    0: texture\FBXTexture\t_arene_marche3.png
-                  m_bDynamicShadow: false
-                  m_bFrustumCulling: false
-            SCRIPTS:
-              []
-            CHILDREN:
-              []
-          - NAME: arene_stage1
-            m_bActive: true
-            m_bDynamicShadow: false
-            m_bFrustumCulling: false
-            COMPONENTS:
-              - TRANSFORM:
-                  m_vRelativePos: [0, 0, 0]
-                  m_vRelativeScale: [1, 1, 1]
-                  m_vRelativeRot: [0, 0, 0]
-                  m_bIgnoreParentScale: false
-              - MESHRENDER:
-                  MESH: [mesh\arene_stage1.mesh, mesh\arene_stage1.mesh]
-                  MATERIAL COUNT: 5
-                  0: [material\arene_wall_01.mtrl, material\arene_wall_01.mtrl]
-                  USE DYNAMIC 0: false
-                  MATERIAL 0 TEXTURE LIST:
-                    0: texture\FBXTexture\t_arches01.png
-                  1: [material\arene_wall_02.mtrl, material\arene_wall_02.mtrl]
-                  USE DYNAMIC 1: false
-                  MATERIAL 1 TEXTURE LIST:
-                    0: texture\FBXTexture\t_arches02.png
-                  2: [material\arene_wall_03.mtrl, material\arene_wall_03.mtrl]
-                  USE DYNAMIC 2: false
-                  MATERIAL 2 TEXTURE LIST:
-                    0: texture\FBXTexture\t_arches03.png
-                  3: [material\arene_wall_04.mtrl, material\arene_wall_04.mtrl]
-                  USE DYNAMIC 3: false
-                  MATERIAL 3 TEXTURE LIST:
-                    0: texture\FBXTexture\t_arches04.png
-                  4: [material\arene_wall_05.mtrl, material\arene_wall_05.mtrl]
-                  USE DYNAMIC 4: false
-                  MATERIAL 4 TEXTURE LIST:
-                    0: texture\FBXTexture\t_great_arche.png
-                  m_bDynamicShadow: false
-                  m_bFrustumCulling: false
-            SCRIPTS:
-              []
-            CHILDREN:
-              []
-          - NAME: arene_stage2
-            m_bActive: true
-            m_bDynamicShadow: false
-            m_bFrustumCulling: false
-            COMPONENTS:
-              - TRANSFORM:
-                  m_vRelativePos: [0, 0, 0]
-                  m_vRelativeScale: [1, 1, 1]
-                  m_vRelativeRot: [0, 0, 0]
-                  m_bIgnoreParentScale: false
-              - MESHRENDER:
-                  MESH: [mesh\arene_stage2.mesh, mesh\arene_stage2.mesh]
-                  MATERIAL COUNT: 2
-                  0: [material\arene_entrance_01.mtrl, material\arene_entrance_01.mtrl]
-                  USE DYNAMIC 0: false
-                  MATERIAL 0 TEXTURE LIST:
-                    0: texture\FBXTexture\t_arena_entrance.png
-                  1: [material\arene_entrance_02.mtrl, material\arene_entrance_02.mtrl]
-                  USE DYNAMIC 1: false
-                  MATERIAL 1 TEXTURE LIST:
-                    0: texture\FBXTexture\t_arena_entrance.png
-                  m_bDynamicShadow: false
-                  m_bFrustumCulling: false
-            SCRIPTS:
-              []
-            CHILDREN:
-              []
-          - NAME: arene_stage3
-            m_bActive: true
-            m_bDynamicShadow: false
-            m_bFrustumCulling: false
-            COMPONENTS:
-              - TRANSFORM:
-                  m_vRelativePos: [0, 0, 0]
-                  m_vRelativeScale: [1, 1, 1]
-                  m_vRelativeRot: [0, 0, 0]
-                  m_bIgnoreParentScale: false
-              - MESHRENDER:
-                  MESH: [mesh\arene_stage3.mesh, mesh\arene_stage3.mesh]
-                  MATERIAL COUNT: 1
-                  0: [material\arene_deco.mtrl, material\arene_deco.mtrl]
-                  USE DYNAMIC 0: false
-                  MATERIAL 0 TEXTURE LIST:
-                    0: texture\FBXTexture\t_pilier01.png
-                  m_bDynamicShadow: false
-                  m_bFrustumCulling: false
-            SCRIPTS:
-              []
-            CHILDREN:
-              []
-          - NAME: NaviMesh
-            m_bActive: true
-            m_bDynamicShadow: false
-            m_bFrustumCulling: false
-            COMPONENTS:
-              - TRANSFORM:
-                  m_vRelativePos: [0, -5, 0]
-                  m_vRelativeScale: [18.2000008, 18.2000008, 18.2000008]
-                  m_vRelativeRot: [0, 3.14857388, 0]
-                  m_bIgnoreParentScale: false
-              - NAVIMAP:
-                  {}
-            SCRIPTS:
-              []
-            CHILDREN:
-              []
   - LAYER NAME: BG_OBJ
     GAME OBJECTS:
       - NAME: Directional Light
@@ -202,7 +49,25 @@ LAYERS:
       []
   - LAYER NAME: PLAYER
     GAME OBJECTS:
-      - NAME: player
+      []
+  - LAYER NAME: PLAYER_ATTACK
+    GAME OBJECTS:
+      []
+  - LAYER NAME: MONSTER
+    GAME OBJECTS:
+      []
+  - LAYER NAME: MONSTER_NON-PARRING-ATTACK
+    GAME OBJECTS:
+      []
+  - LAYER NAME: MONSTER_PARRING-ATTACK
+    GAME OBJECTS:
+      []
+  - LAYER NAME: OBJECT-MGR
+    GAME OBJECTS:
+      []
+  - LAYER NAME: CAMERA
+    GAME OBJECTS:
+      - NAME: MainCamera
         m_bActive: true
         m_bDynamicShadow: false
         m_bFrustumCulling: false
@@ -212,737 +77,82 @@ LAYERS:
               m_vRelativeScale: [1, 1, 1]
               m_vRelativeRot: [0, 0, 0]
               m_bIgnoreParentScale: false
-          - COLLIDER3D:
-              m_eCollider3DType: 0
-              m_vOffsetPos: [0, 92, 0]
-              m_vOffsetScale: [75, 175, 75]
-          - ANIMATOR3D:
-              MESH: [mesh\player_sword0.mesh, mesh\player_sword0.mesh]
-              m_pPrevAnim: ""
-              m_pCurAnim: test
-              m_pNextAnim: ""
-              ANIMATION LIST:
-                attack_heavy_1:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.200000003
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1162
-                    iEndFrame: 1199
-                    iFrameLength: 38
-                    dStartTime: 38.733333333333334
-                    dEndTime: 39.966666666666669
-                    dTimeLength: 0
-                    eMode: 0
-                attack_heavy_2:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.200000003
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1406
-                    iEndFrame: 1459
-                    iFrameLength: 54
-                    dStartTime: 46.866666666666667
-                    dEndTime: 48.633333333333333
-                    dTimeLength: 0
-                    eMode: 0
-                attack_heavy_3:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.200000003
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1460
-                    iEndFrame: 1493
-                    iFrameLength: 34
-                    dStartTime: 48.666666666666664
-                    dEndTime: 49.766666666666666
-                    dTimeLength: 0
-                    eMode: 0
-                attack_light_1:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.200000003
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1507
-                    iEndFrame: 1552
-                    iFrameLength: 46
-                    dStartTime: 50.233333333333334
-                    dEndTime: 51.733333333333334
-                    dTimeLength: 0
-                    eMode: 0
-                attack_light_2:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1265
-                    iEndFrame: 1276
-                    iFrameLength: 12
-                    dStartTime: 42.166666666666664
-                    dEndTime: 42.533333333333331
-                    dTimeLength: 0
-                    eMode: 0
-                attack_light_2_end:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.200000003
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1593
-                    iEndFrame: 1595
-                    iFrameLength: 3
-                    dStartTime: 53.100000000000001
-                    dEndTime: 53.166666666666664
-                    dTimeLength: 0
-                    eMode: 0
-                attack_light_3:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.200000003
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1555
-                    iEndFrame: 1593
-                    iFrameLength: 39
-                    dStartTime: 51.833333333333336
-                    dEndTime: 53.100000000000001
-                    dTimeLength: 0
-                    eMode: 0
-                attack_light_4:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.200000003
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 779
-                    iEndFrame: 804
-                    iFrameLength: 26
-                    dStartTime: 25.966666666666665
-                    dEndTime: 26.800000000000001
-                    dTimeLength: 0
-                    eMode: 0
-                attack_light_5:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.200000003
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1277
-                    iEndFrame: 1329
-                    iFrameLength: 53
-                    dStartTime: 42.56666666666667
-                    dEndTime: 44.299999999999997
-                    dTimeLength: 0
-                    eMode: 0
-                attack_parry_1:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1216
-                    iEndFrame: 1235
-                    iFrameLength: 20
-                    dStartTime: 40.533333333333331
-                    dEndTime: 41.166666666666664
-                    dTimeLength: 0
-                    eMode: 0
-                attack_parry_2:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1236
-                    iEndFrame: 1243
-                    iFrameLength: 8
-                    dStartTime: 41.200000000000003
-                    dEndTime: 41.43333333333333
-                    dTimeLength: 0
-                    eMode: 0
-                attack_parry_end:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1244
-                    iEndFrame: 1263
-                    iFrameLength: 20
-                    dStartTime: 41.466666666666669
-                    dEndTime: 42.100000000000001
-                    dTimeLength: 0
-                    eMode: 0
-                dash_air:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.00999999978
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 563
-                    iEndFrame: 579
-                    iFrameLength: 17
-                    dStartTime: 18.766666666666666
-                    dEndTime: 19.300000000000001
-                    dTimeLength: 0
-                    eMode: 0
-                dash_air2:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.400000006
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 583
-                    iEndFrame: 601
-                    iFrameLength: 19
-                    dStartTime: 19.433333333333334
-                    dEndTime: 20.033333333333335
-                    dTimeLength: 0
-                    eMode: 0
-                dash_air2_ing:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.0500000007
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 589
-                    iEndFrame: 601
-                    iFrameLength: 13
-                    dStartTime: 19.633333333333333
-                    dEndTime: 20.033333333333335
-                    dTimeLength: 0
-                    eMode: 0
-                dash_back:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 603
-                    iEndFrame: 621
-                    iFrameLength: 19
-                    dStartTime: 20.100000000000001
-                    dEndTime: 20.699999999999999
-                    dTimeLength: 0
-                    eMode: 0
-                dash_forward:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 623
-                    iEndFrame: 643
-                    iFrameLength: 21
-                    dStartTime: 20.766666666666666
-                    dEndTime: 21.433333333333334
-                    dTimeLength: 0
-                    eMode: 0
-                dash_left:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 644
-                    iEndFrame: 664
-                    iFrameLength: 21
-                    dStartTime: 21.466666666666665
-                    dEndTime: 22.133333333333333
-                    dTimeLength: 0
-                    eMode: 0
-                dash_right:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 665
-                    iEndFrame: 685
-                    iFrameLength: 21
-                    dStartTime: 22.166666666666668
-                    dEndTime: 22.833333333333332
-                    dTimeLength: 0
-                    eMode: 0
-                death:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 686
-                    iEndFrame: 757
-                    iFrameLength: 72
-                    dStartTime: 22.866666666666667
-                    dEndTime: 25.233333333333334
-                    dTimeLength: 0
-                    eMode: 0
-                health:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 113
-                    iEndFrame: 166
-                    iFrameLength: 54
-                    dStartTime: 3.7666666666666666
-                    dEndTime: 5.5333333333333332
-                    dTimeLength: 0
-                    eMode: 0
-                hit:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 527
-                    iEndFrame: 541
-                    iFrameLength: 15
-                    dStartTime: 17.566666666666666
-                    dEndTime: 18.033333333333335
-                    dTimeLength: 0
-                    eMode: 0
-                hit_fail:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 542
-                    iEndFrame: 562
-                    iFrameLength: 21
-                    dStartTime: 18.066666666666666
-                    dEndTime: 18.733333333333334
-                    dTimeLength: 0
-                    eMode: 0
-                idle:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.200000003
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 64
-                    iFrameLength: 65
-                    dStartTime: 0
-                    dEndTime: 2.1333333333333333
-                    dTimeLength: 0
-                    eMode: 0
-                idle_fight:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.100000001
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 67
-                    iEndFrame: 111
-                    iFrameLength: 45
-                    dStartTime: 2.2333333333333334
-                    dEndTime: 3.7000000000000002
-                    dTimeLength: 0
-                    eMode: 0
-                interaction:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 972
-                    iEndFrame: 1032
-                    iFrameLength: 61
-                    dStartTime: 32.399999999999999
-                    dEndTime: 34.399999999999999
-                    dTimeLength: 0
-                    eMode: 0
-                interaction_fin:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1033
-                    iEndFrame: 1093
-                    iFrameLength: 61
-                    dStartTime: 34.43333333333333
-                    dEndTime: 36.43333333333333
-                    dTimeLength: 0
-                    eMode: 0
-                jump_1_down:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.150000006
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 176
-                    iEndFrame: 182
-                    iFrameLength: 7
-                    dStartTime: 5.8666666666666663
-                    dEndTime: 6.0666666666666664
-                    dTimeLength: 0
-                    eMode: 0
-                jump_1_up:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 165
-                    iEndFrame: 175
-                    iFrameLength: 11
-                    dStartTime: 5.5
-                    dEndTime: 5.833333333333333
-                    dTimeLength: 0
-                    eMode: 0
-                jump_2_air:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.100000001
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 193
-                    iEndFrame: 206
-                    iFrameLength: 14
-                    dStartTime: 6.4333333333333336
-                    dEndTime: 6.8666666666666663
-                    dTimeLength: 0
-                    eMode: 0
-                jump_2_down:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.00999999978
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 207
-                    iEndFrame: 213
-                    iFrameLength: 7
-                    dStartTime: 6.9000000000000004
-                    dEndTime: 7.0999999999999996
-                    dTimeLength: 0
-                    eMode: 0
-                jump_2_up:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 183
-                    iEndFrame: 192
-                    iFrameLength: 10
-                    dStartTime: 6.0999999999999996
-                    dEndTime: 6.4000000000000004
-                    dTimeLength: 0
-                    eMode: 0
-                magic:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1596
-                    iEndFrame: 1630
-                    iFrameLength: 35
-                    dStartTime: 53.200000000000003
-                    dEndTime: 54.333333333333336
-                    dTimeLength: 0
-                    eMode: 0
-                parry:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1332
-                    iEndFrame: 1372
-                    iFrameLength: 41
-                    dStartTime: 44.399999999999999
-                    dEndTime: 45.733333333333334
-                    dTimeLength: 0
-                    eMode: 0
-                parry_1:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.100000001
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1332
-                    iEndFrame: 1339
-                    iFrameLength: 8
-                    dStartTime: 44.399999999999999
-                    dEndTime: 44.633333333333333
-                    dTimeLength: 0
-                    eMode: 0
-                parry_2:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.00999999978
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1340
-                    iEndFrame: 1347
-                    iFrameLength: 8
-                    dStartTime: 44.666666666666664
-                    dEndTime: 44.899999999999999
-                    dTimeLength: 0
-                    eMode: 0
-                parry_3:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.100000001
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1348
-                    iEndFrame: 1372
-                    iFrameLength: 25
-                    dStartTime: 44.93333333333333
-                    dEndTime: 45.733333333333334
-                    dTimeLength: 0
-                    eMode: 0
-                projection:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 814
-                    iEndFrame: 893
-                    iFrameLength: 80
-                    dStartTime: 27.133333333333333
-                    dEndTime: 29.766666666666666
-                    dTimeLength: 0
-                    eMode: 0
-                projection_air:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 894
-                    iEndFrame: 903
-                    iFrameLength: 10
-                    dStartTime: 29.800000000000001
-                    dEndTime: 30.100000000000001
-                    dTimeLength: 0
-                    eMode: 0
-                projection_land:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 904
-                    iEndFrame: 971
-                    iFrameLength: 68
-                    dStartTime: 30.133333333333333
-                    dEndTime: 32.366666666666667
-                    dTimeLength: 0
-                    eMode: 0
-                roll:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.100000001
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 396
-                    iEndFrame: 424
-                    iFrameLength: 29
-                    dStartTime: 13.199999999999999
-                    dEndTime: 14.133333333333333
-                    dTimeLength: 0
-                    eMode: 0
-                roll_ready:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.100000001
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 372
-                    iEndFrame: 395
-                    iFrameLength: 24
-                    dStartTime: 12.4
-                    dEndTime: 13.166666666666666
-                    dTimeLength: 0
-                    eMode: 0
-                run:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.100000001
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 348
-                    iEndFrame: 370
-                    iFrameLength: 23
-                    dStartTime: 11.6
-                    dEndTime: 12.333333333333334
-                    dTimeLength: 0
-                    eMode: 0
-                sleep:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 425
-                    iEndFrame: 425
-                    iFrameLength: 1
-                    dStartTime: 14.166666666666666
-                    dEndTime: 14.166666666666666
-                    dTimeLength: 0
-                    eMode: 0
-                sleep_standup:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 426
-                    iEndFrame: 471
-                    iFrameLength: 46
-                    dStartTime: 14.199999999999999
-                    dEndTime: 15.699999999999999
-                    dTimeLength: 0
-                    eMode: 0
-                slide:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 471
-                    iEndFrame: 495
-                    iFrameLength: 25
-                    dStartTime: 15.699999999999999
-                    dEndTime: 16.5
-                    dTimeLength: 0
-                    eMode: 0
-                stun:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 496
-                    iEndFrame: 526
-                    iFrameLength: 31
-                    dStartTime: 16.533333333333335
-                    dEndTime: 17.533333333333335
-                    dTimeLength: 0
-                    eMode: 0
-                test:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 0
-                    iEndFrame: 1630
-                    iFrameLength: 1631
-                    dStartTime: 0
-                    dEndTime: 54.333333333333336
-                    dTimeLength: 0
-                    eMode: 0
-                useobejct:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.5
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 1094
-                    iEndFrame: 1161
-                    iFrameLength: 68
-                    dStartTime: 36.466666666666669
-                    dEndTime: 38.700000000000003
-                    dTimeLength: 0
-                    eMode: 0
-                walk_back:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.00999999978
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 255
-                    iEndFrame: 285
-                    iFrameLength: 31
-                    dStartTime: 8.5
-                    dEndTime: 9.5
-                    dTimeLength: 0
-                    eMode: 0
-                walk_forward:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.00999999978
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 224
-                    iEndFrame: 254
-                    iFrameLength: 31
-                    dStartTime: 7.4666666666666668
-                    dEndTime: 8.4666666666666668
-                    dTimeLength: 0
-                    eMode: 0
-                walk_left:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.00999999978
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 286
-                    iEndFrame: 316
-                    iFrameLength: 31
-                    dStartTime: 9.5333333333333332
-                    dEndTime: 10.533333333333333
-                    dTimeLength: 0
-                    eMode: 0
-                walk_right:
-                  m_iCurClip: 0
-                  m_fLerpTime: 0.00999999978
-                  m_fSpeed: 1
-                  m_tClip:
-                    strAnimName: ""
-                    iStartFrame: 317
-                    iEndFrame: 347
-                    iFrameLength: 31
-                    dStartTime: 10.566666666666666
-                    dEndTime: 11.566666666666666
-                    dTimeLength: 0
-                    eMode: 0
-          - FSM:
+          - CAMERA:
+              m_eProjType: 1
+              m_fWidth: 1600
+              m_fAspectRatio: 1.77777779
+              m_fFOV: 0.785398185
+              m_fFar: 10000
+              m_iLayerMask: 1073741823
+              m_iCamIdx: -1
+        SCRIPTS:
+          - CameraMoveScript:
               {}
-          - RIGIDBODY:
-              RIGIDBODY INFO: {m_vForce: [0, 0, 0], m_vAccel: [0, 0, 0], m_vAccelA: [0, 0, 0], m_vVelocity: [0, 0, 0], m_fGravityAccelAlpha: -2000, m_fMass: 1, m_fFricCoeff: 500, m_vAccelRatio: 1, m_fMaxMoveSpeed: 200, m_fMaxJumpSpeed: 1200, m_fMinJumpSpeed: -550, m_fCurVelocity_MoveSpeed: 0, m_fCurVelocity_JumpSpeed: 0, m_bIgnoreGravity: false, m_bOnGround: false}
-            ? NAVIAGENT:
-                {}
-            : MESHRENDER:
-                MESH: [mesh\player_sword0.mesh, mesh\player_sword0.mesh]
-                MATERIAL COUNT: 4
-                0: [material\body-top.mtrl, material\body-top.mtrl]
-                USE DYNAMIC 0: false
-                MATERIAL 0 TEXTURE LIST:
-                  0: texture\FBXTexture\T_WanderColor_01.png
-                  1: texture\FBXTexture\T_Wander_N_01.png
-                  2: texture\FBXTexture\T_WanderColor_03.png
-                1: [material\body-bottom.mtrl, material\body-bottom.mtrl]
-                USE DYNAMIC 1: false
-                MATERIAL 1 TEXTURE LIST:
-                  0: texture\FBXTexture\T_WanderColor_02.png
-                  1: texture\FBXTexture\T_Wander_N_02.png
-                  2: texture\FBXTexture\T_WanderColor_04.png
-                2: [material\scarf.mtrl, material\scarf.mtrl]
-                USE DYNAMIC 2: false
-                MATERIAL 2 TEXTURE LIST:
-                  0: texture\FBXTexture\T_WanderColor_02.png
-                  1: texture\FBXTexture\T_Wander_N_02.png
-                  2: texture\FBXTexture\T_WanderColor_04.png
-                3: [material\yaak.mtrl, material\yaak.mtrl]
-                USE DYNAMIC 3: false
-                MATERIAL 3 TEXTURE LIST:
-                  0: texture\FBXTexture\ch_chuchotteur_v2_vcols.png
-                  1: texture\FBXTexture\chuchotteur_normals.png
-                  2: texture\FBXTexture\ch_chuchotteur_v2_vcols.png
-                m_bDynamicShadow: true
-                m_bFrustumCulling: false
+        CHILDREN:
+          []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: ""
+    GAME OBJECTS:
+      []
+  - LAYER NAME: UI_STATIC
+    GAME OBJECTS:
+      []
+  - LAYER NAME: UI_INTERACTIVE
+    GAME OBJECTS:
+      []
