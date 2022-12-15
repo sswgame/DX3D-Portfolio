@@ -7,7 +7,6 @@ DestroyScript
 EffectScript
 EnergyBallScript
 FieldMonsteScript
-GravityScript
 HandStateMgrScript
 ItemScript
 MagmaScript
@@ -17,8 +16,8 @@ MonsterGunScript
 MonsterSearchScript
 MonsterShieldScript
 MonsterSwordScript
+PaperBurnScript
 PlayerCamScript
 PlayerScript
-RigidBodyScript
 SwordTrailScript
 TrailScript

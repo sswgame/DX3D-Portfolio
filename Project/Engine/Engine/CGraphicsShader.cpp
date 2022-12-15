@@ -59,7 +59,7 @@ int CGraphicsShader::CreateVertexShader(const wstring& _strRelativePath, const s
 		return E_FAIL;
 	}
 
-
+	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::VERTEX_SHADER].Init(SHADER_TYPE::VERTEX_SHADER, _strRelativePath, _strVSFunc);
 	return S_OK;
 }
 
@@ -90,6 +90,7 @@ int CGraphicsShader::CreateHullShader(const wstring& _strRelativePath, const str
 	{
 		return E_FAIL;
 	}
+	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::HULL_SHADER].Init(SHADER_TYPE::HULL_SHADER, _strRelativePath, _strFunc);
 
 	return S_OK;
 }
@@ -121,6 +122,7 @@ int CGraphicsShader::CreateDomainShader(const wstring& _strRelativePath, const s
 	{
 		return E_FAIL;
 	}
+	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::DOMAIN_SHADER].Init(SHADER_TYPE::DOMAIN_SHADER, _strRelativePath, _strFunc);
 
 	return S_OK;
 }
@@ -152,6 +154,7 @@ int CGraphicsShader::CreateGeometryShader(const wstring& _strRelativePath, const
 	{
 		return E_FAIL;
 	}
+	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::GEOMETRY_SHADER].Init(SHADER_TYPE::GEOMETRY_SHADER, _strRelativePath, _strFunc);
 
 	return S_OK;
 }
@@ -183,6 +186,7 @@ int CGraphicsShader::CreatePixelShader(const wstring& _strRelativePath, const st
 	{
 		return E_FAIL;
 	}
+	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::PIXEL_SHADER].Init(SHADER_TYPE::PIXEL_SHADER, _strRelativePath, _strFunc);
 
 	return S_OK;
 }
@@ -216,4 +220,13 @@ void CGraphicsShader::AddTexParamInfo(const wstring& _strDesc, TEX_PARAM _eParam
 void CGraphicsShader::AddInputLayout(D3D11_INPUT_ELEMENT_DESC _desc)
 {
 	g_vecLayout.push_back(_desc);
+}
+void CGraphicsShader::CopyScalarParamInfo(vector<tScalarParamInfo> _vecScalarInfo)
+{
+	m_vecScalarParamInfo = _vecScalarInfo;
+}
+
+void CGraphicsShader::CopyTexParamInfo(vector<tTexParamInfo> _vecTexInfo)
+{
+	m_vecTexParamInfo = _vecTexInfo;
 }

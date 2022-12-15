@@ -85,9 +85,6 @@
     <ClInclude Include="Jug_SpawnHammer.h">
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerCamScript.h">
-      <Filter>Script\Player</Filter>
-    </ClInclude>
     <ClInclude Include="CPlayerStat.h">
       <Filter>Script\Player\Stat</Filter>
     </ClInclude>
@@ -118,9 +115,6 @@
     <ClInclude Include="CPlayerMoveState.h">
       <Filter>Script\Player\State\Move</Filter>
     </ClInclude>
-    <ClInclude Include="GravityScript.h">
-      <Filter>Script\Gravity</Filter>
-    </ClInclude>
     <ClInclude Include="MonsterGunScript.h">
       <Filter>Script\Monster\Deuxiemie\Gun</Filter>
     </ClInclude>
@@ -147,9 +141,6 @@
     </ClInclude>
     <ClInclude Include="DestroyScript.h">
       <Filter>Script\Effect\Destroy</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBodyScript.h">
-      <Filter>Script\RigidBody</Filter>
     </ClInclude>
     <ClInclude Include="MonsterSearchScript.h">
       <Filter>Script\Monster\Deuxiemie\Common</Filter>
@@ -248,6 +239,12 @@
     <ClInclude Include="MainMenuScript.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerCamScript.h">
+      <Filter>Script\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="PaperBurnScript.h">
+      <Filter>Script\Effect\PaperBurn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -334,9 +331,6 @@
     <ClCompile Include="Jug_WalkGround.cpp">
       <Filter>Script\Boss\Jug\Jug\state</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerCamScript.cpp">
-      <Filter>Script\Player</Filter>
-    </ClCompile>
     <ClCompile Include="CPlayerStat.cpp">
       <Filter>Script\Player\Stat</Filter>
     </ClCompile>
@@ -367,9 +361,6 @@
     <ClCompile Include="CPlayerMoveState.cpp">
       <Filter>Script\Player\State\Move</Filter>
     </ClCompile>
-    <ClCompile Include="GravityScript.cpp">
-      <Filter>Script\Gravity</Filter>
-    </ClCompile>
     <ClCompile Include="MonsterGunScript.cpp">
       <Filter>Script\Monster\Deuxiemie\Gun</Filter>
     </ClCompile>
@@ -390,9 +381,6 @@
     </ClCompile>
     <ClCompile Include="DestroyScript.cpp">
       <Filter>Script\Effect\Destroy</Filter>
-    </ClCompile>
-    <ClCompile Include="RigidBodyScript.cpp">
-      <Filter>Script\RigidBody</Filter>
     </ClCompile>
     <ClCompile Include="MonsterSearchScript.cpp">
       <Filter>Script\Monster\Deuxiemie\Common</Filter>
@@ -488,6 +476,12 @@
     <ClCompile Include="MainMenuScript.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerCamScript.cpp">
+      <Filter>Script\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="PaperBurnScript.cpp">
+      <Filter>Script\Effect\PaperBurn</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -540,9 +534,6 @@
     </Filter>
     <Filter Include="Script\Boss\Jug\Hand\HandStateMgr">
       <UniqueIdentifier>{93ad1de1-922e-4937-b2a1-309b864ec508}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Script\Gravity">
-      <UniqueIdentifier>{5d06dcbb-b6ff-4476-9f5d-4b915c6e1068}</UniqueIdentifier>
     </Filter>
     <Filter Include="Script\Effect">
       <UniqueIdentifier>{d725a876-d332-48b6-b9cd-faecfa201ca9}</UniqueIdentifier>
@@ -598,9 +589,6 @@
     <Filter Include="Script\Player\TranslateMgr">
       <UniqueIdentifier>{d15fcce5-a6b4-43fd-a810-0d52cb7930a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Script\RigidBody">
-      <UniqueIdentifier>{e2c46720-aeee-4ee1-8498-aa4c9819d72a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Script\Monster\Deuxiemie\Gun\State">
       <UniqueIdentifier>{f8d06787-344a-49fc-990e-8eae685aca1f}</UniqueIdentifier>
     </Filter>
@@ -633,6 +621,9 @@
     </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Effect\PaperBurn">
+      <UniqueIdentifier>{09410adb-860f-484d-b53b-d31774dd162a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

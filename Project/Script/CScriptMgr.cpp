@@ -11,7 +11,6 @@
 #include "EffectScript.h"
 #include "EnergyBallScript.h"
 #include "FieldMonsteScript.h"
-#include "GravityScript.h"
 #include "HandStateMgrScript.h"
 #include "ItemScript.h"
 #include "MagmaScript.h"
@@ -21,9 +20,9 @@
 #include "MonsterSearchScript.h"
 #include "MonsterShieldScript.h"
 #include "MonsterSwordScript.h"
+#include "PaperBurnScript.h"
 #include "PlayerCamScript.h"
 #include "PlayerScript.h"
-#include "RigidBodyScript.h"
 #include "SwordTrailScript.h"
 #include "TrailScript.h"
 
@@ -38,7 +37,6 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"EffectScript");
 	_vec.push_back(L"EnergyBallScript");
 	_vec.push_back(L"FieldMonsteScript");
-	_vec.push_back(L"GravityScript");
 	_vec.push_back(L"HandStateMgrScript");
 	_vec.push_back(L"ItemScript");
 	_vec.push_back(L"MagmaScript");
@@ -48,9 +46,9 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"MonsterSearchScript");
 	_vec.push_back(L"MonsterShieldScript");
 	_vec.push_back(L"MonsterSwordScript");
+	_vec.push_back(L"PaperBurnScript");
 	_vec.push_back(L"PlayerCamScript");
 	_vec.push_back(L"PlayerScript");
-	_vec.push_back(L"RigidBodyScript");
 	_vec.push_back(L"SwordTrailScript");
 	_vec.push_back(L"TrailScript");
 }
@@ -76,8 +74,6 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new EnergyBallScript;
 	if (L"FieldMonsteScript"== _strScriptName)
 		return new FieldMonsteScript;
-	if (L"GravityScript"== _strScriptName)
-		return new GravityScript;
 	if (L"HandStateMgrScript"== _strScriptName)
 		return new HandStateMgrScript;
 	if (L"ItemScript"== _strScriptName)
@@ -96,12 +92,12 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new MonsterShieldScript;
 	if (L"MonsterSwordScript"== _strScriptName)
 		return new MonsterSwordScript;
+	if (L"PaperBurnScript"== _strScriptName)
+		return new PaperBurnScript;
 	if (L"PlayerCamScript"== _strScriptName)
 		return new PlayerCamScript;
 	if (L"PlayerScript"== _strScriptName)
 		return new PlayerScript;
-	if (L"RigidBodyScript"== _strScriptName)
-		return new RigidBodyScript;
 	if (L"SwordTrailScript"== _strScriptName)
 		return new SwordTrailScript;
 	if (L"TrailScript"== _strScriptName)
@@ -132,8 +128,6 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new EnergyBallScript;
 	case SCRIPT_TYPE::FIELDMONSTESCRIPT:
 		return new FieldMonsteScript;
-	case SCRIPT_TYPE::GRAVITYSCRIPT:
-		return new GravityScript;
 	case SCRIPT_TYPE::HANDSTATEMGRSCRIPT:
 		return new HandStateMgrScript;
 	case SCRIPT_TYPE::ITEMSCRIPT:
@@ -152,12 +146,12 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new MonsterShieldScript;
 	case SCRIPT_TYPE::MONSTERSWORDSCRIPT:
 		return new MonsterSwordScript;
+	case SCRIPT_TYPE::PAPERBURNSCRIPT:
+		return new PaperBurnScript;
 	case SCRIPT_TYPE::PLAYERCAMSCRIPT:
 		return new PlayerCamScript;
 	case SCRIPT_TYPE::PLAYERSCRIPT:
 		return new PlayerScript;
-	case SCRIPT_TYPE::RIGIDBODYSCRIPT:
-		return new RigidBodyScript;
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
 		return new SwordTrailScript;
 	case SCRIPT_TYPE::TRAILSCRIPT:
@@ -189,8 +183,6 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"EnergyBallScript";
 	case SCRIPT_TYPE::FIELDMONSTESCRIPT:
 		return L"FieldMonsteScript";
-	case SCRIPT_TYPE::GRAVITYSCRIPT:
-		return L"GravityScript";
 	case SCRIPT_TYPE::HANDSTATEMGRSCRIPT:
 		return L"HandStateMgrScript";
 	case SCRIPT_TYPE::ITEMSCRIPT:
@@ -209,12 +201,12 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"MonsterShieldScript";
 	case SCRIPT_TYPE::MONSTERSWORDSCRIPT:
 		return L"MonsterSwordScript";
+	case SCRIPT_TYPE::PAPERBURNSCRIPT:
+		return L"PaperBurnScript";
 	case SCRIPT_TYPE::PLAYERCAMSCRIPT:
 		return L"PlayerCamScript";
 	case SCRIPT_TYPE::PLAYERSCRIPT:
 		return L"PlayerScript";
-	case SCRIPT_TYPE::RIGIDBODYSCRIPT:
-		return L"RigidBodyScript";
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
 		return L"SwordTrailScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:

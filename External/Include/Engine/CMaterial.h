@@ -8,18 +8,26 @@
 class CMaterial : public CRes
 {
 private:
-	tScalarParam         m_Param;
-	Ptr<CTexture>        m_arrTex[(UINT)TEX_PARAM::END];
-	Ptr<CGraphicsShader> m_pShader;
+	tScalarParam				m_Param;
+	Ptr<CTexture>				m_arrTex[(UINT)TEX_PARAM::END];
+	Ptr<CGraphicsShader>		m_pShader;
 
-	vector<tScalarParamInfo> m_vecScalarParamInfo;
-	vector<tTexParamInfo>    m_vecTexParamInfo;
+	vector<tScalarParamInfo>	m_vecScalarParamInfo;
+	vector<tTexParamInfo>		m_vecTexParamInfo;
 
-	CMaterial* m_pMasterMtrl;
+	CMaterial*					m_pMasterMtrl;
+	CGraphicsShader*			m_pDynamicShader;
+	bool						m_bUseDynamicShader;
+
 
 public:
 	void                 SetShader(Ptr<CGraphicsShader> _pShader);
 	Ptr<CGraphicsShader> GetShader() { return m_pShader; }
+	CGraphicsShader*	 GetDynamicShader();
+	CGraphicsShader*	 CreateDynamicShader();
+	void				 SetUseDynamicShader(bool _bUseDynamicShader) { m_bUseDynamicShader = _bUseDynamicShader; }
+	bool				 IsUseDynamicShader() { return m_bUseDynamicShader; }
+
 
 	void SetMaterialCoefficient(Vec4 _vDiff, Vec4 _vSpec, Vec4 _vAmb, Vec4 _vEmis)
 	{

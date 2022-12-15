@@ -171,7 +171,6 @@ call CodeGen.exe</Command>
     <ClInclude Include="CPlayerParryState.h" />
     <ClInclude Include="CPlayerSprintState.h" />
     <ClInclude Include="CPlayerStat.h" />
-    <ClInclude Include="GravityScript.h" />
     <ClInclude Include="JugHand_Attack.h" />
     <ClInclude Include="JugHand_Gen.h" />
     <ClInclude Include="JugHand_Idle.h" />
@@ -201,13 +200,13 @@ call CodeGen.exe</Command>
     <ClInclude Include="MonsterSearchScript.h" />
     <ClInclude Include="MonsterShieldScript.h" />
     <ClInclude Include="MonsterSwordScript.h" />
+    <ClInclude Include="PaperBurnScript.h" />
     <ClInclude Include="PlayerCamScript.h" />
     <ClInclude Include="PlayerScript.h" />
     <ClInclude Include="CSceneSaveLoad.h" />
     <ClInclude Include="CScriptMgr.h" />
     <ClInclude Include="CStateMgr.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="RigidBodyScript.h" />
     <ClInclude Include="SwordTrailScript.h" />
     <ClInclude Include="TrailScript.h" />
   </ItemGroup>
@@ -253,7 +252,6 @@ call CodeGen.exe</Command>
     <ClCompile Include="CPlayerParryState.cpp" />
     <ClCompile Include="CPlayerSprintState.cpp" />
     <ClCompile Include="CPlayerStat.cpp" />
-    <ClCompile Include="GravityScript.cpp" />
     <ClCompile Include="JugHand_Attack.cpp" />
     <ClCompile Include="JugHand_Gen.cpp" />
     <ClCompile Include="JugHand_Idle.cpp" />
@@ -283,6 +281,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="MonsterSearchScript.cpp" />
     <ClCompile Include="MonsterShieldScript.cpp" />
     <ClCompile Include="MonsterSwordScript.cpp" />
+    <ClCompile Include="PaperBurnScript.cpp" />
     <ClCompile Include="PlayerCamScript.cpp" />
     <ClCompile Include="PlayerScript.cpp" />
     <ClCompile Include="CSceneSaveLoad.cpp" />
@@ -292,7 +291,6 @@ call CodeGen.exe</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="RigidBodyScript.cpp" />
     <ClCompile Include="SwordTrailScript.cpp" />
     <ClCompile Include="TrailScript.cpp" />
   </ItemGroup>

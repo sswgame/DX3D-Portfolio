@@ -10,7 +10,6 @@
 
 
 #include "PlayerScript.h"
-#include "RigidBodyScript.h"
 #include "CStateMgr.h"
 
 #include "CScriptMgr.h"

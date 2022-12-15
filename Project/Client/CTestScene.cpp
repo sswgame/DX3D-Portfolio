@@ -38,14 +38,14 @@
 #include <Script/PlayerCamScript.h>
 #include <Script/BossJugCombatMgrScript.h>
 #include <Script/CSceneSaveLoad.h>
-#include <Script/RigidBodyScript.h>
-#include <Script/GravityScript.h>
 #include <Script/TrailScript.h>
 #include <Script/SwordTrailScript.h>
 #include <Script/CObjectManager.h>
 #include <Script/CTranslateMgr.h>
 #include <Script/FieldMonsteScript.h>
 #include <Script/ItemScript.h>
+#include <Script/PaperBurnScript.h>
+
 
 namespace
 {
@@ -88,9 +88,11 @@ namespace
 		CGameObject* pCamObj = AddCamera(pCurScene);
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
+		AddPlayer(pCurScene, pCamObj);
+		Map01(pCurScene);
+
 
 		SetCollision();
-
 		SaveScene(pCurScene, L"scene\\TestScene.scene");
 
 		pCurScene->SetSceneState(SCENE_STATE::STOP);
@@ -143,8 +145,8 @@ namespace
 		pCamera->SetName(L"MainCamera");
 		pCamera->AddComponent(new CTransform);
 		pCamera->AddComponent(new CCamera);
-		pCamera->AddComponent(new CameraMoveScript);
-		//pCamera->AddComponent(new PlayerCamScript);
+		//pCamera->AddComponent(new CameraMoveScript);
+		pCamera->AddComponent(new PlayerCamScript);
 
 		pCamera->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
 		pCamera->Camera()->SetCameraAsMain();
@@ -400,11 +402,11 @@ namespace
 
 		pObj->AddComponent(new CFSM);
 		pObj->AddComponent(new CRigidBody);
-		//pObj->AddComponent(new RigidBodyScript);
-		//pObj->AddComponent(new GravityScript);
-		pObj->AddComponent(new TrailScript);
 		pObj->AddComponent(new CCollider3D);
 		pObj->AddComponent(new CNaviAgent);
+
+		pObj->AddComponent(new TrailScript);
+		pObj->AddComponent(new PaperBurnScript);
 
 		pObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 		pObj->Collider3D()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));

@@ -2,8 +2,6 @@
 #include "CPlayerJumpState.h"
 
 
-#include "RigidBodyScript.h"
-#include "GravityScript.h"
 #include "CStateMgr.h"
 #include "PlayerScript.h"
 #include "CPlayerStat.h"

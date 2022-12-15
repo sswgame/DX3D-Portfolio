@@ -216,7 +216,7 @@ void CAnimation3D::ClearData() const
 	Ptr<CMaterial> pMtrl      = nullptr;
 	for (UINT i = 0; i < iMtrlCount; ++i)
 	{
-		pMtrl = m_pOwner->MeshRender()->GetSharedMaterial(i);
+		pMtrl = m_pOwner->MeshRender()->GetMaterial(i);
 		if (nullptr == pMtrl)
 			continue;
 

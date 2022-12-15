@@ -16,7 +16,11 @@ CMaterial::CMaterial()
 	, m_pShader(nullptr)
 	, m_pMasterMtrl(nullptr) {}
 
-CMaterial::~CMaterial() {}
+CMaterial::~CMaterial() 
+{
+	if (m_pDynamicShader != nullptr)
+		SAFE_DELETE(m_pDynamicShader);
+}
 
 
 void CMaterial::UpdateData()
@@ -40,9 +44,18 @@ void CMaterial::UpdateData()
 	pCB->SetData(&m_Param, sizeof(tScalarParam));
 	pCB->UpdateData();
 
-	if (nullptr != m_pShader)
+	// Dynamic Shader 
+	if (m_bUseDynamicShader && m_pDynamicShader)
 	{
-		m_pShader->UpdateData();
+		m_pDynamicShader->UpdateData();
+	}
+	// Common Shader
+	else
+	{
+		if (nullptr != m_pShader)
+		{
+			m_pShader->UpdateData();
+		}
 	}
 }
 
@@ -145,6 +158,69 @@ void CMaterial::SetScalarParam(const wstring& _strParamName, void* _pData)
 	}
 
 	Changed();
+}
+
+CGraphicsShader* CMaterial::GetDynamicShader()
+{
+	if (m_pDynamicShader)
+		return m_pDynamicShader;
+
+	m_pDynamicShader = CreateDynamicShader();
+	return m_pDynamicShader;
+}
+
+
+CGraphicsShader* CMaterial::CreateDynamicShader()
+{
+	if (m_pShader == nullptr)
+		return nullptr;
+
+	CGraphicsShader* pDynamicShader = new CGraphicsShader;
+	const tShaderCompileInfo* ShaderCompileInfo = m_pShader->GetCompileShaderInfo();
+
+	// [ CREATE SHADER ]
+	if (ShaderCompileInfo[(UINT)SHADER_TYPE::VERTEX_SHADER].bExist)
+	{
+		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::VERTEX_SHADER].strShaderRelativePath;
+		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::VERTEX_SHADER].strShaderFunc;
+		pDynamicShader->CreateVertexShader(strRelPath, strFunc);
+	}
+	if (ShaderCompileInfo[(UINT)SHADER_TYPE::HULL_SHADER].bExist)
+	{
+		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::HULL_SHADER].strShaderRelativePath;
+		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::HULL_SHADER].strShaderFunc;
+		pDynamicShader->CreateHullShader(strRelPath, strFunc);
+	}
+
+	if (ShaderCompileInfo[(UINT)SHADER_TYPE::DOMAIN_SHADER].bExist)
+	{
+		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::DOMAIN_SHADER].strShaderRelativePath;
+		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::DOMAIN_SHADER].strShaderFunc;
+		pDynamicShader->CreateDomainShader(strRelPath, strFunc);
+	}
+	if (ShaderCompileInfo[(UINT)SHADER_TYPE::GEOMETRY_SHADER].bExist)
+	{
+		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::GEOMETRY_SHADER].strShaderRelativePath;
+		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::GEOMETRY_SHADER].strShaderFunc;
+		pDynamicShader->CreateGeometryShader(strRelPath, strFunc);
+	}
+	if (ShaderCompileInfo[(UINT)SHADER_TYPE::PIXEL_SHADER].bExist)
+	{
+		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::PIXEL_SHADER].strShaderRelativePath;
+		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::PIXEL_SHADER].strShaderFunc;
+		pDynamicShader->CreatePixelShader(strRelPath, strFunc);
+	}
+
+	pDynamicShader->SetRSType(m_pShader->GetRSType());
+	pDynamicShader->SetDSType(m_pShader->GetDSType());
+	pDynamicShader->SetBSType(m_pShader->GetBSType());
+	pDynamicShader->SetShaderDomain(m_pShader->GetShaderDomain());
+	pDynamicShader->CopyScalarParamInfo(m_vecScalarParamInfo);
+	pDynamicShader->CopyTexParamInfo(m_vecTexParamInfo);
+
+	m_pDynamicShader = pDynamicShader;
+	return pDynamicShader;
+
 }
 
 const void* CMaterial::GetScalarParam(SCALAR_PARAM _eType)

@@ -11,10 +11,8 @@
 #include <Engine/CRigidBody.h>
 
 #include "PlayerScript.h"
-#include "RigidBodyScript.h"
 #include "CStateMgr.h"
 #include "CScriptMgr.h"
-#include "GravityScript.h"
 #include "TrailScript.h"
 
 
