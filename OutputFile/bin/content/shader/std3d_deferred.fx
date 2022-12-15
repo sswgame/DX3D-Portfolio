@@ -2,6 +2,7 @@
 #define _STD3D_DEFERRED
 
 #include "value.fx"
+#include "func.fx"
 
 struct VTX_IN
 {
@@ -37,6 +38,9 @@ struct VTX_OUT
 // Rasterizer : CULL_BACK
 // DepthStencilState : LESS
 // BlendState : DEFAULT
+#define ApplyPaperBurn  g_int_0
+#define BurnColor       g_vec4_0
+#define BurnStrength    g_float_0
 // =========================
 VTX_OUT VS_Std3D_Deferred(VTX_IN _in)
 {
@@ -76,6 +80,15 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
     if (g_btex_0)
     {
         output.vColor = g_tex_0.Sample(g_sam_0, _in.vUV);
+        
+        if (ApplyPaperBurn)
+        {
+            float fNoise = g_noise_cloud.Sample(g_sam_0, _in.vUV).g;
+            output.vColor = PaperBurn(output.vColor, BurnColor, fNoise, BurnStrength);
+            if (output.vColor.a <= 0.f)
+                discard;
+        }
+        
     }
     
     

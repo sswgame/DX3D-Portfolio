@@ -333,4 +333,34 @@ float4 decode(float _value)
     return float4(r, g, b, a);
 }
 
+
+
+float4 PaperBurn(float4 vColor, float4 vBurnColor, float fNoise, float fStrength)
+{
+    
+    float4 vOutColor = vColor;
+    vOutColor.a -= ((fNoise * fStrength) + fStrength);
+        
+    float fRatio = 0.f;
+    
+    if (0.2f <= vOutColor.a)
+    {
+        fRatio = 1.f - ((vOutColor.a - 0.2f) / 0.8f);
+        vOutColor.rgb = vBurnColor.rgb * (fRatio) + (vOutColor.rgb * (1.f - fRatio));
+    }
+    else if (0.05f < vOutColor.a)
+    {
+        fRatio = 1.f - ((vOutColor.a - 0.05f) / 0.15f);
+        vOutColor.rgb = float3(1.f, 1.f, 1.f) * (fRatio) + (vBurnColor.rgb * (1.f - fRatio));
+    }
+    else
+    {
+        fRatio = 1.f - ((vOutColor.a - 0.f) / 0.05f);
+        vOutColor.rgb = float3(0.f, 0.f, 0.f) * (fRatio) + (float3(1.f, 1.f, 1.f) * (1.f - fRatio));
+    }
+      
+    return vOutColor;
+    
+}
+
 #endif

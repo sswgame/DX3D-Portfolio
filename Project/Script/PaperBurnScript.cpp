@@ -29,8 +29,13 @@ PaperBurnScript::~PaperBurnScript()
 
 void PaperBurnScript::start()
 {
-	GetOwner()->MeshRender()->SetUseDynamicMaterial(0, true);
-	GetOwner()->MeshRender()->GetDynamicMaterial(0)->CreateDynamicShader();
+	int MtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
+	for (int i = 0; i < MtrlCnt; ++i)
+	{
+		GetOwner()->MeshRender()->SetUseDynamicMaterial(i, true);
+		GetOwner()->MeshRender()->GetDynamicMaterial(i)->CreateDynamicShader();
+
+	}
 
 }
 
@@ -42,10 +47,14 @@ void PaperBurnScript::update()
 		if (m_bApply)
 		{
 			m_fStrength = 0.f;
+			int MtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
+			for (int i = 0; i < MtrlCnt; ++i)
+			{
+				GetOwner()->MeshRender()->SetUseDynamicMaterial(i, true);
+				GetOwner()->MeshRender()->GetDynamicMaterial(i)->SetUseDynamicShader(true);
+				GetOwner()->MeshRender()->GetDynamicMaterial(i)->GetDynamicShader()->SetBSType(BS_TYPE::NO_ALPHA_COVERAGE);
 
-			GetOwner()->MeshRender()->SetUseDynamicMaterial(0, true);
-			GetOwner()->MeshRender()->GetDynamicMaterial(0)->SetUseDynamicShader(true);
-			GetOwner()->MeshRender()->GetDynamicMaterial(0)->GetDynamicShader()->SetBSType(BS_TYPE::NO_ALPHA_COVERAGE);
+			}
 		}
 	}
 
@@ -60,19 +69,30 @@ void PaperBurnScript::update()
 	CMeshRender* pMeshRender = GetOwner()->MeshRender();
 	if (pMeshRender)
 	{
+		int MtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
+		for (int i = 0; i < MtrlCnt; ++i)
+		{
+			pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
+			pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fStrength);
+			pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vColor);
+		}
 
-		pMeshRender->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
-		pMeshRender->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fStrength);
-		pMeshRender->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vColor);
 
 		if (m_fStrength >= 3.f)
 		{
 			m_bApply = false;
 			m_fStrength = 0.f;
-			pMeshRender->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
-			GetOwner()->MeshRender()->GetDynamicMaterial(0)->GetDynamicShader()->SetBSType(BS_TYPE::DEFAULT);
-			GetOwner()->MeshRender()->GetDynamicMaterial(0)->SetUseDynamicShader(false);
-			GetOwner()->MeshRender()->SetUseDynamicMaterial(0, false);
+
+			int MtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
+			for (int i = 0; i < MtrlCnt; ++i)
+			{
+				pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
+				GetOwner()->MeshRender()->GetDynamicMaterial(i)->GetDynamicShader()->SetBSType(BS_TYPE::DEFAULT);
+				GetOwner()->MeshRender()->GetDynamicMaterial(i)->SetUseDynamicShader(false);
+				GetOwner()->MeshRender()->SetUseDynamicMaterial(i, false);
+
+			}
+
 		}
 
 	}
