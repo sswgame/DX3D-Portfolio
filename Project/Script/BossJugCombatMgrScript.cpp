@@ -81,8 +81,8 @@ void BossJugCombatMgrScript::SpawnStage()
 		m_pJug->SetName(L"JUG");
 		m_pJug->AddComponent(new BossJugScript);
 
-		m_pJug->Transform()->SetRelativePos(-150.f, -130.f, 250.f);
-		m_pJug->Transform()->SetRelativeScale(1.5f, 1.5f, 1.5f);
+		m_pJug->Transform()->SetRelativePos(-150.f, 0.f, 400.f);
+		m_pJug->Transform()->SetRelativeScale(1.3f, 1.3f, 1.3f);
 
 		CSceneMgr::GetInst()->SpawnObject(m_pJug, L"MONSTER");
 		/* 무기 생성*/
@@ -123,6 +123,7 @@ void BossJugCombatMgrScript::SpawnStage()
 		m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
 
 		CObjectManager::GetInst()->SetSceneObject(m_pJugHandMgr, MAP_TYPE::_02);
+		m_pJugHandMgr->Deactivate();
 	}
 }
 

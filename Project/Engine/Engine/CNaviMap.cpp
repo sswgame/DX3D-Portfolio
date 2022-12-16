@@ -159,6 +159,18 @@ void CNaviMap::render_debug()
 	}
 }
 
+void CNaviMap::active()
+{
+	CComponent::active();
+
+	SetNavimapToAgent();
+}
+
+void CNaviMap::deactive()
+{
+	CComponent::deactive();
+}
+
 void CNaviMap::SaveToScene(FILE* _pFile)
 {
 	CComponent::SaveToScene(_pFile);

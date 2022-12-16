@@ -33,7 +33,9 @@ void ObjMgrState_LOADING::LateUpdate()
 	}
 }
 
-void ObjMgrState_LOADING::Exit() {}
+void ObjMgrState_LOADING::Exit()
+{
+}
 
 void ObjMgrState_LOADING::EnableSceneObject()
 {

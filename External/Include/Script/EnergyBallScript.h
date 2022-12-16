@@ -8,10 +8,17 @@ enum class ENERGYBALL_MODE
 	MISSILE		// 타겟을 향해 날아가 폭발함 
 };
 
+enum class ROT_DIR
+{
+	VERTICAL,
+	HORIZONTAL
+};
+
 class EnergyBallScript : public CScript
 {
 private:
 	ENERGYBALL_MODE m_eCurMode;
+	ROT_DIR         m_eRotDir;
 	Vec3            m_vTargetPos;
 	Vec3            m_vDir;
 	float           m_fRadius;
@@ -21,6 +28,7 @@ private:
 
 public:
 	void            SetCurMode(ENERGYBALL_MODE _eMode) { m_eCurMode = _eMode; }
+	void            SetRotDir(ROT_DIR _eRotDir) { m_eRotDir = _eRotDir; }
 	void            SetTargetPos(Vec3 _vPos);
 	void            SetRadius(float _fRadius) { m_fRadius = _fRadius; }
 	void            SetSpeed(float _fSpeed) { m_fSpeed = _fSpeed; }
@@ -28,6 +36,7 @@ public:
 	Vec3            GetTargetPos() { return m_vTargetPos; }
 	float           GetRadius() { return m_fRadius; }
 	float           GetSpeed() { return m_fSpeed; }
+	ROT_DIR         GetRotDir() { return m_eRotDir; }
 
 	bool IsFinish() { return m_bFinish; }
 

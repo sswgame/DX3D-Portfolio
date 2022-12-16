@@ -37,7 +37,9 @@ CNaviAgent::CNaviAgent(const CNaviAgent& _origin)
 	, m_pRigidBody(_origin.m_pRigidBody)
 	, m_vDebugAgentColor(_origin.m_vDebugAgentColor)
 	, m_iCurCellIndex(-1)
-	, m_bGravity(false) {}
+	, m_bGravity(false)
+{
+}
 
 CNaviAgent::~CNaviAgent() = default;
 
@@ -118,6 +120,8 @@ Vec3 CNaviAgent::SetYPos(float _fDist)
 
 void CNaviAgent::SetNaviMap(CNaviMap* _pNaviMap)
 {
+	if (_pNaviMap == m_pTargetNaviMap)
+		return;
 	m_pTargetNaviMap = _pNaviMap;
 	m_iCurCellIndex  = -1;
 }
@@ -159,7 +163,9 @@ void CNaviAgent::UpdateData()
 }
 
 
-void CNaviAgent::finalupdate() {}
+void CNaviAgent::finalupdate()
+{
+}
 
 void CNaviAgent::finalupdate_debug()
 {

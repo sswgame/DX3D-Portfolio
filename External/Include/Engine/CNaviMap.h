@@ -35,6 +35,9 @@ public:
 	void finalupdate_debug() override;
 	void render_debug() override;
 
+	void active() override;
+	void deactive() override;
+
 	CLONE(CNaviMap);
 
 	void SaveToScene(FILE* _pFile) override;

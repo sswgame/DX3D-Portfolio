@@ -3,8 +3,8 @@
 
 enum class COLLIDER3D_TYPE
 {
-	CUBE
-	, SPHERE
+	CUBE,
+	SPHERE
 };
 
 class CCollider3D final

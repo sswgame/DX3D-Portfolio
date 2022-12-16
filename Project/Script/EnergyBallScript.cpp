@@ -9,6 +9,7 @@
 EnergyBallScript::EnergyBallScript()
 	: CScript((int)SCRIPT_TYPE::ENERGYBALLSCRIPT)
 	, m_eCurMode(ENERGYBALL_MODE::NONE)
+	, m_eRotDir(ROT_DIR::HORIZONTAL)
 	, m_fRadius(60.f)
 	, m_fSpeed(5.f)
 	, m_fRotTime(0)
@@ -18,6 +19,7 @@ EnergyBallScript::EnergyBallScript()
 
 EnergyBallScript::EnergyBallScript(const EnergyBallScript& _origin)
 	: CScript((int)SCRIPT_TYPE::ENERGYBALLSCRIPT)
+	, m_eRotDir(_origin.m_eRotDir)
 	, m_eCurMode(_origin.m_eCurMode)
 	, m_fRadius(_origin.m_fRadius)
 	, m_fSpeed(_origin.m_fSpeed)
@@ -62,27 +64,39 @@ void EnergyBallScript::update()
 			static float angle         = 0;
 			static float timer         = 0;
 
-
 			timer += DT;
 
 			// 타이머가 다 되면 회전을 멈춘다.
 			if (timer > m_fRotTime)
 			{
-				m_bFinish  = true;
-				m_eCurMode = ENERGYBALL_MODE::NONE;
+				m_bFinish     = true;
+				MoveTargetPos = false;
+				angle         = 0;
+				timer         = 0;
+				break;
 			}
 
 			// 현재 위치를 타겟 위치로 바꾼다.
 			if (!MoveTargetPos)
 			{
 				GetOwner()->Transform()->SetRelativePos(m_vTargetPos);
+				vPos          = m_vTargetPos;
 				MoveTargetPos = true;
 			}
 
 			// 회전한다
-			angle += m_fSpeed * DT;
-			vPos.x = m_fRadius * cos(angle);
-			vPos.z = m_fRadius * sin(angle);
+			if (m_eRotDir == ROT_DIR::HORIZONTAL)
+			{
+				angle += m_fSpeed * DT;
+				vPos.x = m_vTargetPos.x + m_fRadius * cos(angle);
+				vPos.z = m_vTargetPos.z + m_fRadius * sin(angle);
+			}
+			else if (m_eRotDir == ROT_DIR::VERTICAL)
+			{
+				angle += m_fSpeed * DT;
+				vPos.x = m_vTargetPos.x + m_fRadius * cos(angle);
+				vPos.y = m_vTargetPos.y + m_fRadius * sin(angle);
+			}
 
 			GetOwner()->Transform()->SetRelativePos(vPos);
 			
@@ -96,19 +110,18 @@ void EnergyBallScript::update()
 			    && abs(m_vTargetPos.z - vPos.z < 0.01f))
 			{
 				// Explode particle & collider
-				CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\explode.pref", L"prefab\\explode.pref").Get();
+				CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\explosion.pref",
+				                                                     L"prefab\\explosion.pref").Get();
 				CGameObject* pParticle = pPrefab->Instantiate();
 				pParticle->SetName(L"magma explode effect");
 				pParticle->ParticleSystem()->SetLifeTime(5.f);
-				pParticle->ParticleSystem()->SetParticlePlayOneTime();
-				pParticle->ParticleSystem()->SetMaterial(L"material\\explode.mtrl");
+				pParticle->ParticleSystem()->SetMaterial(L"material\\explosion.mtrl");
 				CSceneMgr::GetInst()->SpawnObject(pParticle, 1);
 
 				GetOwner()->Collider3D()->CreateAttackCollider(1.f, 500.f, GetOwner()->Transform()->GetRelativePos());
 
 
 				m_bFinish  = true;
-				m_eCurMode = ENERGYBALL_MODE::NONE;
 			}
 			else
 			{

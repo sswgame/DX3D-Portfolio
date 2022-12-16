@@ -44,8 +44,8 @@ void ColumnFlameScript::Init()
 		m_pDecal->Decal()->SetDecalTexture(pTex);
 		m_pDecal->Decal()->SetDeferredLighting(false);
 
-		m_pDecal->Transform()->SetRelativePos(0.f, -285.f, 0.f);
-		m_pDecal->Transform()->SetRelativeScale(110.f, 10.f, 110.f);
+		m_pDecal->Transform()->SetRelativePos(0.f, -300.f, 0.f);
+		m_pDecal->Transform()->SetRelativeScale(110.f, 20.f, 110.f);
 
 		GetOwner()->AddChild(m_pDecal);
 	}
@@ -142,9 +142,12 @@ void ColumnFlameScript::update()
 	}
 	else
 	{
-		m_pLaser_1->Activate();
-		m_pLaser_2->Activate();
-		Collider3D()->Activate();
+		if (!m_fActiveLaser)
+		{
+			m_pLaser_1->Deactivate();
+			m_pLaser_2->Deactivate();
+			Collider3D()->Deactivate();
+		}
 	}
 }
 
