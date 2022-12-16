@@ -52,7 +52,7 @@ JugPhase_2::JugPhase_2(const JugPhase_2& _origin)
 }
 
 JugPhase_2::~JugPhase_2()
-{\
+{
 }
 
 void JugPhase_2::Init()
@@ -168,7 +168,7 @@ void JugPhase_2::Update()
 		RotTowardPlayer();
 	}
 
-	m_iAttackPattern = 3;
+	m_iAttackPattern = 2;
 	switch (m_iAttackPattern)
 	{
 	case 0:
@@ -362,6 +362,11 @@ void JugPhase_2::Attack_3()
 		m_bAttackProceeding = true;
 		m_bRot              = true;
 		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_0);
+
+		for (size_t i = 0; i < ENERGYBALL_COUNT; i++)
+		{
+			m_vecEnergyBalls[i]->Activate();
+		}
 	}
 	else
 	{
@@ -383,8 +388,8 @@ void JugPhase_2::Attack_3()
 
 
 		// È¸Àü
-		if (GetTimer() < 1.5f)
-		{
+		//if (GetTimer() < 1.5f)
+		//{
 			static int   fRotCounter = 0;
 			static float fRotTimer   = 0.f;
 
@@ -412,36 +417,26 @@ void JugPhase_2::Attack_3()
 			{
 				fRotTimer -= DT;
 			}
-		}
-		else
-		{
-			static int   fEnergyBallCounter = 0;
-			static float fEnergyBallTimer   = 0.f;
+			
 
-			if (fEnergyBallTimer <= 0.f)
+			for (size_t i = 0; i < ENERGYBALL_COUNT; i++)
 			{
-				if (fEnergyBallCounter >= ENERGYBALL_COUNT)
+				if (m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->IsFinish())
 				{
-					fEnergyBallCounter = 0;
-					return;
+					if (ENERGYBALL_MODE::ROTATION == m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->GetCurMode())
+					{
+						Vec3 vPlayerPos = m_pCombatMgr->GetPlayer()->Transform()->GetWorldPos();
+						m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->SetSpeed(700.f);
+						m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->
+							Start(ENERGYBALL_MODE::MISSILE,
+								vPlayerPos);
+					}
+					else
+					{
+						m_vecEnergyBalls[i]->Deactivate();
+					}
 				}
-
-				Vec3 vPlayerPos = m_pCombatMgr->GetPlayer()->Transform()->GetWorldPos();
-				m_vecEnergyBalls[fEnergyBallCounter]->GetScript<EnergyBallScript>()->SetSpeed(100.f);
-				m_vecEnergyBalls[fEnergyBallCounter]->GetScript<EnergyBallScript>()->
-				                                      Start(ENERGYBALL_MODE::MISSILE,
-				                                            vPlayerPos);
-
-				++fEnergyBallCounter;
-				fEnergyBallTimer = 1.5f;
 			}
-			else
-			{
-				fEnergyBallTimer -= DT;
-			}
-		}
-		
-		
 	}
 }
 

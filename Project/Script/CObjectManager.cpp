@@ -24,6 +24,8 @@ void CObjectManager::start()
 	pFSM->AddState(L"IDLE", new ObjMgrState_IDLE{});
 	pFSM->AddState(L"LOADING", new ObjMgrState_LOADING{});
 	pFSM->ChangeState(L"IDLE");
+
+
 }
 
 void CObjectManager::RemoveFromDontDestroyList(CGameObject* pGameObject)

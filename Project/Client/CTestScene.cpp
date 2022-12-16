@@ -90,15 +90,15 @@ namespace
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
 
-		//AddPlayer(pCurScene, pCamObj);
+		AddPlayer(pCurScene, pCamObj);
 		//AddDeuxiemie(pCurScene);
 		//AddHomonculus(pCurScene);
-		//AddDefaultUIObjects(pCurScene);
+		AddDefaultUIObjects(pCurScene);
 
 		//Map01(pCurScene);
-		//Map02(pCurScene);
+		Map02(pCurScene);
 
-		//SetCollision();
+		SetCollision();
 
 		SaveScene(pCurScene, L"scene\\TestScene.scene");
 
@@ -135,8 +135,8 @@ namespace
 		/// 충돌 레이어 설정
 		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER);
 		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::ITEM);
-		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
-		//CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_PARRING_ATTACK);
+		CCollisionMgr::GetInst()->CollisionCheck(GAME::LAYER::PLAYER, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
 	}
 
 	void SaveScene(CScene* _pScene, const std::wstring& _relativePath)
@@ -434,7 +434,7 @@ namespace
 		//ADD TO DON DESTROY
 		CObjectManager::GetInst()->AddToDontDestroy(pObj);
 		CObjectManager::GetInst()->SetPlayer(pObj);
-		pObj->Deactivate();
+		//pObj->Deactivate();
 		CObjectManager::GetInst()->SetSceneObject(pObj, MAP_TYPE::_01);
 
 		Ptr<CMeshData> pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat",
@@ -630,18 +630,20 @@ namespace
 
 		//PLAYER UI
 		CGameObject* pPlayerUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
+		CObjectManager::GetInst()->SetPlayerUI(pPlayerUI);
 		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
-		CObjectManager::GetInst()->AddToDontDestroy(pPlayerUI);
+		//CObjectManager::GetInst()->AddToDontDestroy(pPlayerUI);
 
 		//MAIN_MENU
-		CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
-		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
+		////CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
+		//_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 
 		//BOSS_UI
 		CGameObject* pBossUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\BOSS_HP.pref")->Instantiate();
 		_pScene->AddObject(pBossUI, L"UI_INTERACTIVE");
-		pBossUI->Deactivate();
-		CObjectManager::GetInst()->SetSceneObject(pBossUI, MAP_TYPE::_02);
+		CObjectManager::GetInst()->SetBossUI(pBossUI);
+		//pBossUI->Deactivate();
+		//CObjectManager::GetInst()->SetSceneObject(pBossUI, MAP_TYPE::_02);
 	}
 
 	void Map01(CScene* _pScene)

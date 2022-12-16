@@ -175,7 +175,7 @@ void ColumnFlameScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
 	PlayerScript* pPlayerScript = _OtherObject->GetScript<PlayerScript>();
 	if (nullptr != pPlayerScript)
-		pPlayerScript->GetPlayerStat()->SubHp(m_fDamage);
+		pPlayerScript->Stat_Down(STAT_TYPE::HP, 0.1f);
 }
 
 void ColumnFlameScript::OnCollision(CGameObject* _OtherObject)

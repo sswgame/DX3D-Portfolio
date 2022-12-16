@@ -110,8 +110,7 @@ void EnergyBallScript::update()
 			    && abs(m_vTargetPos.z - vPos.z < 0.01f))
 			{
 				// Explode particle & collider
-				CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\explosion.pref",
-				                                                     L"prefab\\explosion.pref").Get();
+				Ptr<CPrefab> pPrefab = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\explosion.pref");
 				CGameObject* pParticle = pPrefab->Instantiate();
 				pParticle->SetName(L"magma explode effect");
 				pParticle->ParticleSystem()->SetLifeTime(5.f);

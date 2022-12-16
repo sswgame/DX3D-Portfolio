@@ -23,11 +23,11 @@ void CTransform::finalupdate()
 	Matrix matTranslation = XMMatrixTranslation(m_vRelativePos.x, m_vRelativePos.y, m_vRelativePos.z);
 
 	//오일러 방식이므로, 쿼터니언으로 해야 짐벌락 방지 가능
-	/*Matrix matRotX        = XMMatrixRotationX(m_vRelativeRot.x);
+	Matrix matRotX        = XMMatrixRotationX(m_vRelativeRot.x);
 	Matrix matRotY        = XMMatrixRotationY(m_vRelativeRot.y);
 	Matrix matRotZ        = XMMatrixRotationZ(m_vRelativeRot.z);
-	m_matRelativeRot      = matRotX * matRotY * matRotZ;*/
-	m_matRelativeRot = XMMatrixRotationRollPitchYaw(m_vRelativeRot.x, m_vRelativeRot.y, m_vRelativeRot.z);
+	m_matRelativeRot      = matRotX * matRotY * matRotZ;
+	//m_matRelativeRot = XMMatrixRotationRollPitchYaw(m_vRelativeRot.x, m_vRelativeRot.y, m_vRelativeRot.z);
 
 	// World 행렬 만들기
 	m_matWorld = matScale * m_matRelativeRot * matTranslation;

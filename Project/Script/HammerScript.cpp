@@ -31,6 +31,9 @@ void HammerScript::update()
 		CAnimation3D* pAnim = pAnimator3D->GetCurAnim();
 		if (pAnim)
 		{
+			if (pAnimator3D->GetvecSocketMatSize() <= 0 )
+ 				return;
+
 			int    SocketIdx   = 59;
 			Matrix SocketMat   = pAnimator3D->GetSocket(SocketIdx);
 			Vec3   SocketRot   = DecomposeRotMat(SocketMat);

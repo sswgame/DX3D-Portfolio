@@ -43,7 +43,7 @@ public:
 	void Start(ENERGYBALL_MODE _eMode, Vec3 _vTargetPos = Vec3(0.f, 0.f, 0.f), float _fRotTime = 0.f)
 	{
 		m_eCurMode   = _eMode;
-		m_vTargetPos = _vTargetPos;
+		SetTargetPos(_vTargetPos);
 		m_fRotTime   = _fRotTime;
 		m_bFinish    = false;
 	}

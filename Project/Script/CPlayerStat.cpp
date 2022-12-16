@@ -2,11 +2,12 @@
 #include "CPlayerStat.h"
 
 #include <Engine/CFSM.h>
+#include <Engine/CUIProgressBar.h>
 
 #include "CStateMgr.h"
 
 #include "PlayerScript.h"
-
+#include "CObjectManager.h"
 
 CPlayerStat::CPlayerStat()
 {
@@ -107,6 +108,8 @@ void CPlayerStat::SubHp(float _fHp)
 	m_tCurStat.fHp -= _fHp;
 	if (m_tCurStat.fHp <= 0.f)
 		m_tCurStat.fHp = 0.f;
+
+	CObjectManager::GetInst()->GetPlayerUI()->GetChild(L"HP_PANEL")->GetChild(L"HP_BACKGROUND")->GetChild(L"PROGRESS_BAR")->UIProgressBar()->SetPercent(m_tCurStat.fHp/m_tMaxStat.fHp);
 
 }
 

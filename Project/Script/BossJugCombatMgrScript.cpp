@@ -68,8 +68,8 @@ void BossJugCombatMgrScript::SpawnStage()
 		pNMesh->Transform()->SetRelativePos(0.f, -345.f, 0.f);
 
 		m_pStage->AddChild(pNMesh);
-		CObjectManager::GetInst()->SetSceneObject(m_pStage, MAP_TYPE::_02);
-		m_pStage->Deactivate();
+		//CObjectManager::GetInst()->SetSceneObject(m_pStage, MAP_TYPE::_02);
+		//m_pStage->Deactivate();
 	}
 
 	/* 보스 생성 */
@@ -100,15 +100,15 @@ void BossJugCombatMgrScript::SpawnStage()
 
 
 			m_pJug->AddChild(m_pHammer);
-			m_pHammer->Deactivate();
+			//m_pHammer->Deactivate();
 		}
 
 
 		// 보스 초기화
 		m_pJug->GetScript<BossJugScript>()->Init();
 
-		CObjectManager::GetInst()->SetSceneObject(m_pJug, MAP_TYPE::_02);
-		m_pJug->Deactivate();
+		//CObjectManager::GetInst()->SetSceneObject(m_pJug, MAP_TYPE::_02);
+		//m_pJug->Deactivate();
 	}
 
 	/* 보스 손 생성 */
@@ -122,8 +122,8 @@ void BossJugCombatMgrScript::SpawnStage()
 		CSceneMgr::GetInst()->SpawnObject(m_pJugHandMgr, GAME::LAYER::OBJECT_MGR);
 		m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
 
-		CObjectManager::GetInst()->SetSceneObject(m_pJugHandMgr, MAP_TYPE::_02);
-		m_pJugHandMgr->Deactivate();
+		//CObjectManager::GetInst()->SetSceneObject(m_pJugHandMgr, MAP_TYPE::_02);
+		//m_pJugHandMgr->Deactivate();
 	}
 }
 
@@ -136,7 +136,6 @@ void BossJugCombatMgrScript::InitState()
 		m_pPhaseFSM = new CFSM;
 		GetOwner()->AddComponent(m_pPhaseFSM);
 
-
 		m_pPhaseFSM->AddState(GAME::BOSS::PHASE::NONE, new JugPhase_None);
 		m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_INTRO, new JugPhase_Intro);
 		m_pPhaseFSM->AddState(GAME::BOSS::PHASE::JUG_PHASE_1, new JugPhase_1);
@@ -148,7 +147,7 @@ void BossJugCombatMgrScript::InitState()
 			pState.second->Init();
 		}
 
-		m_pPhaseFSM->SetCurState(L"JUG_PHASE_NONE");
+		m_pPhaseFSM->SetCurState(GAME::BOSS::PHASE::NONE);
 	}
 }
 
@@ -192,7 +191,7 @@ void BossJugCombatMgrScript::start()
 	CObjectManager::GetInst()->SetBossCombatMgr(GetOwner());
 
 	//최초 시작 이후 맵 전환 전까지 동작하지 않아야하므로
-	GetOwner()->Deactivate();
+	//GetOwner()->Deactivate();
 }
 
 void BossJugCombatMgrScript::update()

@@ -8,6 +8,7 @@
 #include <Engine/CAnimation3D.h>
 #include <Engine/CFSM.h>
 #include <Engine/CSerializer.h>
+#include <Engine/CUIProgressBar.h>
 // [ SCRIPT PART ] 
 #include "Jug_None.h"
 #include "Jug_Intro.h"
@@ -28,8 +29,8 @@ BossJugScript::BossJugScript()
 	: CScript((int)SCRIPT_TYPE::BOSSJUGSCRIPT)
 	, m_pBossFSM(nullptr)
 	, m_pBossAnimator(nullptr)
-	, m_fHP(400.f)
-	, m_fMaxHP(1000.f)
+	, m_fHP(1000.f)
+	, m_fMaxHP(10000.f)
 {
 	AddScriptParam("BOSS STATE", SCRIPTPARAM_TYPE::TEXT, &m_strCurState);
 	AddScriptParam("CUR ANIM", SCRIPTPARAM_TYPE::TEXT, &m_strCurAnimName);
@@ -151,9 +152,14 @@ void BossJugScript::Serialize(YAML::Emitter& emitter)
 
 void BossJugScript::Deserialize(const YAML::Node& node)
 {
-	m_fHP    = node[NAME_OF(m_fHP)].as<float>();
+	m_fHP = node[NAME_OF(m_fHP)].as<float>();
 	m_fMaxHP = node[NAME_OF(m_fMaxHP)].as<float>();
 
 	CScript::Deserialize(node);
 }
 
+void BossJugScript::SetHP(float _hp) 
+{
+	m_fHP = _hp;
+	CObjectManager::GetInst()->GetBossUI()->GetChild(L"PROGRESS_BAR")->UIProgressBar()->SetPercent(m_fHP / m_fMaxHP);
+}
