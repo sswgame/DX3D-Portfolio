@@ -113,6 +113,47 @@ void JugPhase_2::Init()
 			m_vecEnergyBalls.push_back(pEnergyBall);
 			CSceneMgr::GetInst()->SpawnObject(pEnergyBall, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
 			pEnergyBall->Deactivate();
+
+
+			// new energyball - update 12/17 AM 03:30
+			/*CGameObject* pEnergyBall = new CGameObject;
+			pEnergyBall->SetName(L"ENERGYBALL_" + std::to_wstring(i));
+			pEnergyBall->AddComponent(new CMeshRender);
+			pEnergyBall->AddComponent(new CTransform);
+			pEnergyBall->AddComponent(new CCollider3D{});
+
+			pEnergyBall->Transform()->SetRelativePos(Vec3()); -> 위치 잡아야 하나요? 모르겠어서 비워둡니다.
+			pEnergyBall->Transform()->SetRelativeScale(Vec3(50.f, 50.f, 50.f));
+			pEnergyBall->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+
+			CMaterial* pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\EnergyBallMtrl.mtrl").Get();
+			pEnergyBall->MeshRender()->SetSharedMaterial(pMtrl, 0);
+			const Ptr<CTexture> pmagmaTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\FBXTexture\\T_Lava02.png",
+				L"texture\\FBXTexture\\T_Lava02.png");
+			pEnergyBall->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pmagmaTex);
+
+			pEnergyBall->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+			pEnergyBall->Collider3D()->SetOffsetScale(Vec3(50.f, 50.f, 50.f));
+			pEnergyBall->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
+			pEnergyBall->Collider3D()->SetLifeTime(-1.f);
+
+			EnergyBallScript* pEnergyScript = pEnergyBall->GetScript<EnergyBallScript>();
+
+			m_vecEnergyBalls.push_back(pEnergyBall);
+			CSceneMgr::GetInst()->SpawnObject(pEnergyBall, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
+			pEnergyBall->Deactivate();*/
+
+
+
+			// Jug pot shader 쓰는 법.
+			// 나머지 텍스처, 디퓨즈,노말 등은 3d deferred와 동일하게 넣으면 됨!
+			/*CMaterial* pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\PotMtrl.mtrl").Get();
+			pJugPot->MeshRender()->SetSharedMaterial(pMtrl, 0);
+			int BtoI = (int)bool_jugHit;
+			pJugPot->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &BtoI);*/
+
+			// 뉴 에너지볼 프리펩 이름
+			// EnergyBall_effect.pref
 		}
 	}
 

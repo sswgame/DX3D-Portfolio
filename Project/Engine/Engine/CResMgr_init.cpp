@@ -933,6 +933,32 @@ void CResMgr::CreateEngineShader()
 	pShader->AddScalarParamInfo(L"Explode On", SCALAR_PARAM::FLOAT_0);
 	AddRes<CGraphicsShader>(L"MagmaShader", pShader, true);
 
+	// Pot Shader
+	pShader = new CGraphicsShader;
+	pShader->CreateVertexShader(L"shader\\boss.fx", "VS_Pot");
+	pShader->CreatePixelShader(L"shader\\boss.fx", "PS_Pot");
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->AddTexParamInfo(L"OutputTex", TEX_PARAM::TEX_0);
+	pShader->AddTexParamInfo(L"NormapMap", TEX_PARAM::TEX_1);
+	pShader->AddTexParamInfo(L"SpecularMap", TEX_PARAM::TEX_2);
+	pShader->AddTexParamInfo(L"EmbientMap", TEX_PARAM::TEX_3);
+	pShader->AddScalarParamInfo(L"Hit On", SCALAR_PARAM::INT_0);
+	AddRes<CGraphicsShader>(L"PotShader", pShader, true);
+
+	// EnergyBall Shader
+	pShader = new CGraphicsShader;
+	pShader->CreateVertexShader(L"shader\\boss.fx", "VS_EnergyBall");
+	pShader->CreatePixelShader(L"shader\\boss.fx", "PS_EnergyBall");
+	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_FORWARD);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->AddTexParamInfo(L"OutputTex", TEX_PARAM::TEX_0);
+	AddRes<CGraphicsShader>(L"EnergyBallShader", pShader, true);
+
 	// TileMap Shader
 	pShader = new CGraphicsShader;
 	pShader->CreateVertexShader(L"shader\\tilemap.fx", "VS_TileMap");
@@ -1120,6 +1146,16 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"MagmaShader"));
 	AddRes<CMaterial>(L"material\\MagmaMtrl.mtrl", pMtrl);
+
+	// PotMtrl
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"PotShader"));
+	AddRes<CMaterial>(L"material\\PotMtrl.mtrl", pMtrl);
+
+	// EnergyBallMtrl
+	pMtrl = new CMaterial;
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"EnergyBallShader"));
+	AddRes<CMaterial>(L"material\\EnergyBallMtrl.mtrl", pMtrl);
 
 	// Collider2DMtrl 
 	pMtrl = new CMaterial;
