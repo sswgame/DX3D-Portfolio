@@ -13,6 +13,7 @@ MagmaScript::MagmaScript()
 	, m_fLifeTime(0.f)
 	, m_fAddTime(0.f)
 	, m_fExplodeScale(0.f)
+	, m_bExplodeOn(false)
 {
 	m_fLifeTime = 6.f;
 	m_fExplodeScale = 500.f;
@@ -26,27 +27,35 @@ void MagmaScript::update()
 	float nonAplha = 0.f;
 	GetOwner()->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &nonAplha);
 
-	if (m_fLifeTime <= m_fAddTime)
+	if (m_fLifeTime + 1.f <= m_fAddTime)
+	{
+		GetOwner()->Destroy();
+	}
+	else if (m_fLifeTime <= m_fAddTime)
 	{
 		// ===============
 		//	magma explode
 		// ===============
 
 		// magma collider
-		GetOwner()->Collider3D()->CreateAttackCollider(1.f, m_fExplodeScale, GetOwner()->Transform()->GetRelativePos());
 
 
-		// explode particle 추가
-		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\explosion.pref", L"prefab\\explosion.pref").Get();
-		CGameObject* pParticle = pPrefab->Instantiate();
-		pParticle->SetName(L"magma explode effect");
-		pParticle->ParticleSystem()->SetLifeTime(5.f);
-		pParticle->ParticleSystem()->SetParticlePlayOneTime();
-		pParticle->ParticleSystem()->SetMaterial(L"material\\explosion.mtrl");
-		CSceneMgr::GetInst()->SpawnObject(pParticle, 1);
+		if (false == m_bExplodeOn)
+		{
+			// explode particle 추가
+			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\explosion.pref", L"prefab\\explosion.pref").Get();
+			CGameObject* pParticle = pPrefab->Instantiate();
+			pParticle->SetName(L"magma explode effect");
+			pParticle->Transform()->SetRelativePos(GetOwner()->Transform()->GetRelativePos());
+			pParticle->ParticleSystem()->SetLifeTime(5.f);
+			pParticle->ParticleSystem()->SetParticlePlayOneTime();
+			pParticle->ParticleSystem()->SetMaterial(L"material\\explosion.mtrl");
+			CSceneMgr::GetInst()->SpawnObject(pParticle, 1);
 
+			GetOwner()->Collider3D()->CreateAttackCollider(1.f, m_fExplodeScale, GetOwner()->Transform()->GetRelativePos());
+			m_bExplodeOn = true;
+		}
 
-		GetOwner()->Destroy();
 	}
 	else if (4.f < m_fAddTime && m_fAddTime < 6.f)
 	{

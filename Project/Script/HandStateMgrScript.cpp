@@ -7,9 +7,10 @@
 #include <Engine/CMeshData.h>
 #include <Engine/CFSM.h>
 #include <Engine/CSerializer.h>
+#include <Engine/CCollider3D.h>
 // [ SCRIPT PART ]
 #include "BossJugHandScript.h"
-
+#include "SocketColliderScript.h"
 #include "JugHand_Attack.h"
 #include "JugHand_Gen.h"
 #include "JugHand_Idle.h"
@@ -19,7 +20,7 @@
 #include <Engine/CSerializer.h>
 
 HandStateMgrScript::HandStateMgrScript()
-	: CScript{(int)SCRIPT_TYPE::HANDSTATEMGRSCRIPT}
+	: CScript{ (int)SCRIPT_TYPE::HANDSTATEMGRSCRIPT }
 	, m_sNextState(L"")
 	, m_sPrevState(L"")
 	, m_sCurstate(L"")
@@ -36,11 +37,27 @@ HandStateMgrScript::~HandStateMgrScript() {}
 
 void HandStateMgrScript::update()
 {
+	if (1 == m_iCurAttackHandNumber)
+	{
+		if (false == m_pHand1->IsActive())
+			m_pHand1->Activate();
+	}
+	else if (2 == m_iCurAttackHandNumber)
+	{
+		if (false == m_pHand2->IsActive())
+			m_pHand2->Activate();
+	}
+	else if (3 == m_iCurAttackHandNumber)
+	{
+		if (false == m_pHand3->IsActive())
+			m_pHand3->Activate();
+	}
+
 	m_sPrevState = L"";
 	m_sPrevState = m_sCurstate;
 	if (L"" != m_sNextState)
 	{
-		m_sCurstate  = m_sNextState;
+		m_sCurstate = m_sNextState;
 		m_sNextState = L"";
 		ChangeState(m_sCurstate);
 	}
@@ -60,9 +77,9 @@ void HandStateMgrScript::init()
 	CGameObject* pHandMgr = GetOwner();
 
 	// Create Hand Num 01
-	pMeshName                = L"meshdata//hand010.mdat";
+	pMeshName = L"meshdata//hand010.mdat";
 	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(pMeshName.c_str(),
-	                                                               pMeshName.c_str());
+		pMeshName.c_str());
 	m_pHand1 = pMeshData->Instantiate();
 	m_pHand1->SetName(L"Hand01");
 	m_pHand1->AddComponent(new BossJugHandScript);
@@ -70,12 +87,17 @@ void HandStateMgrScript::init()
 	//CSceneMgr::GetInst()->SpawnObject(m_pHand1, GetOwner()->GetLayerIndex());
 	pHandMgr->AddChild(m_pHand1);
 
+	CGameObject* pHand01Collider = new CGameObject;
+	pHand01Collider->AddComponent(new CTransform);
+	pHand01Collider->AddComponent(new SocketColliderScript);
+	m_pHand1->AddChild(pHand01Collider);
+
 
 	// Create Hand Num 02
 	pMeshName = L"";
 	pMeshName = L"meshdata//hand020.mdat";
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(pMeshName.c_str(),
-	                                                pMeshName.c_str());
+		pMeshName.c_str());
 	m_pHand2 = pMeshData->Instantiate();
 	m_pHand2->SetName(L"Hand02");
 	m_pHand2->AddComponent(new BossJugHandScript);
@@ -88,7 +110,7 @@ void HandStateMgrScript::init()
 	pMeshName = L"";
 	pMeshName = L"meshdata//hand030.mdat";
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(pMeshName.c_str(),
-	                                                pMeshName.c_str());
+		pMeshName.c_str());
 	m_pHand3 = pMeshData->Instantiate();
 	m_pHand3->SetName(L"Hand03");
 	m_pHand3->AddComponent(new BossJugHandScript);
@@ -99,7 +121,7 @@ void HandStateMgrScript::init()
 	InitState();
 	ResetCurAttackHandNumber();
 
-	GetOwner()->Deactivate();
+	//GetOwner()->Deactivate();
 }
 
 void HandStateMgrScript::InitState()
@@ -152,10 +174,20 @@ void HandStateMgrScript::InitState()
 
 void HandStateMgrScript::ResetCurAttackHandNumber()
 {
-	std::random_device                 rdX;
-	std::mt19937                       genX(rdX());
-	std::uniform_int_distribution<int> disX(1, 3);
-	m_iCurAttackHandNumber = disX(genX);
+	//std::random_device                 rdX;
+	//std::mt19937                       genX(rdX());
+	//std::uniform_int_distribution<int> disX(1, 3);
+	//m_iCurAttackHandNumber = disX(genX);
+
+	if (1 == m_iCurAttackHandNumber)
+		m_iCurAttackHandNumber = 2;
+	else if (2 == m_iCurAttackHandNumber)
+		m_iCurAttackHandNumber = 3;
+	else if (3 == m_iCurAttackHandNumber)
+		m_iCurAttackHandNumber = 1;
+	else
+		m_iCurAttackHandNumber = 1;
+
 	ChangeState(L"GEN");
 }
 
@@ -210,10 +242,10 @@ void HandStateMgrScript::Deserialize(const YAML::Node& node)
 	//m_pHand1                   = node[NAME_OF(m_pHand1)].as<CGameObject*>();
 	//m_pHand2                   = node[NAME_OF(m_pHand2)].as<CGameObject*>();
 	//m_pHand3                   = node[NAME_OF(m_pHand3)].as<CGameObject*>();
-	m_vHand1HitBoxScale        = node[NAME_OF(m_vHand1HitBoxScale)].as<Vec3>();
-	m_vHand1AttackBoxScale     = node[NAME_OF(m_vHand1AttackBoxScale)].as<Vec3>();
-	m_iCurAttackHandNumber     = node[NAME_OF(m_iCurAttackHandNumber)].as<int>();
-	m_bHand01_FirstAttackDone  = node[NAME_OF(m_bHand01_FirstAttackDone)].as<bool>();
+	m_vHand1HitBoxScale = node[NAME_OF(m_vHand1HitBoxScale)].as<Vec3>();
+	m_vHand1AttackBoxScale = node[NAME_OF(m_vHand1AttackBoxScale)].as<Vec3>();
+	m_iCurAttackHandNumber = node[NAME_OF(m_iCurAttackHandNumber)].as<int>();
+	m_bHand01_FirstAttackDone = node[NAME_OF(m_bHand01_FirstAttackDone)].as<bool>();
 	m_bHand01_SecondAttackDone = node[NAME_OF(m_bHand01_SecondAttackDone)].as<bool>();
 
 	//CScript::Deserialize(node);

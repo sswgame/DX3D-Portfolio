@@ -11,6 +11,8 @@ private:
 
 	float	m_fExplodeScale;
 
+	bool	m_bExplodeOn;
+
 public:
 	void	update() override;
 	void	lateupdate() override;

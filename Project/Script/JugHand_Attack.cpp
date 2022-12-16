@@ -3,6 +3,7 @@
 
 #include "BossJugHandScript.h"
 #include "EffectScript.h"
+#include "MagmaScript.h"
 
 // Engine
 #include <Engine/CAnimation3D.h>
@@ -35,8 +36,8 @@ void JugHand_Attack::Hand01Attack()
 	// 5. 공중에서 팝업후 바로 116 Frame 부터 재시작.
 
 	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
-	Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
-	Vec3 vRotate = GetOwner()->Transform()->GetRelativeRotation();
+	Vec3 vPos = GetOwner()->GetParent()->Transform()->GetRelativePos();
+	Vec3 vRotate = GetOwner()->GetParent()->Transform()->GetRelativeRotation();
 	Vec3 vPlayerPos = ((BossJugHandScript*)pScript)->GetPlayerPosition();
 	float fSpeed = ((BossJugHandScript*)pScript)->GetSpeed();
 
@@ -127,8 +128,8 @@ void JugHand_Attack::Hand01Attack()
 		}
 	}
 
-	GetOwner()->Transform()->SetRelativePos(vPos);
-	GetOwner()->Transform()->SetRelativePos(vRotate);
+	GetOwner()->GetParent()->Transform()->SetRelativePos(vPos);
+	GetOwner()->GetParent()->Transform()->SetRelativeRotation(vRotate);
 
 
 }
@@ -166,23 +167,26 @@ void JugHand_Attack::Hand02Attack()
 			// ==========================
 			//	       magma 생성  
 			// ==========================
-			//CGameObject* pMagma = new nullptr;
-			//wstring pMagmaName = L"";
-			//pMagmaName = L"meshdata//magma.mdat";
-			//Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
-			//	pMagmaName.c_str());
-			//pMagma = pMagmaMeshData->Instantiate();
-			//pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
-			//pMagma->SetName(L"Magma");
-			//pMagma->AddComponent(new MagmaScript);
-			//GetOwner()->AddChild(pMagma);
+			CGameObject* pMagma = nullptr;
+			wstring pMagmaName = L"";
+			pMagmaName = L"meshdata//magma.mdat";
+			Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
+				pMagmaName.c_str());
+			pMagma = pMagmaMeshData->Instantiate();
+			Vec3 playerpos = GetOwner()->GetScript<BossJugHandScript>()->GetPlayerPosition();
+			playerpos.y -= 10;
+			pMagma->Transform()->SetRelativePos(playerpos);
+			pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
+			pMagma->SetName(L"Magma");
+			pMagma->AddComponent(new MagmaScript);
+			CSceneMgr::GetInst()->SpawnObject(pMagma, L"MONSTER");
 
 		}
 
 	}
 
 	GetOwner()->Transform()->SetRelativePos(vPos);
-	GetOwner()->Transform()->SetRelativePos(vRotate);
+	GetOwner()->Transform()->SetRelativeRotation(vRotate);
 
 }
 
@@ -235,7 +239,7 @@ void JugHand_Attack::Hand03Attack()
 	}
 
 	GetOwner()->Transform()->SetRelativePos(vPos);
-	GetOwner()->Transform()->SetRelativePos(vRotate);
+	//GetOwner()->Transform()->SetRelativeRotation(vRotate);
 }
 
 void JugHand_Attack::Enter()

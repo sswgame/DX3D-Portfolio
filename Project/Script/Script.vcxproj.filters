@@ -253,6 +253,9 @@
     <ClInclude Include="SocketColliderScript.h">
       <Filter>Script\SocketCollider</Filter>
     </ClInclude>
+    <ClInclude Include="TestDeadScript.h" />
+    <ClInclude Include="ObjMgrState_LOADING.h" />
+    <ClInclude Include="ObjMgrState_IDLE.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -498,6 +501,9 @@
     <ClCompile Include="SocketColliderScript.cpp">
       <Filter>Script\SocketCollider</Filter>
     </ClCompile>
+    <ClCompile Include="TestDeadScript.cpp" />
+    <ClCompile Include="ObjMgrState_LOADING.cpp" />
+    <ClCompile Include="ObjMgrState_IDLE.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">

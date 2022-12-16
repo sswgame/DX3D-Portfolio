@@ -18,7 +18,7 @@ BossJugHandScript::BossJugHandScript()
 	, m_vPrevDirection(Vec3(0.f, 0.f, 0.f))
 	, m_sCurState(L"")
 	, m_fRunningTime(0.f)
-	, m_fSpeed(0.f)
+	, m_fSpeed(300.f)
 	, m_iCurAttackHandIdx(-1)
 	, m_iOwnerHandIdx(-1)
 	, m_bAllAttackIsDone(false)
@@ -52,9 +52,9 @@ BossJugHandScript::~BossJugHandScript()
 Vec3 BossJugHandScript::GetPlayerPosition()
 {
 	// player is not exits
-	return Vec3(0, 0, 0);
+	//return Vec3(0, 0, 0);
 
-	vector<CGameObject*> pVecObjs = CSceneMgr::GetInst()->GetCurScene()->GetLayer(2)->GetObjects();
+	vector<CGameObject*> pVecObjs = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"PLAYER")->GetObjects();
 	CGameObject* pPlayer = nullptr;
 
 	for (size_t i = 0; i < pVecObjs.size(); i++)
@@ -161,6 +161,11 @@ void BossJugHandScript::update()
 		}
 		return;
 	}
+	else
+	{
+		if (false == GetOwner()->IsActive())
+			GetOwner()->Activate();
+	}
 
 
 	// АјАн routine
@@ -211,7 +216,7 @@ void BossJugHandScript::update()
 
 			if (true == m_bAllAttackIsDone)
 			{
-				GetOwner()->Deactivate();
+				//GetOwner()->Deactivate();
 				if (false == m_bAttackRepeat)
 					pHandMgr->GetScript<HandStateMgrScript>()->ResetCurAttackHandNumber();
 				pHandMgr->GetScript<HandStateMgrScript>()->SetNextState(L"GEN");

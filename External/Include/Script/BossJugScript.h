@@ -26,7 +26,7 @@ public:
 	CFSM*        GetBossFSM() { return m_pBossFSM; }
 	CAnimator3D* GetBossAnimator() { return m_pBossAnimator; }
 
-	void SetHP(float _hp) { m_fHP = _hp; }
+	void SetHP(float _hp);
 	void SetMaxHP(float _hp) { m_fMaxHP = _hp; }
 
 	void GetHit(float _fDamage) { m_fHP -= _fDamage; }

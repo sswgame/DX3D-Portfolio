@@ -3,7 +3,7 @@
 
 #include "BossJugHandScript.h"
 
-	// Engine
+// Engine
 #include <Engine/CAnimation3D.h>
 #include <Engine/CAnimator3D.h>
 
@@ -69,11 +69,27 @@ void JugHand_Gen::Enter()
 		((BossJugHandScript*)pScript)->SetRunningTime(0.5f);
 		GetOwner()->Animator3D()->Play(sAnimName, false);
 		m_pAnimation->SetAnimState(ANIMATION_STATE::STOP);
+
+		Vec3 HandMgrPos = GetOwner()->GetParent()->Transform()->GetRelativePos();
+		Vec3 pos = ((BossJugHandScript*)pScript)->GetPlayerPosition();
+		pos.y += 200.f;
+		GetOwner()->GetParent()->Transform()->SetRelativePos(pos);
+	}
+	else if (2 == iIndex)
+	{
+		((BossJugHandScript*)pScript)->SetRunningTime(5.f);
+		GetOwner()->Animator3D()->Play(sAnimName, true);
+		Vec3 pos = Vec3(0.f, 350.f, 0.f);
+		GetOwner()->GetParent()->Transform()->SetRelativePos(pos);
+
 	}
 	else
 	{
 		((BossJugHandScript*)pScript)->SetRunningTime(5.f);
 		GetOwner()->Animator3D()->Play(sAnimName, true);
+		Vec3 pos = Vec3(0.f, 200.f, -100.f);
+		GetOwner()->GetParent()->Transform()->SetRelativePos(pos);
+
 	}
 }
 
