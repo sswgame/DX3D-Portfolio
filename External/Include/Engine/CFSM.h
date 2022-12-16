@@ -44,5 +44,3 @@ public:
 
 	friend class CEventMgr;
 };
-
-//#define BIND_FN(func) std::bind(func,this,std::placeholders::_1)

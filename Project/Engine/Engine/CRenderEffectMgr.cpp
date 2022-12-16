@@ -4,7 +4,6 @@
 #include "CFXAA.h"
 #include "CSSAO.h"
 
-#include "CKeyMgr.h"
 #include "CMRT.h"
 #include "CTimeMgr.h"
 #include "CDevice.h"
@@ -15,7 +14,8 @@ CRenderEffectMgr::CRenderEffectMgr()
 	, m_bEnable_FXAA(true)
 	, m_bEnable_FadeIn_PaperBurn{false}
 	, m_bEnable_FadeOut_PaperBurn{false}
-	, m_fPaperBurn_Timer(0.f) {}
+	, m_fPaperBurn_Timer(0.f)
+	, m_fDuration{0} {}
 
 CRenderEffectMgr::~CRenderEffectMgr() {}
 
@@ -35,7 +35,7 @@ void CRenderEffectMgr::Apply(EFFECT_TYPE _eType)
 				break;
 
 			CRenderMgr::GetInst()->CopyTargetToPostProcess();
-			D3D11_VIEWPORT SwapChain_VP = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->GetViewPort();
+			const D3D11_VIEWPORT SwapChain_VP = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->GetViewPort();
 			CFXAA::GetInst()->SetViewPort(SwapChain_VP);
 			CFXAA::GetInst()->Apply();
 		}
@@ -96,23 +96,22 @@ void CRenderEffectMgr::Init_FadePaperBurn() {}
 
 void CRenderEffectMgr::Apply_FadeInOut_PaperBurn()
 {
-	D3D11_VIEWPORT SwapChain_VP   = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->GetViewPort();
-	Ptr<CMesh>     pRectMesh      = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+	const D3D11_VIEWPORT SwapChain_VP = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->GetViewPort();
+	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
 	Ptr<CMaterial> pPaperBurnMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\PaperBurnFullScreenMtrl.mtrl");
-	Ptr<CTexture>  pPostTex       = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
-	Vec4           vColor         = WHITE;
+	const Ptr<CTexture> pPostTex = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
+	Vec4 vColor = WHITE;
 
-	Ptr<CTexture> pNoiseTex = CResMgr::GetInst()->Load<CTexture>(L"texturetexture\\UI\\FX\\UI_StylizedClouds_FX.png",
-	                                                             L"texture\\UI\\FX\\UI_StylizedClouds_FX.png");
-	Ptr<CTexture> pResultTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\UI\\StartMenu\\StartMenu_UI_BG.png",
-	                                                              L"texture\\UI\\StartMenu\\StartMenu_UI_BG.png");
+	const Ptr<CTexture> pNoiseTex
+		= CResMgr::GetInst()->FindRes<CTexture>(L"texturetexture\\UI\\FX\\UI_StylizedClouds_FX.png");
+	const Ptr<CTexture> pResultTex
+		= CResMgr::GetInst()->FindRes<CTexture>(L"texture\\UI\\StartMenu\\StartMenu_UI_BG.png");
 
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_0, pPostTex);
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_1, pNoiseTex);
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_2, pResultTex);
 	pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fPaperBurn_Timer);
 	pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::VEC4_0, &vColor);
-
 	pPaperBurnMtrl->UpdateData();
 
 	CONTEXT->IASetInputLayout(nullptr);

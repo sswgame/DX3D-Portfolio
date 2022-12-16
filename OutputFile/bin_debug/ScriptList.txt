@@ -22,4 +22,5 @@ PlayerCamScript
 PlayerScript
 SocketColliderScript
 SwordTrailScript
+TestDeadScript
 TrailScript

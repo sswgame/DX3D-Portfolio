@@ -10,12 +10,14 @@ class CSingletonScript
 	: public CScript
 {
 	friend class CEventMgr;
+
 protected:
 	inline static CGameObject*                       s_pInstance = nullptr;
 	inline static std::vector<std::function<void()>> s_vecFunc{};
+
 public:
-	template <typename T, typename...Args>
-	static void AddScriptEvent(T* pInstance, void (T::*callback)(Args ...), Args ...args)
+	template <typename T, typename... Args>
+	static void AddScriptEvent(T* pInstance, void (T::*callback)(Args...), Args... args)
 	{
 		auto arguments = std::make_tuple(pInstance, std::forward<decltype(args)>(args)...);
 		auto func      = [callback,arguments = std::move(arguments)]()
@@ -60,8 +62,10 @@ public:
 		{
 			pScript = new T{};
 			s_pInstance->AddComponent(pScript);
-			pScript->start();
-
+			if (CSceneMgr::GetInst()->GetCurScene()->GetSceneState() == SCENE_STATE::PLAY)
+			{
+				pScript->start();
+			}
 			return pScript;
 		}
 		return pScript;

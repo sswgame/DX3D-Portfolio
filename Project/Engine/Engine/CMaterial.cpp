@@ -14,12 +14,16 @@ CMaterial::CMaterial()
 	, m_Param{}
 	, m_arrTex{}
 	, m_pShader(nullptr)
-	, m_pMasterMtrl(nullptr) {}
+	, m_pMasterMtrl(nullptr)
+	, m_pDynamicShader{nullptr}
+	, m_bUseDynamicShader{false} {}
 
-CMaterial::~CMaterial() 
+CMaterial::~CMaterial()
 {
 	if (m_pDynamicShader != nullptr)
+	{
 		SAFE_DELETE(m_pDynamicShader);
+	}
 }
 
 
@@ -64,32 +68,6 @@ CMaterial* CMaterial::GetMtrlInst()
 	CMaterial* pCloneMtrl     = Clone();
 	pCloneMtrl->m_pMasterMtrl = this;
 	return pCloneMtrl;
-}
-
-void CMaterial::Serialize(YAML::Emitter& emitter)
-{
-	for (auto& texInfo : m_vecTexParamInfo)
-	{
-		Ptr<CTexture> pTexture = m_arrTex[(UINT)texInfo.eTexParam];
-		if (nullptr != pTexture)
-		{
-			emitter << YAML::Key << static_cast<int>(texInfo.eTexParam) << YAML::Value <<
-				ToString(pTexture->GetRelativePath());
-		}
-	}
-}
-
-void CMaterial::Deserialize(const YAML::Node& node)
-{
-	if (node.IsDefined())
-	{
-		for (const auto& texNode : node)
-		{
-			TEX_PARAM    param       = static_cast<TEX_PARAM>(texNode.first.as<int>());
-			std::wstring texturePath = ToWString(texNode.second.as<std::string>());
-			m_arrTex[(UINT)param]    = CResMgr::GetInst()->Load<CTexture>(texturePath, texturePath);
-		}
-	}
 }
 
 void CMaterial::SetShader(Ptr<CGraphicsShader> _pShader)
@@ -142,7 +120,6 @@ void CMaterial::SetScalarParam(SCALAR_PARAM _eType, void* _pData)
 			_pData);
 		break;
 	}
-
 	Changed();
 }
 
@@ -156,14 +133,15 @@ void CMaterial::SetScalarParam(const wstring& _strParamName, void* _pData)
 			break;
 		}
 	}
-
 	Changed();
 }
 
 CGraphicsShader* CMaterial::GetDynamicShader()
 {
 	if (m_pDynamicShader)
+	{
 		return m_pDynamicShader;
+	}
 
 	m_pDynamicShader = CreateDynamicShader();
 	return m_pDynamicShader;
@@ -173,41 +151,43 @@ CGraphicsShader* CMaterial::GetDynamicShader()
 CGraphicsShader* CMaterial::CreateDynamicShader()
 {
 	if (m_pShader == nullptr)
+	{
 		return nullptr;
+	}
 
-	CGraphicsShader* pDynamicShader = new CGraphicsShader;
+	auto                      pDynamicShader    = new CGraphicsShader;
 	const tShaderCompileInfo* ShaderCompileInfo = m_pShader->GetCompileShaderInfo();
 
 	// [ CREATE SHADER ]
-	if (ShaderCompileInfo[(UINT)SHADER_TYPE::VERTEX_SHADER].bExist)
+	if (ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::VERTEX_SHADER)].bExist)
 	{
-		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::VERTEX_SHADER].strShaderRelativePath;
-		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::VERTEX_SHADER].strShaderFunc;
+		wstring strRelPath = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::VERTEX_SHADER)].strShaderRelativePath;
+		string  strFunc    = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::VERTEX_SHADER)].strShaderFunc;
 		pDynamicShader->CreateVertexShader(strRelPath, strFunc);
 	}
-	if (ShaderCompileInfo[(UINT)SHADER_TYPE::HULL_SHADER].bExist)
+	if (ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::HULL_SHADER)].bExist)
 	{
-		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::HULL_SHADER].strShaderRelativePath;
-		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::HULL_SHADER].strShaderFunc;
+		wstring strRelPath = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::HULL_SHADER)].strShaderRelativePath;
+		string  strFunc    = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::HULL_SHADER)].strShaderFunc;
 		pDynamicShader->CreateHullShader(strRelPath, strFunc);
 	}
 
-	if (ShaderCompileInfo[(UINT)SHADER_TYPE::DOMAIN_SHADER].bExist)
+	if (ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::DOMAIN_SHADER)].bExist)
 	{
-		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::DOMAIN_SHADER].strShaderRelativePath;
-		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::DOMAIN_SHADER].strShaderFunc;
+		wstring strRelPath = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::DOMAIN_SHADER)].strShaderRelativePath;
+		string  strFunc    = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::DOMAIN_SHADER)].strShaderFunc;
 		pDynamicShader->CreateDomainShader(strRelPath, strFunc);
 	}
-	if (ShaderCompileInfo[(UINT)SHADER_TYPE::GEOMETRY_SHADER].bExist)
+	if (ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::GEOMETRY_SHADER)].bExist)
 	{
-		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::GEOMETRY_SHADER].strShaderRelativePath;
-		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::GEOMETRY_SHADER].strShaderFunc;
+		wstring strRelPath = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::GEOMETRY_SHADER)].strShaderRelativePath;
+		string  strFunc    = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::GEOMETRY_SHADER)].strShaderFunc;
 		pDynamicShader->CreateGeometryShader(strRelPath, strFunc);
 	}
-	if (ShaderCompileInfo[(UINT)SHADER_TYPE::PIXEL_SHADER].bExist)
+	if (ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::PIXEL_SHADER)].bExist)
 	{
-		wstring strRelPath = ShaderCompileInfo[(UINT)SHADER_TYPE::PIXEL_SHADER].strShaderRelativePath;
-		string  strFunc = ShaderCompileInfo[(UINT)SHADER_TYPE::PIXEL_SHADER].strShaderFunc;
+		wstring strRelPath = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::PIXEL_SHADER)].strShaderRelativePath;
+		string  strFunc    = ShaderCompileInfo[static_cast<UINT>(SHADER_TYPE::PIXEL_SHADER)].strShaderFunc;
 		pDynamicShader->CreatePixelShader(strRelPath, strFunc);
 	}
 
@@ -220,7 +200,6 @@ CGraphicsShader* CMaterial::CreateDynamicShader()
 
 	m_pDynamicShader = pDynamicShader;
 	return pDynamicShader;
-
 }
 
 const void* CMaterial::GetScalarParam(SCALAR_PARAM _eType)
@@ -316,32 +295,30 @@ void CMaterial::SetTexParam(const wstring& _strParamName, Ptr<CTexture> _pTex)
 			break;
 		}
 	}
-
 	Changed();
 }
 
 int CMaterial::Save(const wstring& _strFilePath)
 {
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	assert(!((m_pMasterMtrl && pCurScene->GetSceneState() != SCENE_STATE::STOP)));
 
 	if (m_pMasterMtrl && pCurScene->GetSceneState() != SCENE_STATE::STOP)
 	{
 		return E_FAIL;
 	}
-
 	// 변경체크 해제
 	CRes::Save(_strFilePath);
 
 	FILE* pFile = nullptr;
-
 	_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
 
 	if (nullptr == pFile)
+	{
 		return E_FAIL;
+	}
 
 	fwrite(&m_Param, sizeof(tScalarParam), 1, pFile);
-
 	for (size_t i = 0; i < std::size(m_arrTex); ++i)
 	{
 		SaveResPtr(m_arrTex[i], pFile);
@@ -356,7 +333,7 @@ int CMaterial::Save(const wstring& _strFilePath)
 
 int CMaterial::Load(const wstring& _strFilePath)
 {
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	assert(!((m_pMasterMtrl && pCurScene->GetSceneState() != SCENE_STATE::STOP)));
 
 	if (m_pMasterMtrl && pCurScene->GetSceneState() != SCENE_STATE::STOP)
@@ -365,15 +342,15 @@ int CMaterial::Load(const wstring& _strFilePath)
 	}
 
 	FILE* pFile = nullptr;
-
 	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
 	//assert(pFile);
 
 	if (nullptr == pFile)
+	{
 		return E_FAIL;
+	}
 
 	fread(&m_Param, sizeof(tScalarParam), 1, pFile);
-
 	for (size_t i = 0; i < std::size(m_arrTex); ++i)
 	{
 		LoadResPtr(m_arrTex[i], pFile);
@@ -386,4 +363,30 @@ int CMaterial::Load(const wstring& _strFilePath)
 	fclose(pFile);
 
 	return S_OK;
+}
+
+void CMaterial::Serialize(YAML::Emitter& emitter)
+{
+	for (auto& texInfo : m_vecTexParamInfo)
+	{
+		Ptr<CTexture> pTexture = m_arrTex[static_cast<UINT>(texInfo.eTexParam)];
+		if (nullptr != pTexture)
+		{
+			emitter << YAML::Key << static_cast<int>(texInfo.eTexParam)
+				<< YAML::Value << ToString(pTexture->GetRelativePath());
+		}
+	}
+}
+
+void CMaterial::Deserialize(const YAML::Node& node)
+{
+	if (node.IsDefined())
+	{
+		for (const auto& texNode : node)
+		{
+			auto         param                 = static_cast<TEX_PARAM>(texNode.first.as<int>());
+			std::wstring texturePath           = ToWString(texNode.second.as<std::string>());
+			m_arrTex[static_cast<UINT>(param)] = CResMgr::GetInst()->Load<CTexture>(texturePath, texturePath);
+		}
+	}
 }

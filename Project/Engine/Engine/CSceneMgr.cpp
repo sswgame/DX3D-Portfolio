@@ -1,20 +1,15 @@
 #include "pch.h"
 #include "CSceneMgr.h"
 
-#include "CCamera.h"
 #include "CEventMgr.h"
 #include "CCollisionMgr.h"
 
-#include "CResMgr.h"
 #include "CGameObject.h"
 #include "CTransform.h"
 
 #include "CScene.h"
 #include "CLayer.h"
-#include "CLight3D.h"
 #include "CRenderMgr.h"
-#include "CSkyBox.h"
-
 
 CSceneMgr::CSceneMgr()
 	: m_pCurScene(nullptr) {}
@@ -23,7 +18,6 @@ CSceneMgr::~CSceneMgr()
 {
 	SAFE_DELETE(m_pCurScene);
 }
-
 
 void CSceneMgr::init() {}
 
@@ -34,15 +28,16 @@ void CSceneMgr::progress()
 		return;
 	}
 
-	SCENE_STATE eState = m_pCurScene->GetSceneState();
-
+	const SCENE_STATE eState = m_pCurScene->GetSceneState();
 	if (SCENE_STATE::PLAY == eState)
 	{
 		m_pCurScene->update();
 		m_pCurScene->lateupdate();
 	}
+
 	ClearLayer();
 	CRenderMgr::GetInst()->ClearCamera();
+
 	m_pCurScene->finalupdate();
 
 	// Collision Check
@@ -55,53 +50,50 @@ void CSceneMgr::progress()
 void CSceneMgr::ChangeScene(CScene* _pNextScene)
 {
 	if (nullptr != m_pCurScene)
+	{
 		delete m_pCurScene;
-
+	}
 	m_pCurScene = _pNextScene;
 }
 
-void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, Vec3 _vWorldPos, wstring _strName, UINT _iLayerIdx)
+void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, Vec3 _vWorldPos, wstring _strName, UINT _iLayerIdx) const
 {
-	tEventInfo info = {};
-	info.eType      = EVENT_TYPE::CREATE_OBJ;
-	info.lParam     = (DWORD_PTR)_pSpawnObject;
-	info.wParam     = (DWORD_PTR)_iLayerIdx;
-
 	_pSpawnObject->Transform()->SetRelativePos(_vWorldPos);
 	_pSpawnObject->SetName(_strName);
 
+	tEventInfo info = {};
+	info.eType      = EVENT_TYPE::CREATE_OBJ;
+	info.lParam     = reinterpret_cast<DWORD_PTR>(_pSpawnObject);
+	info.wParam     = static_cast<DWORD_PTR>(_iLayerIdx);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
-void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, UINT _iLayerIdx)
+void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, UINT _iLayerIdx) const
 {
 	tEventInfo info = {};
 	info.eType      = EVENT_TYPE::CREATE_OBJ;
-	info.lParam     = (DWORD_PTR)_pSpawnObject;
-	info.wParam     = (DWORD_PTR)_iLayerIdx;
-
+	info.lParam     = reinterpret_cast<DWORD_PTR>(_pSpawnObject);
+	info.wParam     = static_cast<DWORD_PTR>(_iLayerIdx);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
-void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, wstring _strLayerName)
+void CSceneMgr::SpawnObject(CGameObject* _pSpawnObject, wstring _strLayerName) const
 {
-	UINT iLayerIdx = m_pCurScene->GetLayerIdxFromName(_strLayerName);
+	const UINT layerIndex = m_pCurScene->GetLayerIdxFromName(_strLayerName);
 
 	tEventInfo info = {};
 	info.eType      = EVENT_TYPE::CREATE_OBJ;
-	info.lParam     = (DWORD_PTR)_pSpawnObject;
-	info.wParam     = (DWORD_PTR)iLayerIdx;
-
+	info.lParam     = reinterpret_cast<DWORD_PTR>(_pSpawnObject);
+	info.wParam     = static_cast<DWORD_PTR>(layerIndex);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
-void CSceneMgr::AddChild(CGameObject* _pParentObject, CGameObject* _pChildObject)
+void CSceneMgr::AddChild(CGameObject* _pParentObject, CGameObject* _pChildObject) const
 {
 	tEventInfo info = {};
 	info.eType      = EVENT_TYPE::ADD_CHILD;
-	info.lParam     = (DWORD_PTR)_pParentObject;
-	info.wParam     = (DWORD_PTR)_pChildObject;
-
+	info.lParam     = reinterpret_cast<DWORD_PTR>(_pParentObject);
+	info.wParam     = reinterpret_cast<DWORD_PTR>(_pChildObject);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
@@ -109,32 +101,29 @@ void CSceneMgr::DisconnectParent(CGameObject* _pObject)
 {
 	tEventInfo info = {};
 	info.eType      = EVENT_TYPE::DISCONNECT_PARENT;
-	info.lParam     = (DWORD_PTR)_pObject;
-
+	info.lParam     = reinterpret_cast<DWORD_PTR>(_pObject);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
-void CSceneMgr::ChangeObjectLayerIndex(CGameObject* _pObject, UINT _iLayerIdx)
+void CSceneMgr::ChangeObjectLayerIndex(CGameObject* _pObject, UINT _iLayerIdx) const
 {
 	tEventInfo info = {};
 	info.eType      = EVENT_TYPE::CHANGE_OBJ_LAYER_INDEX;
-	info.lParam     = (DWORD_PTR)_pObject;
-	info.wParam     = (DWORD_PTR)_iLayerIdx;
-
+	info.lParam     = reinterpret_cast<DWORD_PTR>(_pObject);
+	info.wParam     = static_cast<DWORD_PTR>(_iLayerIdx);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
-void CSceneMgr::SwapLayer(UINT _iLayerIdx_1, UINT _iLayerIdx_2)
+void CSceneMgr::SwapLayer(UINT oldLayer, UINT newLayer) const
 {
 	tEventInfo info = {};
 	info.eType      = EVENT_TYPE::SWAP_LAYER;
-	info.lParam     = (DWORD_PTR)_iLayerIdx_1;
-	info.wParam     = (DWORD_PTR)_iLayerIdx_2;
-
+	info.lParam     = static_cast<DWORD_PTR>(oldLayer);
+	info.wParam     = static_cast<DWORD_PTR>(newLayer);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
-void CSceneMgr::ClearLayer()
+void CSceneMgr::ClearLayer() const
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
@@ -142,46 +131,40 @@ void CSceneMgr::ClearLayer()
 	}
 }
 
-void CSceneMgr::DeleteObject(CGameObject* _pDestroyObject)
+void CSceneMgr::DeleteObject(CGameObject* _pDestroyObject) const
 {
 	tEventInfo info = {};
 	info.eType      = EVENT_TYPE::DELETE_OBJ;
-	info.lParam     = (DWORD_PTR)_pDestroyObject;
-
+	info.lParam     = reinterpret_cast<DWORD_PTR>(_pDestroyObject);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
-CGameObject* CSceneMgr::FindObjectByName(const wstring& _strName)
+CGameObject* CSceneMgr::FindObjectByName(const wstring& _strName) const
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
-		CLayer*                     pLayer = m_pCurScene->GetLayer(i);
-		const vector<CGameObject*>& vecObj = pLayer->GetObjects();
-
-		for (size_t j = 0; j < vecObj.size(); ++j)
+		CLayer* pLayer = m_pCurScene->GetLayer(i);
+		for (const auto& pGameObject : pLayer->GetObjects())
 		{
-			if (_strName == vecObj[j]->GetName())
+			if (_strName == pGameObject->GetName())
 			{
-				return vecObj[j];
+				return pGameObject;
 			}
 		}
 	}
-
 	return nullptr;
 }
 
-void CSceneMgr::FindObjectsByName(wstring& _strName, vector<CGameObject*>& _vecOut)
+void CSceneMgr::FindObjectsByName(const wstring& _strName, vector<CGameObject*>& _vecOut) const
 {
 	for (UINT i = 0; i < MAX_LAYER; ++i)
 	{
-		CLayer*                     pLayer = m_pCurScene->GetLayer(i);
-		const vector<CGameObject*>& vecObj = pLayer->GetObjects();
-
-		for (size_t j = 0; j < vecObj.size(); ++j)
+		CLayer* pLayer = m_pCurScene->GetLayer(i);
+		for (auto& pGameObject : pLayer->GetObjects())
 		{
-			if (_strName == vecObj[j]->GetName())
+			if (_strName == pGameObject->GetName())
 			{
-				_vecOut.push_back(vecObj[j]);
+				_vecOut.push_back(pGameObject);
 			}
 		}
 	}

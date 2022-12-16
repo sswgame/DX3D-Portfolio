@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "CRaycastShader.h"
 
-#include "CConstBuffer.h"
 #include "CStructuredBuffer.h"
 #include "CTexture.h"
 
@@ -10,13 +9,9 @@ CRaycastShader::CRaycastShader()
 	, m_iXFace(0)
 	, m_iZFace(0)
 	, m_ray{}
-	, m_pOutput(nullptr)
-{
-}
+	, m_pOutput(nullptr) {}
 
-CRaycastShader::~CRaycastShader()
-{
-}
+CRaycastShader::~CRaycastShader() = default;
 
 void CRaycastShader::UpdateData()
 {

@@ -4,6 +4,7 @@
 #include "CUIImage.h"
 #include "CKeyMgr.h"
 #include "CSerializer.h"
+
 namespace BUTTON
 {
 	inline constexpr float DEFAULT_TERM = 0.3f;
@@ -39,16 +40,6 @@ void CUIButton::finalupdate()
 	}
 }
 
-void CUIButton::Serialize(YAML::Emitter& emitter)
-{
-	emitter << YAML::Key << NAME_OF(m_clickTerm) << YAML::Value << m_clickTerm;
-}
-
-void CUIButton::Deserialize(const YAML::Node& node)
-{
-	m_clickTerm = node[NAME_OF(m_clickTerm)].as<float>();
-}
-
 bool CUIButton::DoubleClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 {
 	if (m_prevClick[static_cast<int>(mouseType)]
@@ -60,14 +51,12 @@ bool CUIButton::DoubleClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 	return false;
 }
 
-bool CUIButton::OneClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType)
+void CUIButton::OneClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType) const
 {
 	if (m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)])
 	{
 		m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)](GetOwner());
-		return true;
 	}
-	return false;
 }
 
 void CUIButton::HandleClickEvent()
@@ -158,4 +147,14 @@ void CUIButton::HandleReleaseEvent()
 			m_arrCallback[static_cast<int>(MOUSE_TYPE::RIGHT)][static_cast<int>(CLICK_TYPE::RELEASE)](GetOwner());
 		}
 	}
+}
+
+void CUIButton::Serialize(YAML::Emitter& emitter)
+{
+	emitter << YAML::Key << NAME_OF(m_clickTerm) << YAML::Value << m_clickTerm;
+}
+
+void CUIButton::Deserialize(const YAML::Node& node)
+{
+	m_clickTerm = node[NAME_OF(m_clickTerm)].as<float>();
 }

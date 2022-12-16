@@ -23,7 +23,6 @@ public:
 	void Excute();
 	void Excute(UINT _GroupX, UINT _GroupY, UINT _GroupZ);
 
-
 protected:
 	void         UpdateData() override = 0;
 	virtual void Clear() = 0;

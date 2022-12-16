@@ -11,7 +11,6 @@ struct tMtrlSet
 	Ptr<CMaterial> pDynamicMtrl;   // 공유 메테리얼의 복사본    
 };
 
-
 class CRenderComponent : public CComponent
 {
 private:
@@ -22,6 +21,7 @@ private:
 	bool m_bFrustumCulling; // 절두체 컬링 
 
 	std::vector<bool> m_vecUseDynamicMaterial;
+
 public:
 	void SetMesh(Ptr<CMesh> _pMesh);
 	void SetSharedMaterial(Ptr<CMaterial> _pMtrl, UINT _iIdx);
@@ -39,9 +39,9 @@ public:
 
 	UINT GetMtrlCount() const { return static_cast<UINT>(m_vecMtrls.size()); }
 
-
 	void SetUseDynamicMaterial(UINT _iIndex, bool _enable);
 	bool IsUsingDynamicMaterial(UINT _iIndex);
+
 public:
 	virtual void render() = 0;
 	virtual void render_shadowmap();
@@ -51,6 +51,7 @@ public:
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
 	CRenderComponent(COMPONENT_TYPE _type);
 	CRenderComponent(const CRenderComponent& _origin);

@@ -11,99 +11,86 @@
 
 #include "CFBXLoader.h"
 
-
 CMeshData::CMeshData()
 	: CRes(RES_TYPE::MESHDATA) {}
 
-CMeshData::~CMeshData() {}
-
+CMeshData::~CMeshData() = default;
 
 CGameObject* CMeshData::Instantiate()
 {
-	auto pNewObj = new CGameObject;
-	pNewObj->AddComponent(new CTransform);
-	pNewObj->AddComponent(new CMeshRender);
+	const auto pNewGameObject = new CGameObject{};
+	pNewGameObject->AddComponent(new CTransform);
+	pNewGameObject->AddComponent(new CMeshRender);
 
-	pNewObj->MeshRender()->SetMesh(m_pMesh);
-
+	pNewGameObject->MeshRender()->SetMesh(m_pMesh);
 	for (UINT i = 0; i < m_vecMtrl.size(); ++i)
 	{
-		pNewObj->MeshRender()->SetSharedMaterial(m_vecMtrl[i], i);
+		pNewGameObject->MeshRender()->SetSharedMaterial(m_vecMtrl[i], i);
 	}
 
 	// Animation 파트 추가
 	if (false == m_pMesh->IsAnimMesh())
 	{
-		return pNewObj;
+		return pNewGameObject;
 	}
 
-	auto pAnimator = new CAnimator3D;
-	pNewObj->AddComponent(pAnimator);
+	const auto pAnimator3D = new CAnimator3D{};
+	pNewGameObject->AddComponent(pAnimator3D);
+	pAnimator3D->SetBones(m_pMesh->GetBones());
+	pAnimator3D->SetAnimClip(m_pMesh->GetAnimClip());
 
-	pAnimator->SetBones(m_pMesh->GetBones());
-	pAnimator->SetAnimClip(m_pMesh->GetAnimClip());
+	const int MaxFrameIdx = pAnimator3D->GetAnimClip(0).iFrameLength - 1;
+	pAnimator3D->CreateAnimByFrame(L"test", 0, 0, MaxFrameIdx);
 
-	// todo 
-	int MaxFrameIdx = pAnimator->GetAnimClip(0).iFrameLength - 1;
-	pAnimator->CreateAnimByFrame(L"test", 0, 0, MaxFrameIdx);
-
-	return pNewObj;
+	return pNewGameObject;
 }
-
 
 vector<CMeshData*> CMeshData::LoadFromFBX(const wstring& _strPath)
 {
-	wstring strFullPath = CPathMgr::GetInst()->GetContentPath();
-	strFullPath += _strPath;
+	const wstring strFullPath = CPathMgr::GetInst()->GetContentPath() + _strPath;
 
-	CFBXLoader loader;
+	CFBXLoader loader{};
 	loader.init();
 	loader.LoadFbx(strFullPath);
 
-	vector<CMeshData*> vecMeshData;
-
+	vector<CMeshData*> vecMeshData{};
 	// 메쉬 가져오기
-	int ContainerCnt = loader.GetContainerCount();
-	for (int ContainerNum = 0; ContainerNum < ContainerCnt; ++ContainerNum)
+	const int containerCount = loader.GetContainerCount();
+	for (int index = 0; index < containerCount; ++index)
 	{
-		// 메쉬 가져오기
-		CMesh* pMesh = nullptr;
-		pMesh        = CMesh::CreateFromContainer(loader, ContainerNum);
-
+		CMesh* pMesh = CMesh::CreateFromContainer(loader, index);
 
 		// ResMgr 에 메쉬 등록
-		wstring strMeshName = L"mesh\\";
-		strMeshName += std::filesystem::path(strFullPath).stem();
-		string strNum = std::to_string(ContainerNum);
-		strMeshName += wstring(strNum.begin(), strNum.end());
-		strMeshName += L".mesh";
-
+		wstring strMeshName = L"mesh\\"
+		                      + std::filesystem::path(strFullPath).stem().wstring()
+		                      + std::to_wstring(index) + L".mesh";
 
 		// 메쉬 이름 설정
 		pMesh->SetName(strMeshName);
-
 		CResMgr::GetInst()->AddRes<CMesh>(pMesh->GetName(), pMesh);
 
-		vector<Ptr<CMaterial>> vecMtrl;
-
+		vector<Ptr<CMaterial>> vecMtrl{};
 		// 메테리얼 가져오기
-		for (UINT i = 0; i < loader.GetContainer(ContainerNum).vecMtrl.size(); ++i)
+		for (auto& fbxMaterial : loader.GetContainer(index).vecMtrl)
 		{
 			// 예외처리 (material 이름이 입력 안되어있을 수도 있다.)
-			Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<
-				CMaterial>(loader.GetContainer(ContainerNum).vecMtrl[i].strMtrlName);
-			vecMtrl.push_back(pMtrl);
+			Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(fbxMaterial.strMtrlName);
+			if (nullptr != pMtrl)
+			{
+				vecMtrl.push_back(pMtrl);
+			}
 		}
 
-		CMeshData* pMeshData = new CMeshData;
+		CMeshData* pMeshData = new CMeshData{};
 		pMeshData->m_pMesh   = pMesh;
 		pMeshData->m_vecMtrl = vecMtrl;
 
 		vecMeshData.push_back(pMeshData);
 	}
+
 	//폴더 삭제 위치를 여기로 옮긴 것
-	std::filesystem::path fmbFolderPath = std::filesystem::path{strFullPath}.replace_extension(L".fbm");
-	remove_all(fmbFolderPath);
+	const std::filesystem::path fbmFolderPath = std::filesystem::path{strFullPath}.replace_extension(L".fbm");
+	remove_all(fbmFolderPath);
 	return vecMeshData;
 }
 
@@ -111,28 +98,24 @@ int CMeshData::Save(const wstring& _strFilePath)
 {
 	SetRelativePath(CPathMgr::GetInst()->GetRelativePath(_strFilePath));
 
-	FILE*   pFile = nullptr;
-	errno_t err   = _wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
-	assert(pFile);
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
+	LOG_ASSERT(pFile, "FILE OPEN FAILED");
 
 	// Mesh 를 파일로 저장
-	wstring strMeshPath = CPathMgr::GetInst()->GetContentPath();
-	strMeshPath += m_pMesh->GetRelativePath();
-	m_pMesh->Save(strMeshPath);
+	const wstring meshPath = CPathMgr::GetInst()->GetContentPath() + m_pMesh->GetRelativePath();
+	m_pMesh->Save(meshPath);
 
-	// Mesh Key 저장	
-	// Mesh Data 저장
+	// Mesh Key 저장	,Mesh Data 저장
 	SaveResPtr<CMesh>(m_pMesh, pFile);
 
-
 	// material 정보 저장
-	UINT iMtrlCount = static_cast<UINT>(m_vecMtrl.size());
-	fwrite(&iMtrlCount, sizeof(UINT), 1, pFile);
+	const UINT materialCount = static_cast<UINT>(m_vecMtrl.size());
+	fwrite(&materialCount, sizeof(UINT), 1, pFile);
 
-	UINT    i           = 0;
-	wstring strMtrlPath = CPathMgr::GetInst()->GetContentPath();
-
-	for (; i < iMtrlCount; ++i)
+	UINT          i            = 0;
+	const wstring materialPath = CPathMgr::GetInst()->GetContentPath();
+	for (; i < materialCount; ++i)
 	{
 		if (nullptr == m_vecMtrl[i])
 		{
@@ -140,7 +123,7 @@ int CMeshData::Save(const wstring& _strFilePath)
 		}
 
 		// Material 을 파일로 저장		
-		m_vecMtrl[i]->Save(strMtrlPath + m_vecMtrl[i]->GetRelativePath());
+		m_vecMtrl[i]->Save(materialPath + m_vecMtrl[i]->GetRelativePath());
 
 		// Material 인덱스, Key, Path 저장
 		fwrite(&i, sizeof(UINT), 1, pFile);
@@ -159,19 +142,17 @@ int CMeshData::Load(const wstring& _strFilePath)
 {
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
-
-	assert(pFile);
+	LOG_ASSERT(pFile, "FILE OPEN FAILED");
 
 	// Mesh Load
 	LoadResPtr<CMesh>(m_pMesh, pFile);
-	assert(m_pMesh.Get());
+	LOG_ASSERT(m_pMesh.Get(), "MESH NOT FOUND");
 
 	// material 정보 읽기
-	UINT iMtrlCount = 0;
+	UINT iMtrlCount{};
 	fread(&iMtrlCount, sizeof(UINT), 1, pFile);
 
 	m_vecMtrl.resize(iMtrlCount);
-
 	for (UINT i = 0; i < iMtrlCount; ++i)
 	{
 		UINT idx = -1;
@@ -181,14 +162,10 @@ int CMeshData::Load(const wstring& _strFilePath)
 			break;
 		}
 
-		wstring strKey, strPath;
-
 		Ptr<CMaterial> pMtrl;
 		LoadResPtr<CMaterial>(pMtrl, pFile);
-
 		m_vecMtrl[i] = pMtrl;
 	}
-
 	fclose(pFile);
 
 	return S_OK;

@@ -26,7 +26,6 @@ private:
 
 	int m_iCollisionCount;
 
-
 public:
 	void SetCollider2DType(COLLIDER2D_TYPE _type);
 
@@ -36,16 +35,15 @@ public:
 	void SetOffsetScale(Vec2 _vOffsetScale);
 	void SetOffsetScale(float _x, float _y);
 
-	COLLIDER2D_TYPE GetCollider2DType() { return m_eColliderType; }
-	Vec3            GetWorldPos() { return m_matColWorld.Translation(); }
-	Vec3            GetWorldScale() { return Vec3(m_vOffsetScale); }
-
-	Matrix GetWorldMat() { return m_matColWorld; }
+	COLLIDER2D_TYPE GetCollider2DType() const { return m_eColliderType; }
+	Vec3            GetWorldPos() const { return m_matColWorld.Translation(); }
+	Vec3            GetWorldScale() const { return Vec3(m_vOffsetScale); }
+	Matrix          GetWorldMat() const { return m_matColWorld; }
 
 public:
-	virtual void finalupdate() override;
-	virtual void UpdateData() override;
-	void         render();
+	void finalupdate() override;
+	void UpdateData() override;
+	void render();
 
 public:
 	void OnCollisionEnter(CCollider2D* _Other);
@@ -53,14 +51,15 @@ public:
 	void OnCollisionExit(CCollider2D* _Other);
 
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
-	CLONE(CCollider2D)
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
+	CLONE(CCollider2D);
 	CCollider2D();
 	CCollider2D(const CCollider2D& _Origin);
 	virtual ~CCollider2D();

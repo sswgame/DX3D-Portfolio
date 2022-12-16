@@ -7,40 +7,41 @@
 #include "ListUI.h"
 #include "CImGuiMgr.h"
 
-DecalUI::DecalUI()  
-	: ComponentUI{ "Decal", COMPONENT_TYPE::DECAL }
+DecalUI::DecalUI()
+	: ComponentUI{"Decal", COMPONENT_TYPE::DECAL}
 {
-	SetSize(Vec2{ 0, 100 });
+	SetSize(Vec2{0, 100});
 }
 
-DecalUI::~DecalUI()
-{
-}
+DecalUI::~DecalUI() = default;
 
 void DecalUI::render_update()
 {
 	ComponentUI::render_update();
-	if (ComponentUI::IsFold()) { SetSize(Vec2(0.f, 25.f)); return; }
-	else { SetSize(Vec2(0.f, 100.f)); }
+	if (IsFold())
+	{
+		SetSize(Vec2(0.f, 25.f));
+		return;
+	}
+	SetSize(Vec2(0.f, 100.f));
 
 	// Target Decal 설정
 	m_pTargetDecal = GetTargetObject()->Decal();
 
 	// Decal Types
-	int iDecalType = (int)m_pTargetDecal->GetDecalType();
-	string strCurTypeName = ToString(m_pTargetDecal->GetDecalTypeName(iDecalType));
+	const string strCurTypeName = m_pTargetDecal->GetDecalTypeName(m_pTargetDecal->GetDecalType());
 
 	ImGui::Text("Decal Type");
 	ImGui::SameLine(100.f);
 
 	if (ImGui::BeginCombo("##iDecalType", strCurTypeName.c_str()))
 	{
-		for (int i = 0; i < (int)DECAL_TYPE::END; i++)
+		for (int i = 0; i < static_cast<int>(DECAL_TYPE::END); i++)
 		{
-			string strTypeName = ToString(m_pTargetDecal->GetDecalTypeName(i));
+			string strTypeName = m_pTargetDecal->GetDecalTypeName(static_cast<DECAL_TYPE>(i));
 			if (ImGui::Selectable(strTypeName.c_str()))
 			{
-				m_pTargetDecal->SetDecalType((DECAL_TYPE)i);
+				m_pTargetDecal->SetDecalType(static_cast<DECAL_TYPE>(i));
 			}
 		}
 
@@ -58,13 +59,16 @@ void DecalUI::render_update()
 	ImGui::Text("Texture");
 	ImGui::SameLine(100.f);
 
-	ImGui::InputText("##CurDecalTex", (char*)strTexture.c_str(), 256, ImGuiInputTextFlags_::ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputText("##CurDecalTex",
+	                 (char*)strTexture.c_str(),
+	                 256,
+	                 ImGuiInputTextFlags_ReadOnly);
 	ImGui::SameLine();
 	if (ImGui::Button("##SelectDecalTex", Vec2(15, 15)))
 	{
 		// ListUI 활성화한다.
-		const auto& mapRes = CResMgr::GetInst()->GetResList(RES_TYPE::TEXTURE);
-		ListUI* pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
+		const auto& mapRes  = CResMgr::GetInst()->GetResList(RES_TYPE::TEXTURE);
+		auto        pListUI = static_cast<ListUI*>(CImGuiMgr::GetInst()->FindUI("##ListUI"));
 		pListUI->Clear();
 		pListUI->SetTitle("TEXTURE_LIST");
 
@@ -91,7 +95,7 @@ void DecalUI::render_update()
 	float color[4] = {vColor.x, vColor.y, vColor.z, vColor.w};
 	ImGui::Text("Color");
 	ImGui::SameLine(100.f);
-	if (ImGui::ColorPicker4("##DecalColor", color, ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaBar))
+	if (ImGui::ColorPicker4("##DecalColor", color, ImGuiColorEditFlags_AlphaBar))
 	{
 		m_pTargetDecal->SetColor(Vec4(color[0], color[1], color[2], color[3]));
 	}
@@ -99,7 +103,7 @@ void DecalUI::render_update()
 
 void DecalUI::TextureSelect(void* _pTextureName)
 {
-	const std::wstring  key = ToWString(static_cast<char*>(_pTextureName));
+	const std::wstring  key      = ToWString(static_cast<char*>(_pTextureName));
 	const Ptr<CTexture> pTexture = CResMgr::GetInst()->FindRes<CTexture>(key);
 
 	// 변경점이 있을 때만 세팅

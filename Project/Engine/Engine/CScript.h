@@ -13,7 +13,6 @@
 #include "CScene.h"
 #include "CLayer.h"
 
-
 enum class SCRIPTPARAM_TYPE
 {
 	INT,
@@ -46,7 +45,6 @@ struct tScriptParamInfo
 	std::function<void()>    callback;
 };
 
-
 class CScript : public CComponent
 {
 private:
@@ -54,6 +52,7 @@ private:
 	vector<tScriptParamInfo> m_vecParamInfo; // 에디터 노출 변수
 
 	bool m_bChanged = false;
+
 public:
 	int                             GetScriptType() const { return m_iScriptID; }
 	const vector<tScriptParamInfo>& GetScriptParam() { return m_vecParamInfo; }
@@ -62,60 +61,29 @@ protected:
 	void AddScriptParam(string                _strParamName,
 	                    SCRIPTPARAM_TYPE      _eType,
 	                    void*                 _pData,
-	                    std::function<void()> callback = nullptr)
-	{
-		m_vecParamInfo.push_back(tScriptParamInfo{_strParamName, _eType, _pData, SHOW_TYPE::NORMAL, {}, callback});
-	}
+	                    std::function<void()> callback = nullptr);
 
 	void AddScriptParamAsDropDown(const std::string&       _strParameterName,
 	                              SCRIPTPARAM_TYPE         _eType,
 	                              void*                    _pData,
 	                              std::vector<std::string> vecListMenu,
-	                              std::function<void()>    callback = nullptr)
-	{
-		m_vecParamInfo.push_back(tScriptParamInfo{
-			                         _strParameterName,
-			                         _eType,
-			                         _pData,
-			                         SHOW_TYPE::DROP_DOWN,
-			                         vecListMenu,
-			                         callback
-		                         });
-	}
+	                              std::function<void()>    callback = nullptr);
 
 	void AddScriptParamAsCheckBox(const std::string&    _strParameterName,
 	                              int*                  _pData,
-	                              std::function<void()> callback = nullptr)
-	{
-		m_vecParamInfo.push_back(tScriptParamInfo{
-			                         _strParameterName,
-			                         SCRIPTPARAM_TYPE::INT,
-			                         _pData,
-			                         SHOW_TYPE::CHECK_BOX,
-			                         {},
-			                         callback
-		                         });
-	}
+	                              std::function<void()> callback = nullptr);
 
 	void AddScriptParamAsColorPicker(const std::string&    _strParameterName,
 	                                 Vec4*                 _pData,
-	                                 std::function<void()> callback = nullptr)
-	{
-		m_vecParamInfo.push_back(tScriptParamInfo{
-			                         _strParameterName,
-			                         SCRIPTPARAM_TYPE::VEC4,
-			                         _pData,
-			                         SHOW_TYPE::COLOR_PICKER,
-			                         {},
-			                         callback
-		                         });
-	}
+	                                 std::function<void()> callback = nullptr);
 
 	void RemoveScalarParam(const std::string& paramName);
 	void RemoveAllScalarParam() { m_vecParamInfo.clear(); }
 	void RenewScalarParam(const std::string& paramName, void* pValue, std::function<void()> callback = nullptr);
+
 private:
 	auto FindScalarParam(const std::string& paramName);
+
 public:
 	virtual void start() {}
 	virtual void update() {}
@@ -126,9 +94,8 @@ public:
 	virtual void OnCollision(CGameObject* _OtherObject) {};
 	virtual void OnCollisionExit(CGameObject* _OtherObject) {};
 
-	CScript* Clone() override = 0;
-
 public:
+	CScript* Clone() override = 0;
 	CScript(int _iScriptType);
 	virtual ~CScript();
 };

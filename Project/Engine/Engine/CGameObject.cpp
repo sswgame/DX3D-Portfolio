@@ -23,23 +23,23 @@ namespace GAMEOBJECT
 CGameObject::CGameObject()
 	: m_arrCom{}
 	, m_pRenderComponent(nullptr)
+	, m_pUIBase{nullptr}
 	, m_pParent(nullptr)
 	, m_iLayerIdx(GAMEOBJECT::INVALID_INDEX)
 	, m_bDead(false)
 	, m_bActive(true)
 	, m_bDynamicShadow(false)
-	, m_bFrustumCulling(false)
-	, m_pUIBase{nullptr} {}
+	, m_bFrustumCulling(false) {}
 
 CGameObject::CGameObject(const CGameObject& _origin)
 	: CEntity(_origin)
 	, m_arrCom{}
 	, m_pRenderComponent(nullptr)
+	, m_pUIBase{nullptr}
 	, m_pParent(nullptr)
 	, m_iLayerIdx(GAMEOBJECT::INVALID_INDEX)
 	, m_bDead(false)
 	, m_bActive(true)
-	, m_pUIBase{nullptr}
 {
 	for (auto& pComponent : _origin.m_arrCom)
 	{
@@ -66,17 +66,6 @@ CGameObject::~CGameObject()
 	Safe_Del_Vec(m_vecChild);
 }
 
-void CGameObject::CheckLayerRecursive(const CGameObject* _pInnerChild)
-{
-	for (const auto& pInner : _pInnerChild->m_vecChild)
-	{
-		if (pInner->m_iLayerIdx == GAMEOBJECT::INVALID_INDEX)
-		{
-			pInner->m_iLayerIdx = _pInnerChild->m_iLayerIdx;
-		}
-		CheckLayerRecursive(pInner);
-	}
-}
 
 void CGameObject::start()
 {
@@ -175,8 +164,8 @@ void CGameObject::finalupdate()
 	}
 
 	// Layer 에 등록
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	CLayer* pLayer    = pCurScene->GetLayer(m_iLayerIdx);
+	const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	CLayer*       pLayer    = pCurScene->GetLayer(m_iLayerIdx);
 	pLayer->RegisterObject(this);
 
 	// 자식 object final update
@@ -205,10 +194,14 @@ void CGameObject::finalupdate_module()
 void CGameObject::render()
 {
 	if (m_pRenderComponent->IsActive())
+	{
 		m_pRenderComponent->render();
+	}
 
 	if (nullptr != Collider2D())
+	{
 		Collider2D()->render();
+	}
 
 	if (nullptr != Collider3D())
 	{
@@ -220,7 +213,7 @@ CScript* CGameObject::GetScript(UINT _iScriptIndex)
 {
 	const auto iter = std::find_if(m_vecScript.begin(),
 	                               m_vecScript.end(),
-	                               [_iScriptIndex](CScript* pScript)
+	                               [_iScriptIndex](const CScript* pScript)
 	                               {
 		                               return pScript->GetScriptType() == _iScriptIndex;
 	                               });
@@ -255,6 +248,17 @@ void CGameObject::RenewLayerIndex(int _newLayerIndex)
 	}
 }
 
+void CGameObject::CheckLayerRecursive(const CGameObject* _pInnerChild)
+{
+	for (const auto& pInner : _pInnerChild->m_vecChild)
+	{
+		if (pInner->m_iLayerIdx == GAMEOBJECT::INVALID_INDEX)
+		{
+			pInner->m_iLayerIdx = _pInnerChild->m_iLayerIdx;
+		}
+		CheckLayerRecursive(pInner);
+	}
+}
 
 void CGameObject::active() const
 {
@@ -327,8 +331,8 @@ void CGameObject::Deregister()
 		return;
 	}
 
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	CLayer* pCurLayer = pCurScene->GetLayer(m_iLayerIdx);
+	const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	CLayer*       pCurLayer = pCurScene->GetLayer(m_iLayerIdx);
 	pCurLayer->DeregisterObject(this);
 }
 
@@ -348,7 +352,7 @@ void CGameObject::Activate()
 {
 	tEventInfo info{};
 	info.eType  = EVENT_TYPE::ACTIVATE_OBJECT;
-	info.lParam = (DWORD_PTR)this;
+	info.lParam = reinterpret_cast<DWORD_PTR>(this);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
@@ -356,7 +360,7 @@ void CGameObject::Deactivate()
 {
 	tEventInfo info{};
 	info.eType  = EVENT_TYPE::DEACTIVATE_OBJECT;
-	info.lParam = (DWORD_PTR)this;
+	info.lParam = reinterpret_cast<DWORD_PTR>(this);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
@@ -470,13 +474,13 @@ void CGameObject::DeleteScript(UINT _ScriptID)
 {
 	const auto iter = std::find_if(m_vecScript.begin(),
 	                               m_vecScript.end(),
-	                               [_ScriptID](CScript* pScript)
+	                               [_ScriptID](const CScript* pScript)
 	                               {
 		                               return pScript->GetScriptType() == _ScriptID;
 	                               });
 	if (iter != m_vecScript.end())
 	{
-		CScript* pScript = *iter;
+		const CScript* pScript = *iter;
 		SAFE_DELETE(pScript);
 		m_vecScript.erase(iter);
 	}
@@ -491,7 +495,7 @@ void CGameObject::Destroy()
 
 	tEventInfo info = {};
 	info.eType      = EVENT_TYPE::DELETE_OBJ;
-	info.lParam     = (DWORD_PTR)this;
+	info.lParam     = reinterpret_cast<DWORD_PTR>(this);
 	CEventMgr::GetInst()->AddEvent(info);
 }
 
@@ -540,7 +544,7 @@ void CGameObject::LoadFromScene(FILE* _pFile)
 	}
 }
 
-CGameObject* CGameObject::FindChild(wstring _name)
+CGameObject* CGameObject::FindChild(wstring _name) const
 {
 	CGameObject* pChild = nullptr;
 
@@ -551,9 +555,12 @@ CGameObject* CGameObject::FindChild(wstring _name)
 			pChild = m_vecChild[i];
 			break;
 		}
+
 		pChild = m_vecChild[i]->FindChild(_name);
 		if (pChild != nullptr)
+		{
 			break;
+		}
 	}
 
 	return pChild;

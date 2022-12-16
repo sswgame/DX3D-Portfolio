@@ -19,15 +19,13 @@ private:
 	float        m_fAccTime;
 	bool         m_bFinish;
 
-
 public:
 	tAnim2DFrame& GetFrame(int _iFrmIdx) { return m_vecFrm[_iFrmIdx]; }
-	UINT          GetMaxFrame() { return (UINT)m_vecFrm.size(); }
+	UINT          GetMaxFrame() const { return static_cast<UINT>(m_vecFrm.size()); }
 
 public:
 	void finalupdate();
-
-	virtual void UpdateData() override;
+	void UpdateData() override;
 
 public:
 	void Create(Ptr<CTexture> _Atlas,
@@ -37,7 +35,8 @@ public:
 	            Vec2          _vStep,
 	            float         _fDuration,
 	            int           _iFrameCount);
-	bool IsFinish() { return m_bFinish; }
+
+	bool IsFinish() const { return m_bFinish; }
 
 	void Reset()
 	{
@@ -46,17 +45,16 @@ public:
 		m_iCurFrmIdx = 0;
 	}
 
-
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
-	CLONE(CAnimation2D)
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
 
 public:
+	CLONE(CAnimation2D);
 	CAnimation2D();
 	virtual ~CAnimation2D();
 

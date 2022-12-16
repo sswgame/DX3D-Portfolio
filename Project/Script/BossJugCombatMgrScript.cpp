@@ -42,9 +42,7 @@ BossJugCombatMgrScript::BossJugCombatMgrScript()
 	AddScriptParam("PHASE INFO", SCRIPTPARAM_TYPE::TEXT, &m_strCurState);
 }
 
-BossJugCombatMgrScript::~BossJugCombatMgrScript()
-{
-}
+BossJugCombatMgrScript::~BossJugCombatMgrScript() {}
 
 void BossJugCombatMgrScript::SpawnStage()
 {
@@ -70,6 +68,8 @@ void BossJugCombatMgrScript::SpawnStage()
 		pNMesh->Transform()->SetRelativePos(0.f, -345.f, 0.f);
 
 		m_pStage->AddChild(pNMesh);
+		CObjectManager::GetInst()->SetSceneObject(m_pStage, MAP_TYPE::_02);
+		m_pStage->Deactivate();
 	}
 
 	/* 보스 생성 */
@@ -106,6 +106,9 @@ void BossJugCombatMgrScript::SpawnStage()
 
 		// 보스 초기화
 		m_pJug->GetScript<BossJugScript>()->Init();
+
+		CObjectManager::GetInst()->SetSceneObject(m_pJug, MAP_TYPE::_02);
+		m_pJug->Deactivate();
 	}
 
 	/* 보스 손 생성 */
@@ -118,6 +121,8 @@ void BossJugCombatMgrScript::SpawnStage()
 
 		CSceneMgr::GetInst()->SpawnObject(m_pJugHandMgr, GAME::LAYER::OBJECT_MGR);
 		m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
+
+		CObjectManager::GetInst()->SetSceneObject(m_pJugHandMgr, MAP_TYPE::_02);
 	}
 }
 
@@ -184,6 +189,9 @@ void BossJugCombatMgrScript::start()
 
 	// Object Mgr에 등록
 	CObjectManager::GetInst()->SetBossCombatMgr(GetOwner());
+
+	//최초 시작 이후 맵 전환 전까지 동작하지 않아야하므로
+	GetOwner()->Deactivate();
 }
 
 void BossJugCombatMgrScript::update()
@@ -210,9 +218,7 @@ void BossJugCombatMgrScript::update()
 	CheckPhase();
 }
 
-void BossJugCombatMgrScript::lateupdate()
-{
-}
+void BossJugCombatMgrScript::lateupdate() {}
 
 void BossJugCombatMgrScript::Serialize(YAML::Emitter& emitter)
 {

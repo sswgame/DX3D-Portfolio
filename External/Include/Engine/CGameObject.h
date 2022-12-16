@@ -40,6 +40,7 @@ private:
 
 	CComponent*       m_arrCom[static_cast<UINT>(COMPONENT_TYPE::END)];
 	CRenderComponent* m_pRenderComponent;
+	CUIBase*          m_pUIBase;
 
 	CGameObject* m_pParent;
 	int          m_iLayerIdx; // 게임 오브젝트 소속 레이어 인덱스   
@@ -48,16 +49,6 @@ private:
 	bool m_bActive;
 	bool m_bDynamicShadow;  // 동적 그림자 생성
 	bool m_bFrustumCulling; // 절두체 컬링 사용 유무
-
-
-	CUIBase* m_pUIBase;
-
-private:
-	/**
-	 * \brief 계층관계가 깊게 형성된 게임오브젝트의 레이어를 모두 반영하기 위한 함수
-	 * \param _pInnerChild 자식의 자식
-	 */
-	void CheckLayerRecursive(const CGameObject* _pInnerChild);
 
 public:
 	void start();
@@ -71,14 +62,16 @@ private:
 	void active() const;
 	void deactive() const;
 
+	/**
+	 * \brief 계층관계가 깊게 형성된 게임오브젝트의 레이어를 모두 반영하기 위한 함수
+	 * \param _pInnerChild 자식의 자식
+	 */
+	void CheckLayerRecursive(const CGameObject* _pInnerChild);
+
 public:
-	CGameObject*                GetParent() const { return m_pParent; }
-	const vector<CGameObject*>& GetChild() const { return m_vecChild; }
-	CGameObject*                GetChild(const std::wstring& childName) const;
-	CGameObject*				FindChild(wstring _name);
-	void                        SortChild(std::function<bool(CGameObject*, CGameObject*)> func);
-	
-	
+	int  GetLayerIndex() const { return m_iLayerIdx; }
+	void RenewLayerIndex(int _NewLayerIdx);
+
 	// Deregister ==> 등록 취소(등록->미등록)
 	// Unregister ==> 등록 안됨(등록 x == 등록->미등록, 애초에 등록된적 없음)
 	void Deregister();
@@ -88,21 +81,17 @@ public:
 
 	bool IsDead() const { return m_bDead; }
 	bool IsActive() const { return m_bActive; }
-	bool IsAncestor(const CGameObject* _pObj) const;
 
 public:
-	void AddChild(CGameObject* _pChild);
-	void AddComponent(CComponent* _component);
+	void                        AddChild(CGameObject* _pChild);
+	CGameObject*                GetParent() const { return m_pParent; }
+	const vector<CGameObject*>& GetChild() const { return m_vecChild; }
+	CGameObject*                GetChild(const std::wstring& childName) const;
+	CGameObject*                FindChild(wstring _name) const;
+	void                        SortChild(std::function<bool(CGameObject*, CGameObject*)> func);
+	bool                        IsAncestor(const CGameObject* _pObj) const;
 
-	CComponent*       GetComponent(COMPONENT_TYPE _eType) const { return m_arrCom[static_cast<UINT>(_eType)]; }
-	CRenderComponent* GetRenderComponent() const { return m_pRenderComponent; }
-	CUIBase*          GetUIBaseComponenent() const { return m_pUIBase; }
-
-	void DeleteComponent(COMPONENT_TYPE _eType);
-	void DeleteScript(UINT _ScriptID);
-
-	void Destroy();
-
+public:
 	GET_COMPONENT(Transform, TRANSFORM)
 	GET_COMPONENT(MeshRender, MESHRENDER)
 	GET_COMPONENT(Camera, CAMERA)
@@ -128,26 +117,33 @@ public:
 	GET_COMPONENT(UIProgressBar, UIPROGRESSBAR);
 	GET_COMPONENT(UIText, UITEXT);
 
+	void              AddComponent(CComponent* _component);
+	CComponent*       GetComponent(COMPONENT_TYPE _eType) const { return m_arrCom[static_cast<UINT>(_eType)]; }
+	CRenderComponent* GetRenderComponent() const { return m_pRenderComponent; }
+	CUIBase*          GetUIBaseComponenent() const { return m_pUIBase; }
+
+	void DeleteComponent(COMPONENT_TYPE _eType);
+	void DeleteScript(UINT _ScriptID);
+
+	void Destroy();
+
+	template <typename T>
+	T* GetScript();
 
 	const vector<CScript*>& GetScripts() { return m_vecScript; }
 	CScript*                GetScript(UINT _iIdx);
 	CScript*                GetScriptByName(const wstring& _strName) const;
 
-	int  GetLayerIndex() const { return m_iLayerIdx; }
-	void RenewLayerIndex(int _NewLayerIdx);
-
-	template <typename T>
-	T* GetScript();
-
 public:
 	void SaveToScene(FILE* _pFile) override;
 	void LoadFromScene(FILE* _pFile) override;
-	CLONE(CGameObject)
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
+	CLONE(CGameObject);
 	CGameObject();
 	CGameObject(const CGameObject& _origin);
 	virtual ~CGameObject();

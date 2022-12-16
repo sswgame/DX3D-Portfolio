@@ -1,19 +1,19 @@
 #pragma once
 #include "ComponentUI.h"
+
 class DecalUI final
-    : public ComponentUI
+	: public ComponentUI
 {
 private:
 	CDecal* m_pTargetDecal;
-
-public:
-	void render_update() override;
 
 private:
 	void TextureSelect(void* _pTextureName);
 
 public:
+	void render_update() override;
+
+public:
 	DecalUI();
 	virtual ~DecalUI();
 };
-

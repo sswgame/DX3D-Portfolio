@@ -7,9 +7,9 @@ private:
 	tLightInfo m_LightInfo;
 	int        m_iLightIdx;
 
-
 public:
-	const tLightInfo& GetLightInfo() { return m_LightInfo; }
+	const tLightInfo& GetLightInfo() const { return m_LightInfo; }
+	LIGHT_TYPE        GetLightType() const { return static_cast<LIGHT_TYPE>(m_LightInfo.iLightType); }
 
 	void SetDiffuse(Vec3 _vDiffuse) { m_LightInfo.color.vDiff = _vDiffuse; }
 	void SetSpecular(Vec3 _vSpec) { m_LightInfo.color.vSpec = _vSpec; }
@@ -17,22 +17,21 @@ public:
 	void SetLightDir(Vec3 _vDir) { m_LightInfo.vLightDir = _vDir; }
 	void SetRange(float _fRange) { m_LightInfo.fRange = _fRange; }
 	void SetAngle(float _fAngle) { m_LightInfo.fAngle = _fAngle; }
-	void SetLightType(LIGHT_TYPE _eType) { m_LightInfo.iLightType = (int)_eType; }
+	void SetLightType(LIGHT_TYPE _eType) { m_LightInfo.iLightType = static_cast<int>(_eType); }
 
 public:
-	virtual void update() override;
-	virtual void finalupdate() override;
-
+	void finalupdate() override;
 
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
-	CLONE(CLight2D);
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
+	CLONE(CLight2D);
 	CLight2D();
 	virtual ~CLight2D();
 };

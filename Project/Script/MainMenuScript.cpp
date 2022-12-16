@@ -7,6 +7,7 @@
 #include <Engine/CUIText.h>
 #include <Engine/CUIImage.h>
 
+#include "CObjectManager.h"
 #include "Engine/CDevice.h"
 
 
@@ -46,6 +47,7 @@ void MainMenuScript::update()
 		{
 			GetOwner()->Destroy();
 			m_pPlayerUI->Activate();
+			CObjectManager::GetInst()->GetPlayer()->Activate();
 			CKeyMgr::GetInst()->EnableAll(true);
 		}
 		else if (m_bitSelected[E_SETTING])

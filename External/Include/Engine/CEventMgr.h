@@ -6,6 +6,7 @@ class CEventMgr
 	: public CSingleton<CEventMgr>
 {
 	SINGLE(CEventMgr)
+
 private:
 	vector<tEventInfo>   m_vecEvent;
 	vector<CGameObject*> m_vecDead;

@@ -7,13 +7,12 @@ private:
 	CNaviMap*   m_pTargetNaviMap;
 	CRigidBody* m_pRigidBody;
 
-	Vec3        m_vOffsetSize;
-	Vec3        m_vOffsetPos;
-	Vec3        m_vPrevPos;
-	Vec4        m_vDebugAgentColor;
-	int         m_iCurCellIndex;
-	bool        m_bGravity;
-
+	Vec3 m_vOffsetSize;
+	Vec3 m_vOffsetPos;
+	Vec3 m_vPrevPos;
+	Vec4 m_vDebugAgentColor;
+	int  m_iCurCellIndex;
+	bool m_bGravity;
 
 private:
 	void FindCurIndex();
@@ -31,7 +30,6 @@ public:
 	UINT      GetCurCellIndex() { return m_iCurCellIndex; }
 	bool      GetGravity() { return m_bGravity; }
 
-
 	void update() override;
 	void lateupdate() override;
 	void finalupdate() override;
@@ -39,11 +37,9 @@ public:
 	void render_debug() override;
 
 	void UpdateData() override;
-	void Serialize(YAML::Emitter& emitter) override;
-	void Deserialize(const YAML::Node& node) override;
 
-	CLONE(CNaviAgent);
 public:
+	CLONE(CNaviAgent);
 	CNaviAgent();
 	CNaviAgent(const CNaviAgent& _origin);
 	virtual ~CNaviAgent();

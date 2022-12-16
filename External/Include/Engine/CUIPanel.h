@@ -11,8 +11,10 @@ private:
 	int                   m_useInfo;
 	bool                  m_preserveRatio;
 	float                 m_ratio;
+
 private:
 	void SortGameObject();
+
 public:
 	bool CollisionMouse() override;
 	void SetSorted(bool enable);
@@ -25,11 +27,13 @@ public:
 
 	void SetPreserveRatio(bool enable) { m_preserveRatio = enable; }
 	bool IsPreserveRatio() const { return m_preserveRatio; }
+
 public:
 	void finalupdate() override;
 
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
 	CLONE(CUIPanel);
 	CUIPanel();

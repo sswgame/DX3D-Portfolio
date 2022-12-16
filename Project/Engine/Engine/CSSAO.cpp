@@ -8,9 +8,11 @@
 #include "CDevice.h"
 
 
-CSSAO::CSSAO() {}
+CSSAO::CSSAO()
+	: m_tSSAO_ChangesRarely{}
+	, m_tViewPort{} {}
 
-CSSAO::~CSSAO() {}
+CSSAO::~CSSAO() = default;
 
 void CSSAO::Init()
 {
@@ -40,10 +42,9 @@ void CSSAO::Init_SSAO_Texture() {}
 
 void CSSAO::Init_SSAO_NormalDepthMtrl()
 {
-	CGraphicsShader* pShader = new CGraphicsShader;
+	const auto pShader = new CGraphicsShader;
 	pShader->CreateVertexShader(L"shader\\SSAO.fx", "SSAO_GeometryVS");
 	pShader->CreatePixelShader(L"shader\\SSAO.fx", "SSAO_GeometryPS");
-
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
@@ -51,19 +52,16 @@ void CSSAO::Init_SSAO_NormalDepthMtrl()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"SSAOGeometryShader", pShader, true);
 
 	// MATERIAL
-	CMaterial* pMtrl = new CMaterial;
+	const auto pMtrl = new CMaterial;
 	pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"SSAOGeometryShader"));
-
-
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\SSAO_Geometrymtrl.mtrl", pMtrl);
 }
 
 void CSSAO::Init_SSAO_Mtrl()
 {
-	CGraphicsShader* pShader = new CGraphicsShader;
+	const auto pShader = new CGraphicsShader;
 	pShader->CreateVertexShader(L"shader\\SSAO.fx", "SSAO_VS");
 	pShader->CreatePixelShader(L"shader\\SSAO.fx", "SSAO_PS");
-
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
@@ -71,20 +69,17 @@ void CSSAO::Init_SSAO_Mtrl()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"SSAOShader", pShader, true);
 
 	// MATERIAL
-	CMaterial* pMtrl = new CMaterial;
+	const auto pMtrl = new CMaterial;
 	pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"SSAOShader"));
-
-
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\SSAOmtrl.mtrl", pMtrl);
 }
 
 
 void CSSAO::Init_SSAO_BlurHorzMtrl()
 {
-	CGraphicsShader* pShader = new CGraphicsShader;
+	const auto pShader = new CGraphicsShader;
 	pShader->CreateVertexShader(L"shader\\FullScreenTriangle.fx", "VS_FullScreenTriangleTexcoord");
 	pShader->CreatePixelShader(L"shader\\SSAO.fx", "BilateralPS");
-
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
@@ -92,26 +87,21 @@ void CSSAO::Init_SSAO_BlurHorzMtrl()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"SSAO_BlurHorzShader", pShader, true);
 
 	// MATERIAL
-	CMaterial* pMtrl = new CMaterial;
+	const Ptr<CTexture> pNormalDepthTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
+	const Ptr<CTexture> pAOTex          = CResMgr::GetInst()->FindRes<CTexture>(L"AmbientOcclusionTex");
 
-	Ptr<CTexture> pNormalDepthTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
-	Ptr<CTexture> pAOTex          = CResMgr::GetInst()->FindRes<CTexture>(L"AmbientOcclusionTex");
-
+	const auto pMtrl = new CMaterial;
 	pMtrl->SetTexParam(TEX_PARAM::TEX_1, pNormalDepthTex);
 	pMtrl->SetTexParam(TEX_PARAM::TEX_3, pAOTex);
-
 	pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"SSAO_BlurHorzShader"));
-
-
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\SSAOBlurHorzmtrl.mtrl", pMtrl);
 }
 
 void CSSAO::Init_SSAO_BlurVertMtrl()
 {
-	CGraphicsShader* pShader = new CGraphicsShader;
+	const auto pShader = new CGraphicsShader;
 	pShader->CreateVertexShader(L"shader\\FullScreenTriangle.fx", "VS_FullScreenTriangleTexcoord");
 	pShader->CreatePixelShader(L"shader\\SSAO.fx", "BilateralPS");
-
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
@@ -119,26 +109,21 @@ void CSSAO::Init_SSAO_BlurVertMtrl()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"SSAO_BlurVertShader", pShader, true);
 
 	// MATERIAL
-	CMaterial* pMtrl = new CMaterial;
+	const Ptr<CTexture> pNormalDepthTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
+	const Ptr<CTexture> pAOTex          = CResMgr::GetInst()->FindRes<CTexture>(L"AmbientOcclusionTex");
 
-	Ptr<CTexture> pNormalDepthTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
-	Ptr<CTexture> pAOTex          = CResMgr::GetInst()->FindRes<CTexture>(L"AmbientOcclusionTex");
-
+	const auto pMtrl = new CMaterial;
 	pMtrl->SetTexParam(TEX_PARAM::TEX_1, pNormalDepthTex);
 	pMtrl->SetTexParam(TEX_PARAM::TEX_3, pAOTex);
-
 	pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"SSAO_BlurVertShader"));
-
-
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\SSAOBlurVertmtrl.mtrl", pMtrl);
 }
 
 void CSSAO::Init_SSAO_DebugMtrl()
 {
-	CGraphicsShader* pShader = new CGraphicsShader;
+	const auto pShader = new CGraphicsShader;
 	pShader->CreateVertexShader(L"shader\\FullScreenTriangle.fx", "VS_FullScreenTriangleTexcoord");
 	pShader->CreatePixelShader(L"shader\\SSAO.fx", "DebugAO_PS");
-
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
@@ -146,20 +131,18 @@ void CSSAO::Init_SSAO_DebugMtrl()
 	CResMgr::GetInst()->AddRes<CGraphicsShader>(L"SSAODebugShader", pShader, true);
 
 	// MATERIAL
-	CMaterial* pMtrl = new CMaterial;
+	const auto pMtrl = new CMaterial;
 	pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"SSAODebugShader"));
-
-
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\SSAO_DebugAOmtrl.mtrl", pMtrl);
 }
 
 void CSSAO::UpdateData_SSAO_ChangesOnResize()
 {
-	CCamera* pCam = CRenderMgr::GetInst()->GetMainCam();
+	const CCamera* pCamera = CRenderMgr::GetInst()->GetMainCam();
 
-	float zFar       = pCam->GetFar();
-	float halfHeight = zFar * tanf(0.5f * pCam->GetFOV());
-	float halfWidth  = pCam->GetAspectRatio() * halfHeight;
+	const float zFar       = pCamera->GetFar();
+	const float halfHeight = zFar * tanf(0.5f * pCamera->GetFOV());
+	const float halfWidth  = pCamera->GetAspectRatio() * halfHeight;
 
 	// 단일 삼각형 렌더링, 제공된 먼 평면 포인트는 다음을 충족합니다.
 	// (-1, 1)--(3, 1)
@@ -167,47 +150,33 @@ void CSSAO::UpdateData_SSAO_ChangesOnResize()
 	//   |    /
 	//   |   /       
 	// (-1, -3)
-	XMFLOAT4 farPlanePoints[3] = {
-		XMFLOAT4(-halfWidth, halfHeight, zFar, 0.0f),
-		XMFLOAT4(3.0f * halfWidth, halfHeight, zFar, 0.0f),
-		XMFLOAT4(-halfWidth, -3.0f * halfHeight, zFar, 0.0f),
+	const Vec4 farPlanePoints[3] =
+	{
+		Vec4(-halfWidth, halfHeight, zFar, 0.0f),
+		Vec4(3.0f * halfWidth, halfHeight, zFar, 0.0f),
+		Vec4(-halfWidth, -3.0f * halfHeight, zFar, 0.0f),
 	};
 
-	memcpy_s(&m_tSSAO_ChangesOnResize.g_FarPlanePoints[0],
-	         sizeof(XMFLOAT4) * 3,
-	         &farPlanePoints[0],
-	         sizeof(XMFLOAT4) * 3);
+	memcpy_s(&m_tSSAO_ChangesOnResize.g_FarPlanePoints[0], sizeof(Vec4) * 3, &farPlanePoints[0], sizeof(Vec4) * 3);
 
 	// NDC 공간 [-1, 1]^2에서 텍스처 공간 [0, 1]^2으로 변환
-	static const XMMATRIX T = XMMATRIX(
-	                                   0.5f,
-	                                   0.0f,
-	                                   0.0f,
-	                                   0.0f,
-	                                   0.0f,
-	                                   -0.5f,
-	                                   0.0f,
-	                                   0.0f,
-	                                   0.0f,
-	                                   0.0f,
-	                                   1.0f,
-	                                   0.0f,
-	                                   0.5f,
-	                                   0.5f,
-	                                   0.0f,
-	                                   1.0f);
-	XMMATRIX P = CRenderMgr::GetInst()->GetMainCam()->GetProjMat();
-
+	static const auto T = Matrix
+	{
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f
+	};
+	const Matrix matProjection = CRenderMgr::GetInst()->GetMainCam()->GetProjMat();
 	// 뷰 공간에서 텍스처 공간으로 변환
-	XMMATRIX PT                              = P * T;
+	Matrix PT                                = matProjection * T;
 	PT                                       = XMMatrixTranspose(PT);
 	m_tSSAO_ChangesOnResize.g_ViewToTexSpace = PT;
 
 
 	Ptr<CTexture> pAOTempTex            = CResMgr::GetInst()->FindRes<CTexture>(L"AmbientOcclusionTempTex");
-	Vec2          AOViewportSize        = Vec2(1.f / pAOTempTex->Width(), 1.f / pAOTempTex->Height());
+	const auto    AOViewportSize        = Vec2(1.f / pAOTempTex->Width(), 1.f / pAOTempTex->Height());
 	m_tSSAO_ChangesOnResize.g_TexelSize = AOViewportSize;
-
 
 	// CPU -> GPU [ register(b4) ] 
 	CConstBuffer* pBuffer = CDevice::GetInst()->GetCB(CB_TYPE::SSAO_CHANGES_ON_RESIZE);
@@ -221,16 +190,10 @@ void CSSAO::UpdateData_SSAO_ChangesRarely()
 	m_tSSAO_ChangesRarely.g_OcclusionFadeStart = m_OcclusionFadeStart;
 	m_tSSAO_ChangesRarely.g_OcclusionFadeEnd   = m_OcclusionFadeEnd;
 
-	memcpy_s(&m_tSSAO_ChangesRarely.g_OffsetVectors[0],
-	         sizeof(DirectX::XMFLOAT4) * 14,
-	         &m_Offsets[0],
-	         sizeof(DirectX::XMFLOAT4) * 14);
+	memcpy_s(&m_tSSAO_ChangesRarely.g_OffsetVectors[0], sizeof(Vec4) * 14, &m_Offsets[0], sizeof(Vec4) * 14);
 
 	m_tSSAO_ChangesRarely.g_BlurRadius = m_BlurRadius;
-	memcpy_s(&m_tSSAO_ChangesRarely.g_BlurWeights[0],
-	         sizeof(float) * 11,
-	         &m_BlurWeights[0],
-	         sizeof(float) * 11);
+	memcpy_s(&m_tSSAO_ChangesRarely.g_BlurWeights[0], sizeof(float) * 11, &m_BlurWeights[0], sizeof(float) * 11);
 	m_tSSAO_ChangesRarely.g_SurfaceEpsilon = m_SurfaceEpsilon;
 
 	// CPU -> GPU [ register(b5) ] 
@@ -247,8 +210,7 @@ void CSSAO::UpdateData_SSAO()
 	Ptr<CTexture> pNormalDepthTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
 	Ptr<CTexture> pAOTex          = CResMgr::GetInst()->FindRes<CTexture>(L"AmbientOcclusionTex");
 
-	m_tViewPort = {0.0f, 0.0f, (float)pAOTex->Width(), (float)pAOTex->Height()};
-
+	m_tViewPort          = {0.0f, 0.0f, (pAOTex->Width()), (pAOTex->Height())};
 	m_tViewPort.MinDepth = 0.f;
 	m_tViewPort.MaxDepth = 1.f;
 
@@ -267,9 +229,8 @@ void CSSAO::RenderToSSAOTexture()
 	CONTEXT->IASetInputLayout(nullptr);
 	CONTEXT->IASetVertexBuffers(0, 0, nullptr, nullptr, nullptr);
 	CONTEXT->IASetIndexBuffer(nullptr, DXGI_FORMAT_R16_UINT, 0);
-
-
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	CONTEXT->RSSetViewports(1, &m_tViewPort);
 	CONTEXT->Draw(3, 0);
 }
@@ -305,7 +266,6 @@ void CSSAO::BilateralBlurY()
 	CONTEXT->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	CONTEXT->RSSetViewports(1, &m_tViewPort);
 	CONTEXT->OMSetRenderTargets(1, &pAOTex->GetRTV(), nullptr);
-
 
 	CONTEXT->Draw(3, 0);
 }

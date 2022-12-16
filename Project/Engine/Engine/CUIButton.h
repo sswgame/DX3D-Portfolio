@@ -37,18 +37,21 @@ private:
 
 private:
 	bool DoubleClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType);
-	bool OneClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType);
+	void OneClick(MOUSE_TYPE mouseType, CLICK_TYPE clickType) const;
 	void HandleClickEvent();
 
 	void HandleDragEvent();
 	void HandleReleaseEvent();
+
 public:
 	void finalupdate() override;
+
 public:
 	template <typename T>
 	void SetCallback(T* pInstance, void (T::*func)(CGameObject*), MOUSE_TYPE mouseType, CLICK_TYPE clickType)
 	{
-		m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)] = std::bind(func, pInstance,std::placeholders::_1);
+		m_arrCallback[static_cast<int>(mouseType)][static_cast<int>(clickType)]
+			= std::bind(func, pInstance, std::placeholders::_1);
 	}
 
 public:

@@ -12,16 +12,17 @@ CRigidBody::CRigidBody()
 	, m_vAccel(Vec3(0.f, 0.f, 0.f))
 	, m_vAccelA(Vec3(0.f, 0.f, 0.f))
 	, m_vVelocity(Vec3(0.f, 0.f, 0.f))
+	, m_fGravityAccelAlpha(-2000.f)
 	, m_fMass(1.f)
 	, m_fFricCoeff(500.f)
 	, m_vAccelRatio(1.f)
 	, m_fMaxMoveSpeed(200.f)
 	, m_fMaxJumpSpeed(1200.f)
 	, m_fMinJumpSpeed(-550.f)
-	, m_fGravityAccelAlpha(-2000.f)
-{
-
-}
+	, m_fCurVelocity_MoveSpeed{0}
+	, m_fCurVelocity_JumpSpeed{0}
+	, m_bIgnoreGravity{false}
+	, m_bOnGround{false} {}
 
 CRigidBody::CRigidBody(const CRigidBody& _origin)
 	: CComponent(_origin)
@@ -29,28 +30,24 @@ CRigidBody::CRigidBody(const CRigidBody& _origin)
 	, m_vAccel(_origin.m_vAccel)
 	, m_vAccelA(_origin.m_vAccelA)
 	, m_vVelocity(_origin.m_vVelocity)
+	, m_fGravityAccelAlpha(_origin.m_fGravityAccelAlpha)
 	, m_fMass(_origin.m_fMass)
 	, m_fFricCoeff(_origin.m_fFricCoeff)
 	, m_vAccelRatio(_origin.m_vAccelRatio)
 	, m_fMaxMoveSpeed(_origin.m_fMaxMoveSpeed)
 	, m_fMaxJumpSpeed(_origin.m_fMaxJumpSpeed)
 	, m_fMinJumpSpeed(_origin.m_fMinJumpSpeed)
-	, m_fGravityAccelAlpha(_origin.m_fGravityAccelAlpha)
+	, m_fCurVelocity_MoveSpeed{0}
+	, m_fCurVelocity_JumpSpeed{0}
+	, m_bIgnoreGravity{false}
+	, m_bOnGround{false} {}
 
-{
 
-}
-
-
-CRigidBody::~CRigidBody()
-{
-
-}
+CRigidBody::~CRigidBody() = default;
 
 
 void CRigidBody::update()
 {
-
 	Vec3 vPrevPos = Transform()->GetRelativePos();		// 이전 위치 
 
 	{
@@ -62,10 +59,9 @@ void CRigidBody::update()
 		Move(vNormalized_VelocityDir);						// (앞뒤좌우) 이동 
 		Jump(vNormalized_VelocityDir);						// (상하)     이동 
 
-		m_vForce = Vec3(0.f, 0.f, 0.f);						// 힘			초기화 
-		m_vAccel = Vec3(0.f, 0.f, 0.f);						// 가속도		초기화 
+		m_vForce  = Vec3(0.f, 0.f, 0.f);						// 힘			초기화 
+		m_vAccel  = Vec3(0.f, 0.f, 0.f);						// 가속도		초기화 
 		m_vAccelA = Vec3(0.f, 0.f, 0.f);					// 추가 가속도	초기화
-
 	}
 
 	Vec3 vCurPos = Transform()->GetRelativePos();		// 현재 위치 
@@ -81,17 +77,14 @@ void CRigidBody::update()
 	//}
 	//else
 	//	m_bOnGround = false;
-
-
 }
 
 void CRigidBody::UpdateGravity()
 {
-
 	// 땅 위에 있지 않다면 
 	if (!m_bOnGround)
 	{
-		if(!m_bIgnoreGravity)
+		if (!m_bIgnoreGravity)
 		{
 			// 떨어지는 가속도 세팅 -> m_fMinJUmpSpeed 에 의해 속도 제한 걸림 
 			SetAccelAlpha(Vec3(0.f, m_fGravityAccelAlpha, 0.f));
@@ -121,17 +114,14 @@ Vec3 CRigidBody::UpdateVelocity()
 	vNormalized_VelocityDir.Normalize();
 
 	return vNormalized_VelocityDir;
-
 }
 
 
 void CRigidBody::UpdateFriction(Vec3 _vVelocityDir)
 {
-
-
 	if (m_vVelocity != Vec3(0.f, 0.f, 0.f))
 	{
-		Vec3 vFricDir = -1 * _vVelocityDir;
+		Vec3 vFricDir  = -1 * _vVelocityDir;
 		Vec3 vFriction = vFricDir * m_fFricCoeff * DT;  // 마찰력 계산
 
 		if (m_vVelocity.Length() < vFriction.Length())
@@ -147,8 +137,8 @@ void CRigidBody::UpdateFriction(Vec3 _vVelocityDir)
 
 void CRigidBody::UpdateLimitSpeed(Vec3 _vVelocityDir)
 {
-	 m_fCurVelocity_MoveSpeed = m_vVelocity.Length();		// X,Z	스피드
-	 m_fCurVelocity_JumpSpeed = m_vVelocity.y;			// Y	스피드 
+	m_fCurVelocity_MoveSpeed = m_vVelocity.Length();		// X,Z	스피드
+	m_fCurVelocity_JumpSpeed = m_vVelocity.y;			// Y	스피드 
 
 
 	// 점프 일 때 속도 제한 
@@ -171,8 +161,6 @@ void CRigidBody::UpdateLimitSpeed(Vec3 _vVelocityDir)
 	{
 		m_fCurVelocity_JumpSpeed = m_fMinJumpSpeed;
 	}
-
-
 }
 
 void CRigidBody::Move(Vec3 _vVelocityDir)
@@ -207,45 +195,22 @@ void CRigidBody::Jump(Vec3 _vVelocityDir)
 
 		Transform()->SetRelativePos(vPos);
 	}
-
 }
 
+void CRigidBody::lateupdate() {}
 
-void CRigidBody::lateupdate()
-{
+void CRigidBody::finalupdate() {}
 
-}
+void CRigidBody::finalupdate_debug() {}
 
+void CRigidBody::render() {}
 
-void CRigidBody::finalupdate()
-{
+void CRigidBody::SaveToScene(FILE* _pFile) {}
 
-}
-
-
-void CRigidBody::finalupdate_debug()
-{
-
-}
-
-void CRigidBody::render()
-{
-
-}
-
-void CRigidBody::SaveToScene(FILE* _pFile)
-{
-
-}
-
-void CRigidBody::LoadFromScene(FILE* _pFile)
-{
-
-}
+void CRigidBody::LoadFromScene(FILE* _pFile) {}
 
 void CRigidBody::Serialize(YAML::Emitter& emitter)
 {
-
 	emitter << YAML::Key << "RIGIDBODY INFO" << YAML::Value << YAML::Flow << YAML::BeginMap;
 
 	emitter << YAML::Key << NAME_OF(m_vForce) << YAML::Value << m_vForce;
@@ -268,34 +233,30 @@ void CRigidBody::Serialize(YAML::Emitter& emitter)
 
 	emitter << YAML::Key << NAME_OF(m_bIgnoreGravity) << YAML::Value << m_bIgnoreGravity;
 	emitter << YAML::Key << NAME_OF(m_bOnGround) << YAML::Value << m_bOnGround;
-
 }
 
 
 void CRigidBody::Deserialize(const YAML::Node& node)
 {
-
 	YAML::Node RigidBodyInfoNode = node["RIGIDBODY INFO"];
 
-	m_vForce				= RigidBodyInfoNode[NAME_OF(m_vForce)].as<Vec3>();
-	m_vAccel				= RigidBodyInfoNode[NAME_OF(m_vAccel)].as<Vec3>();
-	m_vAccelA				= RigidBodyInfoNode[NAME_OF(m_vAccelA)].as<Vec3>();
-	m_vVelocity				= RigidBodyInfoNode[NAME_OF(m_vVelocity)].as<Vec3>();
+	m_vForce    = RigidBodyInfoNode[NAME_OF(m_vForce)].as<Vec3>();
+	m_vAccel    = RigidBodyInfoNode[NAME_OF(m_vAccel)].as<Vec3>();
+	m_vAccelA   = RigidBodyInfoNode[NAME_OF(m_vAccelA)].as<Vec3>();
+	m_vVelocity = RigidBodyInfoNode[NAME_OF(m_vVelocity)].as<Vec3>();
 
-	m_fGravityAccelAlpha	= RigidBodyInfoNode[NAME_OF(m_fGravityAccelAlpha)].as<float>();
-	m_fMass					= RigidBodyInfoNode[NAME_OF(m_fMass)].as<float>();
-	m_fFricCoeff            = RigidBodyInfoNode[NAME_OF(m_fFricCoeff)].as<float>();
-	m_vAccelRatio           = RigidBodyInfoNode[NAME_OF(m_vAccelRatio)].as<float>();
+	m_fGravityAccelAlpha = RigidBodyInfoNode[NAME_OF(m_fGravityAccelAlpha)].as<float>();
+	m_fMass              = RigidBodyInfoNode[NAME_OF(m_fMass)].as<float>();
+	m_fFricCoeff         = RigidBodyInfoNode[NAME_OF(m_fFricCoeff)].as<float>();
+	m_vAccelRatio        = RigidBodyInfoNode[NAME_OF(m_vAccelRatio)].as<float>();
 
-	m_fMaxMoveSpeed			= RigidBodyInfoNode[NAME_OF(m_fMaxMoveSpeed)].as<float>();
-	m_fMaxJumpSpeed			= RigidBodyInfoNode[NAME_OF(m_fMaxJumpSpeed)].as<float>();
-	m_fMinJumpSpeed			= RigidBodyInfoNode[NAME_OF(m_fMinJumpSpeed)].as<float>();
+	m_fMaxMoveSpeed = RigidBodyInfoNode[NAME_OF(m_fMaxMoveSpeed)].as<float>();
+	m_fMaxJumpSpeed = RigidBodyInfoNode[NAME_OF(m_fMaxJumpSpeed)].as<float>();
+	m_fMinJumpSpeed = RigidBodyInfoNode[NAME_OF(m_fMinJumpSpeed)].as<float>();
 
 	m_fCurVelocity_MoveSpeed = RigidBodyInfoNode[NAME_OF(m_fCurVelocity_MoveSpeed)].as<float>();
 	m_fCurVelocity_JumpSpeed = RigidBodyInfoNode[NAME_OF(m_fCurVelocity_JumpSpeed)].as<float>();
 
-	m_bIgnoreGravity		 = RigidBodyInfoNode[NAME_OF(m_bIgnoreGravity)].as<bool>();
-	m_bOnGround				 = RigidBodyInfoNode[NAME_OF(m_bOnGround)].as<bool>();
-
-
+	m_bIgnoreGravity = RigidBodyInfoNode[NAME_OF(m_bIgnoreGravity)].as<bool>();
+	m_bOnGround      = RigidBodyInfoNode[NAME_OF(m_bOnGround)].as<bool>();
 }

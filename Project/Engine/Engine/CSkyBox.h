@@ -7,7 +7,6 @@ enum class SKYBOX_TYPE
 	CUBE,
 };
 
-
 class CSkyBox : public CRenderComponent
 {
 private:
@@ -16,23 +15,21 @@ private:
 public:
 	void SetSkyboxType(SKYBOX_TYPE _eType);
 
+public:
+	void finalupdate() override;
+	void UpdateData() override;
+	void render() override;
 
 public:
-	virtual void finalupdate() override;
-	virtual void UpdateData() override;
-	virtual void render() override;
-
-
-public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
-
-	CLONE(CSkyBox)
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
+	CLONE(CSkyBox);
 	CSkyBox();
 	virtual ~CSkyBox();
 };

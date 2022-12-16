@@ -12,15 +12,13 @@ CTexture::CTexture()
 	: CRes(RES_TYPE::TEXTURE)
 	, m_tDesc{} {}
 
-CTexture::~CTexture() {}
+CTexture::~CTexture() = default;
 
 int CTexture::Load(const wstring& _strFilePath)
 {
 	const std::wstring fileExtension = std::filesystem::path{_strFilePath}.extension().wstring();
 
-	HRESULT hr   = S_OK;
-	int     iErr = 0;
-
+	HRESULT hr = S_OK;
 	if (L".dds" == fileExtension || L".DDS" == fileExtension)
 	{
 		hr = LoadFromDDSFile(_strFilePath.c_str(), DDS_FLAGS_NONE, nullptr, m_Image);
@@ -36,6 +34,7 @@ int CTexture::Load(const wstring& _strFilePath)
 
 	if (CheckFail(hr))
 	{
+		LOG_ASSERT(hr == S_OK, "TEXTURE FORMAT NOT SUPPORTED");
 		return E_FAIL;
 	}
 
@@ -48,6 +47,7 @@ int CTexture::Load(const wstring& _strFilePath)
 
 	if (CheckFail(hr))
 	{
+		LOG_ASSERT(hr == S_OK, "CREATE SRV FROM TEXTURE FAILED");
 		return E_FAIL;
 	}
 	m_pSRV->GetResource(reinterpret_cast<ID3D11Resource**>(m_pTex2D.GetAddressOf()));
@@ -253,7 +253,7 @@ void CTexture::Create(UINT _iWidth, UINT _iHeight, DXGI_FORMAT _format, UINT _fl
 	m_tDesc.Format             = _format;
 
 	DEVICE->CreateTexture2D(&m_tDesc, nullptr, m_pTex2D.GetAddressOf());
-	assert(m_pTex2D);
+	LOG_ASSERT(m_pTex2D, "TEXTURE 2D CREATION FAILED");
 
 	Create(m_pTex2D);
 }
@@ -264,18 +264,17 @@ void CTexture::Create(ComPtr<ID3D11Texture2D> _pTex2D)
 	m_pTex2D = _pTex2D;
 	m_pTex2D->GetDesc(&m_tDesc);
 
-
 	if (D3D11_BIND_DEPTH_STENCIL & m_tDesc.BindFlags)
 	{
 		DEVICE->CreateDepthStencilView(m_pTex2D.Get(), nullptr, m_pDSV.GetAddressOf());
-		assert(m_pDSV);
+		LOG_ASSERT(m_pDSV, "DSV CREATION FAILED");
 	}
 	else
 	{
 		if (D3D11_BIND_RENDER_TARGET & m_tDesc.BindFlags)
 		{
 			DEVICE->CreateRenderTargetView(m_pTex2D.Get(), nullptr, m_pRTV.GetAddressOf());
-			assert(m_pRTV);
+			LOG_ASSERT(m_pRTV, "RTV CREATION FAILED");
 		}
 
 		if (D3D11_BIND_SHADER_RESOURCE & m_tDesc.BindFlags)
@@ -286,7 +285,7 @@ void CTexture::Create(ComPtr<ID3D11Texture2D> _pTex2D)
 			tSRVDesc.Texture2D.MipLevels       = 1;
 			tSRVDesc.Texture2D.MostDetailedMip = 0;
 			DEVICE->CreateShaderResourceView(m_pTex2D.Get(), &tSRVDesc, m_pSRV.GetAddressOf());
-			assert(m_pSRV);
+			LOG_ASSERT(m_pSRV, "SRV CREATION FAILED");
 		}
 
 		if (D3D11_BIND_UNORDERED_ACCESS & m_tDesc.BindFlags)
@@ -296,7 +295,7 @@ void CTexture::Create(ComPtr<ID3D11Texture2D> _pTex2D)
 			tUAVDesc.ViewDimension      = D3D11_UAV_DIMENSION_TEXTURE2D;
 			tUAVDesc.Texture2D.MipSlice = 0;
 			DEVICE->CreateUnorderedAccessView(m_pTex2D.Get(), &tUAVDesc, m_pUAV.GetAddressOf());
-			assert(m_pUAV);
+			LOG_ASSERT(m_pUAV, "UAV CREATION FAILED");
 		}
 	}
 }
@@ -307,16 +306,12 @@ void CTexture::UpdateData(UINT _PipelineStage, UINT _iRegisterNum)
 {
 	if (_PipelineStage & static_cast<UINT>(VS))
 		CONTEXT->VSSetShaderResources(_iRegisterNum, 1, m_pSRV.GetAddressOf());
-
 	if (_PipelineStage & static_cast<UINT>(HS))
 		CONTEXT->HSSetShaderResources(_iRegisterNum, 1, m_pSRV.GetAddressOf());
-
 	if (_PipelineStage & static_cast<UINT>(DS))
 		CONTEXT->DSSetShaderResources(_iRegisterNum, 1, m_pSRV.GetAddressOf());
-
 	if (_PipelineStage & static_cast<UINT>(GS))
 		CONTEXT->GSSetShaderResources(_iRegisterNum, 1, m_pSRV.GetAddressOf());
-
 	if (_PipelineStage & static_cast<UINT>(PS))
 		CONTEXT->PSSetShaderResources(_iRegisterNum, 1, m_pSRV.GetAddressOf());
 }
@@ -329,7 +324,7 @@ void CTexture::UpdateData_CS(UINT _iRegisterNum, bool _bShaderResource)
 	}
 	else
 	{
-		const UINT invalidIndex = -1;
+		constexpr UINT invalidIndex = -1;
 		CONTEXT->CSSetUnorderedAccessViews(_iRegisterNum, 1, m_pUAV.GetAddressOf(), &invalidIndex);
 	}
 }
@@ -348,7 +343,7 @@ void CTexture::ClearCS(int _iRegisterNum)
 {
 	ID3D11UnorderedAccessView* pNullUAV     = nullptr;
 	ID3D11ShaderResourceView*  pNullSRV     = nullptr;
-	const UINT                 invalidIndex = -1;
+	constexpr UINT             invalidIndex = -1;
 
 	CONTEXT->CSSetUnorderedAccessViews(_iRegisterNum, 1, &pNullUAV, &invalidIndex);
 	CONTEXT->CSSetShaderResources(_iRegisterNum, 1, &pNullSRV);

@@ -164,6 +164,10 @@ CScene* CSceneSaveLoad::LoadYAML(const std::wstring& _strSceneFilePath)
 
 void CSceneSaveLoad::SaveGameObject(CGameObject* pGameObject, YAML::Emitter& emitter)
 {
+	if (pGameObject->GetName() == L"ManagerScript")
+	{
+		return;
+	}
 	emitter << YAML::BeginMap;
 	//GameObject
 	pGameObject->Serialize(emitter);

@@ -6,15 +6,12 @@
 #include "CMeshRender.h"
 #include "CConstBuffer.h"
 
-#include "CSceneMgr.h"
-#include "CScene.h"
-
 CBoundingBox::CBoundingBox()
-	: CComponent{ COMPONENT_TYPE::BOUNDINGBOX }
-	, m_vOffsetScale{ 100.f, 100.f, 100.f }
-	, m_vOffsetPos{ 0.f ,0.f ,0.f }
-	, m_bBoundCheck(false)
+	: CComponent{COMPONENT_TYPE::BOUNDINGBOX}
 	, m_vColor(1.f, 1.f, 1.f, 1.f)
+	, m_vOffsetPos{0.f, 0.f, 0.f}
+	, m_vOffsetScale{100.f, 100.f, 100.f}
+	, m_bBoundCheck(false)
 {
 	// Debug Obj 추가
 	if (nullptr == m_pDebugObj)
@@ -24,25 +21,18 @@ CBoundingBox::CBoundingBox()
 		m_pDebugObj->AddComponent(new CTransform);
 		m_pDebugObj->AddComponent(new CMeshRender);
 
-		m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
+		m_pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
 		m_pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl");
 	}
 }
 
 CBoundingBox::CBoundingBox(const CBoundingBox& _origin)
-	: CComponent{ COMPONENT_TYPE::BOUNDINGBOX }
-	, m_vOffsetScale(_origin.m_vOffsetScale)
+	: CComponent{COMPONENT_TYPE::BOUNDINGBOX}
 	, m_vOffsetPos(_origin.m_vOffsetPos)
-	, m_bBoundCheck(_origin.m_bBoundCheck)
+	, m_vOffsetScale(_origin.m_vOffsetScale)
+	, m_bBoundCheck(_origin.m_bBoundCheck) {}
 
-{
-
-}
-
-CBoundingBox::~CBoundingBox()
-{
-
-}
+CBoundingBox::~CBoundingBox() = default;
 
 void CBoundingBox::UpdateData()
 {
@@ -64,10 +54,10 @@ void CBoundingBox::finalupdate()
 	m_matWorld                  = matScale * matRotation * matTranslation;
 
 	const Vec3   vGameObjectScale          = Transform()->GetWorldScale();
-	const Matrix matGameObjectScaleInverse = XMMatrixInverse(nullptr
-		, XMMatrixScaling(vGameObjectScale.x
-			, vGameObjectScale.y
-			, vGameObjectScale.z));
+	const Matrix matGameObjectScaleInverse = XMMatrixInverse(nullptr,
+	                                                         XMMatrixScaling(vGameObjectScale.x,
+	                                                                         vGameObjectScale.y,
+	                                                                         vGameObjectScale.z));
 	const Matrix matGameobjectWorld = Transform()->GetWorldMat();
 	// 충돌체 상대행렬 * 오브젝트 월드 크기 역행렬 * 오브젝트 월드 행렬(크기 * 회전 * 이동)
 	m_matWorld = m_matWorld * matGameObjectScaleInverse * matGameobjectWorld;
@@ -94,7 +84,6 @@ void CBoundingBox::finalupdate_debug()
 void CBoundingBox::render()
 {
 	UpdateData();
-
 }
 
 void CBoundingBox::render_debug()
@@ -114,7 +103,6 @@ void CBoundingBox::render_debug()
 void CBoundingBox::SetOffsetPos(Vec3 _vOffsetPos)
 {
 	m_vOffsetPos = _vOffsetPos;
-
 }
 
 void CBoundingBox::SetOffsetScale(Vec3 _vOffsetScale)
@@ -153,20 +141,16 @@ Vec3 CBoundingBox::GetOffsetScale() const
 	return m_vOffsetScale;
 }
 
-
 void CBoundingBox::Serialize(YAML::Emitter& emitter)
 {
 	emitter << YAML::Key << NAME_OF(m_vOffsetPos) << YAML::Value << m_vOffsetPos;
 	emitter << YAML::Key << NAME_OF(m_vOffsetScale) << YAML::Value << m_vOffsetScale;
-
 }
 
 void CBoundingBox::Deserialize(const YAML::Node& node)
 {
-	m_vOffsetPos = node[NAME_OF(m_vOffsetPos)].as<Vec3>();
+	m_vOffsetPos   = node[NAME_OF(m_vOffsetPos)].as<Vec3>();
 	m_vOffsetScale = node[NAME_OF(m_vOffsetScale)].as<Vec3>();
-
-
 }
 
 void CBoundingBox::SaveToScene(FILE* _pFile)
@@ -180,5 +164,4 @@ void CBoundingBox::LoadFromScene(FILE* _pFile)
 {
 	fread(&m_vOffsetPos, sizeof(Vec2), 1, _pFile);
 	fread(&m_vOffsetScale, sizeof(Vec2), 1, _pFile);
-
 }

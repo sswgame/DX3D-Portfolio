@@ -7,7 +7,6 @@ class CShader
 protected:
 	ComPtr<ID3DBlob> m_ErrBlob;
 
-
 public:
 	int Load(const wstring& _strFilePath) override { return S_OK; };
 

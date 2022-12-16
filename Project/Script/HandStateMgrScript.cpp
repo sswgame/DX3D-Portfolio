@@ -30,13 +30,9 @@ HandStateMgrScript::HandStateMgrScript()
 	, m_vHand1AttackBoxScale(Vec3(0.f))
 	, m_iCurAttackHandNumber(-1)
 	, m_bHand01_FirstAttackDone(false)
-	, m_bHand01_SecondAttackDone(false)
-{
-}
+	, m_bHand01_SecondAttackDone(false) {}
 
-HandStateMgrScript::~HandStateMgrScript()
-{
-}
+HandStateMgrScript::~HandStateMgrScript() {}
 
 void HandStateMgrScript::update()
 {
@@ -44,7 +40,7 @@ void HandStateMgrScript::update()
 	m_sPrevState = m_sCurstate;
 	if (L"" != m_sNextState)
 	{
-		m_sCurstate = m_sNextState;
+		m_sCurstate  = m_sNextState;
 		m_sNextState = L"";
 		ChangeState(m_sCurstate);
 	}
@@ -55,9 +51,7 @@ void HandStateMgrScript::update()
 	}
 }
 
-void HandStateMgrScript::lateupdate()
-{
-}
+void HandStateMgrScript::lateupdate() {}
 
 void HandStateMgrScript::init()
 {
@@ -104,6 +98,8 @@ void HandStateMgrScript::init()
 
 	InitState();
 	ResetCurAttackHandNumber();
+
+	GetOwner()->Deactivate();
 }
 
 void HandStateMgrScript::InitState()
@@ -165,7 +161,6 @@ void HandStateMgrScript::ResetCurAttackHandNumber()
 
 void HandStateMgrScript::ChangeState(wstring _sStateName)
 {
-
 	CFSM* pFSM01 = m_pHand1->FSM();
 	CFSM* pFSM02 = m_pHand2->FSM();
 	CFSM* pFSM03 = m_pHand3->FSM();

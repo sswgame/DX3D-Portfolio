@@ -1,23 +1,19 @@
 #include "pch.h"
 #include "CNaviAgent.h"
 
-#include "CKeyMgr.h"
-#include "CTimeMgr.h"
-
 #include "CNaviMap.h"
 #include "CNaviMapData.h"
 #include "CTransform.h"
 #include "CMeshRender.h"
 #include "CRigidBody.h"
-#include "CSerializer.h"
 
 CNaviAgent::CNaviAgent()
 	: CComponent{COMPONENT_TYPE::NAVIAGENT}
 	, m_pTargetNaviMap(nullptr)
 	, m_pRigidBody(nullptr)
+	, m_vDebugAgentColor(0.6f, 0.8f, 1.f, 0.6f)
 	, m_iCurCellIndex(-1)
 	, m_bGravity(false)
-	, m_vDebugAgentColor(0.6f, 0.8f, 1.f, 0.6f)
 {
 	// Debug Obj 추가
 	if (nullptr == m_pDebugObj)
@@ -39,15 +35,11 @@ CNaviAgent::CNaviAgent(const CNaviAgent& _origin)
 	: CComponent{COMPONENT_TYPE::NAVIAGENT}
 	, m_pTargetNaviMap(_origin.m_pTargetNaviMap)
 	, m_pRigidBody(_origin.m_pRigidBody)
-	, m_iCurCellIndex(-1)
-	, m_bGravity(false)
 	, m_vDebugAgentColor(_origin.m_vDebugAgentColor)
-{
-}
+	, m_iCurCellIndex(-1)
+	, m_bGravity(false) {}
 
-CNaviAgent::~CNaviAgent()
-{
-}
+CNaviAgent::~CNaviAgent() = default;
 
 void CNaviAgent::FindCurIndex()
 {
@@ -117,7 +109,7 @@ Vec3 CNaviAgent::SetYPos(float _fDist)
 				// 지면 체크
 				m_pRigidBody->SetOnGround(true);
 			}
-		}	
+		}
 	}
 
 
@@ -155,7 +147,7 @@ void CNaviAgent::lateupdate()
 			{
 				Transform()->SetRelativePos(m_vPrevPos);
 			}
-		} 
+		}
 		else
 			m_vPrevPos = SetYPos(fDist);
 	}
@@ -167,9 +159,7 @@ void CNaviAgent::UpdateData()
 }
 
 
-void CNaviAgent::finalupdate()
-{
-}
+void CNaviAgent::finalupdate() {}
 
 void CNaviAgent::finalupdate_debug()
 {
@@ -191,14 +181,4 @@ void CNaviAgent::render_debug()
 	{
 		m_pDebugObj->MeshRender()->render();
 	}
-}
-
-void CNaviAgent::Serialize(YAML::Emitter& emitter)
-{
-	CComponent::Serialize(emitter);
-}
-
-void CNaviAgent::Deserialize(const YAML::Node& node)
-{
-	CComponent::Deserialize(node);
 }

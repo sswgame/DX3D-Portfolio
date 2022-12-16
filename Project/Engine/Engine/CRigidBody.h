@@ -1,7 +1,6 @@
 #pragma once
 #include "CComponent.h"
 
-
 class CRigidBody
 	: public CComponent
 {
@@ -55,11 +54,11 @@ public:
 	float GetFricCoeff() { return m_fFricCoeff; }
 
 public:
-	virtual void update() override;
-	virtual void lateupdate() override;
-	virtual void finalupdate() override;
-	virtual void finalupdate_debug() override;
-	void         render();
+	void update() override;
+	void lateupdate() override;
+	void finalupdate() override;
+	void finalupdate_debug() override;
+	void render();
 
 public:
 	void UpdateGravity();
@@ -71,8 +70,8 @@ public:
 
 
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 	CLONE(CRigidBody);
 
 public:

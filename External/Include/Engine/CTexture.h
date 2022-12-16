@@ -9,7 +9,6 @@
 #pragma comment(lib, "DirectXTex/DirectXTex")
 #endif
 
-
 class CTexture
 	: public CRes
 {
@@ -44,7 +43,6 @@ public:
 	ComPtr<ID3D11UnorderedAccessView> GetUAV() { return m_pUAV; }
 	ComPtr<ID3D11RenderTargetView>    GetRTV() { return m_pRTV; }
 	ComPtr<ID3D11DepthStencilView>    GetDSV() { return m_pDSV; }
-
 
 public:
 	// PIPELINE_STAGE

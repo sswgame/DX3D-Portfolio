@@ -69,7 +69,8 @@ public:
 	static void WriteLog(LOG_LEVEL level, const char* pMessage, ...);
 	static void LogAssert(const char* pExpression, const char* pMessage, const char* pFile, int line);
 
-public:
+private:
+	inline static std::mutex s_mutex{};
 };
 
 #ifdef _DEBUG

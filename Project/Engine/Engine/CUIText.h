@@ -36,9 +36,11 @@ private:
 private:
 	void CreateTextLayout();
 	void RenderText();
+
 public:
 	void start() override;
 	void finalupdate() override;
+
 public:
 	void               AddText(const std::wstring& text);
 	const std::string& GetText() const;
@@ -71,9 +73,11 @@ public:
 	ComPtr<ID2D1SolidColorBrush> GetBrush();
 	ComPtr<IDWriteTextLayout>    GetTextureLayout();
 	ComPtr<IDWriteTextFormat>    GetFontFormat();
+
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
 	CLONE(CUIText);
 	CUIText();

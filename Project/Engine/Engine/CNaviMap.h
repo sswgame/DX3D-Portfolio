@@ -37,9 +37,6 @@ public:
 
 	CLONE(CNaviMap);
 
-	void Serialize(YAML::Emitter& emitter) override;
-	void Deserialize(const YAML::Node& node) override;
-
 	void SaveToScene(FILE* _pFile) override;
 	void LoadFromScene(FILE* _pFile) override;
 

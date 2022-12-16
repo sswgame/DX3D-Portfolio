@@ -19,7 +19,8 @@ CGraphicsShader::CGraphicsShader()
 	, m_eRSType(RS_TYPE::CULL_BACK)
 	, m_eDSType(DS_TYPE::LESS)
 	, m_eBSType(BS_TYPE::DEFAULT)
-	, m_eTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST) {}
+	, m_eTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+	, m_arrShaderCompileInfo{} {}
 
 CGraphicsShader::~CGraphicsShader() = default;
 
@@ -59,7 +60,9 @@ int CGraphicsShader::CreateVertexShader(const wstring& _strRelativePath, const s
 		return E_FAIL;
 	}
 
-	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::VERTEX_SHADER].Init(SHADER_TYPE::VERTEX_SHADER, _strRelativePath, _strVSFunc);
+	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::VERTEX_SHADER].Init(SHADER_TYPE::VERTEX_SHADER,
+	                                                              _strRelativePath,
+	                                                              _strVSFunc);
 	return S_OK;
 }
 
@@ -122,7 +125,9 @@ int CGraphicsShader::CreateDomainShader(const wstring& _strRelativePath, const s
 	{
 		return E_FAIL;
 	}
-	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::DOMAIN_SHADER].Init(SHADER_TYPE::DOMAIN_SHADER, _strRelativePath, _strFunc);
+	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::DOMAIN_SHADER].Init(SHADER_TYPE::DOMAIN_SHADER,
+	                                                              _strRelativePath,
+	                                                              _strFunc);
 
 	return S_OK;
 }
@@ -154,7 +159,9 @@ int CGraphicsShader::CreateGeometryShader(const wstring& _strRelativePath, const
 	{
 		return E_FAIL;
 	}
-	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::GEOMETRY_SHADER].Init(SHADER_TYPE::GEOMETRY_SHADER, _strRelativePath, _strFunc);
+	m_arrShaderCompileInfo[(UINT)SHADER_TYPE::GEOMETRY_SHADER].Init(SHADER_TYPE::GEOMETRY_SHADER,
+	                                                                _strRelativePath,
+	                                                                _strFunc);
 
 	return S_OK;
 }
@@ -221,6 +228,7 @@ void CGraphicsShader::AddInputLayout(D3D11_INPUT_ELEMENT_DESC _desc)
 {
 	g_vecLayout.push_back(_desc);
 }
+
 void CGraphicsShader::CopyScalarParamInfo(vector<tScalarParamInfo> _vecScalarInfo)
 {
 	m_vecScalarParamInfo = _vecScalarInfo;

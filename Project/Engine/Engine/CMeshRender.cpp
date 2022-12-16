@@ -11,16 +11,16 @@
 CMeshRender::CMeshRender()
 	: CRenderComponent(COMPONENT_TYPE::MESHRENDER) {}
 
-CMeshRender::~CMeshRender() {}
-
+CMeshRender::~CMeshRender() = default;
 
 void CMeshRender::finalupdate() {}
 
 void CMeshRender::render()
 {
 	if (nullptr == GetMesh() || nullptr == GetMaterial(0))
+	{
 		return;
-
+	}
 
 	// ==========
 	// UpdateData
@@ -59,7 +59,6 @@ void CMeshRender::render()
 		GetMaterial(i)->UpdateData();
 		GetMesh()->render(i);
 	}
-
 
 	// =====
 	// Clear

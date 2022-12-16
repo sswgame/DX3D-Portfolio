@@ -70,11 +70,10 @@ public:
 	void SetSpeed(float _fSpeed);
 	void SetSpeedOnAnim(wstring _AnimName, float _fSpeed);
 	void SetLerpTime(float _fTime);
-	void SetRepeat(bool _b);
+	void SetRepeat(bool _bEnable);
 	void SetLerpTimeOnAllAnim(float _fLerpTime);
 	void SetLerpTimeOnAnim(wstring _AnimName, float _fLerpTime);
 	void SetCreateMode(CREATE_ANIMATION_MODE _eMode) { m_eCreateMode = _eMode; }
-
 
 public:
 	const map<wstring, CAnimation3D*>& GetAllAnim() const { return m_mapAnim; }
@@ -93,7 +92,7 @@ public:
 
 	CREATE_ANIMATION_MODE GetCreateMode() const { return m_eCreateMode; }
 	CStructuredBuffer*    GetSocketBuffer() const { return m_pSocketBuffer; }
-	int GetvecSocketMatSize() { return m_vecSocketMatrix.size(); }
+	int                   GetvecSocketMatSize() const { return static_cast<int>(m_vecSocketMatrix.size()); }
 	void                  ResizeSocketMatrix();
 	void                  DisableSocket() { m_bUseSocket = false; }
 	const Matrix&         GetSocket(int index);
@@ -103,17 +102,14 @@ public:
 	void RegisterNextAnim(CAnimation3D* _pNextAnim);
 
 public:
-	template <typename T, typename...Args>
+	template <typename T, typename... Args>
 	void AddCallback(const std::wstring& animationName,
 	                 int                 frameIndex,
 	                 T*                  pInstance,
-	                 void (T::*          callback)(Args ...),
-	                 Args ...            args);
+	                 void (T::*          callback)(Args...),
+	                 Args...             args);
 
 public:
-	void SaveToScene(FILE* _pFile) override;
-	void LoadFromScene(FILE* _pFile) override;
-
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
 
@@ -124,12 +120,12 @@ public:
 	virtual ~CAnimator3D();
 };
 
-template <typename T, typename ... Args>
+template <typename T, typename... Args>
 void CAnimator3D::AddCallback(const std::wstring& animationName,
                               int                 frameIndex,
                               T*                  pInstance,
-                              void (T::*          callback)(Args ...),
-                              Args ...            args)
+                              void (T::*          callback)(Args...),
+                              Args...             args)
 {
 	auto arguments = std::make_tuple(pInstance, std::forward<decltype(args)>(args)...);
 	auto func      = [callback,arguments = std::move(arguments)]()
@@ -138,7 +134,7 @@ void CAnimator3D::AddCallback(const std::wstring& animationName,
 	};
 
 	CAnimation3D* pAnimation = FindAnim(animationName);
-	assert(pAnimation && "ANIMAITION NOT FOUND");
+	LOG_ASSERT(pAnimation, "ANIMAITION NOT FOUND");
 
 	frameIndex = ClampData(frameIndex, pAnimation->GetStartFrameIdx(), pAnimation->GetEndFrameIdx());
 	pAnimation->SetCallback(std::move(func), frameIndex);

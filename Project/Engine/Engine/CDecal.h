@@ -22,28 +22,29 @@ public:
 	void SetDecalTexture(Ptr<CTexture> _pTex) { m_pDecalTex = _pTex; }
 	void SetColor(Vec4 _vColor) { m_vColor = _vColor; }
 
-	DECAL_TYPE    GetDecalType() { return m_eType; }
-	wstring       GetDecalTypeName(int _idx);
+	DECAL_TYPE    GetDecalType() const { return m_eType; }
+	std::string   GetDecalTypeName(DECAL_TYPE _type) const;
 	Ptr<CTexture> GetDecalTexture() { return m_pDecalTex; }
-	Vec4          GetColor() { return m_vColor; }
-	bool          IsUsingDeferredLighting() { return m_bUseDeferredLighting; }
+	Vec4          GetColor() const { return m_vColor; }
+	bool          IsUsingDeferredLighting() const { return m_bUseDeferredLighting; }
 
 public:
-	virtual void finalupdate() override;
-	void         finalupdate_debug() override;
-	virtual void UpdateData() override;
-	virtual void render() override;
-	virtual void render_debug() override;
+	void finalupdate() override;
+	void finalupdate_debug() override;
+	void UpdateData() override;
+	void render() override;
+	void render_debug() override;
 
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 
-	CLONE(CDecal)
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
+	CLONE(CDecal);
 	CDecal();
 	virtual ~CDecal();
 };

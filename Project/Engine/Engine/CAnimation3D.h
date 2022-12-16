@@ -44,9 +44,11 @@ private:
 	float m_fLerpTimeAcc;
 	int   m_iPlayCnt;			// 애니메이션이 몇번 반복 실행되고 있는지 카운트
 
-	bool                                           m_hasCallback = false;
-	bool                                           m_fired       = false;
+	bool m_hasCallback = false;
+	bool m_fired       = false;
+
 	std::unordered_map<int, std::function<void()>> m_mapCallback;
+
 public:
 	void SetCallback(std::function<void()> func, int frameIndex);
 	void FireCallback(int frameIndex);
@@ -56,9 +58,8 @@ public:
 	void UpdateData() override;
 	void ClearData() const;
 
-
 public:
-	void Play(bool _b);
+	void Play(bool _bEnable);
 
 	void Reset();
 	void ResetStartEndFrameIdx();
@@ -87,21 +88,8 @@ public:
 	void SetCurFrameIdx(int _curIdx);
 
 	void SetSpeed(float _fSpeed) { m_fSpeed = _fSpeed; }
-
-	void SetFinish(bool _b)
-	{
-		if (m_bFinish && !_b) m_vecClipUpdateTime[m_iCurClip] = 0.f;
-		m_bFinish = _b;
-	}
-
-	void SetPlay(bool _b)
-	{
-		m_bPlay = _b;
-		if (!m_bPlay)
-			m_eCurState = ANIMATION_STATE::STOP;
-		else
-			m_eCurState = ANIMATION_STATE::PLAY;
-	}
+	void SetFinish(bool _bEnable);
+	void SetPlay(bool _bEnable);
 
 	void SetAnimState(ANIMATION_STATE _eState) { m_eCurState = _eState; }
 	void SetLerpTime(float _fTime) { m_fLerpTime = _fTime; }
@@ -127,19 +115,15 @@ public:
 	double GetEndTime() const { return m_tClip.dEndTime; }
 	double GetAccTime() const { return m_vecClipUpdateTime[m_iCurClip]; }
 
-
 private:
 	void check_mesh(Ptr<CMesh> _pMesh) const;
 
-
 public:
-	void SaveToScene(FILE* _pFile) override;
-	void LoadFromScene(FILE* _pFile) override;
-	CLONE(CAnimation3D)
-
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
+	CLONE(CAnimation3D);
 	CAnimation3D();
 	CAnimation3D(const CAnimation3D& _origin);
 	virtual ~CAnimation3D();

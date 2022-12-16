@@ -9,7 +9,7 @@
 CFXAA::CFXAA()
 	: m_tViewPort{} {}
 
-CFXAA::~CFXAA() {}
+CFXAA::~CFXAA() = default;
 
 void CFXAA::SetViewPort(D3D11_VIEWPORT _tViewPort)
 {
@@ -29,10 +29,8 @@ void CFXAA::InitShader()
 {
 	// SHADER 
 	CGraphicsShader* pShader = new CGraphicsShader;
-
 	pShader->CreateVertexShader(L"shader\\FullScreenTriangle.fx", "VS_FullScreenTriangleTexcoord");
 	pShader->CreatePixelShader(L"shader\\FXAA.fx", "PS_FXAA");
-
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetBSType(BS_TYPE::NO_ALPHA_COVERAGE);
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
@@ -42,29 +40,24 @@ void CFXAA::InitShader()
 
 void CFXAA::InitMaterial()
 {
-	// MATERIAL
-	CMaterial* pMtrl = new CMaterial;
-	pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"FXAAShader"));
-
-
-	Ptr<CTexture> pPostTex = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
-
+	const Ptr<CTexture> pPostTex         = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
 	m_sImplement.QualitySubPix           = 1.f;
 	m_sImplement.QualityEdgeThreshold    = 0.166f;
 	m_sImplement.QualityEdgeThresholdMin = 0.0833f;
 	m_sImplement.EnableDebug             = false;
 	m_sImplement.TexelSize               = Vec2(1.0f / m_tViewPort.Width, 1.0f / m_tViewPort.Height);
 
-
+	// MATERIAL
+	CMaterial* pMtrl = new CMaterial;
+	pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"FXAAShader"));
 	pMtrl->SetTexParam(TEX_PARAM::TEX_0, pPostTex);
 	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_sImplement.QualitySubPix);
 	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_1, &m_sImplement.QualityEdgeThreshold);
 	pMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_2, &m_sImplement.QualityEdgeThresholdMin);
 	pMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &m_sImplement.EnableDebug);
 	pMtrl->SetScalarParam(SCALAR_PARAM::VEC2_0, &m_sImplement.TexelSize);
-
-	m_pMtrl = pMtrl;
 	CResMgr::GetInst()->AddRes<CMaterial>(L"material\\FXAAmtrl.mtrl", pMtrl);
+	m_pMtrl = pMtrl;
 }
 
 

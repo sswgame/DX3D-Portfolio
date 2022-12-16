@@ -46,8 +46,8 @@ public:
 	}
 
 public:
-	virtual void UpdateData() override;
-	virtual void Clear() override;
+	void UpdateData() override;
+	void Clear() override;
 
 public:
 	CParticleUpdateShader();

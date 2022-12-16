@@ -13,13 +13,9 @@
 
 
 CCollisionMgr::CCollisionMgr()
-	: m_arrCheck{}
-{
-}
+	: m_arrCheck{} {}
 
-CCollisionMgr::~CCollisionMgr()
-{
-}
+CCollisionMgr::~CCollisionMgr() = default;
 
 void CCollisionMgr::update()
 {
@@ -30,8 +26,7 @@ void CCollisionMgr::update()
 			if (m_arrCheck[i] & (1 << j))
 			{
 				// i 에 해당하는 EOBJ_TYPE 오브젝트들과, j 에 해당하는EOBJ_TYPE 오브젝트들 끼리 충돌 진행
-				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-
+				const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 				CollisionBetweenLayer(pCurScene->GetLayer(i)->GetObjects(), pCurScene->GetLayer(j)->GetObjects());
 				CollisionBetween3D(pCurScene->GetLayer(i)->GetObjects(), pCurScene->GetLayer(j)->GetObjects());
 			}
@@ -41,25 +36,27 @@ void CCollisionMgr::update()
 
 void CCollisionMgr::CollisionBetweenLayer(const vector<CGameObject*>& _left, const vector<CGameObject*>& _right)
 {
-	CCollider2D* pLeftCol  = nullptr;
-	CCollider2D* pRightCol = nullptr;
-
-	for (size_t i = 0; i < _left.size(); ++i)
+	for (auto& pLeftGameObject : _left)
 	{
-		pLeftCol = _left[i]->Collider2D();
-
+		CCollider2D* pLeftCol = pLeftGameObject->Collider2D();
 		if (nullptr == pLeftCol)
-			continue;
-
-		for (size_t j = 0; j < _right.size(); ++j)
 		{
-			pRightCol = _right[j]->Collider2D();
+			continue;
+		}
 
+		for (auto& pRightGameObject : _right)
+		{
+			CCollider2D* pRightCol = pRightGameObject->Collider2D();
 			if (nullptr == pRightCol)
+			{
 				continue;
+			}
 
+			//자기 자신인 경우
 			if (pLeftCol == pRightCol)
+			{
 				continue;
+			}
 
 			// 두 충돌체가 이전에 충돌했었는지 확인
 			// 두 충돌체의 조합 아이디 생성
@@ -71,20 +68,24 @@ void CCollisionMgr::CollisionBetweenLayer(const vector<CGameObject*>& _left, con
 			// 두 충돌체는 처음 검사를 진행하고 있다.
 			if (iter == m_mapColInfo.end())
 			{
-				m_mapColInfo.insert(make_pair(ID.id, false));
+				m_mapColInfo.insert({ID.id, false});
 				iter = m_mapColInfo.find(ID.id);
 			}
 
 			// 두 충돌체중 하나라도 데드 상태인지 
-			bool bDead = pLeftCol->GetOwner()->IsDead() || pRightCol->GetOwner()->IsDead();
+			const bool bAnyDead = pLeftCol->GetOwner()->IsDead() || pRightCol->GetOwner()->IsDead();
 
-			// 두 충돌체 중 하나라도 비활성화 상태인지
-			bool bDeactive = !pLeftCol->GetOwner()->IsActive() || !pRightCol->GetOwner()->IsActive() || !pLeftCol->
-			                 IsActive() || !pRightCol->IsActive();
+			// 두 충돌체(혹은 게임오브젝트) 중 하나라도 비활성화 상태인지
+			const bool bAnyDeActive = !pLeftCol->GetOwner()->IsActive()
+			                          || !pRightCol->GetOwner()->IsActive()
+			                          || !pLeftCol->IsActive()
+			                          || !pRightCol->IsActive();
 
 			// 이전 프레임에서는 충돌하지 않고 있었고, 현재 둘중 하나 이상이 비활성화 상태이면 충돌 검사를 하지 않겠다.
-			if (bDeactive && false == iter->second)
+			if (bAnyDeActive && false == iter->second)
+			{
 				continue;
+			}
 
 			// 충돌 검사
 			// 충돌 중이다.
@@ -94,13 +95,13 @@ void CCollisionMgr::CollisionBetweenLayer(const vector<CGameObject*>& _left, con
 				if (iter->second)
 				{
 					// 충돌 중이다
-					if (bDead || bDeactive)
+					if (bAnyDead || bAnyDeActive)
 					{
 						// 둘중 하나라도 삭제 예정이라면(삭제를 통한 충돌 해제가 발생하는 것으로 본다)
 						pLeftCol->OnCollisionExit(pRightCol);
 						pRightCol->OnCollisionExit(pLeftCol);
 
-						if (bDead)
+						if (bAnyDead)
 							m_mapColInfo.erase(iter);
 						else
 							iter->second = false;
@@ -116,7 +117,7 @@ void CCollisionMgr::CollisionBetweenLayer(const vector<CGameObject*>& _left, con
 				else
 				{
 					// 이번에 막 충돌 진입했다.
-					if (!bDead)
+					if (!bAnyDead)
 					{
 						// 둘 중 하나라도 삭제 예정이라면 충돌 시작 자체를 하지 않게 한다.
 						pLeftCol->OnCollisionEnter(pRightCol);
@@ -163,61 +164,55 @@ bool CCollisionMgr::IsCollision_Box(CCollider2D* _pLeftCol, CCollider2D* _pRight
 	// 0 -- 1
 	// | \  |
 	// 3 -- 2	
-	static CMesh* pRectMesh    = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
-	static Vtx*   pVtx         = pRectMesh->GetVtxSysMem();
-	static Vec3   vLocalPos[4] = {pVtx[0].vPos, pVtx[1].vPos, pVtx[2].vPos, pVtx[3].vPos};
+	static CMesh*     pRectMesh    = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
+	const static Vtx* pVtx         = pRectMesh->GetVtxSysMem();
+	const static Vec3 vLocalPos[4] = {pVtx[0].vPos, pVtx[1].vPos, pVtx[2].vPos, pVtx[3].vPos};
 
-	Matrix matLeft  = _pLeftCol->GetWorldMat();
-	Matrix matRight = _pRightCol->GetWorldMat();
+	const Matrix matLeft  = _pLeftCol->GetWorldMat();
+	const Matrix matRight = _pRightCol->GetWorldMat();
 
 	// Local 스페이스의 네개의 정점을 각 충돌체 월드 위치로 보낸다.
-	Vec3 vAsix[4] = {};
+	Vec3 arrAxis[4] = {};
 
-	// (Vector3, 0.f) X Matirx(4x4)
-	// XMVector3TransformNormal();
-
-	// (Vector3, 1.f) X Matirx(4x4)
 	// 월드로 보낸 정점을 통해서 각 투영 축 이면서 투영시킬 벡터 성분 4개를 구한다.
-	vAsix[0] = XMVector3TransformCoord(vLocalPos[1], matLeft) - XMVector3TransformCoord(vLocalPos[0], matLeft);
-	vAsix[1] = XMVector3TransformCoord(vLocalPos[3], matLeft) - XMVector3TransformCoord(vLocalPos[0], matLeft);
-
-	vAsix[2] = XMVector3TransformCoord(vLocalPos[1], matRight) - XMVector3TransformCoord(vLocalPos[0], matRight);
-	vAsix[3] = XMVector3TransformCoord(vLocalPos[3], matRight) - XMVector3TransformCoord(vLocalPos[0], matRight);
+	arrAxis[0] = XMVector3TransformCoord(vLocalPos[1], matLeft) - XMVector3TransformCoord(vLocalPos[0], matLeft);
+	arrAxis[1] = XMVector3TransformCoord(vLocalPos[3], matLeft) - XMVector3TransformCoord(vLocalPos[0], matLeft);
+	arrAxis[2] = XMVector3TransformCoord(vLocalPos[1], matRight) - XMVector3TransformCoord(vLocalPos[0], matRight);
+	arrAxis[3] = XMVector3TransformCoord(vLocalPos[3], matRight) - XMVector3TransformCoord(vLocalPos[0], matRight);
 
 	// 월드에 배치된 두 충돌체의 중심을 이은 벡터
-	//Vec3 vCenter = XMVector3TransformCoord(Vec3::Zero, matRight) - XMVector3TransformCoord(Vec3::Zero, matLeft);	
-	Vec3 vCenter = _pRightCol->GetWorldPos() - _pLeftCol->GetWorldPos();
+	const Vec3 centerVector = _pRightCol->GetWorldPos() - _pLeftCol->GetWorldPos();
 
-	for (int i = 0; i < 4; ++i)
+	for (size_t i = 0; i < std::size(arrAxis); ++i)
 	{
-		vAsix[i].z = 0.f;
-		Vec3 vProj = vAsix[i];
-		vProj.Normalize();
+		arrAxis[i].z           = 0.f;
+		Vec3 axisForProjection = arrAxis[i].Normalize();
 
-		float fDist = 0.f;
-
-		for (int j = 0; j < 4; ++j)
+		float distance = 0.f;
+		for (size_t j = 0; j < std::size(arrAxis); ++j)
 		{
-			// vProj 에 vAsix[j] 를 투영시킨 길이		
-			fDist += abs(vAsix[j].Dot(vProj));
+			// projectedVector 에 arrAxis[j] 를 투영시킨 길이		
+			distance += abs(arrAxis[j].Dot(axisForProjection));
 		}
-		fDist *= 0.5f;
-		float fCenterDist = abs(vCenter.Dot(vProj));
 
-		if (fDist < fCenterDist)
+		distance *= 0.5f;
+		const float centerDistance = abs(centerVector.Dot(axisForProjection));
+		if (distance < centerDistance)
+		{
 			return false;
+		}
 	}
 
 	return true;
 }
 
-bool CCollisionMgr::IsCollision_Circle(CCollider2D* _pLeftCol, CCollider2D* _pRightCol)
+bool CCollisionMgr::IsCollision_Circle(const CCollider2D* _pLeftCol, const CCollider2D* _pRightCol)
 {
-	Vec3  vCenter = _pLeftCol->GetWorldPos() - _pRightCol->GetWorldPos();
-	float fDist   = vCenter.Length();
-	float fRadius = fabsf(_pLeftCol->GetWorldScale().x) * 0.5f + fabsf(_pRightCol->GetWorldScale().x) * 0.5f;
+	const Vec3  centerVector = _pLeftCol->GetWorldPos() - _pRightCol->GetWorldPos();
+	const float distance     = centerVector.Length();
+	const float radius       = fabsf(_pLeftCol->GetWorldScale().x) * 0.5f + fabsf(_pRightCol->GetWorldScale().x) * 0.5f;
 
-	if (fRadius < fDist)
+	if (radius < distance)
 	{
 		return false;
 	}
@@ -228,25 +223,29 @@ bool CCollisionMgr::IsCollision_Circle(CCollider2D* _pLeftCol, CCollider2D* _pRi
 void CCollisionMgr::CollisionBetween3D(const std::vector<CGameObject*>& _vecLeft,
                                        const std::vector<CGameObject*>& _vecRight)
 {
-	CCollider3D* pLeftCol  = nullptr;
-	CCollider3D* pRightCol = nullptr;
-
-	for (size_t i = 0; i < _vecLeft.size(); ++i)
+	for (auto& pLeftGameObject : _vecLeft)
 	{
-		pLeftCol = _vecLeft[i]->Collider3D();
+		CCollider3D* pLeftCol = pLeftGameObject->Collider3D();
 
 		if (nullptr == pLeftCol)
-			continue;
-
-		for (size_t j = 0; j < _vecRight.size(); ++j)
 		{
-			pRightCol = _vecRight[j]->Collider3D();
+			continue;
+		}
+
+		for (auto& pRightGameObject : _vecRight)
+		{
+			CCollider3D* pRightCol = pRightGameObject->Collider3D();
 
 			if (nullptr == pRightCol)
+			{
 				continue;
+			}
 
+			//자기 자신인 경우
 			if (pLeftCol == pRightCol)
+			{
 				continue;
+			}
 
 			// 두 충돌체가 이전에 충돌했었는지 확인
 			// 두 충돌체의 조합 아이디 생성
@@ -258,20 +257,24 @@ void CCollisionMgr::CollisionBetween3D(const std::vector<CGameObject*>& _vecLeft
 			// 두 충돌체는 처음 검사를 진행하고 있다.
 			if (iter == m_mapColInfo.end())
 			{
-				m_mapColInfo.insert(make_pair(ID.id, false));
+				m_mapColInfo.insert({ID.id, false});
 				iter = m_mapColInfo.find(ID.id);
 			}
 
 			// 두 충돌체중 하나라도 데드 상태인지 
-			bool bDead = pLeftCol->GetOwner()->IsDead() || pRightCol->GetOwner()->IsDead();
+			const bool bAnyDead = pLeftCol->GetOwner()->IsDead() || pRightCol->GetOwner()->IsDead();
 
-			// 두 충돌체 중 하나라도 비활성화 상태인지
-			bool bDeactive = !pLeftCol->GetOwner()->IsActive() || !pRightCol->GetOwner()->IsActive() || !pLeftCol->
-			                 IsActive() || !pRightCol->IsActive();
+			// 두 충돌체(또는 게임오브젝트) 중 하나라도 비활성화 상태인지
+			const bool bAnyDeActive = !pLeftCol->GetOwner()->IsActive()
+			                          || !pRightCol->GetOwner()->IsActive()
+			                          || !pLeftCol->IsActive()
+			                          || !pRightCol->IsActive();
 
 			// 이전 프레임에서는 충돌하지 않고 있었고, 현재 둘중 하나 이상이 비활성화 상태이면 충돌 검사를 하지 않겠다.
-			if (bDeactive && false == iter->second)
+			if (bAnyDeActive && false == iter->second)
+			{
 				continue;
+			}
 
 			// 충돌 검사
 			// 충돌 중이다.
@@ -281,13 +284,13 @@ void CCollisionMgr::CollisionBetween3D(const std::vector<CGameObject*>& _vecLeft
 				if (iter->second)
 				{
 					// 충돌 중이다
-					if (bDead || bDeactive)
+					if (bAnyDead || bAnyDeActive)
 					{
 						// 둘중 하나라도 삭제 예정이라면(삭제를 통한 충돌 해제가 발생하는 것으로 본다)
 						pLeftCol->OnCollisionExit(pRightCol);
 						pRightCol->OnCollisionExit(pLeftCol);
 
-						if (bDead)
+						if (bAnyDead)
 							m_mapColInfo.erase(iter);
 						else
 							iter->second = false;
@@ -298,12 +301,11 @@ void CCollisionMgr::CollisionBetween3D(const std::vector<CGameObject*>& _vecLeft
 						pRightCol->OnCollision(pLeftCol);
 					}
 				}
-
 				// 이전에는 충돌하지 않고 있었다.
 				else
 				{
 					// 이번에 막 충돌 진입했다.
-					if (!bDead)
+					if (!bAnyDead)
 					{
 						// 둘 중 하나라도 삭제 예정이라면 충돌 시작 자체를 하지 않게 한다.
 						pLeftCol->OnCollisionEnter(pRightCol);
@@ -312,7 +314,6 @@ void CCollisionMgr::CollisionBetween3D(const std::vector<CGameObject*>& _vecLeft
 					}
 				}
 			}
-
 			// 충돌하지 않고 있다.
 			else
 			{
@@ -330,7 +331,8 @@ void CCollisionMgr::CollisionBetween3D(const std::vector<CGameObject*>& _vecLeft
 
 void CCollisionMgr::CollisionCheck(int _iLayerLeftIdx, int _iLayerRightIdx)
 {
-	UINT iCol = 0, iRow = 0;
+	UINT iCol{};
+	UINT iRow{};
 
 	if (static_cast<UINT>(_iLayerLeftIdx) > static_cast<UINT>(_iLayerRightIdx))
 	{
@@ -348,7 +350,8 @@ void CCollisionMgr::CollisionCheck(int _iLayerLeftIdx, int _iLayerRightIdx)
 
 void CCollisionMgr::CollisionOff(int _iLayerLeftIdx, int _iLayerRightIdx)
 {
-	UINT iCol = 0, iRow = 0;
+	UINT iCol{};
+	UINT iRow{};
 
 	if (static_cast<UINT>(_iLayerLeftIdx) > static_cast<UINT>(_iLayerRightIdx))
 	{
@@ -366,22 +369,26 @@ void CCollisionMgr::CollisionOff(int _iLayerLeftIdx, int _iLayerRightIdx)
 
 void CCollisionMgr::CollisionCheck(const wstring& _strLeftName, const wstring& _strRightName)
 {
-	CScene* pCurScene   = CSceneMgr::GetInst()->GetCurScene();
-	CLayer* pLeftLayer  = pCurScene->GetLayer(_strLeftName);
-	CLayer* pRightLayer = pCurScene->GetLayer(_strRightName);
+	const CScene* pCurScene   = CSceneMgr::GetInst()->GetCurScene();
+	const CLayer* pLeftLayer  = pCurScene->GetLayer(_strLeftName);
+	const CLayer* pRightLayer = pCurScene->GetLayer(_strRightName);
 
 	if (pLeftLayer && pRightLayer)
+	{
 		CollisionCheck(pLeftLayer->GetLayerIdx(), pRightLayer->GetLayerIdx());
+	}
 }
 
 void CCollisionMgr::CollisionOff(const wstring& _strLeftName, const wstring& _strRightName)
 {
-	CScene* pCurScene   = CSceneMgr::GetInst()->GetCurScene();
-	CLayer* pLeftLayer  = pCurScene->GetLayer(_strLeftName);
-	CLayer* pRightLayer = pCurScene->GetLayer(_strRightName);
+	const CScene* pCurScene   = CSceneMgr::GetInst()->GetCurScene();
+	const CLayer* pLeftLayer  = pCurScene->GetLayer(_strLeftName);
+	const CLayer* pRightLayer = pCurScene->GetLayer(_strRightName);
 
 	if (pLeftLayer && pRightLayer)
+	{
 		CollisionOff(pLeftLayer->GetLayerIdx(), pRightLayer->GetLayerIdx());
+	}
 }
 
 bool CCollisionMgr::IsCollision3D(const CCollider3D* _pLeft, const CCollider3D* _pRight)

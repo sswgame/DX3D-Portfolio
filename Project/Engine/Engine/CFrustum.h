@@ -37,22 +37,19 @@ private:
 	bool CheckBoundingBoxInFrustum(Vec3 _BoundingBoxCenterPos, Vec3 _BoundingBoxScale);
 
 public:
-	void UpdateData();
+	void UpdateData() override;
+	void finalupdate();
 	void render();
 
-	void SetShowFrustum(bool _bShow) { m_bShowFrustum = _bShow; }
-	bool GetShowFrustum() { return m_bShowFrustum; }
-
-
 public:
-	void finalupdate();
+	void SetShowFrustum(bool _bShow) { m_bShowFrustum = _bShow; }
+	bool GetShowFrustum() const { return m_bShowFrustum; }
 
 	bool PointCheck(Vec3 _vPos);
 	bool SphereCheck(Vec3 _vPos, float _fRadius);
 
 public:
-	CLONE(CFrustum)
-public:
+	CLONE(CFrustum);
 	CFrustum();
 	virtual ~CFrustum();
 

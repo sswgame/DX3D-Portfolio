@@ -13,10 +13,7 @@ bool CRes::CheckFail(HRESULT _hr)
 {
 	if (FAILED(_hr))
 	{
-		const int iErrorCode  = GetLastError();
-		wchar_t   szText[256] = {};
-		wsprintf(szText, L"에러코드 : %d", iErrorCode);
-		MessageBox(nullptr, szText, L"텍스쳐 로딩 실패!!", MB_OK);
+		LOG_WARN("LOADING TEXTURE HAS AN ISSUE : %d", GetLastError());
 		return true;
 	}
 	return false;

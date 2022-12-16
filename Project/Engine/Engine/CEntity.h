@@ -24,6 +24,7 @@ public:
 public:
 	virtual void Serialize(YAML::Emitter& emitter) { }
 	virtual void Deserialize(const YAML::Node& node) {}
+
 public:
 	CEntity();
 	CEntity(const CEntity& _origin);

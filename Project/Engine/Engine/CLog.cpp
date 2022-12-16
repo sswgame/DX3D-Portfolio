@@ -29,6 +29,8 @@ void CLog::Init()
 
 void CLog::WriteLog(LOG_LEVEL level, const char* pMessage, ...)
 {
+	std::lock_guard<std::mutex> lock{s_mutex};
+
 	static const char* arrHeader[] = {"ERROR", "WARN", "INFO", "TRACE"};
 
 	SYSTEMTIME systemtime{};

@@ -16,199 +16,163 @@
 CEventMgr::CEventMgr()
 	: m_bObjEvn(false) {}
 
-CEventMgr::~CEventMgr() {}
+CEventMgr::~CEventMgr() = default;
 
 void CEventMgr::update()
 {
 	m_bObjEvn = false;
 
 	// Dead Object 삭제
-	for (size_t i = 0; i < m_vecDead.size(); ++i)
+	for (const auto& pGameObject : m_vecDead)
 	{
-		assert(m_vecDead[i]);
+		LOG_ASSERT(pGameObject, "DELETING INVALID GAME OBJECT");
 
 		// 삭제되는 오브젝트가 부모가 있다면(자식 오브젝트라면)
-		if (m_vecDead[i]->GetParent())
+		if (pGameObject->GetParent())
 		{
-			m_vecDead[i]->DisconnectBetweenParent();
+			pGameObject->DisconnectBetweenParent();
 		}
+		delete pGameObject;
 
-		delete m_vecDead[i];
 		m_bObjEvn = true;
 	}
 	m_vecDead.clear();
 
-
 	// Event 처리
-	for (size_t i = 0; i < m_vecEvent.size(); ++i)
+	for (const auto& eventInfo : m_vecEvent)
 	{
-		switch (m_vecEvent[i].eType)
+		switch (eventInfo.eType)
 		{
 		case EVENT_TYPE::CREATE_OBJ:
-			// lParam : Object Adress, wParam : Layer Index
 			{
-				CGameObject* pObj      = (CGameObject*)m_vecEvent[i].lParam;
-				int          iLayerIdx = (int)m_vecEvent[i].wParam;
-				CScene*      pCurScene = CSceneMgr::GetInst()->GetCurScene();
-				pCurScene->AddObject(pObj, iLayerIdx);
+				const auto    pGameObject = reinterpret_cast<CGameObject*>(eventInfo.lParam);
+				const int     layerIndex  = static_cast<int>(eventInfo.wParam);
+				const CScene* pCurScene   = CSceneMgr::GetInst()->GetCurScene();
+				pCurScene->AddObject(pGameObject, layerIndex);
 
-				pObj->start();
+				pGameObject->start();
 
 				m_bObjEvn = true;
+				break;
 			}
-			break;
-
 		case EVENT_TYPE::DELETE_OBJ:
-			// lParam : Object Adress
 			{
-				CGameObject* pDeleteObject = (CGameObject*)m_vecEvent[i].lParam;
+				auto pDeleteObject = reinterpret_cast<CGameObject*>(eventInfo.lParam);
 
 				if (false == pDeleteObject->m_bDead)
 				{
 					m_vecDead.push_back(pDeleteObject);
 
 					// 보유하고 있는 자식 오브젝트도 전부 Dead 체크 해둔다.
-					static list<CGameObject*> queue;
+					static list<CGameObject*> queue{};
 					queue.clear();
-
 					queue.push_back(pDeleteObject);
 
-					while (!queue.empty())
+					while (false == queue.empty())
 					{
 						CGameObject* pObj = queue.front();
 						queue.pop_front();
 						pObj->m_bDead = true;
 
-						const vector<CGameObject*>& vecChild = pObj->GetChild();
-						for (size_t i = 0; i < vecChild.size(); ++i)
+						for (auto& pChild : pObj->GetChild())
 						{
-							queue.push_back(vecChild[i]);
+							queue.push_back(pChild);
 						}
 					}
 				}
+				break;
 			}
-
-			break;
-
 		case EVENT_TYPE::ADD_CHILD:
-			// lParam : Parent Object, wParam : Child Object
 			{
-				CGameObject* pParent = (CGameObject*)m_vecEvent[i].lParam;
-				CGameObject* pChild  = (CGameObject*)m_vecEvent[i].wParam;
+				const auto pParent = reinterpret_cast<CGameObject*>(eventInfo.lParam);
+				const auto pChild  = reinterpret_cast<CGameObject*>(eventInfo.wParam);
 
-				int iParent_LayerIdx = pParent->GetLayerIndex();
-				int iChild_LayerIdx  = pChild->GetLayerIndex();
+				const int parentLayer = pParent->GetLayerIndex();
+				const int childLayer  = pChild->GetLayerIndex();
 
-				if (iParent_LayerIdx != iChild_LayerIdx)
+				if (parentLayer != childLayer)
 				{
-					CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-					if (iChild_LayerIdx != -1)
+					const CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+					if (childLayer != -1)
 					{
-						pCurScene->GetLayer(iChild_LayerIdx)->DeregisterObject(pChild);
+						pCurScene->GetLayer(childLayer)->DeregisterObject(pChild);
 					}
-					pChild->RenewLayerIndex(iParent_LayerIdx);
+					pChild->RenewLayerIndex(parentLayer);
 				}
-
 				pParent->AddChild(pChild);
 				m_bObjEvn = true;
+				break;
 			}
-			break;
-
 		case EVENT_TYPE::DISCONNECT_PARENT:
-			// lParam : Parent Object, wParam : Child Object
 			{
-				CGameObject* pObject = (CGameObject*)m_vecEvent[i].lParam;
+				const auto pObject = reinterpret_cast<CGameObject*>(eventInfo.lParam);
 				pObject->DisconnectBetweenParent();
-				int     i         = pObject->GetLayerIndex();
-				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-				pCurScene->GetLayer(i)->RegisterObjectAsRoot(pObject);
+				const int     layerIndex = pObject->GetLayerIndex();
+				const CScene* pCurScene  = CSceneMgr::GetInst()->GetCurScene();
+				pCurScene->GetLayer(layerIndex)->RegisterObjectAsRoot(pObject);
 
 				m_bObjEvn = true;
+				break;
 			}
-			break;
-
-
 		case EVENT_TYPE::SET_CAMEAR_INDEX:
 			{
-				CCamera* cam        = (CCamera*)m_vecEvent[i].lParam;
-				int      iChangeIdx = (int)m_vecEvent[i].wParam;
-
-				CRenderMgr::GetInst()->SwapCameraIndex(cam, iChangeIdx);
+				const auto pCamera    = reinterpret_cast<CCamera*>(eventInfo.lParam);
+				const int  iChangeIdx = static_cast<int>(eventInfo.wParam);
+				CRenderMgr::GetInst()->SwapCameraIndex(pCamera, iChangeIdx);
+				break;
 			}
-
-
-			break;
-
 		case EVENT_TYPE::ACTIVATE_OBJECT:
 			{
-				CGameObject* pObject = (CGameObject*)m_vecEvent[i].lParam;
-				pObject->m_bActive   = true;
+				const auto pObject = reinterpret_cast<CGameObject*>(eventInfo.lParam);
+				pObject->m_bActive = true;
 				pObject->active();
+				break;
 			}
-
-
-			break;
-
 		case EVENT_TYPE::DEACTIVATE_OBJECT:
 			{
-				CGameObject* pObject = (CGameObject*)m_vecEvent[i].lParam;
-				pObject->m_bActive   = false;
+				const auto pObject = reinterpret_cast<CGameObject*>(eventInfo.lParam);
+				pObject->m_bActive = false;
 				pObject->deactive();
+				break;
 			}
-			break;
-
-
 		case EVENT_TYPE::ACTIVATE_COMPONENT:
 			{
-				CComponent* pCom = (CComponent*)m_vecEvent[i].lParam;
+				const auto pCom = reinterpret_cast<CComponent*>(eventInfo.lParam);
 				pCom->active();
+				break;
 			}
-			break;
-
 		case EVENT_TYPE::DEACTIVATE_COMOPNENT:
 			{
-				CComponent* pCom = (CComponent*)m_vecEvent[i].lParam;
+				const auto pCom = reinterpret_cast<CComponent*>(eventInfo.lParam);
 				pCom->deactive();
+				break;
 			}
-			break;
-
 		case EVENT_TYPE::SCENE_CHANGE:
 			{
 				m_bObjEvn = true;
+				break;
 			}
-			break;
-
-
 		case EVENT_TYPE::DELETE_RES:
 			{
-				// lParam : Res Adress
-				CRes* pRes = (CRes*)m_vecEvent[i].lParam;
-
+				const auto pRes = reinterpret_cast<CRes*>(eventInfo.lParam);
 				CResMgr::GetInst()->DeleteRes(pRes->GetKey());
 
 				m_bObjEvn = true;
+				break;
 			}
-			break;
 		case EVENT_TYPE::CHANGE_FSM_STATE:
 			{
-				// lParam : FSM Component
-				// wParam : Next State Type Name
-
-				CFSM*   pFSM       = (CFSM*)m_vecEvent[i].lParam;
-				wstring sNextState = (const wchar_t*)m_vecEvent[i].wParam;
-
-
-				const auto iter = pFSM->m_mapState.find(sNextState);
-				if (iter == pFSM->m_mapState.end())
-					break;
+				const auto pFSM       = reinterpret_cast<CFSM*>(eventInfo.lParam);
+				CState*    pNextState = reinterpret_cast<CState*>(eventInfo.wParam);
 
 				// 기존 상태 Exit 
 				CState* pPrevState = pFSM->GetCurState();
 				if (pPrevState != nullptr)
+				{
 					pPrevState->Exit();
+				}
 
 				// 현재 상태 Enter 
-				CState* pNextState = iter->second;
 				pNextState->Enter();
 				pFSM->SetCurState(pNextState);
 
@@ -216,34 +180,30 @@ void CEventMgr::update()
 			}
 		case EVENT_TYPE::CHANGE_OBJ_LAYER_INDEX:
 			{
-				// lParam : GameObject*
-				// wParam : LayerIndex		
-				CGameObject* pObject      = (CGameObject*)m_vecEvent[i].lParam;
-				UINT         iNewLayerIdx = (UINT)m_vecEvent[i].wParam;
+				const auto pObject      = reinterpret_cast<CGameObject*>(eventInfo.lParam);
+				const UINT iNewLayerIdx = static_cast<UINT>(eventInfo.wParam);
 
-				UINT    iCurLayerIdx = pObject->GetLayerIndex();
-				CScene* pCurScene    = CSceneMgr::GetInst()->GetCurScene();
+				const UINT    iCurLayerIdx = pObject->GetLayerIndex();
+				const CScene* pCurScene    = CSceneMgr::GetInst()->GetCurScene();
 				pCurScene->GetLayer(iCurLayerIdx)->DeregisterObject(pObject);
 				pCurScene->AddObject(pObject, iNewLayerIdx);
 
 				m_bObjEvn = true;
+				break;
 			}
-			break;
 		case EVENT_TYPE::SWAP_LAYER:
 			{
-				// lParam : LayerIndex
-				// wParam : LayerIndex				
-				UINT iLayerIdx_1 = (UINT)m_vecEvent[i].lParam;
-				UINT iLayerIdx_2 = (UINT)m_vecEvent[i].wParam;
+				const UINT iLayerIdx_1 = static_cast<UINT>(eventInfo.lParam);
+				const UINT iLayerIdx_2 = static_cast<UINT>(eventInfo.wParam);
 
 				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 				pCurScene->SwapLayer(iLayerIdx_1, iLayerIdx_2);
 				m_bObjEvn = true;
+				break;
 			}
-			break;
 		case EVENT_TYPE::RENDER_TEXT:
 			{
-				CUIText* pUIText = (CUIText*)m_vecEvent[i].lParam;
+				auto pUIText = reinterpret_cast<CUIText*>(eventInfo.lParam);
 
 				if (pUIText->GetText().empty())
 				{
@@ -277,15 +237,8 @@ void CEventMgr::update()
 				CDevice::GetInst()->GetRtv2D()->EndDraw();
 				break;
 			}
-		// 이벤트 중에  변경 이벤트가 있었다면,
-		// 나머지 이벤트는 다 무시하고 종료
-		/*if (bChangeStage)
-		{
-			break;
-		}*/
 		}
 	}
-
 	m_vecEvent.clear();
 
 	//Custom Event

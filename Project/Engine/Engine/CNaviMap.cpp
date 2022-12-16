@@ -3,38 +3,29 @@
 
 #include "CScene.h"
 #include "CSceneMgr.h"
+#include "CLayer.h"
 
 #include "CTransform.h"
-#include"CMeshRender.h"
+#include "CMeshRender.h"
 #include "CNaviMapData.h"
 #include "CNaviAgent.h"
-#include "CSerializer.h"
 
 #include <Script/GameDefine.h>
 
-#include "CLayer.h"
-#include "CNaviAgent.h"
 
 CNaviMap::CNaviMap()
 	: CComponent{COMPONENT_TYPE::NAVIMAP}
 	, m_pNeviMapData(nullptr)
-	, m_vDebugLineColor(0.f, 0.f, 0.f, 1.f)
 	, m_vDebugMeshColor(0.1f, 0.1, 0.1f, 0.6f)
-
-{
-}
+	, m_vDebugLineColor(0.f, 0.f, 0.f, 1.f) {}
 
 CNaviMap::CNaviMap(const CNaviMap& _origin)
 	: CComponent{COMPONENT_TYPE::NAVIMAP}
 	, m_pNeviMapData(nullptr)
-	, m_vDebugLineColor(_origin.m_vDebugLineColor)
 	, m_vDebugMeshColor(_origin.m_vDebugMeshColor)
-{
-}
+	, m_vDebugLineColor(_origin.m_vDebugLineColor) {}
 
-CNaviMap::~CNaviMap()
-{
-}
+CNaviMap::~CNaviMap() {}
 
 
 void CNaviMap::SetNaviMapData(CNaviMapData* _pData)
@@ -168,14 +159,6 @@ void CNaviMap::render_debug()
 	}
 }
 
-void CNaviMap::Serialize(YAML::Emitter& emitter)
-{
-}
-
-void CNaviMap::Deserialize(const YAML::Node& node)
-{
-}
-
 void CNaviMap::SaveToScene(FILE* _pFile)
 {
 	CComponent::SaveToScene(_pFile);
@@ -183,7 +166,6 @@ void CNaviMap::SaveToScene(FILE* _pFile)
 	SaveResPtr(m_pNeviMapData, _pFile);
 	fwrite(&m_vDebugMeshColor, sizeof(Vec4), 1, _pFile);
 	fwrite(&m_vDebugLineColor, sizeof(Vec4), 1, _pFile);
-	
 }
 
 void CNaviMap::LoadFromScene(FILE* _pFile)

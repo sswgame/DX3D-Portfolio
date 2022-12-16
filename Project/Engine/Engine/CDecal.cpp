@@ -23,12 +23,11 @@ CDecal::CDecal()
 	}
 }
 
-CDecal::~CDecal() {}
+CDecal::~CDecal() = default;
 
 void CDecal::SetDecalType(DECAL_TYPE _eType)
 {
 	m_eType = _eType;
-
 	if (DECAL_TYPE::CUBE == m_eType)
 	{
 		SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh"));
@@ -46,7 +45,6 @@ void CDecal::SetDeferredLighting(bool _bLighting)
 	m_bUseDeferredLighting = _bLighting;
 
 	Ptr<CMaterial> pMtrl = nullptr;
-
 	if (m_bUseDeferredLighting)
 	{
 		pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\DeferredDecalMtrl.mtrl");
@@ -59,22 +57,12 @@ void CDecal::SetDeferredLighting(bool _bLighting)
 	SetSharedMaterial(pMtrl, 0);
 }
 
-wstring CDecal::GetDecalTypeName(int _idx)
+std::string CDecal::GetDecalTypeName(DECAL_TYPE _type) const
 {
-	switch (_idx)
-	{
-	case 0:
-		return L"SPHERE";
-	case 1:
-		return L"CUBE";
-	}
-
-	return L"INVALID_TYPE";
+	return magic_enum::enum_name(_type).data();
 }
 
-void CDecal::finalupdate()
-{
-}
+void CDecal::finalupdate() {}
 
 void CDecal::finalupdate_debug()
 {
@@ -91,7 +79,6 @@ void CDecal::finalupdate_debug()
 
 		m_pDebugObj->finalupdate();
 	}
-
 }
 
 void CDecal::UpdateData()
@@ -105,8 +92,9 @@ void CDecal::UpdateData()
 void CDecal::render()
 {
 	if (nullptr == GetMesh() || nullptr == GetMaterial(0))
+	{
 		return;
-
+	}
 	UpdateData();
 
 	Transform()->UpdateData();
@@ -117,7 +105,9 @@ void CDecal::render()
 void CDecal::render_debug()
 {
 	if (!m_pDebugObj->IsActive())
+	{
 		return;
+	}
 
 	m_pDebugObj->Transform()->UpdateData();
 

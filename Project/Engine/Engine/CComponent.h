@@ -10,6 +10,7 @@ class CComponent
 {
 public:
 	static CComponent* MakeComponent(const std::wstring& name);
+
 private:
 	const COMPONENT_TYPE m_eComType;
 	CGameObject*         m_pOwner;
@@ -54,7 +55,6 @@ public:
 		return m_pDebugObj->IsActive();
 	}
 
-
 public:
 	COMPONENT_TYPE GetType() const { return m_eComType; }
 	CGameObject*   GetOwner() const { return m_pOwner; }
@@ -89,7 +89,6 @@ public:
 protected:
 	virtual void active() { m_bActive = true; };
 	virtual void deactive() { m_bActive = false; };
-
 
 public:
 	CComponent(COMPONENT_TYPE _eType);

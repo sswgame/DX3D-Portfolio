@@ -14,6 +14,7 @@ private:
 
 public:
 	void finalupdate() override;
+
 public:
 	void Clear();
 
@@ -31,6 +32,7 @@ public:
 
 	void SetPreserveRatio(bool enable);
 	bool IsPreserveRatio() const { return m_preserveRatio; }
+
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;

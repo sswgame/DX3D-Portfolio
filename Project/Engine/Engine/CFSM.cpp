@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CFSM.h"
 #include "CEventMgr.h"
-#include "CSerializer.h"
+
 CFSM::CFSM()
 	: CComponent{COMPONENT_TYPE::FSM}
 	, m_pCurState(nullptr) {}
@@ -10,7 +10,6 @@ CFSM::~CFSM()
 {
 	Safe_Del_Map(m_mapState);
 }
-
 
 void CFSM::update()
 {
@@ -51,21 +50,23 @@ void CFSM::AddState(const wstring& _stateName, CState* _pState)
 {
 	const auto iter = m_mapState.find(_stateName);
 	if (iter != m_mapState.end())
+	{
 		return;
+	}
 	_pState->SetName(_stateName);
 	_pState->SetOwner(GetOwner());
-	m_mapState.insert(make_pair(_stateName, _pState));
+	m_mapState.insert({_stateName, _pState});
 }
 
 void CFSM::ChangeState(const wstring& _sStateType)
 {
-	static wstring sStateTypeName;
-	sStateTypeName = _sStateType;
+	auto iter = m_mapState.find(_sStateType);
+	LOG_ASSERT(iter!=m_mapState.end(), "INVALID STATE");
 
 	tEventInfo info{};
 	info.eType  = EVENT_TYPE::CHANGE_FSM_STATE;
 	info.lParam = (DWORD_PTR)this;
-	info.wParam = (DWORD_PTR)sStateTypeName.c_str();
+	info.wParam = (DWORD_PTR)iter->second;
 
 	CEventMgr::GetInst()->AddEvent(info);
 }
@@ -74,7 +75,7 @@ void CFSM::ChangeState(const wstring& _sStateType)
 void CFSM::DeleteState(const wstring& _strStateName)
 {
 	const CState* pState = GetState(_strStateName);
-	assert(pState);
+	LOG_ASSERT(pState, "DELETING INVALID STATE");
 	SAFE_DELETE(pState);
 	m_mapState.erase(_strStateName);
 }

@@ -100,10 +100,10 @@ CHILDREN:
       - MESHRENDER:
           MESH: [RectMesh, RectMesh]
           MATERIAL COUNT: 1
-          0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+          0: [material\UIInterface1.mtrl, material\UIInterface1.mtrl]
           USE DYNAMIC 0: true
           MATERIAL 0 TEXTURE LIST:
-            0: texture\UI\PlayerUI_Tex.png
+          {}
           m_bDynamicShadow: false
           m_bFrustumCulling: false
     SCRIPTS:

@@ -2,7 +2,6 @@
 #include "CRenderComponent.h"
 
 #include "CTexture.h"
-#include "CStructuredBuffer.h"
 
 class CTileMap : public CRenderComponent
 {
@@ -21,12 +20,11 @@ private:
 
 	bool m_bBufferUpdated;
 
-
 public:
 	void SetAtlasTex(Ptr<CTexture> _pAtlasTex)
 	{
 		m_pAtlasTex = _pAtlasTex;
-		m_vSliceUV = m_vSlicePixel / Vec2(m_pAtlasTex->Width(), m_pAtlasTex->Height());
+		m_vSliceUV  = m_vSlicePixel / Vec2(m_pAtlasTex->Width(), m_pAtlasTex->Height());
 	}
 
 	void SetTileSize(Vec2 _vPixelSize)
@@ -40,22 +38,21 @@ public:
 	void SetTileData(int _iTileIdx, int _iImgIdx);
 	void ClearTileData();
 
+public:
+	void finalupdate() override;
+	void render() override;
+	void UpdateData() override;
 
 public:
-	virtual void finalupdate() override;
-	virtual void render() override;
-	virtual void UpdateData() override;
-
-public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
-	CLONE(CTileMap)
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;;
 	void Deserialize(const YAML::Node& node) override;
 
 public:
+	CLONE(CTileMap);
 	CTileMap();
 	CTileMap(const CTileMap& _origin);
 	virtual ~CTileMap();

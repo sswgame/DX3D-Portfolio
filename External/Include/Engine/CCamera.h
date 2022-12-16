@@ -65,7 +65,7 @@ public:
 	bool        GetShowFrustum() { return m_Frustum.GetShowFrustum(); }
 	const tRay& GetRay() const { return m_ray; }
 	PROJ_TYPE   GetProjType() const { return m_eProjType; }
-	CFrustum	GetFrustum() const { return m_Frustum; }
+	CFrustum    GetFrustum() const { return m_Frustum; }
 
 	void CheckLayerMask(int _iLayerIdx, bool enable = true);
 	void CheckLayerMask(const wstring& _strLayerName, bool enable = true);
@@ -104,12 +104,13 @@ public:
 public:
 	void SaveToScene(FILE* _pFile) override;
 	void LoadFromScene(FILE* _pFile) override;
-	CLONE(CCamera)
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
+
 public:
+	CLONE(CCamera);
 	CCamera();
 	CCamera(const CCamera& _origin);
 	virtual ~CCamera();

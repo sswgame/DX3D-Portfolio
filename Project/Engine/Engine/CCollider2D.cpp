@@ -9,13 +9,13 @@
 #include "CTransform.h"
 #include "CScript.h"
 #include "CSerializer.h"
+
 CCollider2D::CCollider2D()
-	:
-	CComponent(COMPONENT_TYPE::COLLIDER2D)
-  , m_eColliderType(COLLIDER2D_TYPE::BOX)
-  , m_vOffsetPos(Vec2(0.f, 0.f))
-  , m_vOffsetScale(Vec2(1.f, 1.f))
-  , m_iCollisionCount(0)
+	: CComponent(COMPONENT_TYPE::COLLIDER2D)
+	, m_eColliderType(COLLIDER2D_TYPE::BOX)
+	, m_vOffsetPos(Vec2(0.f, 0.f))
+	, m_vOffsetScale(Vec2(1.f, 1.f))
+	, m_iCollisionCount(0)
 {
 	// Collider2D 모양에 맞는 메쉬 참조
 	SetCollider2DType(m_eColliderType);
@@ -25,12 +25,11 @@ CCollider2D::CCollider2D()
 }
 
 CCollider2D::CCollider2D(const CCollider2D& _Origin)
-	:
-	CComponent(_Origin)
-  , m_eColliderType(_Origin.m_eColliderType)
-  , m_vOffsetPos(_Origin.m_vOffsetPos)
-  , m_vOffsetScale(_Origin.m_vOffsetScale)
-  , m_iCollisionCount(0)
+	: CComponent(_Origin)
+	, m_eColliderType(_Origin.m_eColliderType)
+	, m_vOffsetPos(_Origin.m_vOffsetPos)
+	, m_vOffsetScale(_Origin.m_vOffsetScale)
+	, m_iCollisionCount(0)
 {
 	// Collider2D 모양에 맞는 메쉬 참조
 	SetCollider2DType(m_eColliderType);
@@ -77,15 +76,15 @@ void CCollider2D::SetOffsetScale(float _x, float _y)
 
 void CCollider2D::finalupdate()
 {
-	Matrix matTrans = XMMatrixTranslation(m_vOffsetPos.x, m_vOffsetPos.y, 0.f);
-	Matrix matScale = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, 1.f);
-	m_matColWorld   = matScale * matTrans;
+	const Matrix matTrans = XMMatrixTranslation(m_vOffsetPos.x, m_vOffsetPos.y, 0.f);
+	const Matrix matScale = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, 1.f);
+	m_matColWorld         = matScale * matTrans;
 
-	Vec3   vObjScale      = Transform()->GetWorldScale();
-	Matrix matObjScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjScale.x, vObjScale.y, vObjScale.z));
+	const Vec3   scale       = Transform()->GetWorldScale();
+	const Matrix matInvScale = XMMatrixInverse(nullptr, XMMatrixScaling(scale.x, scale.y, scale.z));
 
 	// 충돌체 상대행렬 * 오브젝트 월드 크기 역행렬(크기^-1) * 오브젝트 월드 행렬(크기 * 회전 * 이동)
-	m_matColWorld = m_matColWorld * matObjScaleInv * Transform()->GetWorldMat();
+	m_matColWorld = m_matColWorld * matInvScale * Transform()->GetWorldMat();
 }
 
 void CCollider2D::UpdateData()
@@ -113,19 +112,17 @@ void CCollider2D::OnCollisionEnter(CCollider2D* _Other)
 {
 	++m_iCollisionCount;
 
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
+	for (auto& pScript : GetOwner()->GetScripts())
 	{
-		vecScript[i]->OnCollisionEnter(_Other->GetOwner());
+		pScript->OnCollisionEnter(_Other->GetOwner());
 	}
 }
 
 void CCollider2D::OnCollision(CCollider2D* _Other)
 {
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
+	for (auto& pScript : GetOwner()->GetScripts())
 	{
-		vecScript[i]->OnCollision(_Other->GetOwner());
+		pScript->OnCollision(_Other->GetOwner());
 	}
 }
 
@@ -133,10 +130,9 @@ void CCollider2D::OnCollisionExit(CCollider2D* _Other)
 {
 	--m_iCollisionCount;
 
-	const vector<CScript*>& vecScript = GetOwner()->GetScripts();
-	for (size_t i = 0; i < vecScript.size(); ++i)
+	for (auto& pScript : GetOwner()->GetScripts())
 	{
-		vecScript[i]->OnCollisionExit(_Other->GetOwner());
+		pScript->OnCollisionExit(_Other->GetOwner());
 	}
 }
 
@@ -169,7 +165,7 @@ void CCollider2D::Serialize(YAML::Emitter& emitter)
 
 void CCollider2D::Deserialize(const YAML::Node& node)
 {
-	m_eColliderType = (COLLIDER2D_TYPE)node[NAME_OF(m_eColliderType)].as<int>();
+	m_eColliderType = static_cast<COLLIDER2D_TYPE>(node[NAME_OF(m_eColliderType)].as<int>());
 	m_vOffsetPos    = node[NAME_OF(m_vOffsetPos)].as<Vec2>();
 	m_vOffsetScale  = node[NAME_OF(m_vOffsetScale)].as<Vec2>();
 

@@ -8,8 +8,8 @@ private:
 	Vec3 m_vRelativeScale;
 	Vec3 m_vRelativeRot;     // 축별 회전량
 
-	Vec3 m_arrRelativeDir[(UINT)DIR_TYPE::END]; // 상대 방향
-	Vec3 m_arrWorldDir[(UINT)DIR_TYPE::END];    // 최종 월드상에서의 방향
+	Vec3 m_arrRelativeDir[static_cast<UINT>(DIR_TYPE::END)]; // 상대 방향
+	Vec3 m_arrWorldDir[static_cast<UINT>(DIR_TYPE::END)];    // 최종 월드상에서의 방향
 
 	Matrix m_matRelativeRot;
 	Matrix m_matWorld;     // 위치변환 정보 행렬
@@ -32,52 +32,53 @@ public:
 
 	void SetMovePosition(const Vec3 _vPos) { m_vecMovePosition = _vPos; }
 	void SetMovePosition(float _x, float _y, float _z) { m_vecMovePosition = Vec3(_x, _y, _z); }
-	
 
-	const Vec3& GetRelativePos() { return m_vRelativePos; }
-	const Vec3& GetRelativeScale() { return m_vRelativeScale; }
-	const Vec3& GetRelativeRotation() { return m_vRelativeRot; };
 
-	const Vec3& GetRelativeDir(DIR_TYPE _eType) { return m_arrRelativeDir[(UINT)_eType]; }
-	const Vec3& GetRelativeRightDir() { return m_arrRelativeDir[(UINT)DIR_TYPE::RIGHT]; }
-	const Vec3& GetRelativeUpDir() { return m_arrRelativeDir[(UINT)DIR_TYPE::UP]; }
-	const Vec3& GetRelativeFrontDir() { return m_arrRelativeDir[(UINT)DIR_TYPE::FRONT]; }
+	const Vec3& GetRelativePos() const { return m_vRelativePos; }
+	const Vec3& GetRelativeScale() const { return m_vRelativeScale; }
+	const Vec3& GetRelativeRotation() const { return m_vRelativeRot; };
 
-	const Vec3& GetWorldDir(DIR_TYPE _eType) { return m_arrWorldDir[(UINT)_eType]; }
-	const Vec3& GetWorldRightDir() { return m_arrWorldDir[(UINT)DIR_TYPE::RIGHT]; }
-	const Vec3& GetWorldUpDir() { return m_arrWorldDir[(UINT)DIR_TYPE::UP]; }
-	const Vec3& GetWorldFrontDir() { return m_arrWorldDir[(UINT)DIR_TYPE::FRONT]; }
+	const Vec3& GetRelativeDir(DIR_TYPE _eType) const { return m_arrRelativeDir[static_cast<UINT>(_eType)]; }
+	const Vec3& GetRelativeRightDir() const { return m_arrRelativeDir[static_cast<UINT>(DIR_TYPE::RIGHT)]; }
+	const Vec3& GetRelativeUpDir() const { return m_arrRelativeDir[static_cast<UINT>(DIR_TYPE::UP)]; }
+	const Vec3& GetRelativeFrontDir() const { return m_arrRelativeDir[static_cast<UINT>(DIR_TYPE::FRONT)]; }
 
-	Vec3   GetWorldPos() { return m_matWorld.Translation(); }
+	const Vec3& GetWorldDir(DIR_TYPE _eType) const { return m_arrWorldDir[static_cast<UINT>(_eType)]; }
+	const Vec3& GetWorldRightDir() const { return m_arrWorldDir[static_cast<UINT>(DIR_TYPE::RIGHT)]; }
+	const Vec3& GetWorldUpDir() const { return m_arrWorldDir[static_cast<UINT>(DIR_TYPE::UP)]; }
+	const Vec3& GetWorldFrontDir() const { return m_arrWorldDir[static_cast<UINT>(DIR_TYPE::FRONT)]; }
+
+	Vec3   GetWorldPos() const { return m_matWorld.Translation(); }
 	Vec3   GetWorldScale();
-	Matrix GetWorldRotation();
-	bool   GetIgnorantParentScale() { return m_bIgnoreParentScale; }
-	bool   GetIgnoreParent() { return m_bIgnoreParent; }
+	Matrix GetWorldRotation() const;
 
-	const Matrix& GetWorldMat() { return m_matWorld; }
-	const Matrix& GetWorldInvMat() { return m_matWorldInv; }
+	const Matrix& GetWorldMat() const { return m_matWorld; }
+	const Matrix& GetWorldInvMat() const { return m_matWorldInv; }
+
+	bool GetIgnorantParentScale() const { return m_bIgnoreParentScale; }
+	bool GetIgnoreParent() const { return m_bIgnoreParent; }
 
 	void SetIgnoreParentScale(bool _bSet) { m_bIgnoreParentScale = _bSet; }
 	void SetIgnoreParent(bool _bSet) { m_bIgnoreParent = _bSet; }
 
-	virtual void UpdateData() override;
-	virtual void finalupdate() override;
-	virtual void finalupdate_module() override;
+public:
+	void UpdateData() override;
+	void finalupdate() override;
+	void finalupdate_module() override;
 
-	virtual void active();
-	virtual void deactive();
+	void active() override;
+	void deactive() override;
 
 public:
-	virtual void SaveToScene(FILE* _pFile) override;
-	virtual void LoadFromScene(FILE* _pFile) override;
-
-	CLONE(CTransform)
+	void SaveToScene(FILE* _pFile) override;
+	void LoadFromScene(FILE* _pFile) override;
 
 public:
 	void Serialize(YAML::Emitter& emitter) override;
 	void Deserialize(const YAML::Node& node) override;
 
 public:
+	CLONE(CTransform);
 	CTransform();
-	~CTransform();
+	virtual ~CTransform();
 };

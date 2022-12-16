@@ -44,7 +44,6 @@ public:
 	CState(wstring _sState);
 	virtual ~CState();
 
-public:
 	friend class CFSM;
 	friend class CEventMgr;
 };

@@ -171,7 +171,6 @@ void CRenderComponent::render_shadowmap()
 	Transform()->UpdateData();
 	Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ShadowMap.mtrl");
 
-
 	CAnimator3D* pAnim3D = GetOwner()->Animator3D();
 	if (pAnim3D)
 	{
@@ -194,7 +193,7 @@ void CRenderComponent::SaveToScene(FILE* _pFile)
 
 	SaveResPtr(m_pMesh, _pFile);
 
-	UINT iMtrlCount = GetMtrlCount();
+	const UINT iMtrlCount = GetMtrlCount();
 	fwrite(&iMtrlCount, sizeof(UINT), 1, _pFile);
 
 	for (UINT i = 0; i < iMtrlCount; ++i)
@@ -230,7 +229,7 @@ void CRenderComponent::Serialize(YAML::Emitter& emitter)
 {
 	if (nullptr != m_pMesh)
 	{
-		CRes& mesh = *m_pMesh.Get();
+		const CRes& mesh = *m_pMesh.Get();
 		emitter << YAML::Key << "MESH" << YAML::Value << mesh;
 	}
 	else
@@ -238,7 +237,7 @@ void CRenderComponent::Serialize(YAML::Emitter& emitter)
 		emitter << YAML::Key << "MESH" << YAML::Value << "";
 	}
 
-	int materialCount = GetMtrlCount();
+	const int materialCount = GetMtrlCount();
 	emitter << YAML::Key << "MATERIAL COUNT" << YAML::Value << materialCount;
 	for (int i = 0; i < materialCount; ++i)
 	{
@@ -258,8 +257,8 @@ void CRenderComponent::Serialize(YAML::Emitter& emitter)
 
 void CRenderComponent::Deserialize(const YAML::Node& node)
 {
-	m_pMesh           = LoadAs<CMesh>(node["MESH"]);
-	int materialCount = node["MATERIAL COUNT"].as<int>();
+	m_pMesh                 = LoadAs<CMesh>(node["MESH"]);
+	const int materialCount = node["MATERIAL COUNT"].as<int>();
 
 	m_vecMtrls.resize(materialCount);
 	m_vecUseDynamicMaterial.resize(materialCount);

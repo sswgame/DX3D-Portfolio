@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "CWeightMapShader.h"
 
-#include "CConstBuffer.h"
 #include "CStructuredBuffer.h"
 
 CWeightMapShader::CWeightMapShader()
@@ -11,21 +10,16 @@ CWeightMapShader::CWeightMapShader()
 	, m_iBrushIdx(0)
 	, m_iWeightIdx(0)
 	, m_iWidth(0)
-	, m_iHeight(0)
-{
-}
+	, m_iHeight(0) {}
 
-CWeightMapShader::~CWeightMapShader()
-{
-
-}
+CWeightMapShader::~CWeightMapShader() = default;
 
 void CWeightMapShader::UpdateData()
 {
-	m_Param.iArr[0] = (int)m_iWidth;
-	m_Param.iArr[1] = (int)m_iHeight;
-	m_Param.iArr[2] = m_iBrushIdx;
-	m_Param.iArr[3] = m_iWeightIdx;
+	m_Param.iArr[0]  = m_iWidth;
+	m_Param.iArr[1]  = m_iHeight;
+	m_Param.iArr[2]  = m_iBrushIdx;
+	m_Param.iArr[3]  = m_iWeightIdx;
 	m_Param.v2Arr[0] = m_vBrushScale;
 
 	m_pWeightMap->UpdateData_CS(0, false);

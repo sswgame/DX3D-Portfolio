@@ -10,7 +10,7 @@ void CFontMgr::Init()
 {
 	const HRESULT hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED,
 	                                       __uuidof(m_pFactory),
-	                                       (IUnknown**)m_pFactory.GetAddressOf());
+	                                       reinterpret_cast<IUnknown**>(m_pFactory.GetAddressOf()));
 	if (FAILED(hr))
 	{
 		LOG_ASSERT(hr==S_OK, "DWRITE CREATION FAILED");
@@ -80,7 +80,6 @@ ComPtr<IDWriteFontCollection1> CFontMgr::FindFontCollection(const std::wstring& 
 	{
 		return iter->second;
 	}
-
 	return nullptr;
 }
 
@@ -100,7 +99,7 @@ std::wstring CFontMgr::GetFontFaceName(const std::wstring& _key)
 	if (nullptr == pFontCollection)
 	{
 		LOG_WARN("FONT FACE NOT FOUND");
-		return L"";
+		return std::wstring{};
 	}
 
 	ComPtr<IDWriteFontFamily> pFamily{};
@@ -127,7 +126,6 @@ ComPtr<IDWriteTextFormat> CFontMgr::CreateFontFromFile(const std::wstring& _key,
                                                        const std::wstring& _locale)
 {
 	ComPtr<IDWriteTextFormat> pFont = FindFont(_key);
-
 	if (pFont)
 	{
 		return pFont;
@@ -202,14 +200,12 @@ ComPtr<ID2D1SolidColorBrush> CFontMgr::FindColor(const Vec4& _color)
 
 UINT CFontMgr::GetColorID(const Vec4& _color)
 {
-	UINT  colorID{};
-	UCHAR R{}, G{}, B{}, A{};
+	const UCHAR R = static_cast<UCHAR>(_color.x * 255);
+	const UCHAR G = static_cast<UCHAR>(_color.y * 255);
+	const UCHAR B = static_cast<UCHAR>(_color.z * 255);
+	const UCHAR A = static_cast<UCHAR>(_color.w * 255);
 
-	R = static_cast<UCHAR>(_color.x * 255);
-	G = static_cast<UCHAR>(_color.y * 255);
-	B = static_cast<UCHAR>(_color.z * 255);
-	A = static_cast<UCHAR>(_color.w * 255);
-
+	UINT colorID{};
 	colorID = (R << 24) | (G << 16) | (B << 8) | A;
 
 	return colorID;

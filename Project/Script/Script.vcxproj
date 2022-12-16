@@ -134,6 +134,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="CameraMoveScript.h" />
     <ClInclude Include="CAttack_Gun.h" />
     <ClInclude Include="CDeath_Gun.h" />
+    <ClInclude Include="TestDeadScript.h" />
     <ClInclude Include="Deux_Attack.h" />
     <ClInclude Include="Deux_Die.h" />
     <ClInclude Include="Deux_Hit.h" />
@@ -201,6 +202,8 @@ call CodeGen.exe</Command>
     <ClInclude Include="MonsterSearchScript.h" />
     <ClInclude Include="MonsterShieldScript.h" />
     <ClInclude Include="MonsterSwordScript.h" />
+    <ClInclude Include="ObjMgrState_LOADING.h" />
+    <ClInclude Include="ObjMgrState_IDLE.h" />
     <ClInclude Include="PaperBurnScript.h" />
     <ClInclude Include="PlayerCamScript.h" />
     <ClInclude Include="PlayerScript.h" />
@@ -219,6 +222,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="CameraMoveScript.cpp" />
     <ClCompile Include="CAttack_Gun.cpp" />
     <ClCompile Include="CDeath_Gun.cpp" />
+    <ClCompile Include="TestDeadScript.cpp" />
     <ClCompile Include="Deux_Attack.cpp" />
     <ClCompile Include="Deux_Die.cpp" />
     <ClCompile Include="Deux_Hit.cpp" />
@@ -284,6 +288,8 @@ call CodeGen.exe</Command>
     <ClCompile Include="MonsterSearchScript.cpp" />
     <ClCompile Include="MonsterShieldScript.cpp" />
     <ClCompile Include="MonsterSwordScript.cpp" />
+    <ClCompile Include="ObjMgrState_LOADING.cpp" />
+    <ClCompile Include="ObjMgrState_IDLE.cpp" />
     <ClCompile Include="PaperBurnScript.cpp" />
     <ClCompile Include="PlayerCamScript.cpp" />
     <ClCompile Include="PlayerScript.cpp" />

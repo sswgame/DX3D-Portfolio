@@ -84,7 +84,7 @@ float4 PS_ColumnFlame(VTX_OUT _in) : SV_Target
 // BlendState : DEFAULT
 // =========================
 
-#define EXPLODE_ON g_int_0
+#define EXPLODE_ON g_float_0
 
 VTX_OUT VS_Magma(VTX_IN _in)
 {
@@ -112,10 +112,7 @@ float4 PS_Magma(VTX_OUT _in) : SV_Target
         vOutColor = g_tex_0.Sample(g_sam_0, _in.vUV);
     }
     
-    if (EXPLODE_ON == 1)
-    {
-        vOutColor *= 1.001f;
-    }
+    vOutColor += g_float_0 * vOutColor;
     
 
     return vOutColor;

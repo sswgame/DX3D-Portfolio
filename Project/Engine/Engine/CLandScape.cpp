@@ -3,12 +3,9 @@
 
 #include "CRenderMgr.h"
 #include "CKeyMgr.h"
-
 #include "CTransform.h"
 #include "CCamera.h"
-
 #include "CStructuredBuffer.h"
-#include "CSerializer.h"
 
 CLandScape::CLandScape()
 	: CRenderComponent(COMPONENT_TYPE::LANDSCAPE)
@@ -19,7 +16,7 @@ CLandScape::CLandScape()
 	, m_iWeightWidth(0)
 	, m_iWeightHeight(0)
 	, m_iWeightIdx(0)
-	, m_vBrushScale()
+	, m_vBrushScale(1.f, 1.f)
 	, m_iBrushIdx(0)
 	, m_eMod(LANDSCAPE_MOD::NONE)
 {
@@ -85,14 +82,14 @@ void CLandScape::render()
 	Transform()->UpdateData();
 
 	// 가중치 버퍼 전달
-	m_pWeightMapBuffer->UpdateData(PIPELINE_STAGE::PS, 17);
+	m_pWeightMapBuffer->UpdateData(PS, 17);
 
 	// 가중치 버퍼 해상도 전달
-	Vec2 vWeightMapResolution = Vec2((float)m_iWeightWidth, (float)m_iWeightHeight);
+	auto vWeightMapResolution = Vec2(static_cast<float>(m_iWeightWidth), static_cast<float>(m_iWeightHeight));
 	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC2_1, &vWeightMapResolution);
 
 	// 타일 배열 개수 전달
-	float m_fTileCount = float(m_pTileArrTex->GetArraySize() / 2); // 색상, 노말 합쳐져있어서 나누기 2 해줌
+	float m_fTileCount = static_cast<float>(m_pTileArrTex->GetArraySize() / 2); // 색상, 노말 합쳐져있어서 나누기 2 해줌
 	GetMaterial(0)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fTileCount);
 
 	// 타일 텍스쳐 전달
@@ -108,21 +105,23 @@ void CLandScape::render()
 void CLandScape::Raycasting()
 {
 	// 시점 카메라를 가져옴
-	CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCam();
+	const CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCam();
 	if (nullptr == pMainCam)
+	{
 		return;
+	}
 
 	// 월드 기준 광선을 지형의 로컬로 보냄
 	const Matrix& matWorldInv = Transform()->GetWorldInvMat();
-	const tRay& ray = pMainCam->GetRay();
+	const tRay&   ray         = pMainCam->GetRay();
 
-	tRay CamRay = {};
+	tRay CamRay   = {};
 	CamRay.vStart = XMVector3TransformCoord(ray.vStart, matWorldInv);
-	CamRay.vDir = XMVector3TransformNormal(ray.vDir, matWorldInv);
+	CamRay.vDir   = XMVector3TransformNormal(ray.vDir, matWorldInv);
 	CamRay.vDir.Normalize();
 
 	// 지형과 카메라 Ray 의 교점을 구함
-	tRaycastOut out = { Vec2(0.f, 0.f), 0x7fffffff, 0 };
+	constexpr tRaycastOut out = {Vec2(0.f, 0.f), 0x7fffffff, 0};
 	m_pCrossBuffer->SetData(&out, 1);
 
 	m_pCSRaycast->SetHeightMap(m_pHeightMap);

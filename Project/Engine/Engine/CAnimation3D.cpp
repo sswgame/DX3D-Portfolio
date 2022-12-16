@@ -9,6 +9,7 @@
 
 #include "CAnimation3DShader.h"
 #include "CSerializer.h"
+
 CAnimation3D::CAnimation3D()
 	: m_pOwner(nullptr)
 	, m_tClip{}
@@ -27,7 +28,6 @@ CAnimation3D::CAnimation3D()
 	, m_fLerpTime(0.5f)
 	, m_fLerpTimeAcc(0.f)
 	, m_iPlayCnt{0} {}
-
 
 CAnimation3D::CAnimation3D(const CAnimation3D& _origin)
 	: m_pOwner(nullptr)
@@ -64,7 +64,7 @@ void CAnimation3D::SetCallback(std::function<void()> func, int frameIndex)
 	}
 	else
 	{
-		assert(nullptr &&"EXIST CALLBAC AT THE FRAME INDEX");
+		LOG_ASSERT(iter==m_mapCallback.end(), "EXIST CALLBAC AT THE FRAME INDEX");
 	}
 }
 
@@ -81,9 +81,12 @@ void CAnimation3D::FireCallback(int frameIndex)
 void CAnimation3D::finalupdate()
 {
 	if (nullptr == m_pOwner || true == m_bFinish)
+	{
 		return;
+	}
 
 	m_dCurTime = 0.f;
+
 	switch (m_eCurState)
 	{
 	case ANIMATION_STATE::BEFORE_PLAY:
@@ -95,7 +98,6 @@ void CAnimation3D::finalupdate()
 			*/
 
 			// 현재 재생중인 Clip 의 시간을 진행한다.
-
 			m_vecClipUpdateTime[m_iCurClip] += DT * m_fSpeed;
 
 			m_iCurFrameIdx  = m_iPrevAnimEndFrameIdx;
@@ -124,7 +126,6 @@ void CAnimation3D::finalupdate()
 				m_eCurState = ANIMATION_STATE::FINISH;
 				m_bFinish   = true;
 				m_bPlay     = false;
-				//m_vecClipUpdateTime[m_iCurClip] = 0.f;
 			}
 
 			m_dCurTime = m_tClip.dStartTime + m_vecClipUpdateTime[m_iCurClip];
@@ -134,9 +135,13 @@ void CAnimation3D::finalupdate()
 			m_iCurFrameIdx         = static_cast<int>(dFrameIdx);
 			// 다음 프레임 인덱스
 			if (m_iCurFrameIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
+			{
 				m_iNextFrameIdx = m_iCurFrameIdx;	// 끝이면 현재 인덱스를 유지
+			}
 			else
+			{
 				m_iNextFrameIdx = m_iCurFrameIdx + 1;
+			}
 
 			// 프레임간의 시간에 따른 비율을 구해준다.
 			m_fRatio = static_cast<float>(dFrameIdx - static_cast<double>(m_iCurFrameIdx));
@@ -150,9 +155,13 @@ void CAnimation3D::finalupdate()
 			m_iCurFrameIdx         = static_cast<int>(dFrameIdx);
 
 			if (m_iCurFrameIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
+			{
 				m_iNextFrameIdx = m_iCurFrameIdx;
+			}
 			else
+			{
 				m_iNextFrameIdx = m_iCurFrameIdx + 1;
+			}
 
 			m_fRatio = static_cast<float>(dFrameIdx - static_cast<double>(m_iCurFrameIdx));
 		}
@@ -180,8 +189,8 @@ void CAnimation3D::UpdateData()
 	if (!m_bFinalMatUpdate)
 	{
 		// Animation3D Update Compute Shader
-		const auto pUpdateShader = static_cast<CAnimation3DShader*>(CResMgr::GetInst()->FindRes<
-			CComputeShader>(L"Animation3DUpdateShader").Get());
+		Ptr<CComputeShader> pShader       = CResMgr::GetInst()->FindRes<CComputeShader>(L"Animation3DUpdateShader");
+		const auto          pUpdateShader = static_cast<CAnimation3DShader*>(pShader.Get());
 
 		// Bone Data
 		Ptr<CMesh> pMesh = m_pOwner->MeshRender()->GetMesh();
@@ -212,13 +221,14 @@ void CAnimation3D::ClearData() const
 	m_pOwner->GetBoneFinalMatBuffer()->Clear();
 	m_pOwner->GetSocketBuffer()->Clear();
 
-	const UINT     iMtrlCount = m_pOwner->MeshRender()->GetMtrlCount();
-	Ptr<CMaterial> pMtrl      = nullptr;
+	const UINT iMtrlCount = m_pOwner->MeshRender()->GetMtrlCount();
 	for (UINT i = 0; i < iMtrlCount; ++i)
 	{
-		pMtrl = m_pOwner->MeshRender()->GetMaterial(i);
+		Ptr<CMaterial> pMtrl = m_pOwner->MeshRender()->GetMaterial(i);
 		if (nullptr == pMtrl)
+		{
 			continue;
+		}
 
 		pMtrl->SetAnim3D(false); // Animation Mesh 알리기
 		pMtrl->SetBoneCount(0);
@@ -235,13 +245,17 @@ void CAnimation3D::check_mesh(Ptr<CMesh> _pMesh) const
 	}
 }
 
-void CAnimation3D::Play(bool _b)
+void CAnimation3D::Play(bool _bEnable)
 {
-	m_bPlay = _b;
+	m_bPlay = _bEnable;
 	if (m_bPlay)
+	{
 		m_eCurState = ANIMATION_STATE::PLAY;
+	}
 	else
+	{
 		m_eCurState = ANIMATION_STATE::STOP;
+	}
 }
 
 void CAnimation3D::Reset()
@@ -309,25 +323,27 @@ void CAnimation3D::SetFrameInfoByTime(int _ClipNum, double _StartTime, double _E
 
 void CAnimation3D::SetClipUpdateTime(int _vecClipSize)
 {
-	m_vecClipUpdateTime.resize(_vecClipSize);
-
-	static float fTime = 0.f;
-	//fTime += 1.f;
-	m_vecClipUpdateTime[0] = fTime;
+	m_vecClipUpdateTime.resize(_vecClipSize, 0.f);
 }
 
 void CAnimation3D::SetStartTime(double _startTime)
 {
-	if (m_tClip.dStartTime == _startTime)
+	if (m_tClip.dStartTime == _startTime || static_cast<float>(m_tClip.dStartTime) == static_cast<float>(_startTime))
+	{
 		return;
-	if (static_cast<float>(m_tClip.dStartTime) == static_cast<float>(_startTime))
-		return;
+	}
+
 	m_tClip.dStartTime = _startTime;
 
 	if (_startTime <= 0.0)
+	{
 		m_tClip.dStartTime = 0.0;
+	}
+
 	if (_startTime >= m_pOwner->GetAnimClip(m_iCurClip).dTimeLength)
+	{
 		m_tClip.dStartTime = m_pOwner->GetAnimClip(m_iCurClip).dTimeLength;
+	}
 
 	// TIME 으로 INDEX 를 구한다. 
 	m_tClip.iStartFrame = static_cast<int>(m_tClip.dStartTime * m_iFrameCnt);
@@ -335,16 +351,21 @@ void CAnimation3D::SetStartTime(double _startTime)
 
 void CAnimation3D::SetEndTime(double _endTime)
 {
-	if (m_tClip.dEndTime == _endTime)
+	if (m_tClip.dEndTime == _endTime || static_cast<float>(m_tClip.dEndTime) == static_cast<float>(_endTime))
+	{
 		return;
-	if (static_cast<float>(m_tClip.dEndTime) == static_cast<float>(_endTime))
-		return;
+	}
+
 	m_tClip.dEndTime = _endTime;
 
 	if (_endTime <= 0.0)
+	{
 		m_tClip.dEndTime = 0.0;
+	}
 	if (_endTime >= m_pOwner->GetAnimClip(m_iCurClip).dTimeLength)
+	{
 		m_tClip.dEndTime = m_pOwner->GetAnimClip(m_iCurClip).dTimeLength;
+	}
 
 	// TIME 으로 INDEX 를 구한다. 
 	m_tClip.iEndFrame = static_cast<int>(m_tClip.dEndTime * m_iFrameCnt);
@@ -353,13 +374,20 @@ void CAnimation3D::SetEndTime(double _endTime)
 void CAnimation3D::SetStartFrameIdx(int _startIdx)
 {
 	if (m_tClip.iStartFrame == _startIdx)
+	{
 		return;
+	}
+
 	m_tClip.iStartFrame = _startIdx;
 
 	if (_startIdx <= 0)
+	{
 		m_tClip.iStartFrame = 0;
+	}
 	if (_startIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
+	{
 		m_tClip.iStartFrame = m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1;
+	}
 
 	// INDEX 로 TIME 을 구한다. 
 	m_tClip.dStartTime = static_cast<double>(m_tClip.iStartFrame) / static_cast<double>(m_iFrameCnt);
@@ -368,14 +396,21 @@ void CAnimation3D::SetStartFrameIdx(int _startIdx)
 void CAnimation3D::SetEndFrameIdx(int _endIdx)
 {
 	if (m_tClip.iEndFrame == _endIdx)
+	{
 		return;
+	}
 
 	m_tClip.iEndFrame = _endIdx;
 
 	if (_endIdx <= 0)
+	{
 		m_tClip.iEndFrame = 0;
+	}
+
 	if (_endIdx >= m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1)
+	{
 		m_tClip.iEndFrame = m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1;
+	}
 
 	// INDEX 로 TIME 을 구한다. 
 	m_tClip.dEndTime = static_cast<double>(m_tClip.iEndFrame) / static_cast<double>(m_iFrameCnt);
@@ -396,14 +431,32 @@ void CAnimation3D::SetCurFrameIdx(int _curIdx)
 	}
 }
 
+void CAnimation3D::SetFinish(bool _bEnable)
+{
+	if (m_bFinish && !_bEnable)
+	{
+		m_vecClipUpdateTime[m_iCurClip] = 0.f;
+	}
+	m_bFinish = _bEnable;
+}
+
+void CAnimation3D::SetPlay(bool _bEnable)
+{
+	m_bPlay = _bEnable;
+	if (!m_bPlay)
+	{
+		m_eCurState = ANIMATION_STATE::STOP;
+	}
+	else
+	{
+		m_eCurState = ANIMATION_STATE::PLAY;
+	}
+}
+
 int CAnimation3D::GetMaxFrameIdx() const
 {
 	return m_pOwner->GetAnimClip(m_iCurClip).iFrameLength - 1;
 }
-
-void CAnimation3D::SaveToScene(FILE* _pFile) {}
-
-void CAnimation3D::LoadFromScene(FILE* _pFile) {}
 
 void CAnimation3D::Serialize(YAML::Emitter& emitter)
 {

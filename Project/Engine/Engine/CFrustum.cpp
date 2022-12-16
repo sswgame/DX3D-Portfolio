@@ -1,10 +1,7 @@
 #include "pch.h"
 #include "CFrustum.h"
 
-
 #include "CCamera.h"
-#include <math.h>
-
 #include "CTransform.h"
 #include "CMeshRender.h"
 
@@ -13,12 +10,11 @@
 
 
 CFrustum::CFrustum()
-	:
-	m_ProjPos{}
-  , m_WorldPos{}
-  , m_arrPlane{}
-  , m_pCam(nullptr)
-  , m_bShowFrustum{false}
+	: m_ProjPos{}
+	, m_WorldPos{}
+	, m_arrPlane{}
+	, m_pCam(nullptr)
+	, m_bShowFrustum{false}
 {
 	//   4 ---- 5
 	//  /|    / |
@@ -51,11 +47,10 @@ void CFrustum::finalupdate()
 	const Matrix& matProjInv = m_pCam->GetProjInvMat();
 
 	// VP 역행렬을 곱해서 WorldPos 를 구한다.
-	Matrix matVPInv = matProjInv * matViewInv;
-
+	const Matrix matInvViewPort = matProjInv * matViewInv;
 	for (int i = 0; i < 8; ++i)
 	{
-		m_WorldPos[i] = XMVector3TransformCoord(m_ProjPos[i], matVPInv);
+		m_WorldPos[i] = XMVector3TransformCoord(m_ProjPos[i], matInvViewPort);
 	}
 
 	// 8개의 월드 좌표를 이용해서 월드상에서 절두체를 구성하는 6개의 평면을 정의한다.
@@ -79,7 +74,7 @@ bool CFrustum::PointCheck(Vec3 _vPos)
 	for (int i = 0; i < (UINT)PLANE::END; ++i)
 	{
 		// N dot P = D
-		float fDot = _vPos.Dot(m_arrPlane[i]);
+		const float fDot = _vPos.Dot(m_arrPlane[i]);
 		if (fDot + m_arrPlane[i].w > 0)
 		{
 			return false;
@@ -94,7 +89,7 @@ bool CFrustum::SphereCheck(Vec3 _vPos, float _fRadius)
 	for (int i = 0; i < (UINT)PLANE::END; ++i)
 	{
 		// N dot P = D
-		float fDot = _vPos.Dot(m_arrPlane[i]);
+		const float fDot = _vPos.Dot(m_arrPlane[i]);
 		if (fDot + m_arrPlane[i].w > _fRadius)
 		{
 			return false;
@@ -108,7 +103,9 @@ bool CFrustum::SphereCheck(Vec3 _vPos, float _fRadius)
 void CFrustum::UpdateData()
 {
 	if (m_bShowFrustum == false)
+	{
 		return;
+	}
 
 	g_transform.matWorld = m_matFrustumWorld;
 	g_transform.matWV    = g_transform.matWorld * g_transform.matView;
@@ -116,7 +113,6 @@ void CFrustum::UpdateData()
 
 	Vec4 FrustumColor = Vec4(0.1f, 0.6f, 1.f, 1.f);
 	m_pMtrl->SetScalarParam(SCALAR_PARAM::VEC4_0, &FrustumColor);
-
 
 	CConstBuffer* pCB = CDevice::GetInst()->GetCB(CB_TYPE::TRANSFORM);
 	pCB->SetData(&g_transform, sizeof(tTransform));
@@ -126,9 +122,9 @@ void CFrustum::UpdateData()
 void CFrustum::render()
 {
 	if (m_bShowFrustum == false)
+	{
 		return;
-
-
+	}
 	UpdateData();
 
 	m_pMtrl->UpdateData();
@@ -138,8 +134,9 @@ void CFrustum::render()
 void CFrustum::CalculateFrustumMat()
 {
 	if (m_bShowFrustum == false)
+	{
 		return;
-
+	}
 	/*
 		  1 -- 0
 		  |	   |
@@ -148,33 +145,30 @@ void CFrustum::CalculateFrustumMat()
 		  2	-- 3
 	*/
 
-	float fWidth       = m_pCam->GetWidth();
-	float fAspectRatio = m_pCam->GetAspectRatio();
-	float fHeight      = fWidth / fAspectRatio;
-	float fFOV         = m_pCam->GetFOV();
-	float fFar         = m_pCam->GetFar();
+	const float fAspectRatio = m_pCam->GetAspectRatio();
+	const float fFOV         = m_pCam->GetFOV();
+	const float fFar         = m_pCam->GetFar();
 
-	float FrustumHeight = 2.f * fFar * tanf(fFOV * 0.5f);
-	float FrustumWidth  = FrustumHeight * fAspectRatio;
+	const float FrustumHeight = 2.f * fFar * tanf(fFOV * 0.5f);
+	const float FrustumWidth  = FrustumHeight * fAspectRatio;
 
-	Matrix matScale   = XMMatrixScaling(FrustumWidth, FrustumHeight, fFar);
-	m_matFrustumWorld = matScale;
-
-	Vec3   vObjScale      = m_pCam->Transform()->GetWorldScale();
-	Matrix matObjScaleInv = XMMatrixInverse(nullptr, XMMatrixScaling(vObjScale.x, vObjScale.y, vObjScale.z));
+	const Matrix matScale    = XMMatrixScaling(FrustumWidth, FrustumHeight, fFar);
+	m_matFrustumWorld        = matScale;
+	const Vec3   scale       = m_pCam->Transform()->GetWorldScale();
+	const Matrix matInvScale = XMMatrixInverse(nullptr, XMMatrixScaling(scale.x, scale.y, scale.z));
 
 	// -> FrustumWorld : Camera 의 회전/이동 행렬에 영향 받음 크기는 자체적으로 구함 
 	// 충돌체 상대행렬 * 오브젝트 월드 크기 역행렬(크기^-1) * 오브젝트 월드 행렬(크기 * 회전 * 이동)
-	m_matFrustumWorld = m_matFrustumWorld * matObjScaleInv * m_pCam->Transform()->GetWorldMat();
+	m_matFrustumWorld = m_matFrustumWorld * matInvScale * m_pCam->Transform()->GetWorldMat();
 }
 
 bool CFrustum::CheckBoundingBoxInFrustum(Vec3 _BoundingBoxCenterPos, Vec3 _BoundingBoxScale)
 {
-	Vec3 Center = _BoundingBoxCenterPos;
-	Vec3 Size = _BoundingBoxScale;
+	const Vec3 Center = _BoundingBoxCenterPos;
+	const Vec3 Size   = _BoundingBoxScale;
 
 	// Check if any of the 6 planes of the rectangle are inside the view frustum.
-	for (int i = 0; i < (UINT)PLANE::END; i++)
+	for (size_t i = 0; i < std::size(m_arrPlane); i++)
 	{
 		Vec3 vPos = Vec3((Center.x - Size.x), (Center.y - Size.y), (Center.z - Size.z));
 		if (vPos.Dot(m_arrPlane[i]) + m_arrPlane[i].w <= 0)

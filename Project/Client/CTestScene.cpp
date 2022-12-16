@@ -5,7 +5,6 @@
 #include <Engine/CCollisionMgr.h>
 
 #include <Engine/CSceneMgr.h>
-#include <Engine/CRes.h>
 #include <Engine/CScene.h>
 #include <Engine/CGameObject.h>
 
@@ -40,11 +39,13 @@
 #include <Script/CSceneSaveLoad.h>
 #include <Script/TrailScript.h>
 #include <Script/SwordTrailScript.h>
-#include <Script/CObjectManager.h>
-#include <Script/CTranslateMgr.h>
 #include <Script/FieldMonsteScript.h>
 #include <Script/ItemScript.h>
 #include <Script/PaperBurnScript.h>
+#include <Script/CObjectManager.h>
+
+//TEST
+#include <Script/TestDeadScript.h>
 
 namespace
 {
@@ -69,7 +70,7 @@ namespace
 
 	void TestNavi(CScene* _pScene);
 
-	void TestUI(CScene* _pScene);
+	void AddDefaultUIObjects(CScene* _pScene);
 	void Map01(CScene* _pScene);
 	void Map02(CScene* _pScene);
 	void TestBossUI(CScene* _pScene);
@@ -88,9 +89,15 @@ namespace
 		CGameObject* pCamObj = AddCamera(pCurScene);
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
+
 		AddPlayer(pCurScene, pCamObj);
+		AddDeuxiemie(pCurScene);
+		AddHomonculus(pCurScene);
+		AddDefaultUIObjects(pCurScene);
+
 		Map01(pCurScene);
-		//Map02(pCurScene);
+		Map02(pCurScene);
+
 		SetCollision();
 
 		SaveScene(pCurScene, L"scene\\TestScene.scene");
@@ -156,7 +163,7 @@ namespace
 		pCamera->Camera()->SetShowFrustum(true);
 
 		_pScene->AddObject(pCamera, L"CAMERA");
-
+		CObjectManager::GetInst()->AddToDontDestroy(pCamera);
 		return pCamera;
 	}
 
@@ -178,6 +185,8 @@ namespace
 		pDirectionalLight->Light3D()->SetAmbient(Vec3(0.15f, 0.15f, 0.15f));
 
 		_pScene->AddObject(pDirectionalLight, L"BG_OBJ");
+
+		CObjectManager::GetInst()->AddToDontDestroy(pDirectionalLight);
 	}
 
 	void AddPointLight(CScene* _pScene)
@@ -230,6 +239,7 @@ namespace
 		pSkyBox->SkyBox()->SetFrustumCulling(false);
 
 		_pScene->AddObject(pSkyBox, L"BG");
+		CObjectManager::GetInst()->AddToDontDestroy(pSkyBox);
 	}
 
 	void AddLandScape(CScene* _pScene)
@@ -275,8 +285,8 @@ namespace
 
 	void AddSphere(CScene* _pScene)
 	{
-		Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
-		                                                            L"texture\\tile\\TILE_01.tga");
+		//Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
+		//                                                            L"texture\\tile\\TILE_01.tga");
 		CGameObject* pObject = new CGameObject;
 		pObject->SetName(L"Sphere");
 
@@ -291,17 +301,17 @@ namespace
 		const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3D_DeferredMtrl.mtrl");
 		pObject->MeshRender()->SetMesh(pMesh);
 		pObject->MeshRender()->SetSharedMaterial(pMaterial, 0);
-		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
+		//pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
 
 		_pScene->AddObject(pObject, L"Default");
 	}
 
 	void AddTessellation(CScene* _pScene)
 	{
-		Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
-		                                                            L"texture\\tile\\TILE_01.tga");
-		Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga",
-		                                                             L"texture\\tile\\TILE_01_N.tga");
+		//Ptr<CTexture> pTileTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01.tga",
+		//                                                            L"texture\\tile\\TILE_01.tga");
+		//Ptr<CTexture> pTileNTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\tile\\TILE_01_N.tga",
+		//                                                             L"texture\\tile\\TILE_01_N.tga");
 
 		CGameObject* pObject = new CGameObject;
 		pObject->SetName(L"Tessellation Object");
@@ -316,8 +326,8 @@ namespace
 		pObject->MeshRender()->SetFrustumCulling(true);
 		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 		pObject->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\TessMtrl.mtrl"), 0);
-		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
-		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1, pTileNTex);
+		//pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTileTex);
+		//pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1, pTileNTex);
 
 		_pScene->AddObject(pObject, L"Default");
 	}
@@ -404,7 +414,6 @@ namespace
 		pObj->AddComponent(new CRigidBody);
 		pObj->AddComponent(new CCollider3D);
 		pObj->AddComponent(new CNaviAgent);
-
 		pObj->AddComponent(new TrailScript);
 		pObj->AddComponent(new PaperBurnScript);
 
@@ -421,15 +430,17 @@ namespace
 
 		CGameObject* pPlayer = pObj;
 		_pScene->AddObject(pObj, L"PLAYER");
-		//CObjectManager::GetInst()->SetPlayer(pObj);
 
-		Ptr<CMeshData> pMeshDataWeapon = nullptr;
-		CGameObject*   pObjWeapon      = nullptr;
+		//ADD TO DON DESTROY
+		CObjectManager::GetInst()->AddToDontDestroy(pObj);
+		CObjectManager::GetInst()->SetPlayer(pObj);
+		pObj->Deactivate();
+		CObjectManager::GetInst()->SetSceneObject(pObj, MAP_TYPE::_01);
 
-		pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat",
-		                                                      L"meshdata\\player_sword1.mdat");
+		Ptr<CMeshData> pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat",
+		                                                                     L"meshdata\\player_sword1.mdat");
 
-		pObjWeapon = pMeshDataWeapon->Instantiate();
+		CGameObject* pObjWeapon = pMeshDataWeapon->Instantiate();
 		pObjWeapon->SetName(L"player_sword1");
 		pObjWeapon->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
 		pObjWeapon->Animator3D()->Play(L"test", true);
@@ -474,8 +485,7 @@ namespace
 		//pTrailScript->SetOriginObject(pPlayer);
 		//pObj->AddComponent(pTrailScript);
 
-		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat",
-		                                                L"meshdata\\player_sword0.mdat");
+		pMeshData = CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\player_sword0.mdat");
 		pObj->MeshRender()->SetMesh(pMeshData->GetMesh());
 		for (int i = 0; i < 4; ++i)
 		{
@@ -497,15 +507,15 @@ namespace
 		pBoss->AddComponent(new BossJugCombatMgrScript);
 		_pScene->AddObject(pBoss, GAME::LAYER::OBJECT_MGR);
 		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
+
+		CObjectManager::GetInst()->SetSceneObject(pBoss, MAP_TYPE::_02);
 	}
 
 	void AddHomonculus(CScene* _pScene)
 	{
-		wstring        sMeshName = L"meshdata//homonculus0.mdat";
-		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(sMeshName.c_str(),
-		                                                               sMeshName.c_str());
-
-		CGameObject* pMonster;
+		wstring        sMeshName = L"meshdata\\homonculus0.mdat";
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->FindRes<CMeshData>(sMeshName);
+		CGameObject*   pMonster;
 		pMonster = pMeshData->Instantiate();
 		pMonster->SetName(L"Homonculus");
 		pMonster->AddComponent(new FieldMonsteScript);
@@ -528,16 +538,20 @@ namespace
 		pMonster->GetScript<FieldMonsteScript>()->SetAttackRange(30.f);
 
 		_pScene->AddObject(pMonster, L"MONSTER");
+		CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
+		pMonsterHP->GetUIBaseComponenent()->SetTarget(pMonsterHP);
+		_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");
+
+		//TODO::MUST DELETE
+		pMonster->AddComponent(new TestDeadScript{});
 	}
 
 	void AddDeuxiemie(CScene* _pScene)
 	{
-		wstring        sMeshName = L"meshdata//deuxiemie_SmallSword0.mdat";
-		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(sMeshName.c_str(),
-		                                                               sMeshName.c_str());
+		wstring        sMeshName = L"meshdata\\deuxiemie_SmallSword0.mdat";
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->FindRes<CMeshData>(sMeshName);
 
-		CGameObject* pMonster;
-		pMonster = pMeshData->Instantiate();
+		CGameObject* pMonster = pMeshData->Instantiate();
 		pMonster->SetName(L"Deuxiemie");
 		pMonster->AddComponent(new FieldMonsteScript);
 		pMonster->AddComponent(new CFSM);
@@ -546,6 +560,13 @@ namespace
 		pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::DEUXIEMIE);
 		_pScene->AddObject(pMonster, L"MONSTER");
+
+		CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
+		pMonsterHP->GetUIBaseComponenent()->SetTarget(pMonsterHP);
+		_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");
+
+		//TODO::MUST DELETE
+		pMonster->AddComponent(new TestDeadScript{});
 	}
 
 	void TestNavi(CScene* _pScene)
@@ -594,15 +615,9 @@ namespace
 		//CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\arena.map", L"navimap\\arena.map").Get();
 	}
 
-	void LoadScene()
+	void AddDefaultUIObjects(CScene* _pScene)
 	{
-		wstring strSceneFilePath = CPathMgr::GetInst()->GetContentPath();
-		CScene* pCurScene        = CSceneSaveLoad::LoadScene(strSceneFilePath + L"scene\\GUN.scene");
-		CSceneMgr::GetInst()->ChangeScene(pCurScene);
-	}
-
-	void TestUI(CScene* _pScene)
-	{
+		//UI CAMERA
 		CGameObject* pUICamera = new CGameObject{};
 		pUICamera->SetName(L"UICamera");
 		pUICamera->AddComponent(new CTransform{});
@@ -611,34 +626,22 @@ namespace
 		pUICamera->Camera()->CheckLayerMask(L"UI_STATIC");
 		pUICamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE");
 		_pScene->AddObject(pUICamera, L"CAMERA");
+		CObjectManager::GetInst()->AddToDontDestroy(pUICamera);
 
-		CGameObject* pPlayerUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref",
-		                                                           L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
+		//PLAYER UI
+		CGameObject* pPlayerUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
 		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
-		CGameObject* pMainUI = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\MAIN_MENU.pref",
-		                                                         L"prefab\\MAIN_MENU.pref")->Instantiate();
+		CObjectManager::GetInst()->AddToDontDestroy(pPlayerUI);
+
+		//MAIN_MENU
+		CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
 		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 
-		CGameObject* pObject = new CGameObject;
-		pObject->SetName(L"Sphere");
-
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CMeshRender);
-
-		pObject->Transform()->SetRelativePos(0.f, 0.f, 500.f);
-		pObject->Transform()->SetRelativeScale(300.f, 300.f, 300.f);
-
-		const Ptr<CMesh>     pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
-		const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3D_DeferredMtrl.mtrl");
-		pObject->MeshRender()->SetMesh(pMesh);
-		pObject->MeshRender()->SetSharedMaterial(pMaterial, 0);
-
-		_pScene->AddObject(pObject, L"BG");
-
-		CGameObject* pHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
-		pHP->GetUIBaseComponenent()->SetTarget(pObject);
-		pHP->Deactivate();
-		_pScene->AddObject(pHP, L"UI_INTERACTIVE");
+		//BOSS_UI
+		CGameObject* pBossUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\BOSS_HP.pref")->Instantiate();
+		_pScene->AddObject(pBossUI, L"UI_INTERACTIVE");
+		pBossUI->Deactivate();
+		CObjectManager::GetInst()->SetSceneObject(pBossUI, MAP_TYPE::_02);
 	}
 
 	void Map01(CScene* _pScene)
@@ -664,8 +667,7 @@ namespace
 		pNMesh->AddComponent(new CTransform);
 		pNMesh->AddComponent(new CNaviMap);
 
-		CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\arena.map", L"navimap\\arena.map").
-		                                             Get();
+		CNaviMapData* pNaviMap = CResMgr::GetInst()->FindRes<CNaviMapData>(L"navimap\\arena.map").Get();
 		pNMesh->NaviMap()->SetNaviMapData(pNaviMap);
 		pNMesh->Transform()->SetRelativeScale(18.2f, 18.2f, 18.2f);
 		pNMesh->Transform()->SetRelativePos(0.f, -5.f, 0.f);
@@ -676,14 +678,13 @@ namespace
 		pMap01->AddChild(pNMesh);
 
 		_pScene->AddObject(pMap01, GAME::LAYER::BG);
+
+		//SCENE OBJECT
+		CObjectManager::GetInst()->SetSceneObject(pMap01, MAP_TYPE::_01);
 	}
 
 	void Map02(CScene* _pScene)
 	{
 		AddBoss(_pScene);
-	}
-
-	void TestBossUI(CScene* _pScene)
-	{
 	}
 }

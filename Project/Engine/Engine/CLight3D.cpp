@@ -4,18 +4,15 @@
 #include "CRenderMgr.h"
 #include "CTransform.h"
 #include "CMeshRender.h"
-#include "CKeyMgr.h"
-#include "CSceneMgr.h"
 #include "CScene.h"
 #include "CCamera.h"
-#include "CEventMgr.h"
-#include "CLayer.h"
 #include "CSerializer.h"
+
 CLight3D::CLight3D()
 	: CComponent(COMPONENT_TYPE::LIGHT3D)
-  , m_LightInfo{}
-  , m_iLightIdx(-1)
-  , m_pLightCam(nullptr)
+	, m_LightInfo{}
+	, m_iLightIdx(-1)
+	, m_pLightCam(nullptr)
 {
 	m_pLightCam = new CGameObject;
 	m_pLightCam->AddComponent(new CTransform);
@@ -27,15 +24,15 @@ CLight3D::CLight3D()
 	m_pDebugObj->AddComponent(new CTransform);
 	m_pDebugObj->AddComponent(new CMeshRender);
 	m_pDebugObj->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
-	m_pDebugObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"), 0);
+	m_pDebugObj->MeshRender()->
+	             SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"), 0);
 }
 
 CLight3D::CLight3D(const CLight3D& _origin)
-	:
-	CComponent(_origin)
-  , m_LightInfo(_origin.m_LightInfo)
-  , m_iLightIdx(-1)
-  , m_pLightCam(nullptr)
+	: CComponent(_origin)
+	, m_LightInfo(_origin.m_LightInfo)
+	, m_iLightIdx(-1)
+	, m_pLightCam(nullptr)
 {
 	m_pLightCam = _origin.m_pLightCam->Clone();
 }
@@ -130,8 +127,9 @@ void CLight3D::finalupdate_debug()
 		m_pDebugObj->Transform()->SetRelativeRotation(DecomposeRotMat(Transform()->GetWorldRotation()));
 
 		m_pDebugObj->MeshRender()->SetMesh(m_pVolumeMesh);
-		m_pDebugObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"), 0);
-		
+		m_pDebugObj->MeshRender()->
+		             SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DWireShader.mtrl"), 0);
+
 		m_pDebugObj->finalupdate();
 	}
 }
@@ -170,7 +168,7 @@ void CLight3D::render_debug()
 	m_pDebugObj->Transform()->UpdateData();
 
 	if (nullptr != m_pDebugObj->MeshRender()->GetMesh()
-		&& nullptr != m_pDebugObj->MeshRender()->GetMaterial(0))
+	    && nullptr != m_pDebugObj->MeshRender()->GetMaterial(0))
 	{
 		m_pDebugObj->MeshRender()->GetMaterial(0)->UpdateData();
 		m_pDebugObj->MeshRender()->GetMesh()->render(0);
@@ -208,16 +206,16 @@ void CLight3D::Serialize(YAML::Emitter& emitter)
 
 void CLight3D::Deserialize(const YAML::Node& node)
 {
-		YAML::Node lightInfoNode = node["LIGHT INFO"];
+	YAML::Node lightInfoNode = node["LIGHT INFO"];
 
 	m_LightInfo.color.vDiff = lightInfoNode[NAME_OF(m_LightInfo.color.vDiff)].as<Vec4>();
 	m_LightInfo.color.vSpec = lightInfoNode[NAME_OF(m_LightInfo.color.vSpec)].as<Vec4>();
-	m_LightInfo.color.vAmb = lightInfoNode[NAME_OF(m_LightInfo.color.vAmb)].as<Vec4>();
-	m_LightInfo.vLightDir = lightInfoNode[NAME_OF(m_LightInfo.vLightDir)].as<Vec3>();
-	m_LightInfo.iLightType = lightInfoNode[NAME_OF(m_LightInfo.iLightType)].as<int>();
-	m_LightInfo.vWorldPos = lightInfoNode[NAME_OF(m_LightInfo.vWorldPos)].as<Vec3>();
-	m_LightInfo.fAngle = lightInfoNode[NAME_OF(m_LightInfo.fAngle)].as<float>();
-	m_LightInfo.fRange = lightInfoNode[NAME_OF(m_LightInfo.fRange)].as<float>();
+	m_LightInfo.color.vAmb  = lightInfoNode[NAME_OF(m_LightInfo.color.vAmb)].as<Vec4>();
+	m_LightInfo.vLightDir   = lightInfoNode[NAME_OF(m_LightInfo.vLightDir)].as<Vec3>();
+	m_LightInfo.iLightType  = lightInfoNode[NAME_OF(m_LightInfo.iLightType)].as<int>();
+	m_LightInfo.vWorldPos   = lightInfoNode[NAME_OF(m_LightInfo.vWorldPos)].as<Vec3>();
+	m_LightInfo.fAngle      = lightInfoNode[NAME_OF(m_LightInfo.fAngle)].as<float>();
+	m_LightInfo.fRange      = lightInfoNode[NAME_OF(m_LightInfo.fRange)].as<float>();
 
 	SetLightType((LIGHT_TYPE)m_LightInfo.iLightType);
 }

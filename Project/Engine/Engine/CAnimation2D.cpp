@@ -11,18 +11,19 @@
 #include "CSerializer.h"
 
 CAnimation2D::CAnimation2D()
-	:
-	m_pOwner(nullptr)
-  , m_iCurFrmIdx(0)
-  , m_fAccTime(false)
-  , m_bFinish(false) {}
+	: m_pOwner(nullptr)
+	, m_iCurFrmIdx(0)
+	, m_fAccTime(false)
+	, m_bFinish(false) {}
 
-CAnimation2D::~CAnimation2D() {}
+CAnimation2D::~CAnimation2D() = default;
 
 void CAnimation2D::finalupdate()
 {
 	if (m_bFinish)
+	{
 		return;
+	}
 
 	m_fAccTime += DT;
 
@@ -59,7 +60,7 @@ void CAnimation2D::UpdateData()
 	pBuffer->UpdateData();
 
 
-	m_pAtlasTex->UpdateData((int)PIPELINE_STAGE::PS, 10);
+	m_pAtlasTex->UpdateData(PS, 10);
 }
 
 void CAnimation2D::Create(Ptr<CTexture> _Atlas,
@@ -70,28 +71,25 @@ void CAnimation2D::Create(Ptr<CTexture> _Atlas,
                           float         _fDuration,
                           int           _iFrameCount)
 {
-	assert(_Atlas.Get());
+	LOG_ASSERT(_Atlas.Get(), "NO INPUT FOR ATALS TEXTURE");
 
-	m_pAtlasTex = _Atlas;
-
-	float fWidth  = m_pAtlasTex->Width();
-	float fHeight = m_pAtlasTex->Height();
+	m_pAtlasTex            = _Atlas;
+	const Vec2 textureSize = {m_pAtlasTex->Width(), m_pAtlasTex->Height()};
 
 	// 픽셀 좌표를 0~1 UV 로 전환
-	Vec2 vLT    = _vLT / Vec2(fWidth, fHeight);
-	Vec2 vSlice = _vSlice / Vec2(fWidth, fHeight);
-	Vec2 vStep  = _vStep / Vec2(fWidth, fHeight);
+	const Vec2 leftTop   = _vLT / textureSize;
+	const Vec2 sliceSize = _vSlice / textureSize;
+	const Vec2 stepSize  = _vStep / textureSize;
 
-	m_vBackgroundSize = _vBackgroundSizePixel / Vec2(fWidth, fHeight);
+	m_vBackgroundSize = _vBackgroundSizePixel / textureSize;
 
 	// 프레임 정보 생성
 	for (int i = 0; i < _iFrameCount; ++i)
 	{
 		tAnim2DFrame frm = {};
-
-		frm.vLT       = vLT + (vStep * (float)i);
-		frm.vSlice    = vSlice;
-		frm.fDuration = _fDuration;
+		frm.vLT          = leftTop + (stepSize * static_cast<float>(i));
+		frm.vSlice       = sliceSize;
+		frm.fDuration    = _fDuration;
 
 		m_vecFrm.push_back(frm);
 	}
@@ -101,9 +99,9 @@ void CAnimation2D::SaveToScene(FILE* _pFile)
 {
 	CEntity::SaveToScene(_pFile);
 
-	size_t i = m_vecFrm.size();
-	fwrite(&i, sizeof(size_t), 1, _pFile);
-	fwrite(m_vecFrm.data(), sizeof(tAnim2DFrame), i, _pFile);
+	const size_t frameCount = m_vecFrm.size();
+	fwrite(&frameCount, sizeof(size_t), 1, _pFile);
+	fwrite(m_vecFrm.data(), sizeof(tAnim2DFrame), frameCount, _pFile);
 	fwrite(&m_vBackgroundSize, sizeof(Vec2), 1, _pFile);
 
 	SaveResPtr(m_pAtlasTex, _pFile);
@@ -113,10 +111,10 @@ void CAnimation2D::LoadFromScene(FILE* _pFile)
 {
 	CEntity::LoadFromScene(_pFile);
 
-	size_t i = 0;
-	fread(&i, sizeof(size_t), 1, _pFile);
-	m_vecFrm.resize(i);
-	fread(m_vecFrm.data(), sizeof(tAnim2DFrame), i, _pFile);
+	size_t frameCount{};
+	fread(&frameCount, sizeof(size_t), 1, _pFile);
+	m_vecFrm.resize(frameCount);
+	fread(m_vecFrm.data(), sizeof(tAnim2DFrame), frameCount, _pFile);
 	fread(&m_vBackgroundSize, sizeof(Vec2), 1, _pFile);
 
 	LoadResPtr(m_pAtlasTex, _pFile);
@@ -124,7 +122,7 @@ void CAnimation2D::LoadFromScene(FILE* _pFile)
 
 void CAnimation2D::Serialize(YAML::Emitter& emitter)
 {
-	int frameCount = static_cast<int>(m_vecFrm.size());
+	const int frameCount = static_cast<int>(m_vecFrm.size());
 	emitter << YAML::Key << "FRAME COUNT" << YAML::Value << frameCount;
 
 	for (int i = 0; i < frameCount; ++i)
@@ -143,8 +141,7 @@ void CAnimation2D::Serialize(YAML::Emitter& emitter)
 
 void CAnimation2D::Deserialize(const YAML::Node& node)
 {
-	int frameCount = node["FRAME COUNT"].as<int>();
-
+	const int frameCount = node["FRAME COUNT"].as<int>();
 	for (int i = 0; i < frameCount; ++i)
 	{
 		tAnim2DFrame frame{};
