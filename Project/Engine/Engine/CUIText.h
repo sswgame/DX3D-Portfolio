@@ -33,6 +33,10 @@ private:
 	TEXT_ALIGN_HORIZONTAL m_alignTextH;
 	TEXT_ALIGN_VERTICAL   m_alignTextV;
 
+	float m_persistTime;
+	float m_elapsedTime;
+	bool  m_bHasTime;
+
 private:
 	void CreateTextLayout();
 	void RenderText();
@@ -49,6 +53,12 @@ public:
 	int  GetTextCount() const;
 	void PopBack();
 	void ClearText();
+
+	void UsePersistTime(bool _enable) { m_bHasTime = _enable; }
+	bool IsUsingPersistTime() const { return m_bHasTime; }
+
+	void  SetPersistTime(float _time) { m_bHasTime = true, m_persistTime = ClampData(_time, 0.f,D3D11_FLOAT32_MAX); }
+	float GetPersistTime() const { return m_persistTime; }
 
 public:
 	void  SetFontSize(float size);

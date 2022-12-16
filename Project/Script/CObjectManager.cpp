@@ -66,3 +66,24 @@ const std::vector<CGameObject*>& CObjectManager::GetSceneObjectList(MAP_TYPE _ty
 
 	return m_mapSceneObject.at(_type);
 }
+
+bool CObjectManager::CheckAllMonsterDead() const
+{
+	CLayer*     pMonsterLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"MONSTER");
+	const auto& vecMonster    = pMonsterLayer->GetRootObjects();
+
+	const size_t count = std::count_if(vecMonster.begin(),
+	                                   vecMonster.end(),
+	                                   [](const CGameObject* pMonster)
+	                                   {
+		                                   return pMonster->GetName() != L"JUG" && pMonster->IsDead();
+	                                   });
+
+	//보스만 남았거나, 존재는 하지만 모두 죽은 경우
+	if (vecMonster.size() == 1 || vecMonster.size() - 1 == count)
+	{
+		return true;
+	}
+
+	return false;
+}

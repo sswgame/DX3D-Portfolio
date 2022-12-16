@@ -9,7 +9,6 @@ private:
 	bool m_bGameEnd;
 
 private:
-	void CheckAllMonsterDead();
 
 public:
 	void Enter() override;

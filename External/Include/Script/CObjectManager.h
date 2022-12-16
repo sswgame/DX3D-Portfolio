@@ -45,6 +45,8 @@ public:
 	void                             SetSceneObject(CGameObject* pGameObject, MAP_TYPE type);
 	const std::vector<CGameObject*>& GetSceneObjectList(MAP_TYPE _type) const;
 
+	bool CheckAllMonsterDead() const;
+
 public:
 	void start() override;
 

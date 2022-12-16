@@ -144,7 +144,6 @@ void CPlayerLightAttackState::Enter()
 #define LIGHT_ATTACK_IGNORE
 #ifdef	LIGHT_ATTACK_IGNORE
 	GetOwner()->FSM()->ChangeState(L"IDLE");
-	return;
 
 #endif // !LIGHT_ATTACK_IGNORE
 

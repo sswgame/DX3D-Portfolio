@@ -7,16 +7,18 @@
 #include "CTransform.h"
 #include "CUIBase.h"
 #include "CSerializer.h"
-
+#include "CTimeMgr.h"
 
 CUIText::CUIText()
 	: CUIBase{COMPONENT_TYPE::UITEXT}
-	, m_text{}
 	, m_fontSize{16.f}
 	, m_alphaEnable{false}
 	, m_color{1.f, 1.f, 1.f, 1.f}
 	, m_alignTextH{TEXT_ALIGN_HORIZONTAL::MIDDLE}
-	, m_alignTextV{TEXT_ALIGN_VERTICAL::MIDDLE} {}
+	, m_alignTextV{TEXT_ALIGN_VERTICAL::MIDDLE}
+	, m_persistTime{0.f}
+	, m_elapsedTime{0.f}
+	, m_bHasTime{false} {}
 
 CUIText::~CUIText() = default;
 
@@ -50,7 +52,10 @@ ComPtr<IDWriteTextFormat> CUIText::GetFontFormat()
 
 void CUIText::CreateTextLayout()
 {
-	GetFontFormat();
+	if (nullptr == GetFontFormat())
+	{
+		return;
+	}
 	LOG_ASSERT(nullptr!= GetFontFormat(), "FONT NOT FOUND");
 
 	Vec3 size{};
@@ -98,6 +103,17 @@ void CUIText::CreateTextLayout()
 
 void CUIText::RenderText()
 {
+	if (m_bHasTime)
+	{
+		m_elapsedTime += DT;
+		if (m_elapsedTime < m_persistTime)
+		{
+			m_elapsedTime = 0.f;
+			m_text.clear();
+			CreateTextLayout();
+		}
+	}
+
 	tEventInfo info{};
 	info.eType  = EVENT_TYPE::RENDER_TEXT;
 	info.lParam = (DWORD_PTR)this;
@@ -216,6 +232,8 @@ void CUIText::Serialize(YAML::Emitter& emitter)
 	emitter << YAML::Key << NAME_OF(m_color) << YAML::Value << m_color;
 	emitter << YAML::Key << NAME_OF(m_alignTextH) << YAML::Value << static_cast<int>(m_alignTextH);
 	emitter << YAML::Key << NAME_OF(m_alignTextV) << YAML::Value << static_cast<int>(m_alignTextV);
+	emitter << YAML::Key << NAME_OF(m_persistTime) << YAML::Value << m_persistTime;
+	emitter << YAML::Key << NAME_OF(m_bHasTime) << YAML::Value << m_bHasTime;
 }
 
 void CUIText::Deserialize(const YAML::Node& node)
@@ -228,4 +246,13 @@ void CUIText::Deserialize(const YAML::Node& node)
 	m_color       = node[NAME_OF(m_color)].as<Vec4>();
 	m_alignTextH  = static_cast<TEXT_ALIGN_HORIZONTAL>(node[NAME_OF(m_alignTextH)].as<int>());
 	m_alignTextV  = static_cast<TEXT_ALIGN_VERTICAL>(node[NAME_OF(m_alignTextV)].as<int>());
+
+	if (node[NAME_OF(m_persistTime)].IsDefined())
+	{
+		m_persistTime = node[NAME_OF(m_persistTime)].as<float>();
+	}
+	if (node[NAME_OF(m_bHasTime)].IsDefined())
+	{
+		m_bHasTime = node[NAME_OF(m_bHasTime)].as<bool>();
+	}
 }

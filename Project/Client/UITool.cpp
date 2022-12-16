@@ -920,8 +920,29 @@ void UITool::ShowText(CUIText* pScript)
 		ImGui::EndCombo();
 	}
 
+	ImGui::Text(u8"시간 지정(이후 클리어됨)");
+	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+	bool enable = pScript->IsUsingPersistTime();
+	if (ImGui::Checkbox("##USE_PERSIST_TIME", &enable))
+	{
+		pScript->UsePersistTime(enable);
+	}
+
+	if (enable)
+	{
+		ImGui::Text(u8"지속 시간");
+		ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+		float persistTime = pScript->GetPersistTime();
+		if (ImGui::InputFloat("##PERSIST_TIME", &persistTime))
+		{
+			pScript->SetPersistTime(persistTime);
+		}
+	}
+
+
 	ImGui::Text(u8"텍스트");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+
 
 	static char    szText[512]{};
 	static wchar_t szwText[512]{};
