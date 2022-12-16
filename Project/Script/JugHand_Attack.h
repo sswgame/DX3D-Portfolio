@@ -14,6 +14,8 @@ public:
 	bool			m_bSecondAttackDone;
 	bool			m_bThirdAttackDone;
 
+	bool		m_bLandingEffectOn;
+
 
 public:
 	void Hand01Attack();

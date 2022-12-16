@@ -17,6 +17,7 @@ JugHand_Attack::JugHand_Attack()
 	, m_bSecondAttackDone(false)
 	, m_bThirdAttackDone(false)
 	, m_fLerfTime(0.f)
+	, m_bLandingEffectOn(false)
 {
 }
 
@@ -51,6 +52,7 @@ void JugHand_Attack::Hand01Attack()
 			((BossJugHandScript*)pScript)->SetAttackStateDone(true);
 			m_pAnimation->SetAnimState(ANIMATION_STATE::STOP);
 			m_bFirstAttackDone = true;
+			m_bLandingEffectOn = false;
 		}
 		else if (2.f < CState::GetTimer())
 		{
@@ -64,15 +66,19 @@ void JugHand_Attack::Hand01Attack()
 			// Landing Effect N Collider
 			if ((m_pAnimation->GetEndFrameIdx() - 5) <= m_pAnimation->GetCurFrameIdx())
 			{
-				CGameObject* pLandingEffect = new CGameObject;
-				pLandingEffect->SetName(L"Hand Landing Effect");
-				pLandingEffect->AddComponent(new EffectScript);
-				pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
-				pLandingEffect->GetScript<EffectScript>()->SetEffectLifeTime(2.f);
+				if (false == m_bLandingEffectOn)
+				{
+					CGameObject* pLandingEffect = new CGameObject;
+					pLandingEffect->SetName(L"Hand Landing Effect");
+					pLandingEffect->AddComponent(new EffectScript);
+					pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
+					pLandingEffect->GetScript<EffectScript>()->SetEffectLifeTime(2.f);
 
-				CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
+					CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
 
-				GetOwner()->Collider3D()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
+					GetOwner()->Collider3D()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
+					m_bLandingEffectOn = true;
+				}
 			}
 		}
 		else
@@ -91,6 +97,7 @@ void JugHand_Attack::Hand01Attack()
 				GetOwner()->GetScript<BossJugHandScript>()->SetAllAttackDone(true);
 				m_bFirstAttackDone = false;
 				((BossJugHandScript*)pScript)->SetAttackRepeat(false);
+				m_bLandingEffectOn = false;
 			}
 			else
 			{
@@ -102,15 +109,19 @@ void JugHand_Attack::Hand01Attack()
 				// Landing Effect N Collider
 				if ((m_pAnimation->GetEndFrameIdx() - 5) <= m_pAnimation->GetCurFrameIdx())
 				{
-					CGameObject* pLandingEffect = new CGameObject;
-					pLandingEffect->SetName(L"Hand Landing Effect");
-					pLandingEffect->AddComponent(new EffectScript);
-					pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
-					pLandingEffect->GetScript<EffectScript>()->SetEffectLifeTime(2.f);
+					if (false == m_bLandingEffectOn)
+					{
+						CGameObject* pLandingEffect = new CGameObject;
+						pLandingEffect->SetName(L"Hand Landing Effect");
+						pLandingEffect->AddComponent(new EffectScript);
+						pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
+						pLandingEffect->GetScript<EffectScript>()->SetEffectLifeTime(2.f);
 
-					CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
+						CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
 
-					GetOwner()->Collider3D()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
+						GetOwner()->Collider3D()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
+						m_bLandingEffectOn = true;
+					}
 				}
 			}
 		}
@@ -138,46 +149,37 @@ void JugHand_Attack::Hand02Attack()
 
 	if (ANIMATION_STATE::PLAY == m_pAnimation->GetState())
 	{
-		if (false == m_bFirstAttackDone)
+
+		if (((BossJugHandScript*)pScript)->GetRunningTime() < CState::GetTimer())
 		{
-			if (237 == m_pAnimation->GetCurFrameIdx())
-			{
-				// ==========================
-				//		带瘤绰 颇萍努 积己  
-				// ==========================
-
-				// ==========================
-				//	       magma 积己  
-				// ==========================
-				//CGameObject* pMagma = new nullptr;
-				//wstring pMagmaName = L"";
-				//pMagmaName = L"meshdata//magma.mdat";
-				//Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
-				//	pMagmaName.c_str());
-				//pMagma = pMagmaMeshData->Instantiate();
-				//pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
-				//pMagma->SetName(L"Magma");
-				//pMagma->AddComponent(new MagmaScript);
-				//GetOwner()->AddChild(pMagma);
-
-			}
-			else if (m_pAnimation->GetCurFrameIdx() == m_pAnimation->GetEndFrameIdx())
-			{
-				((BossJugHandScript*)pScript)->SetAttackStateDone(true);
-				GetOwner()->GetScript<BossJugHandScript>()->SetAllAttackDone(true);
-				m_bFirstAttackDone = false;
-				return;
-			}
+			((BossJugHandScript*)pScript)->SetAttackStateDone(true);
+			GetOwner()->GetScript<BossJugHandScript>()->SetAllAttackDone(true);
+			m_bFirstAttackDone = false;
+			return;
 		}
-	}
+		if (237 == m_pAnimation->GetCurFrameIdx())
+		{
+			// ==========================
+			//		带瘤绰 颇萍努 积己  
+			// ==========================
 
-	//if (ANIMATION_STATE::FINISH == m_pAnimation->GetState())
-	//{
-	//	((BossJugHandScript*)pScript)->SetAttackStateDone(true);
-	//	GetOwner()->GetScript<BossJugHandScript>()->SetAllAttackDone(true);
-	//	m_bFirstAttackDone = false;
-	//	return;
-	//}
+			// ==========================
+			//	       magma 积己  
+			// ==========================
+			//CGameObject* pMagma = new nullptr;
+			//wstring pMagmaName = L"";
+			//pMagmaName = L"meshdata//magma.mdat";
+			//Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
+			//	pMagmaName.c_str());
+			//pMagma = pMagmaMeshData->Instantiate();
+			//pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
+			//pMagma->SetName(L"Magma");
+			//pMagma->AddComponent(new MagmaScript);
+			//GetOwner()->AddChild(pMagma);
+
+		}
+
+	}
 
 	GetOwner()->Transform()->SetRelativePos(vPos);
 	GetOwner()->Transform()->SetRelativePos(vRotate);
