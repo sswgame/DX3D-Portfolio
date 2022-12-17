@@ -11,6 +11,14 @@ namespace
 	void MakeGameShader()
 	{
 		CGraphicsShader* pShader{};
+		//SINE-WAVE POST-PROCESS
+		pShader = new CGraphicsShader;
+		pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
+		pShader->CreateVertexShader(L"Shader\\postprocess.fx", "VS_PostProcess");
+		pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_SinePostProcess");
+		pShader->SetDSType(DS_TYPE::NO_WRITE);
+		pShader->SetRSType(RS_TYPE::CULL_NONE);
+		CResMgr::GetInst()->AddRes<CGraphicsShader>(L"SineWavePostProcessShader", pShader, true);
 
 		//UI Shader
 		pShader = new CGraphicsShader;
@@ -57,6 +65,9 @@ namespace
 	void MakeGameMaterial()
 	{
 		CMaterial* pMtrl = nullptr;
+		pMtrl            = new CMaterial{};
+		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"SineWavePostProcessShader"));
+		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\SineWaveMtrl.mtrl", pMtrl);
 
 		//UI(DEFAULT)
 		pMtrl = new CMaterial;

@@ -80,6 +80,30 @@ namespace
 	void LoadScene();
 	void SaveScene(CScene* _pScene, const std::wstring& _relativePath);
 
+	void TestSineDistortion(CScene* _pScene)
+	{
+		CGameObject* pGameObject = new CGameObject{};
+		pGameObject->SetName(L"DOOR");
+		pGameObject->AddComponent(new CTransform{});
+		pGameObject->AddComponent(new CMeshRender{});
+		pGameObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+		pGameObject->MeshRender()->
+		             SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\SineWaveMtrl.mtrl"), 0);
+		pGameObject->Transform()->SetRelativePos(0.f, 290.f, 0.f);
+		pGameObject->Transform()->SetRelativeScale(500.f, 580.f, 1.f);
+		pGameObject->MeshRender()
+		           ->GetMaterial(0)
+		           ->SetTexParam(TEX_PARAM::TEX_0,
+		                         CResMgr::GetInst()->
+		                         FindRes<CTexture>(L"texture\\FBXTexture\\CardianlSwords_BaseColorAlpha.png"));
+
+		CGameObject* pGate = CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\gate.mdat")->Instantiate();
+		pGate->SetName(L"GATE");
+		pGate->AddChild(pGameObject);
+		pGate->Transform()->SetRelativePos(0.f, 0.f, 2000.f);
+		_pScene->AddObject(pGate, 0);
+	}
+
 	void CreateScene()
 	{
 		const auto pCurScene = new CScene;
@@ -90,15 +114,16 @@ namespace
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
 
-		AddPlayer(pCurScene, pCamObj);
+		//AddPlayer(pCurScene, pCamObj);
 		//AddDeuxiemie(pCurScene);
 		//AddHomonculus(pCurScene);
-		AddDefaultUIObjects(pCurScene);
+		//AddDefaultUIObjects(pCurScene);
 
+		TestSineDistortion(pCurScene);
 		//Map01(pCurScene);
-		Map02(pCurScene);
+		//Map02(pCurScene);
 
-		SetCollision();
+		//SetCollision();
 
 		SaveScene(pCurScene, L"scene\\TestScene.scene");
 

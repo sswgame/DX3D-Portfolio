@@ -42,7 +42,6 @@ private:
 	void RenderText();
 
 public:
-	void start() override;
 	void finalupdate() override;
 
 public:

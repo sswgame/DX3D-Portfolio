@@ -22,8 +22,6 @@ CUIText::CUIText()
 
 CUIText::~CUIText() = default;
 
-void CUIText::start() {}
-
 void CUIText::finalupdate()
 {
 	if (nullptr == MeshRender()
@@ -123,6 +121,10 @@ void CUIText::RenderText()
 
 void CUIText::AddText(const std::wstring& text)
 {
+	if (m_bHasTime)
+	{
+		m_elapsedTime = 0.f;
+	}
 	m_text += ToString(text);
 	CreateTextLayout();
 }
@@ -134,6 +136,10 @@ const std::string& CUIText::GetText() const
 
 void CUIText::SetText(const std::wstring& text)
 {
+	if (m_bHasTime)
+	{
+		m_elapsedTime = 0.f;
+	}
 	m_text = ToString(text);
 	CreateTextLayout();
 }

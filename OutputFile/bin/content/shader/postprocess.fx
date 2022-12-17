@@ -236,5 +236,31 @@ float4 PS_EmissivePostProcess(VTX_OUT _in) : SV_Target
     return calcColor;
 }
 
+float4 PS_SinePostProcess(VTX_OUT _in) : SV_Target
+{
+    float4 vOutColor = (float4) 0.f;
+       
+    // _in.vPosition; ÇÈ¼¿ ÁÂÇ¥
 
+    if (IsBind)
+    {
+        const float timeScale = 4.f;
+        const float speed = 20.f;
+        const float PI = 3.141592f;
+        const float distortionRange = 0.01f;
+        
+        float2 vScreenUV = _in.vPosition.xy / vResolution;
+        vScreenUV.x = _in.vUV.x;
+        vScreenUV.y += sin((vScreenUV.x * PI * speed + fAccTime * timeScale)) * distortionRange;
+        vScreenUV = saturate(vScreenUV);
+                
+        vOutColor = PostProcessTarget.Sample(g_sam_0, vScreenUV);
+    }
+    else
+    {
+        vOutColor = float4(1.f, 0.f, 1.f, 1.f);
+    }
+    
+    return vOutColor;
+}
 #endif
