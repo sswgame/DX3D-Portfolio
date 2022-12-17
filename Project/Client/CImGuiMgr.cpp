@@ -21,6 +21,7 @@
 #include "ParticleTool.h"
 #include "FogTool.h"
 #include "UITool.h"
+#include "../Engine/Engine/CEventMgr.h"
 
 CImGuiMgr::CImGuiMgr()
 	: m_hNotify{nullptr} {}

@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Project\Client\Cl
 		{1FB2CDD5-204F-4C23-8B65-F179C5B4E3B3} = {1FB2CDD5-204F-4C23-8B65-F179C5B4E3B3}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Project\Engine\Engine.vcxproj", "{AAF7D402-37DF-46A7-8FB5-F32A8E210DD9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Project\Engine\Engine\Engine.vcxproj", "{AAF7D402-37DF-46A7-8FB5-F32A8E210DD9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script", "Project\Script\Script.vcxproj", "{1FB2CDD5-204F-4C23-8B65-F179C5B4E3B3}"
 	ProjectSection(ProjectDependencies) = postProject
