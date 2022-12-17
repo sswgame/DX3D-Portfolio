@@ -27,6 +27,7 @@
 #include "SocketColliderScript.h"
 #include "SwordTrailScript.h"
 #include "TestDeadScript.h"
+#include "TotemScript.h"
 #include "TrailScript.h"
 
 void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
@@ -56,6 +57,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"SocketColliderScript");
 	_vec.push_back(L"SwordTrailScript");
 	_vec.push_back(L"TestDeadScript");
+	_vec.push_back(L"TotemScript");
 	_vec.push_back(L"TrailScript");
 }
 
@@ -112,6 +114,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new SwordTrailScript;
 	if (L"TestDeadScript"== _strScriptName)
 		return new TestDeadScript;
+	if (L"TotemScript"== _strScriptName)
+		return new TotemScript;
 	if (L"TrailScript"== _strScriptName)
 		return new TrailScript;
 	return nullptr;
@@ -172,6 +176,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new SwordTrailScript;
 	case SCRIPT_TYPE::TESTDEADSCRIPT:
 		return new TestDeadScript;
+	case SCRIPT_TYPE::TOTEMSCRIPT:
+		return new TotemScript;
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return new TrailScript;
 	}
@@ -233,6 +239,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"SwordTrailScript";
 	case SCRIPT_TYPE::TESTDEADSCRIPT:
 		return L"TestDeadScript";
+	case SCRIPT_TYPE::TOTEMSCRIPT:
+		return L"TotemScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return L"TrailScript";
 		}

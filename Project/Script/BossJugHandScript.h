@@ -10,6 +10,8 @@ private:
 	Vec3            m_vDirection;
 	Vec3            m_vPrevDirection;
 
+	CGameObject*		m_pPlayer;
+
 	wstring					m_sCurState;
 
 	float					m_fRunningTime;

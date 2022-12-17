@@ -11,6 +11,7 @@
 #include "PlayerScript.h"
 #include "CPlayerStat.h"
 #include "BossJugScript.h"
+#include "CObjectManager.h"
 #include <Engine/CSerializer.h>
 BossJugHandScript::BossJugHandScript()
 	: CScript{ (int)SCRIPT_TYPE::BOSSJUGHANDSCRIPT }
@@ -26,6 +27,7 @@ BossJugHandScript::BossJugHandScript()
 	, m_bAttackStateDone(false)
 	, m_bVanishStateDone(false)
 	, m_bAttackRepeat(false)
+	, m_pPlayer(nullptr)
 {
 }
 
@@ -54,25 +56,12 @@ Vec3 BossJugHandScript::GetPlayerPosition()
 	// player is not exits
 	//return Vec3(0, 0, 0);
 
-	vector<CGameObject*> pVecObjs = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"PLAYER")->GetObjects();
-	CGameObject* pPlayer = nullptr;
-
-	for (size_t i = 0; i < pVecObjs.size(); i++)
+	if (nullptr == m_pPlayer)
 	{
-		if (nullptr != pVecObjs[i]->GetScriptByName(L"PlayerScript"))
-		{
-			pPlayer = pVecObjs[i];
-		}
+		return Vec3(0.f, 0.f, 0.f);
 	}
 
-	if (nullptr == pPlayer)
-	{
-		// player is not exits
-		return Vec3(0, 0, 0);
-		//assert(L"Hand Script Error" && L"Player is not exist");
-	}
-
-	return pPlayer->Transform()->GetRelativePos();
+	return m_pPlayer->Transform()->GetRelativePos();
 }
 
 void BossJugHandScript::InitMonsterStat()
@@ -139,6 +128,7 @@ void BossJugHandScript::start()
 	// 모든 손의 현재 상태는 Gen 으로 두고 시작한다.
 	// 모든 상태는 같지만 공격 idx 와 같은 손만 update 된다.
 	pHandMgr->GetScript<HandStateMgrScript>()->SetNextState(L"GEN");
+
 }
 
 void BossJugHandScript::update()
@@ -151,6 +141,11 @@ void BossJugHandScript::update()
 	// attackIndex 가 -1일시 아무것도 하지 않음
 	if (-1 == m_iCurAttackHandIdx)
 		return;
+
+	if (nullptr == m_pPlayer)
+	{
+		m_pPlayer = CObjectManager::GetInst()->GetPlayer();
+	}
 
 	// 공격할 손의 번호가 일치하지 않으면 update 하지 않음.
 	if (m_iOwnerHandIdx != m_iCurAttackHandIdx)

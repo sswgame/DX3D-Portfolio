@@ -23,4 +23,5 @@ PlayerScript
 SocketColliderScript
 SwordTrailScript
 TestDeadScript
+TotemScript
 TrailScript

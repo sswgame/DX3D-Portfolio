@@ -213,6 +213,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="pch.h" />
     <ClInclude Include="SocketColliderScript.h" />
     <ClInclude Include="SwordTrailScript.h" />
+    <ClInclude Include="TotemScript.h" />
     <ClInclude Include="TrailScript.h" />
   </ItemGroup>
   <ItemGroup>
@@ -302,6 +303,7 @@ call CodeGen.exe</Command>
     </ClCompile>
     <ClCompile Include="SocketColliderScript.cpp" />
     <ClCompile Include="SwordTrailScript.cpp" />
+    <ClCompile Include="TotemScript.cpp" />
     <ClCompile Include="TrailScript.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
