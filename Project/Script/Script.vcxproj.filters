@@ -242,7 +242,7 @@
       <Filter>Script\Boss\Jug\Attack</Filter>
     </ClInclude>
     <ClInclude Include="MainMenuScript.h">
-      <Filter>UI</Filter>
+      <Filter>Script\UI</Filter>
     </ClInclude>
     <ClInclude Include="PlayerCamScript.h">
       <Filter>Script\Camera</Filter>
@@ -254,9 +254,13 @@
       <Filter>Script\SocketCollider</Filter>
     </ClInclude>
     <ClInclude Include="TestDeadScript.h" />
-    <ClInclude Include="ObjMgrState_LOADING.h" />
-    <ClInclude Include="ObjMgrState_IDLE.h" />
     <ClInclude Include="TotemScript.h" />
+    <ClInclude Include="ObjMgrState_IDLE.h">
+      <Filter>Script\Common\State</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjMgrState_LOADING.h">
+      <Filter>Script\Common\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -491,7 +495,7 @@
       <Filter>Script\Boss\Jug\Attack</Filter>
     </ClCompile>
     <ClCompile Include="MainMenuScript.cpp">
-      <Filter>UI</Filter>
+      <Filter>Script\UI</Filter>
     </ClCompile>
     <ClCompile Include="PlayerCamScript.cpp">
       <Filter>Script\Camera</Filter>
@@ -503,9 +507,13 @@
       <Filter>Script\SocketCollider</Filter>
     </ClCompile>
     <ClCompile Include="TestDeadScript.cpp" />
-    <ClCompile Include="ObjMgrState_LOADING.cpp" />
-    <ClCompile Include="ObjMgrState_IDLE.cpp" />
     <ClCompile Include="TotemScript.cpp" />
+    <ClCompile Include="ObjMgrState_IDLE.cpp">
+      <Filter>Script\Common\State</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjMgrState_LOADING.cpp">
+      <Filter>Script\Common\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -643,14 +651,17 @@
     <Filter Include="Script\Item">
       <UniqueIdentifier>{0654eaf3-1cda-4915-8068-8c7eded74b80}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI">
-      <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Script\Effect\PaperBurn">
       <UniqueIdentifier>{09410adb-860f-484d-b53b-d31774dd162a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Script\SocketCollider">
       <UniqueIdentifier>{804c38d3-c8fa-4d60-9bf2-fa92f72e2c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Common\State">
+      <UniqueIdentifier>{3773dd1a-6e0c-409a-8990-e5c6d3b978ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\UI">
+      <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
