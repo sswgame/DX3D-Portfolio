@@ -20,7 +20,7 @@ COMPONENTS:
       SHADER: [ParticleUpdateShader, ParticleUpdateShader]
       m_iMaxCount: 1000
       m_bPosInherit: 0
-      m_iAliveCount: 100
+      m_iAliveCount: 500
       m_fMinLifeTime: 2
       m_fMaxLifeTime: 4
       m_fStartSpeed: 200
