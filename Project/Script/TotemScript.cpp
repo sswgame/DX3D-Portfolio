@@ -5,6 +5,7 @@
 #include "PlayerScript.h"
 #include "BossJugCombatMgrScript.h"
 #include "BossJugScript.h"
+#include "CObjectManager.h"
 
 #include <Engine/CCollider3D.h>
 
@@ -15,6 +16,8 @@ TotemScript::TotemScript()
 	, m_bHitOn(false)
 	, m_bPrevHitOn(false)
 	, m_fPaperburnTime(2.f)
+	, m_pPlayerPrevPos()
+	, m_pPlayerCurPos()
 {
 }
 
@@ -60,7 +63,7 @@ void TotemScript::start()
 {
 	m_fTotemFullHP = 300.f;
 	m_fTotemCurHP = 300.f;
-	
+
 	CTexture* pTexture = CResMgr::GetInst()->FindRes<CTexture>(L"texture\\FBXTexture\\T_JuguArchi05Dark.png").Get();
 	int iHitOn = (int)m_bHitOn;
 
@@ -70,6 +73,13 @@ void TotemScript::start()
 
 void TotemScript::update()
 {
+	if (m_fTotemCurHP <= 0.f)
+	{
+		// D zim
+		GetOwner()->Deactivate();
+	}
+
+
 	int iHitOn = (int)m_bHitOn;
 	if (m_bPrevHitOn != m_bHitOn)
 	{
@@ -77,6 +87,48 @@ void TotemScript::update()
 		m_bPrevHitOn = m_bHitOn;
 	}
 
+	if (nullptr == m_pCombatMgr)
+		m_pCombatMgr = CObjectManager::GetInst()->GetBossCombatMgr()->GetScript<
+		BossJugCombatMgrScript>();
+
+	vector<CGameObject*> pPlayerVec = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"PLAYER")->GetObjects();
+
+	if (nullptr == m_pPlayer)
+	{
+		for (size_t i = 0; i < pPlayerVec.size(); i++)
+		{
+			if (pPlayerVec[i]->GetName() == L"player")
+			{
+				m_pPlayer = pPlayerVec[i];
+				m_pPlayerPrevPos = m_pPlayer->Transform()->GetRelativePos();
+			}
+		}
+	}
+
+	if (nullptr != m_pPlayer)
+	{
+		float SphereRValue = GetOwner()->Collider3D()->GetOffsetScale().x;
+		Vec3 TotemPos = GetOwner()->Transform()->GetRelativePos() + GetOwner()->Collider3D()->GetOffsetPos();
+
+		m_pPlayerCurPos = m_pPlayer->Transform()->GetRelativePos();
+		float distance = sqrtf((TotemPos.x - m_pPlayerCurPos.x) * (TotemPos.x - m_pPlayerCurPos.x) +
+			(TotemPos.y - m_pPlayerCurPos.y) * (TotemPos.y - m_pPlayerCurPos.y) +
+			(TotemPos.z - m_pPlayerCurPos.z) * (TotemPos.z - m_pPlayerCurPos.z));
+
+		if (distance < SphereRValue)
+		{
+			// 플레이어 이동 제한.
+			// push player
+			m_pPlayer->Transform()->SetRelativePos(m_pPlayerPrevPos);
+			m_pPlayerCurPos = m_pPlayer->Transform()->GetRelativePos();
+		}
+	}
+	m_pPlayerPrevPos = m_pPlayer->Transform()->GetRelativePos();
+
+	if (m_bHit)
+	{
+		HitEffect();
+	}
 }
 
 void TotemScript::lateupdate()
@@ -110,11 +162,38 @@ void TotemScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
 	CScript::OnCollisionEnter(_OtherObject);
 
+	//if (_OtherObject->GetName() == L"Sword_Bone_Collider")
+	//{
+	//	PlayerScript* pPlayerScript = m_pCombatMgr->GetPlayer()->GetScript<PlayerScript>();
+	//	if (nullptr != pPlayerScript)
+	//	{
+	//		wstring playerState = pPlayerScript->GetStateMgr()->GetCurstate();
+	//		if (L"LIGHT_ATTACK" == playerState
+	//			|| L"HEAVY_ATTACK" == playerState)
+	//		{
+	//			//BossJugScript* pJugScript = m_pCombatMgr->GetJug()->GetScript<BossJugScript>();
+	//			//pJugScript->GetHit(0.06f);
+	//			m_bHitOn = true;
+	//			m_fTotemCurHP -= 100.f;
+	//			m_bHit = true;
+	//		}
+	//	}
+	//}
+
+}
+
+void TotemScript::OnCollision(CGameObject* _OtherObject)
+{
+	CScript::OnCollision(_OtherObject);
+
+}
+
+void TotemScript::OnCollisionExit(CGameObject* _OtherObject)
+{
+	CScript::OnCollisionExit(_OtherObject);
+
 	if (_OtherObject->GetName() == L"Sword_Bone_Collider")
 	{
-		m_bHitOn = true;
-		m_fTotemCurHP -= 100.f;
-
 		PlayerScript* pPlayerScript = m_pCombatMgr->GetPlayer()->GetScript<PlayerScript>();
 		if (nullptr != pPlayerScript)
 		{
@@ -122,37 +201,22 @@ void TotemScript::OnCollisionEnter(CGameObject* _OtherObject)
 			if (L"LIGHT_ATTACK" == playerState
 				|| L"HEAVY_ATTACK" == playerState)
 			{
-				BossJugScript* pJugScript = m_pCombatMgr->GetJug()->GetScript<BossJugScript>();
-				pJugScript->GetHit(0.06f);
-
+				//BossJugScript* pJugScript = m_pCombatMgr->GetJug()->GetScript<BossJugScript>();
+				//pJugScript->GetHit(0.06f);
+				m_bHitOn = true;
+				m_fTotemCurHP -= 100.f;
 				m_bHit = true;
 			}
 		}
 	}
-	else if (_OtherObject->GetName() == L"player")
-	{
-		// 플레이어 
-		//float playerStat = _OtherObject->GetScript<PlayerScript>()->GetPlayerStat()->GetStat().fSpeed;
-		//float playerStat = _OtherObject->GetScript<PlayerScript>()->GetPlayerStat()->GetStat().fSpeed;
-	}
-}
 
-void TotemScript::OnCollision(CGameObject* _OtherObject)
-{
-	CScript::OnCollision(_OtherObject);
-}
-
-void TotemScript::OnCollisionExit(CGameObject* _OtherObject)
-{
-	CScript::OnCollisionExit(_OtherObject);
-
-		if (_OtherObject->GetName() == L"Sword_Bone_Collider")
+	/*	if (_OtherObject->GetName() == L"Sword_Bone_Collider")
 		{
 			m_bHitOn = false;
 		}
 		else if (_OtherObject->GetName() == L"player")
 		{
 
-		}
+		}*/
 }
 

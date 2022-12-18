@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "MagmaScript.h"
+#include "CObjectManager.h"
+#include "M_AttackScript.h"
 
 // < ENGINE >>
 #include <Engine/CCollider3D.h>
@@ -52,7 +54,8 @@ void MagmaScript::update()
 			pParticle->ParticleSystem()->SetMaterial(L"material\\explosion.mtrl");
 			CSceneMgr::GetInst()->SpawnObject(pParticle, 1);
 
-			GetOwner()->Collider3D()->CreateAttackCollider(1.f, m_fExplodeScale, GetOwner()->Transform()->GetRelativePos());
+			GetOwner()->AddComponent(new M_AttackScript);
+			CObjectManager::GetInst()->CreateAttackCollider(1.f, m_fExplodeScale, GetOwner()->Transform()->GetRelativePos());
 			m_bExplodeOn = true;
 		}
 

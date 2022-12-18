@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "EnergyBallScript.h"
+#include "CObjectManager.h"
+#include "M_AttackScript.h"
 
 #include <Engine/CTransform.h>
 #include <Engine/CGameObject.h>
@@ -46,7 +48,8 @@ void EnergyBallScript::Explode()
 	pParticle->Transform()->SetRelativePos(Transform()->GetWorldPos());
 	CSceneMgr::GetInst()->SpawnObject(pParticle, 1);
 
-	GetOwner()->Collider3D()->CreateAttackCollider(0.7f, 500.f, GetOwner()->Transform()->GetRelativePos());
+	GetOwner()->AddComponent(new M_AttackScript);
+	CObjectManager::GetInst()->CreateAttackCollider(0.7f, 500.f, GetOwner()->Transform()->GetRelativePos());
 }
 
 void EnergyBallScript::SetTargetPos(Vec3 _vPos)

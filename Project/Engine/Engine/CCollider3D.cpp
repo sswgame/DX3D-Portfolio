@@ -9,10 +9,10 @@
 
 
 CCollider3D::CCollider3D()
-	: CComponent{COMPONENT_TYPE::COLLIDER3D}
-	, m_vOffsetScale{1.f, 1.f, 1.f}
-	, m_iCollisionCount{0}
-	, m_eCollider3DType{COLLIDER3D_TYPE::CUBE}
+	: CComponent{ COMPONENT_TYPE::COLLIDER3D }
+	, m_vOffsetScale{ 1.f, 1.f, 1.f }
+	, m_iCollisionCount{ 0 }
+	, m_eCollider3DType{ COLLIDER3D_TYPE::CUBE }
 	, m_fLifeTime(-1.f)
 {
 	// Debug Obj 추가
@@ -23,19 +23,19 @@ CCollider3D::CCollider3D()
 		m_pDebugObj->AddComponent(new CTransform);
 		m_pDebugObj->AddComponent(new CMeshRender);
 
-		m_pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
+		m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
 		m_pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Collider3D.mtrl");
 	}
 }
 
 CCollider3D::CCollider3D(const CCollider3D& _origin)
-	: CComponent{COMPONENT_TYPE::COLLIDER3D}
-	, m_vOffsetPos{_origin.m_vOffsetPos}
-	, m_vOffsetScale{_origin.m_vOffsetScale}
-	, m_iCollisionCount{0}
-	, m_eCollider3DType{_origin.m_eCollider3DType}
-	, m_pMesh{_origin.m_pMesh}
-	, m_pMaterial{_origin.m_pMaterial}
+	: CComponent{ COMPONENT_TYPE::COLLIDER3D }
+	, m_vOffsetPos{ _origin.m_vOffsetPos }
+	, m_vOffsetScale{ _origin.m_vOffsetScale }
+	, m_iCollisionCount{ 0 }
+	, m_eCollider3DType{ _origin.m_eCollider3DType }
+	, m_pMesh{ _origin.m_pMesh }
+	, m_pMaterial{ _origin.m_pMaterial }
 	, m_fLifeTime(-1.f) {}
 
 CCollider3D::~CCollider3D() {}
@@ -45,12 +45,12 @@ void CCollider3D::SetCollider3DType(COLLIDER3D_TYPE _type)
 	if (COLLIDER3D_TYPE::CUBE == _type)
 	{
 		m_eCollider3DType = _type;
-		m_pMesh           = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
+		m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh");
 	}
 	else
 	{
 		m_eCollider3DType = _type;
-		m_pMesh           = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
+		m_pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh");
 	}
 }
 
@@ -133,10 +133,10 @@ void CCollider3D::OnCollisionExit(CCollider3D* _pOther)
 void CCollider3D::UpdateData()
 {
 	static CConstBuffer* pCB = CDevice::GetInst()->GetCB(CB_TYPE::TRANSFORM);
-	g_transform.matWorld     = m_matWorld;
-	g_transform.matWorldInv  = XMMatrixInverse(nullptr, m_matWorld);
-	g_transform.matWV        = g_transform.matWorld * g_transform.matView;
-	g_transform.matWVP       = g_transform.matWV * g_transform.matProj;
+	g_transform.matWorld = m_matWorld;
+	g_transform.matWorldInv = XMMatrixInverse(nullptr, m_matWorld);
+	g_transform.matWV = g_transform.matWorld * g_transform.matView;
+	g_transform.matWVP = g_transform.matWV * g_transform.matProj;
 
 	pCB->SetData(&g_transform, sizeof(tTransform));
 	pCB->UpdateData();
@@ -155,15 +155,15 @@ void CCollider3D::finalupdate()
 	}
 
 	const Matrix matTranslation = XMMatrixTranslation(m_vOffsetPos.x, m_vOffsetPos.y, m_vOffsetPos.z);
-	const Matrix matRotation    = Matrix{};
-	const Matrix matScale       = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
-	m_matWorld                  = matScale * matRotation * matTranslation;
+	const Matrix matRotation = Matrix{};
+	const Matrix matScale = XMMatrixScaling(m_vOffsetScale.x, m_vOffsetScale.y, m_vOffsetScale.z);
+	m_matWorld = matScale * matRotation * matTranslation;
 
-	const Vec3   vGameObjectScale          = Transform()->GetWorldScale();
+	const Vec3   vGameObjectScale = Transform()->GetWorldScale();
 	const Matrix matGameObjectScaleInverse = XMMatrixInverse(nullptr,
-	                                                         XMMatrixScaling(vGameObjectScale.x,
-	                                                                         vGameObjectScale.y,
-	                                                                         vGameObjectScale.z));
+		XMMatrixScaling(vGameObjectScale.x,
+			vGameObjectScale.y,
+			vGameObjectScale.z));
 	const Matrix matGameobjectWorld = Transform()->GetWorldMat();
 	// 충돌체 상대행렬 * 오브젝트 월드 크기 역행렬 * 오브젝트 월드 행렬(크기 * 회전 * 이동)
 	m_matWorld = m_matWorld * matGameObjectScaleInverse * matGameobjectWorld;
@@ -217,20 +217,6 @@ void CCollider3D::LoadFromScene(FILE* _pFile)
 	SetCollider3DType(m_eCollider3DType);
 }
 
-void CCollider3D::CreateAttackCollider(float _lifeTime, float _sphereSize, Vec3 _pos)
-{
-	CGameObject* pAttackCollider = new CGameObject;
-	pAttackCollider->SetName(L"MonsterAttack");
-	pAttackCollider->AddComponent(new CTransform);
-	pAttackCollider->AddComponent(new CCollider3D);
-	pAttackCollider->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
-	pAttackCollider->Collider3D()->SetOffsetPos(_pos);
-	pAttackCollider->Collider3D()->SetOffsetScale(Vec3(_sphereSize, _sphereSize, _sphereSize));
-	pAttackCollider->Collider3D()->SetLifeTime(_lifeTime);
-
-	CSceneMgr::GetInst()->SpawnObject(pAttackCollider, L"MONSTER_PARRING-ATTACK");
-}
-
 void CCollider3D::Serialize(YAML::Emitter& emitter)
 {
 	emitter << YAML::Key << NAME_OF(m_eCollider3DType) << YAML::Value << (int)m_eCollider3DType;
@@ -241,8 +227,8 @@ void CCollider3D::Serialize(YAML::Emitter& emitter)
 void CCollider3D::Deserialize(const YAML::Node& node)
 {
 	m_eCollider3DType = (COLLIDER3D_TYPE)node[NAME_OF(m_eCollider3DType)].as<int>();
-	m_vOffsetPos      = node[NAME_OF(m_vOffsetPos)].as<Vec3>();
-	m_vOffsetScale    = node[NAME_OF(m_vOffsetScale)].as<Vec3>();
+	m_vOffsetPos = node[NAME_OF(m_vOffsetPos)].as<Vec3>();
+	m_vOffsetScale = node[NAME_OF(m_vOffsetScale)].as<Vec3>();
 
 	SetCollider3DType(m_eCollider3DType);
 }

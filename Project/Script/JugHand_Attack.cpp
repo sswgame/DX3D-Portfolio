@@ -5,6 +5,8 @@
 #include "EffectScript.h"
 #include "MagmaScript.h"
 #include "EnergyBallScript.h"
+#include "CObjectManager.h"
+#include "M_AttackScript.h"
 
 // Engine
 #include <Engine/CAnimation3D.h>
@@ -82,7 +84,8 @@ void JugHand_Attack::Hand01Attack()
 
 					CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
 
-					GetOwner()->Collider3D()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
+					GetOwner()->AddComponent(new M_AttackScript);
+					CObjectManager::GetInst()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
 					m_bLandingEffectOn = true;
 				}
 			}
@@ -125,7 +128,8 @@ void JugHand_Attack::Hand01Attack()
 
 						CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
 
-						GetOwner()->Collider3D()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
+						GetOwner()->AddComponent(new M_AttackScript);
+						CObjectManager::GetInst()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
 						m_bLandingEffectOn = true;
 					}
 				}
