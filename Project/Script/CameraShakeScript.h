@@ -15,7 +15,7 @@ public:
 	virtual void update();
 	virtual void lateupdate();
 
-	void StartShake(bool _bShake, float _fTime);
+	void StartShake(float _fTime);
 	bool IsShake(bool _bShake) { return m_bShake; }
 
 	CLONE(CameraShakeScript)

@@ -8,8 +8,10 @@
 
 // [Script]
 #include "BossJugCombatMgrScript.h"
+#include "CObjectManager.h"
 #include "CPlayerStat.h"
 #include "PlayerScript.h"
+#include "CameraShakeScript.h"
 
 ColumnFlameScript::ColumnFlameScript()
 	: CScript((int)SCRIPT_TYPE::COLUMNFLAMESCRIPT)
@@ -117,6 +119,8 @@ void ColumnFlameScript::update()
 			m_pLaser_2->Activate();
 			Collider3D()->Activate();
 
+			CObjectManager::GetInst()->GetPlayerCamera()->GetScript<CameraShakeScript>()->StartShake(0.5f);
+
 			m_fActiveLaser = true;
 		}
 
@@ -175,7 +179,9 @@ void ColumnFlameScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
 	PlayerScript* pPlayerScript = _OtherObject->GetScript<PlayerScript>();
 	if (nullptr != pPlayerScript)
+	{
 		pPlayerScript->Stat_Down(STAT_TYPE::HP, 0.03f);
+	}
 }
 
 void ColumnFlameScript::OnCollision(CGameObject* _OtherObject)

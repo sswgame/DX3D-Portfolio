@@ -44,6 +44,7 @@ public:
 	void SetBossUI(CGameObject* _pGameObject) { m_pBossUI = _pGameObject; }
 	void SetBossCombatMgr(CGameObject* _pMgr) { m_pBossCombatMgr = _pMgr; }
 	void SetPlayer(CGameObject* _pObj) { m_pPlayer = _pObj; }
+	void SetPlayerCam(CGameObject* _pObj) { m_pPlayerCamera = _pObj; }
 
 	void                             RemoveFromDontDestroyList(CGameObject* pGameObject);
 	CGameObject*                     IsInDontDestroyList(const CGameObject* pGameObject);

@@ -44,6 +44,7 @@
 #include <Script/PaperBurnScript.h>
 #include <Script/CObjectManager.h>
 #include <Script/CinemaCamScript.h>
+#include <Script/CameraShakeScript.h>
 
 namespace
 {
@@ -155,6 +156,7 @@ namespace
 		pCamera->AddComponent(new CCamera);
 		//pCamera->AddComponent(new CameraMoveScript);
 		pCamera->AddComponent(new PlayerCamScript);
+		pCamera->AddComponent(new CameraShakeScript);
 
 		pCamera->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
 		pCamera->Camera()->SetCameraAsMain();
@@ -163,7 +165,10 @@ namespace
 		pCamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE", false);
 		pCamera->Camera()->SetShowFrustum(true);
 
+
 		_pScene->AddObject(pCamera, L"CAMERA");
+
+		CObjectManager::GetInst()->SetPlayerCam(pCamera);
 		CObjectManager::GetInst()->AddToDontDestroy(pCamera);
 		return pCamera;
 	}

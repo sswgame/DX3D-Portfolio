@@ -193,7 +193,7 @@ void JugPhase_2::Update()
 		if (pPaperburnScript)
 		{
 			if (((PaperBurnScript*)pPaperburnScript)->GetStrength() <= 0.f &&
-				((PaperBurnScript*)pPaperburnScript)->IsFinish() == false)
+			    ((PaperBurnScript*)pPaperburnScript)->IsFinish() == false)
 			{
 				((PaperBurnScript*)pPaperburnScript)->Off();
 			}
@@ -359,7 +359,6 @@ void JugPhase_2::Attack_1()
 				bDamage = true;
 			}
 		}
-		
 	}
 }
 
