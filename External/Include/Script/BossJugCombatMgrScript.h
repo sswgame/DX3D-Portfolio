@@ -9,12 +9,13 @@ private:
 	CFSM*  m_pPhaseFSM;
 	string m_strCurState;
 
-	CGameObject* m_pStage;
-	CGameObject* m_pJug;
-	CGameObject* m_pHammer;
-	CGameObject* m_pJugHandMgr;
-	CGameObject* m_pPlayer;
-	CGameObject* m_pPot;
+	CGameObject*       m_pStage;
+	CGameObject*       m_pJug;
+	CGameObject*       m_pHammer;
+	CGameObject*       m_pJugHandMgr;
+	CGameObject*       m_pPlayer;
+	CGameObject*       m_pPot;
+	list<CGameObject*> m_listTotem;
 
 	CGameObject* m_pStageInnerCollider;
 	CGameObject* m_pStageOuterCollider;
@@ -25,7 +26,8 @@ public:
 	void SpawnStage();
 	void InitState();
 
-	void CheckPhase() const;
+	void CheckPhase();
+	void TotemDeadCheck();
 
 	// [ GET / SET ]
 	CGameObject* GetJug() { return m_pJug; }

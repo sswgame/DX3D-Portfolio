@@ -30,6 +30,8 @@
 #include "JugPhase_Dead.h"
 #include "TotemScript.h"
 
+#define TOTEM_COUNT 3
+
 BossJugCombatMgrScript::BossJugCombatMgrScript()
 	: CScript((int)SCRIPT_TYPE::BOSSJUGCOMBATMGRSCRIPT)
 	, m_pPhaseFSM(nullptr)
@@ -39,6 +41,9 @@ BossJugCombatMgrScript::BossJugCombatMgrScript()
 	, m_pJugHandMgr(nullptr)
 	, m_pStageInnerCollider(nullptr)
 	, m_pStageOuterCollider(nullptr)
+	, m_listTotem{}
+	, m_bPhase1Enter(false)
+	, m_pPhase01Trigger(nullptr)
 {
 	AddScriptParam("PHASE INFO", SCRIPTPARAM_TYPE::TEXT, &m_strCurState);
 }
@@ -53,7 +58,7 @@ void BossJugCombatMgrScript::SpawnStage()
 	if (nullptr == m_pStage)
 	{
 		Ptr<CPrefab> pStagePref = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\BOSS_STAGE.pref",
-			L"prefab\\BOSS_STAGE.pref");
+		                                                            L"prefab\\BOSS_STAGE.pref");
 		m_pStage = pStagePref->Instantiate();
 		CSceneMgr::GetInst()->SpawnObject(m_pStage, L"BG");
 
@@ -64,8 +69,8 @@ void BossJugCombatMgrScript::SpawnStage()
 		pNMesh->AddComponent(new CNaviMap);
 
 		CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\boss_stage.map",
-			L"navimap\\boss_stage.map").
-			Get();
+		                                                                L"navimap\\boss_stage.map").
+		                                             Get();
 		pNMesh->NaviMap()->SetNaviMapData(pNaviMap);
 		pNMesh->Transform()->SetRelativeScale(2.5f, 2.5f, 2.5f);
 		pNMesh->Transform()->SetRelativePos(0.f, -345.f, 0.f);
@@ -76,7 +81,7 @@ void BossJugCombatMgrScript::SpawnStage()
 
 		// totem 1
 		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\Jug_Totem.pref",
-			L"prefab\\Jug_Totem.pref").Get();
+		                                                     L"prefab\\Jug_Totem.pref").Get();
 		CGameObject* pTotem1 = pPrefab->Instantiate();
 		pTotem1->SetName(L"Jug_Totem_01");
 		pTotem1->Transform()->SetRelativePos(Vec3(0.f, 0.f, -1087.f));
@@ -85,7 +90,7 @@ void BossJugCombatMgrScript::SpawnStage()
 		pTotem1->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 150.f));
 		pTotem1->Collider3D()->SetOffsetPos(Vec3(0.f, 85.f, 0.f));
 		CSceneMgr::GetInst()->SpawnObject(pTotem1, GAME::LAYER::ITEM);
-
+		m_listTotem.push_back(pTotem1);
 
 		// totem 2
 		Vec3 rotateValue2 = Vec3(0.f, -70.f, 0.f);
@@ -99,11 +104,11 @@ void BossJugCombatMgrScript::SpawnStage()
 		pTotem2->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 150.f));
 		pTotem2->Collider3D()->SetOffsetPos(Vec3(0.f, 85.f, 0.f));
 		CSceneMgr::GetInst()->SpawnObject(pTotem2, GAME::LAYER::ITEM);
-
-		Vec3 rotateValue3 = Vec3(0.f, 70.f, 0.f);
-		rotateValue3.ToRadian();
+		m_listTotem.push_back(pTotem2);
 
 		// totem 3
+		Vec3 rotateValue3 = Vec3(0.f, 70.f, 0.f);
+		rotateValue3.ToRadian();
 		CGameObject* pTotem3 = pPrefab->Instantiate();
 		pTotem3->SetName(L"Jug_Totem_03");
 		pTotem3->Transform()->SetRelativePos(Vec3(-1083.f, 0.f, -390.f));
@@ -113,13 +118,14 @@ void BossJugCombatMgrScript::SpawnStage()
 		pTotem3->Collider3D()->SetOffsetScale(Vec3(150.f, 150.f, 150.f));
 		pTotem3->Collider3D()->SetOffsetPos(Vec3(Vec3(0.f, 85.f, 0.f)));
 		CSceneMgr::GetInst()->SpawnObject(pTotem3, GAME::LAYER::ITEM);
+		m_listTotem.push_back(pTotem3);
 	}
 
 	/* 보스 생성 */
 	if (nullptr == m_pJug)
 	{
 		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\jugulus+hammer_final0.mdat",
-			L"meshdata\\jugulus+hammer_final0.mdat");
+		                                                               L"meshdata\\jugulus+hammer_final0.mdat");
 		m_pJug = pMeshData->Instantiate();
 		m_pJug->SetName(L"JUG");
 		m_pJug->AddComponent(new BossJugScript);
@@ -132,7 +138,7 @@ void BossJugCombatMgrScript::SpawnStage()
 		if (nullptr == m_pHammer)
 		{
 			pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\jugulus+hammer_final1.mdat",
-				L"meshdata\\jugulus+hammer_final1.mdat");
+			                                                L"meshdata\\jugulus+hammer_final1.mdat");
 			m_pHammer = pMeshData->Instantiate();
 			m_pHammer->SetName(L"JUG_Hammer");
 
@@ -173,7 +179,7 @@ void BossJugCombatMgrScript::SpawnStage()
 	if (nullptr == m_pPot)
 	{
 		Ptr<CPrefab> pStagePref = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\Pot.pref",
-			L"prefab\\Pot.pref");
+		                                                            L"prefab\\Pot.pref");
 
 		m_pPot = pStagePref->Instantiate();
 		m_pPot->Animator3D()->SetPlayWithChild(true);
@@ -206,7 +212,18 @@ void BossJugCombatMgrScript::InitState()
 	}
 }
 
-void BossJugCombatMgrScript::CheckPhase() const
+void BossJugCombatMgrScript::TotemDeadCheck()
+{
+	list<CGameObject*>::iterator it = m_listTotem.begin();
+	while (it != m_listTotem.end())
+	{
+		if (static_cast<CGameObject*>(*it)->IsDead())
+			m_listTotem.erase(it++);
+		else ++it;
+	}
+}
+
+void BossJugCombatMgrScript::CheckPhase()
 {
 	// [ Phase Intro]
 	if (L"JUG_PHASE_NONE" == m_pPhaseFSM->GetCurState()->GetStateType() && m_bStartCombat)
@@ -216,18 +233,22 @@ void BossJugCombatMgrScript::CheckPhase() const
 	}
 	// [ Phase 1 ]
 	if (L"JUG_PHASE_INTRO" == m_pPhaseFSM->GetCurState()->GetStateType()
-		&& 4.f < m_pPhaseFSM->GetCurState()->GetTimer())
+	    && 4.f < m_pPhaseFSM->GetCurState()->GetTimer())
 	{
 		m_pPhaseFSM->ChangeState(GAME::BOSS::PHASE::JUG_PHASE_1);
 		return;
 	}
 
 	// [ Phase 2 ]
-	if (L"JUG_PHASE_1" == m_pPhaseFSM->GetCurState()->GetStateType()
-		&& m_pJug->GetScript<BossJugScript>()->GetHP() < (m_pJug->GetScript<BossJugScript>()->GetMaxHP() / 2))
+	if (L"JUG_PHASE_1" == m_pPhaseFSM->GetCurState()->GetStateType())
 	{
-		m_pPhaseFSM->ChangeState(GAME::BOSS::PHASE::JUG_PHASE_2);
-		return;
+		TotemDeadCheck();
+
+		if (m_listTotem.empty())
+		{
+			m_pPhaseFSM->ChangeState(GAME::BOSS::PHASE::JUG_PHASE_2);
+			return;
+		}
 	}
 	// [ Dead ]
 	if (0 >= m_pJug->GetScript<BossJugScript>()->GetHP())
@@ -236,6 +257,7 @@ void BossJugCombatMgrScript::CheckPhase() const
 		return;
 	}
 }
+
 
 void BossJugCombatMgrScript::start()
 {
@@ -258,7 +280,7 @@ void BossJugCombatMgrScript::update()
 	if (nullptr == m_pPlayer)
 	{
 		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"PLAYER");
-		m_pPlayer = pLayer->FindRootObject(L"player");
+		m_pPlayer      = pLayer->FindRootObject(L"player");
 	}
 	else
 	{

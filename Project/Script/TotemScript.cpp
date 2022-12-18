@@ -74,13 +74,6 @@ void TotemScript::start()
 
 void TotemScript::update()
 {
-	if (m_fTotemCurHP <= 0.f)
-	{
-		// D zim
-		GetOwner()->Deactivate();
-	}
-
-
 	int iHitOn = (int)m_bHitOn;
 	if (m_bPrevHitOn != m_bHitOn)
 	{
@@ -134,7 +127,7 @@ void TotemScript::update()
 
 void TotemScript::lateupdate()
 {
-	if (m_fTotemFullHP <= 0.f)
+	if (m_fTotemCurHP <= 0.f)
 	{
 		m_fPaperburnTime -= DT;
 
@@ -148,7 +141,7 @@ void TotemScript::lateupdate()
 		CTexture* pTexture = CResMgr::GetInst()->FindRes<CTexture>(L"texture\\FBXTexture\\T_JuguArchi05Dark.png").Get();
 
 		float burnStrength = (2.f - m_fPaperburnTime) / 2.f;
-		int iHitOn = (int)false;
+		int   iHitOn       = (int)false; 
 		GetOwner()->MeshRender()->SetSharedMaterial(pMtrl, 0);
 		GetOwner()->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
 		GetOwner()->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &iHitOn);

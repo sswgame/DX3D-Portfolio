@@ -9,23 +9,26 @@ private:
 	CFSM*  m_pPhaseFSM;
 	string m_strCurState;
 
-	CGameObject* m_pStage;
-	CGameObject* m_pJug;
-	CGameObject* m_pHammer;
-	CGameObject* m_pJugHandMgr;
-	CGameObject* m_pPlayer;
-	CGameObject* m_pPot;
+	CGameObject*       m_pStage;
+	CGameObject*       m_pJug;
+	CGameObject*       m_pHammer;
+	CGameObject*       m_pJugHandMgr;
+	CGameObject*       m_pPlayer;
+	CGameObject*       m_pPot;
+	CGameObject*       m_pPhase01Trigger;
+	list<CGameObject*> m_listTotem;
 
 	CGameObject* m_pStageInnerCollider;
 	CGameObject* m_pStageOuterCollider;
 
 	bool m_bStartCombat;
+	bool m_bPhase1Enter;
 
 public:
 	void SpawnStage();
 	void InitState();
-
-	void CheckPhase() const;
+	void CheckPhase();
+	void TotemDeadCheck();
 
 	// [ GET / SET ]
 	CGameObject* GetJug() { return m_pJug; }
@@ -48,6 +51,4 @@ public:
 public:
 	BossJugCombatMgrScript();
 	virtual ~BossJugCombatMgrScript();
-
 };
-

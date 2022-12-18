@@ -405,7 +405,7 @@ namespace
 			                                                   CTexture>(L"PositionTargetTex")));
 
 		_pScene->AddObject(pObject, L"BG");
-
+		
 		CGameObject* pObject1;
 		pObject1 = pObject->Clone();
 		pObject1->Transform()->SetRelativePos(-12, 3, -1615);
