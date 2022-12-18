@@ -155,7 +155,9 @@
     <ClCompile Include="BoundingBoxUI.cpp">
       <Filter>ImGui\UI\01. InspectorUI\ComponentUI\07. BoundingBox</Filter>
     </ClCompile>
-    <ClCompile Include="CTestScene.cpp" />
+    <ClCompile Include="CTestScene.cpp">
+      <Filter>TestScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">

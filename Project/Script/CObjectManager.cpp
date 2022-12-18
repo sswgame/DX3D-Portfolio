@@ -6,6 +6,9 @@
 
 #include "ObjMgrState_IDLE.h"
 #include "ObjMgrState_LOADING.h"
+#include "CObjectMgrState_CutScene.h"
+
+
 #include "PlayerScript.h"
 #include "M_AttackScript.h"
 
@@ -26,8 +29,10 @@ void CObjectManager::start()
 	CFSM* pFSM = new CFSM{};
 	GetOwner()->AddComponent(pFSM);
 	pFSM->AddState(L"IDLE", new ObjMgrState_IDLE{});
+	pFSM->AddState(L"CUT_SCENE", new CObjectMgrState_CutScene{});
 	pFSM->AddState(L"LOADING", new ObjMgrState_LOADING{});
 	pFSM->ChangeState(L"IDLE");
+
 }
 
 void CObjectManager::RemoveFromDontDestroyList(CGameObject* pGameObject)

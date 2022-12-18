@@ -91,10 +91,10 @@ namespace
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
 
-		//AddCinemaCamera(pCurScene);
+		AddCinemaCamera(pCurScene);
 		AddPlayer(pCurScene, pCamObj);
-		AddDeuxiemie(pCurScene);
-		AddHomonculus(pCurScene);
+		//AddDeuxiemie(pCurScene);
+		//AddHomonculus(pCurScene);
 		AddDefaultUIObjects(pCurScene);
 
 		Map01(pCurScene);
@@ -182,7 +182,7 @@ namespace
 		pCamera->AddComponent(new CinemaCamScript);
 
 		pCamera->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
-		pCamera->Camera()->SetCameraAsMain();
+		//pCamera->Camera()->SetCameraAsMain();
 		pCamera->Camera()->CheckLayerMaskAll();
 		pCamera->Camera()->CheckLayerMask(L"UI_STATIC", false);
 		pCamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE", false);

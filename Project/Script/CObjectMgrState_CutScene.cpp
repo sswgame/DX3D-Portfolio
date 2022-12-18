@@ -12,7 +12,8 @@ CObjectMgrState_CutScene::~CObjectMgrState_CutScene() = default;
 
 void CObjectMgrState_CutScene::Enter()
 {
-	CObjectManager::GetInst()->GetCinemaCam()->Camera()->SetCameraAsMain();
+
+
 }
 
 void CObjectMgrState_CutScene::Exit()
@@ -26,5 +27,6 @@ void CObjectMgrState_CutScene::LateUpdate()
 	if (CObjectManager::GetInst()->GetCinemaCam()->GetScript<CinemaCamScript>()->IsFinish())
 	{
 		CObjectManager::GetInst()->FSM()->ChangeState(L"IDLE");
+
 	}
 }

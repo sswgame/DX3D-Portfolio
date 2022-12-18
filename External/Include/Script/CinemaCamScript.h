@@ -35,6 +35,7 @@ public:
 
 	// Pos0 : 보간 시작 지점 / Pos1 : 보간 끝 지점 
 	void CreateCatmullRomRoute(Vec3 _vPos0, vector<Vec3> _vecMainPos, Vec3 _vPos1);
+	void CreateStartMap02Route(Vec3 _vStartPos);
 
 public:
 	virtual void start();

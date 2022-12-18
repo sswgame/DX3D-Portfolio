@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CinemaCamScript.h"
-
+#include "CObjectManager.h"
 
 CinemaCamScript::CinemaCamScript()
 	: CScript((int)SCRIPT_TYPE::CINEMACAMSCRIPT)
@@ -30,71 +30,18 @@ void CinemaCamScript::start()
 
 	}
 
-	if (m_pTargetObject)
-	{
-		Vec3 vPos;
-		Vec3 vForwardAxis = m_pTargetObject->Transform()->GetWorldFrontDir();
-		Vec3 vBackWardAxis = vForwardAxis * -1;
-		Vec3 vRightAxis = m_pTargetObject->Transform()->GetWorldRightDir();
-		Vec3 vLeftAxis = vRightAxis * -1;
-
-		Vec3 vPlayerPos = m_pTargetObject->Transform()->GetRelativePos();
-		Vec3 vPos0 = vPlayerPos;
-
-		vector<Vec3> MainPos;
-		vPos = vPos0 + vForwardAxis * 1000.f;
-		MainPos.push_back(vPos);
-		vPos = vPos + vForwardAxis * 300.f;
-		vPos = vPos + vLeftAxis * 500.f;
-		vPos.y += 200.f;
-		MainPos.push_back(vPos);
-		vPos = vPos + vRightAxis * 1400.f + vForwardAxis * 1000.f;
-		vPos.y += 400.f;
-		MainPos.push_back(vPos);
-		vPos = vPos + vForwardAxis * 300.f + vLeftAxis * 500.f;
-		vPos.y += 200.f;
-		MainPos.push_back(vPos);
-		vPos = vPos + vForwardAxis * 300.f;
-		vPos.y += 400.f;
-		MainPos.push_back(vPos);
-		vPos = vPos + vForwardAxis * 300.f;
-		vPos.y -= 200.f;
-		MainPos.push_back(vPos);
-		vPos = vPos + vForwardAxis * 300.f;
-		vPos.y -= 400.f;
-		MainPos.push_back(vPos);
-
-		Vec3 vPos1 = vPos + vForwardAxis * 800.f;
-		CreateCatmullRomRoute(vPos0, MainPos, vPos1);
-		m_vecCatmullRom[0].m_bStart = true;
-		m_vecCatmullRom[3].SetSpeed(0.4f);
-		m_vecCatmullRom[4].SetSpeed(0.3f);
-		m_vecCatmullRom[5].SetSpeed(0.2f);
+	
 
 
-	}
-	else
-	{
-		Vec3 vPos0 = Vec3(0.f, 0.f, 0.f);
-		Vec3 vPos1 = Vec3(1000.f, 1000.f, 1000.f);
-
-		vector<Vec3> mainPos;
-		mainPos.push_back(Vec3(500.f, 500.f, 500.f));
-		mainPos.push_back(Vec3(100.f, 100.f, 100.f));
-		mainPos.push_back(Vec3(-500.f, -500.f, 100.f));
-
-		CreateCatmullRomRoute(vPos0, mainPos, vPos1);
-		m_vecCatmullRom[0].m_bStart = true;
-	}
-
-
-	SetLoopRepeat(true);
+	//SetLoopRepeat(true);
 }
 
 void CinemaCamScript::update()
 {
-	UpdatePosition();
-	UpdateRotation();
+	CObjectManager::AddScriptEvent(this, &CinemaCamScript::UpdatePosition);
+	CObjectManager::AddScriptEvent(this, &CinemaCamScript::UpdateRotation);
+	//UpdatePosition();
+	//UpdateRotation();
 }
 
 
@@ -131,10 +78,13 @@ void CinemaCamScript::UpdatePosition()
 
 	// [0] - > [1] - > [2] ---...[0] - > ...
 	if (m_bLoopRepeat
-	    && m_vecCatmullRom[m_vecCatmullRom.size() - 1].m_bIsEnd)
+		&& m_vecCatmullRom[m_vecCatmullRom.size() - 1].m_bIsEnd)
 	{
 		ResetCatmullRom();
 	}
+	else if (m_vecCatmullRom[m_vecCatmullRom.size() - 1].m_bIsEnd)
+		m_bFinish = true;
+
 }
 
 void CinemaCamScript::UpdateRotation()
@@ -319,6 +269,74 @@ void CinemaCamScript::ResetCatmullRom()
 
 	if (!m_vecCatmullRom.empty())
 		m_vecCatmullRom[0].m_bStart = true;
+}
+
+void CinemaCamScript::CreateStartMap02Route(Vec3 _vStartPos)
+{
+	if (m_pTargetObject)
+	{
+		Vec3 vPos;
+		Vec3 vForwardAxis = m_pTargetObject->Transform()->GetWorldFrontDir();
+		Vec3 vBackWardAxis = vForwardAxis * -1;
+		Vec3 vRightAxis = m_pTargetObject->Transform()->GetWorldRightDir();
+		Vec3 vLeftAxis = vRightAxis * -1;
+
+		//Vec3 vPlayerPos = m_pTargetObject->Transform()->GetRelativePos();
+		Vec3 vPos0 = _vStartPos;
+
+		vector<Vec3> MainPos;
+		vPos = vPos0 + vBackWardAxis * 2000.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vBackWardAxis * 1000.f;
+		vPos = vPos + vLeftAxis * 1000.f;
+		vPos.y += 200.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vRightAxis * 2000.f + vBackWardAxis * 2000.f;
+		vPos.y += 400.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vBackWardAxis * 300.f + vLeftAxis * 1000.f;
+		vPos.y += 800.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vBackWardAxis * 3000.f;
+		vPos.y += 800.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vBackWardAxis * 1500.f;
+		vPos.y -= 500.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vBackWardAxis * 1000.f;
+		vPos.y -= 600.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vBackWardAxis * 1000.f;
+		MainPos.push_back(vPos);
+
+
+		Vec3 vPos1 = vPos + vBackWardAxis * 800.f;
+		CreateCatmullRomRoute(vPos0, MainPos, vPos1);
+		m_vecCatmullRom[0].m_bStart = true;
+		m_vecCatmullRom[0].SetSpeed(0.6f);
+		m_vecCatmullRom[1].SetSpeed(0.7f);
+		m_vecCatmullRom[2].SetSpeed(0.7f);
+		m_vecCatmullRom[3].SetSpeed(0.6f);
+		m_vecCatmullRom[4].SetSpeed(0.5f);
+		m_vecCatmullRom[5].SetSpeed(0.2f);
+		m_vecCatmullRom[6].SetSpeed(0.3f);
+
+
+
+	}
+	else
+	{
+		Vec3 vPos0 = Vec3(0.f, 0.f, 0.f);
+		Vec3 vPos1 = Vec3(1000.f, 1000.f, 1000.f);
+
+		vector<Vec3> mainPos;
+		mainPos.push_back(Vec3(500.f, 500.f, 500.f));
+		mainPos.push_back(Vec3(100.f, 100.f, 100.f));
+		mainPos.push_back(Vec3(-500.f, -500.f, 100.f));
+
+		CreateCatmullRomRoute(vPos0, mainPos, vPos1);
+		m_vecCatmullRom[0].m_bStart = true;
+	}
 }
 
 void CinemaCamScript::OnCollisionEnter(CGameObject* _OtherObject)
