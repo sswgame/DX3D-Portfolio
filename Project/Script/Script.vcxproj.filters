@@ -270,6 +270,8 @@
     <ClInclude Include="PotScript.h">
       <Filter>Script\Boss\Jug</Filter>
     </ClInclude>
+    <ClInclude Include="M_AttackScript.h" />
+    <ClInclude Include="ScreenShakeScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -532,6 +534,8 @@
     <ClCompile Include="PotScript.cpp">
       <Filter>Script\Boss\Jug</Filter>
     </ClCompile>
+    <ClCompile Include="M_AttackScript.cpp" />
+    <ClCompile Include="ScreenShakeScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">

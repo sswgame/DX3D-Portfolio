@@ -7,6 +7,7 @@
 #include "CTransform.h"
 #include "CSerializer.h"
 
+
 CCollider3D::CCollider3D()
 	: CComponent{COMPONENT_TYPE::COLLIDER3D}
 	, m_vOffsetScale{1.f, 1.f, 1.f}

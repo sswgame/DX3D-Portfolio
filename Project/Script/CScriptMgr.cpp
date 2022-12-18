@@ -22,6 +22,7 @@
 #include "MonsterSearchScript.h"
 #include "MonsterShieldScript.h"
 #include "MonsterSwordScript.h"
+#include "M_AttackScript.h"
 #include "PaperBurnScript.h"
 #include "PlayerCamScript.h"
 #include "PlayerScript.h"
@@ -54,6 +55,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"MonsterSearchScript");
 	_vec.push_back(L"MonsterShieldScript");
 	_vec.push_back(L"MonsterSwordScript");
+	_vec.push_back(L"M_AttackScript");
 	_vec.push_back(L"PaperBurnScript");
 	_vec.push_back(L"PlayerCamScript");
 	_vec.push_back(L"PlayerScript");
@@ -108,6 +110,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new MonsterShieldScript;
 	if (L"MonsterSwordScript"== _strScriptName)
 		return new MonsterSwordScript;
+	if (L"M_AttackScript"== _strScriptName)
+		return new M_AttackScript;
 	if (L"PaperBurnScript"== _strScriptName)
 		return new PaperBurnScript;
 	if (L"PlayerCamScript"== _strScriptName)
@@ -174,6 +178,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new MonsterShieldScript;
 	case SCRIPT_TYPE::MONSTERSWORDSCRIPT:
 		return new MonsterSwordScript;
+	case SCRIPT_TYPE::M_ATTACKSCRIPT:
+		return new M_AttackScript;
 	case SCRIPT_TYPE::PAPERBURNSCRIPT:
 		return new PaperBurnScript;
 	case SCRIPT_TYPE::PLAYERCAMSCRIPT:
@@ -241,6 +247,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"MonsterShieldScript";
 	case SCRIPT_TYPE::MONSTERSWORDSCRIPT:
 		return L"MonsterSwordScript";
+	case SCRIPT_TYPE::M_ATTACKSCRIPT:
+		return L"M_AttackScript";
 	case SCRIPT_TYPE::PAPERBURNSCRIPT:
 		return L"PaperBurnScript";
 	case SCRIPT_TYPE::PLAYERCAMSCRIPT:

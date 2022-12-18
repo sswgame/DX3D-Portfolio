@@ -18,6 +18,7 @@ MonsterGunScript
 MonsterSearchScript
 MonsterShieldScript
 MonsterSwordScript
+M_AttackScript
 PaperBurnScript
 PlayerCamScript
 PlayerScript
