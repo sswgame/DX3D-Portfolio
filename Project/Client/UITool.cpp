@@ -984,6 +984,13 @@ void UITool::ShowProgressBar(CUIProgressBar* pScript)
 	ImGui::PopStyleColor(3);
 	ImGui::PopID();
 
+	ImGui::Text("PERCENTAGE");
+	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
+	float percent = pScript->GetPercent();
+	if (ImGui::DragFloat("##INPUT_PERCENT", &percent, 0.1f, 0.f, 1.f))
+	{
+		pScript->SetPercent(percent);
+	}
 	ImGui::Text("DIRECTION");
 	ImGui::SameLine(UI_TOOL::DEFAULT_ITEM_SPACING);
 	static const char* arrProgressDir[] = {"RIGHT_TO_LEFT", "LEFT_TO_RIGHT", "TOP_TO_BOTTOM", "BOTTOM_TO_TOP"};
