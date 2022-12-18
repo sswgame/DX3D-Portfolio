@@ -202,8 +202,8 @@ void TotemScript::OnCollisionExit(CGameObject* _OtherObject)
 			if (L"LIGHT_ATTACK" == playerState
 				|| L"HEAVY_ATTACK" == playerState)
 			{
-				//BossJugScript* pJugScript = m_pCombatMgr->GetJug()->GetScript<BossJugScript>();
-				//pJugScript->GetHit(0.06f);
+				BossJugScript* pJugScript = m_pCombatMgr->GetJug()->GetScript<BossJugScript>();
+				pJugScript->GetHit(0.01f);
 				m_bHitOn = true;
 				m_fTotemCurHP -= 30.f;
 				m_bHit = true;
