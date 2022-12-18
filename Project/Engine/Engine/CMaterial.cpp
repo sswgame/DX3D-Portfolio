@@ -199,6 +199,7 @@ CGraphicsShader* CMaterial::CreateDynamicShader()
 	pDynamicShader->CopyTexParamInfo(m_vecTexParamInfo);
 
 	m_pDynamicShader = pDynamicShader;
+
 	return pDynamicShader;
 }
 

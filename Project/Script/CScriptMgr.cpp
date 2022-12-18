@@ -27,6 +27,7 @@
 #include "PlayerCamScript.h"
 #include "PlayerScript.h"
 #include "PotScript.h"
+#include "ScreenShakeScript.h"
 #include "SocketColliderScript.h"
 #include "SwordTrailScript.h"
 #include "TestDeadScript.h"
@@ -60,6 +61,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"PlayerCamScript");
 	_vec.push_back(L"PlayerScript");
 	_vec.push_back(L"PotScript");
+	_vec.push_back(L"ScreenShakeScript");
 	_vec.push_back(L"SocketColliderScript");
 	_vec.push_back(L"SwordTrailScript");
 	_vec.push_back(L"TestDeadScript");
@@ -120,6 +122,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new PlayerScript;
 	if (L"PotScript"== _strScriptName)
 		return new PotScript;
+	if (L"ScreenShakeScript"== _strScriptName)
+		return new ScreenShakeScript;
 	if (L"SocketColliderScript"== _strScriptName)
 		return new SocketColliderScript;
 	if (L"SwordTrailScript"== _strScriptName)
@@ -188,6 +192,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new PlayerScript;
 	case SCRIPT_TYPE::POTSCRIPT:
 		return new PotScript;
+	case SCRIPT_TYPE::SCREENSHAKESCRIPT:
+		return new ScreenShakeScript;
 	case SCRIPT_TYPE::SOCKETCOLLIDERSCRIPT:
 		return new SocketColliderScript;
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
@@ -257,6 +263,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"PlayerScript";
 	case SCRIPT_TYPE::POTSCRIPT:
 		return L"PotScript";
+	case SCRIPT_TYPE::SCREENSHAKESCRIPT:
+		return L"ScreenShakeScript";
 	case SCRIPT_TYPE::SOCKETCOLLIDERSCRIPT:
 		return L"SocketColliderScript";
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:

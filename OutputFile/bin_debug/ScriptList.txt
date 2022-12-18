@@ -23,6 +23,7 @@ PaperBurnScript
 PlayerCamScript
 PlayerScript
 PotScript
+ScreenShakeScript
 SocketColliderScript
 SwordTrailScript
 TestDeadScript
