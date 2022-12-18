@@ -41,6 +41,7 @@ void DoorScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
 	if (_OtherObject == CObjectManager::GetInst()->GetPlayer())
 	{
+		_OtherObject->FSM()->ChangeState(L"IDLE");
 		CObjectManager::GetInst()->FSM()->ChangeState(L"LOADING");
 		m_bEntered = true;
 		CKeyMgr::GetInst()->EnableAll(false);

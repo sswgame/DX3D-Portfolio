@@ -21,7 +21,9 @@ CObjectManager::~CObjectManager() = default;
 void CObjectManager::start()
 {
 	m_arrStartingPoint[(UINT)MAP_TYPE::_01] = Vec3{-80, -209, -8806};
-	CFSM* pFSM                              = new CFSM{};
+	m_arrStartingPoint[(UINT)MAP_TYPE::_02] = Vec3{0, 600, -6000};
+
+	CFSM* pFSM = new CFSM{};
 	GetOwner()->AddComponent(pFSM);
 	pFSM->AddState(L"IDLE", new ObjMgrState_IDLE{});
 	pFSM->AddState(L"LOADING", new ObjMgrState_LOADING{});
