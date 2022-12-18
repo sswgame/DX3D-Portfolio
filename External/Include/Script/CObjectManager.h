@@ -24,9 +24,10 @@ private:
 	std::map<MAP_TYPE, std::vector<CGameObject*>> m_mapSceneObject;
 	MAP_TYPE                                      m_currentMap;
 
-	CGameObject* m_pBossUI   = nullptr;
-	CGameObject* m_pPlayerUI = nullptr;
-	CGameObject* m_pGate     = nullptr;
+	CGameObject* m_pBossUI    = nullptr;
+	CGameObject* m_pPlayerUI  = nullptr;
+	CGameObject* m_pGate      = nullptr;
+	CGameObject* m_pCinemaCam = nullptr;
 
 public:
 	CGameObject* GetPlayer() const { return m_pPlayer; }
@@ -35,7 +36,9 @@ public:
 	CGameObject* GetPlayerUI() const { return m_pPlayerUI; }
 	CGameObject* GetBossUI() const { return m_pBossUI; }
 	CGameObject* GetGate() const { return m_pGate; }
+	CGameObject* GetCinemaCam() const { return m_pCinemaCam; }
 
+	void SetCinemaCam(CGameObject* _pGameObject) { m_pCinemaCam = _pGameObject; }
 	void SetGate(CGameObject* _pGameObject) { m_pGate = _pGameObject; }
 	void SetPlayerUI(CGameObject* _pGameObject) { m_pPlayerUI = _pGameObject; }
 	void SetBossUI(CGameObject* _pGameObject) { m_pBossUI = _pGameObject; }
@@ -43,7 +46,7 @@ public:
 	void SetPlayer(CGameObject* _pObj) { m_pPlayer = _pObj; }
 
 	void                             RemoveFromDontDestroyList(CGameObject* pGameObject);
-	CGameObject* IsInDontDestroyList(const CGameObject* pGameObject);
+	CGameObject*                     IsInDontDestroyList(const CGameObject* pGameObject);
 	void                             AddToDontDestroy(CGameObject* pGameObject);
 	const std::vector<CGameObject*>& GetDontDestroyList() const { return m_vecDonDestroy; }
 

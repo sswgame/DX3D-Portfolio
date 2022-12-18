@@ -33,14 +33,12 @@ void ObjMgrState_LOADING::LateUpdate()
 	else if (CRenderEffectMgr::GetInst()->IsEnable_FadeOutPaperBurn() && CRenderEffectMgr::GetInst()->
 	         IsFadeOutFinished())
 	{
-		GetOwner()->FSM()->ChangeState(L"IDLE");
+		GetOwner()->FSM()->ChangeState(L"CUT_SCENE");
 	}
 }
 
 void ObjMgrState_LOADING::Exit()
 {
-	CKeyMgr::GetInst()->EnableAll(true);
-
 	CGameObject* pBoss = new CGameObject;
 	pBoss->SetName(L"BOSS_COMBAT");
 	pBoss->AddComponent(new CTransform);

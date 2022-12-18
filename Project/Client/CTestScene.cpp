@@ -90,7 +90,7 @@ namespace
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
 
-		//AddCinemaCamera(pCurScene);
+		AddCinemaCamera(pCurScene);
 		AddPlayer(pCurScene, pCamObj);
 		AddDeuxiemie(pCurScene);
 		AddHomonculus(pCurScene);
@@ -184,6 +184,9 @@ namespace
 		pCamera->Camera()->SetShowFrustum(true);
 
 		_pScene->AddObject(pCamera, L"CAMERA");
+		pCamera->Deactivate();
+		CObjectManager::GetInst()->SetSceneObject(pCamera, MAP_TYPE::_01);
+		CObjectManager::GetInst()->SetCinemaCam(pCamera);
 
 		return pCamera;
 	}

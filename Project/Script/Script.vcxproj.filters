@@ -279,6 +279,9 @@
       <Filter>Script\Boss\Jug\Object</Filter>
     </ClInclude>
     <ClInclude Include="CameraShakeScript.h" />
+    <ClInclude Include="CObjectMgrState_CutScene.h">
+      <Filter>Script\Common\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -550,6 +553,9 @@
       <Filter>Script\Boss\Jug\Object</Filter>
     </ClCompile>
     <ClCompile Include="CameraShakeScript.cpp" />
+    <ClCompile Include="CObjectMgrState_CutScene.cpp">
+      <Filter>Script\Common\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">

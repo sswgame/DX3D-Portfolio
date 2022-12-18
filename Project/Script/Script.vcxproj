@@ -137,6 +137,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="CAttack_Gun.h" />
     <ClInclude Include="CDeath_Gun.h" />
     <ClInclude Include="CinemaCamScript.h" />
+    <ClInclude Include="CObjectMgrState_CutScene.h" />
     <ClInclude Include="M_AttackScript.h" />
     <ClInclude Include="Phase01TriggerScript.h" />
     <ClInclude Include="PotScript.h" />
@@ -232,6 +233,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="CAttack_Gun.cpp" />
     <ClCompile Include="CDeath_Gun.cpp" />
     <ClCompile Include="CinemaCamScript.cpp" />
+    <ClCompile Include="CObjectMgrState_CutScene.cpp" />
     <ClCompile Include="M_AttackScript.cpp" />
     <ClCompile Include="Phase01TriggerScript.cpp" />
     <ClCompile Include="PotScript.cpp" />
