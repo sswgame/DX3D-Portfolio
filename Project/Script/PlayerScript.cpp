@@ -274,8 +274,6 @@ void PlayerScript::OnCollisionEnter(CGameObject* _OtherObject)
 	// 방향 : 플레이어가 바라보는 방향으로 이동방향을 바꾼다.
 	Vec3 vChangedDir = GetOwner()->Transform()->GetWorldFrontDir();
 
-
-
 }
 
 void PlayerScript::OnCollision(CGameObject* _OtherObject)
