@@ -6,6 +6,7 @@
 #include "BossJugHandScript.h"
 #include "BossJugScript.h"
 #include "CameraMoveScript.h"
+#include "CinemaCamScript.h"
 #include "ColumnFlameScript.h"
 #include "DestroyScript.h"
 #include "EffectScript.h"
@@ -36,6 +37,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"BossJugHandScript");
 	_vec.push_back(L"BossJugScript");
 	_vec.push_back(L"CameraMoveScript");
+	_vec.push_back(L"CinemaCamScript");
 	_vec.push_back(L"ColumnFlameScript");
 	_vec.push_back(L"DestroyScript");
 	_vec.push_back(L"EffectScript");
@@ -72,6 +74,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new BossJugScript;
 	if (L"CameraMoveScript"== _strScriptName)
 		return new CameraMoveScript;
+	if (L"CinemaCamScript"== _strScriptName)
+		return new CinemaCamScript;
 	if (L"ColumnFlameScript"== _strScriptName)
 		return new ColumnFlameScript;
 	if (L"DestroyScript"== _strScriptName)
@@ -134,6 +138,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new BossJugScript;
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return new CameraMoveScript;
+	case SCRIPT_TYPE::CINEMACAMSCRIPT:
+		return new CinemaCamScript;
 	case SCRIPT_TYPE::COLUMNFLAMESCRIPT:
 		return new ColumnFlameScript;
 	case SCRIPT_TYPE::DESTROYSCRIPT:
@@ -197,6 +203,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"BossJugScript";
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return L"CameraMoveScript";
+	case SCRIPT_TYPE::CINEMACAMSCRIPT:
+		return L"CinemaCamScript";
 	case SCRIPT_TYPE::COLUMNFLAMESCRIPT:
 		return L"ColumnFlameScript";
 	case SCRIPT_TYPE::DESTROYSCRIPT:

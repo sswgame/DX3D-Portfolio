@@ -43,6 +43,8 @@
 #include <Script/ItemScript.h>
 #include <Script/PaperBurnScript.h>
 #include <Script/CObjectManager.h>
+#include <Script/CinemaCamScript.h>
+
 
 //TEST
 #include <Script/TestDeadScript.h>
@@ -50,6 +52,9 @@
 namespace
 {
 	CGameObject* AddCamera(CScene* _pScene);
+	CGameObject* AddCinemaCamera(CScene* _pScene);
+
+
 	void         AddDirectionalLight(CScene* _pScene);
 	void         AddSkybox(CScene* _pScene);
 
@@ -114,13 +119,14 @@ namespace
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
 
-		//AddPlayer(pCurScene, pCamObj);
+		AddCinemaCamera(pCurScene);
+		AddPlayer(pCurScene, pCamObj);
 		//AddDeuxiemie(pCurScene);
 		//AddHomonculus(pCurScene);
 		//AddDefaultUIObjects(pCurScene);
 
-		TestSineDistortion(pCurScene);
-		//Map01(pCurScene);
+		//TestSineDistortion(pCurScene);
+		Map01(pCurScene);
 		//Map02(pCurScene);
 
 		//SetCollision();
@@ -191,6 +197,27 @@ namespace
 		CObjectManager::GetInst()->AddToDontDestroy(pCamera);
 		return pCamera;
 	}
+
+	CGameObject* AddCinemaCamera(CScene* _pScene)
+	{
+		const auto pCamera = new CGameObject;
+		pCamera->SetName(L"CinemaCamera");
+		pCamera->AddComponent(new CTransform);
+		pCamera->AddComponent(new CCamera);
+		pCamera->AddComponent(new CinemaCamScript);
+
+		pCamera->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
+		pCamera->Camera()->SetCameraAsMain();
+		pCamera->Camera()->CheckLayerMaskAll();
+		pCamera->Camera()->CheckLayerMask(L"UI_STATIC", false);
+		pCamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE", false);
+		pCamera->Camera()->SetShowFrustum(true);
+
+		_pScene->AddObject(pCamera, L"CAMERA");
+
+		return pCamera;
+	}
+
 
 	void AddDirectionalLight(CScene* _pScene)
 	{

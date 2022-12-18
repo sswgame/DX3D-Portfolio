@@ -132,8 +132,10 @@ call CodeGen.exe</Command>
     <ClInclude Include="BossJugHandScript.h" />
     <ClInclude Include="BossJugScript.h" />
     <ClInclude Include="CameraMoveScript.h" />
+    <ClInclude Include="CatmullRomSpline.h" />
     <ClInclude Include="CAttack_Gun.h" />
     <ClInclude Include="CDeath_Gun.h" />
+    <ClInclude Include="CinemaCamScript.h" />
     <ClInclude Include="TestDeadScript.h" />
     <ClInclude Include="Deux_Attack.h" />
     <ClInclude Include="Deux_Die.h" />
@@ -221,8 +223,10 @@ call CodeGen.exe</Command>
     <ClCompile Include="BossJugHandScript.cpp" />
     <ClCompile Include="BossJugScript.cpp" />
     <ClCompile Include="CameraMoveScript.cpp" />
+    <ClCompile Include="CatmullRomSpline.cpp" />
     <ClCompile Include="CAttack_Gun.cpp" />
     <ClCompile Include="CDeath_Gun.cpp" />
+    <ClCompile Include="CinemaCamScript.cpp" />
     <ClCompile Include="TestDeadScript.cpp" />
     <ClCompile Include="Deux_Attack.cpp" />
     <ClCompile Include="Deux_Die.cpp" />

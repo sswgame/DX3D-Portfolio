@@ -261,6 +261,12 @@
     <ClInclude Include="ObjMgrState_LOADING.h">
       <Filter>Script\Common\State</Filter>
     </ClInclude>
+    <ClInclude Include="CatmullRomSpline.h">
+      <Filter>Utility\CatmullRomSpline</Filter>
+    </ClInclude>
+    <ClInclude Include="CinemaCamScript.h">
+      <Filter>Script\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -514,6 +520,12 @@
     <ClCompile Include="ObjMgrState_LOADING.cpp">
       <Filter>Script\Common\State</Filter>
     </ClCompile>
+    <ClCompile Include="CatmullRomSpline.cpp">
+      <Filter>Utility\CatmullRomSpline</Filter>
+    </ClCompile>
+    <ClCompile Include="CinemaCamScript.cpp">
+      <Filter>Script\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -662,6 +674,12 @@
     </Filter>
     <Filter Include="Script\UI">
       <UniqueIdentifier>{4916282a-a8a1-45e1-8d0f-8b7125a19c0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{37e0e695-0561-440f-adb3-ddd11a227367}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\CatmullRomSpline">
+      <UniqueIdentifier>{da2b6be9-5177-4704-99f2-2d7e412c4031}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
