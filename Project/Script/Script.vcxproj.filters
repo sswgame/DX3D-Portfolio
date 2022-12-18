@@ -253,7 +253,7 @@
     <ClInclude Include="SocketColliderScript.h">
       <Filter>Script\SocketCollider</Filter>
     </ClInclude>
-    <ClInclude Include="TestDeadScript.h" />
+    <ClInclude Include="DoorScript.h" />
     <ClInclude Include="TotemScript.h" />
     <ClInclude Include="ObjMgrState_IDLE.h">
       <Filter>Script\Common\State</Filter>
@@ -516,7 +516,7 @@
     <ClCompile Include="SocketColliderScript.cpp">
       <Filter>Script\SocketCollider</Filter>
     </ClCompile>
-    <ClCompile Include="TestDeadScript.cpp" />
+    <ClCompile Include="DoorScript.cpp" />
     <ClCompile Include="TotemScript.cpp" />
     <ClCompile Include="ObjMgrState_IDLE.cpp">
       <Filter>Script\Common\State</Filter>

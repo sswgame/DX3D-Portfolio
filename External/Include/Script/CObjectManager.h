@@ -24,15 +24,19 @@ private:
 	std::map<MAP_TYPE, std::vector<CGameObject*>> m_mapSceneObject;
 	MAP_TYPE                                      m_currentMap;
 
-	CGameObject* m_pBossUI = nullptr;
+	CGameObject* m_pBossUI   = nullptr;
 	CGameObject* m_pPlayerUI = nullptr;
+	CGameObject* m_pGate     = nullptr;
+
 public:
 	CGameObject* GetPlayer() const { return m_pPlayer; }
 	CGameObject* GetPlayerCamera() const { return m_pPlayerCamera; }
 	CGameObject* GetBossCombatMgr() const { return m_pBossCombatMgr; }
 	CGameObject* GetPlayerUI() const { return m_pPlayerUI; }
 	CGameObject* GetBossUI() const { return m_pBossUI; }
+	CGameObject* GetGate() const { return m_pGate; }
 
+	void SetGate(CGameObject* _pGameObject) { m_pGate = _pGameObject; }
 	void SetPlayerUI(CGameObject* _pGameObject) { m_pPlayerUI = _pGameObject; }
 	void SetBossUI(CGameObject* _pGameObject) { m_pBossUI = _pGameObject; }
 	void SetBossCombatMgr(CGameObject* _pMgr) { m_pBossCombatMgr = _pMgr; }

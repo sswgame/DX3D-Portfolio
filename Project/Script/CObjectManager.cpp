@@ -10,32 +10,30 @@
 #include "M_AttackScript.h"
 
 CObjectManager::CObjectManager()
-	: m_pPlayer{ nullptr }
-	, m_pPlayerCamera{ nullptr }
-	, m_pBossCombatMgr{ nullptr }
-	, m_currentMap{ MAP_TYPE::_01 } {}
+	: m_pPlayer{nullptr}
+	, m_pPlayerCamera{nullptr}
+	, m_pBossCombatMgr{nullptr}
+	, m_currentMap{MAP_TYPE::_01} {}
 
 CObjectManager::~CObjectManager() = default;
 
 
 void CObjectManager::start()
 {
-	m_arrStartingPoint[(UINT)MAP_TYPE::_01] = Vec3{ -80, -209, -8806 };
-	CFSM* pFSM = new CFSM{};
+	m_arrStartingPoint[(UINT)MAP_TYPE::_01] = Vec3{-80, -209, -8806};
+	CFSM* pFSM                              = new CFSM{};
 	GetOwner()->AddComponent(pFSM);
 	pFSM->AddState(L"IDLE", new ObjMgrState_IDLE{});
 	pFSM->AddState(L"LOADING", new ObjMgrState_LOADING{});
 	pFSM->ChangeState(L"IDLE");
-
-
 }
 
-void CObjectManager::RemoveFromDontDestroyList(CGameObject * pGameObject)
+void CObjectManager::RemoveFromDontDestroyList(CGameObject* pGameObject)
 {
 	m_vecDonDestroy.erase(std::remove(m_vecDonDestroy.begin(), m_vecDonDestroy.end(), pGameObject));
 }
 
-CGameObject* CObjectManager::IsInDontDestroyList(const CGameObject * pGameObject)
+CGameObject* CObjectManager::IsInDontDestroyList(const CGameObject* pGameObject)
 {
 	const auto iter = std::find(m_vecDonDestroy.begin(), m_vecDonDestroy.end(), pGameObject);
 	if (iter != m_vecDonDestroy.end())
@@ -45,7 +43,7 @@ CGameObject* CObjectManager::IsInDontDestroyList(const CGameObject * pGameObject
 	return nullptr;
 }
 
-void CObjectManager::AddToDontDestroy(CGameObject * pGameObject)
+void CObjectManager::AddToDontDestroy(CGameObject* pGameObject)
 {
 	if (IsInDontDestroyList(pGameObject))
 	{
@@ -54,10 +52,10 @@ void CObjectManager::AddToDontDestroy(CGameObject * pGameObject)
 	m_vecDonDestroy.push_back(pGameObject);
 }
 
-void CObjectManager::SetSceneObject(CGameObject * pGameObject, MAP_TYPE type)
+void CObjectManager::SetSceneObject(CGameObject* pGameObject, MAP_TYPE type)
 {
-	auto& vecSceneObject = m_mapSceneObject[type];
-	const auto iter = std::find(vecSceneObject.begin(), vecSceneObject.end(), pGameObject);
+	auto&      vecSceneObject = m_mapSceneObject[type];
+	const auto iter           = std::find(vecSceneObject.begin(), vecSceneObject.end(), pGameObject);
 	if (iter == vecSceneObject.end())
 	{
 		vecSceneObject.push_back(pGameObject);
@@ -73,18 +71,18 @@ const std::vector<CGameObject*>& CObjectManager::GetSceneObjectList(MAP_TYPE _ty
 
 bool CObjectManager::CheckAllMonsterDead() const
 {
-	CLayer* pMonsterLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"MONSTER");
-	const auto& vecMonster = pMonsterLayer->GetRootObjects();
+	CLayer*     pMonsterLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"MONSTER");
+	const auto& vecMonster    = pMonsterLayer->GetRootObjects();
 
 	const size_t count = std::count_if(vecMonster.begin(),
-		vecMonster.end(),
-		[](const CGameObject* pMonster)
-		{
-			return pMonster->GetName() != L"JUG" && pMonster->IsDead();
-		});
+	                                   vecMonster.end(),
+	                                   [](const CGameObject* pMonster)
+	                                   {
+		                                   return pMonster->IsDead();
+	                                   });
 
 	//보스만 남았거나, 존재는 하지만 모두 죽은 경우
-	if (vecMonster.size() == 1 || vecMonster.size() - 1 == count)
+	if (vecMonster.size() == 0 || vecMonster.size() == count)
 	{
 		return true;
 	}

@@ -45,18 +45,14 @@
 #include <Script/CObjectManager.h>
 #include <Script/CinemaCamScript.h>
 
-
-//TEST
-#include <Script/TestDeadScript.h>
-
 namespace
 {
 	CGameObject* AddCamera(CScene* _pScene);
 	CGameObject* AddCinemaCamera(CScene* _pScene);
 
 
-	void         AddDirectionalLight(CScene* _pScene);
-	void         AddSkybox(CScene* _pScene);
+	void AddDirectionalLight(CScene* _pScene);
+	void AddSkybox(CScene* _pScene);
 
 	void AddPointLight(CScene* _pScene);
 	void AddParticle(CScene* _pScene);
@@ -78,36 +74,11 @@ namespace
 	void AddDefaultUIObjects(CScene* _pScene);
 	void Map01(CScene* _pScene);
 	void Map02(CScene* _pScene);
-	void TestBossUI(CScene* _pScene);
 
 	void SetLayer(CScene* _pScene);
 	void SetCollision();
 	void LoadScene();
 	void SaveScene(CScene* _pScene, const std::wstring& _relativePath);
-
-	void TestSineDistortion(CScene* _pScene)
-	{
-		CGameObject* pGameObject = new CGameObject{};
-		pGameObject->SetName(L"DOOR");
-		pGameObject->AddComponent(new CTransform{});
-		pGameObject->AddComponent(new CMeshRender{});
-		pGameObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-		pGameObject->MeshRender()->
-		             SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\SineWaveMtrl.mtrl"), 0);
-		pGameObject->Transform()->SetRelativePos(0.f, 290.f, 0.f);
-		pGameObject->Transform()->SetRelativeScale(500.f, 580.f, 1.f);
-		pGameObject->MeshRender()
-		           ->GetMaterial(0)
-		           ->SetTexParam(TEX_PARAM::TEX_0,
-		                         CResMgr::GetInst()->
-		                         FindRes<CTexture>(L"texture\\FBXTexture\\CardianlSwords_BaseColorAlpha.png"));
-
-		CGameObject* pGate = CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\gate.mdat")->Instantiate();
-		pGate->SetName(L"GATE");
-		pGate->AddChild(pGameObject);
-		pGate->Transform()->SetRelativePos(0.f, 0.f, 2000.f);
-		_pScene->AddObject(pGate, 0);
-	}
 
 	void CreateScene()
 	{
@@ -120,14 +91,14 @@ namespace
 		AddSkybox(pCurScene);
 
 		//AddCinemaCamera(pCurScene);
-		AddPlayer(pCurScene, pCamObj);
+		//AddPlayer(pCurScene, pCamObj);
 		//AddDeuxiemie(pCurScene);
 		//AddHomonculus(pCurScene);
-		AddDefaultUIObjects(pCurScene);
+		//AddDefaultUIObjects(pCurScene);
 
-		//TestSineDistortion(pCurScene);
 		//Map01(pCurScene);
-		Map02(pCurScene);
+		//Map02(pCurScene);
+
 		SetCollision();
 
 		SaveScene(pCurScene, L"scene\\TestScene.scene");
@@ -304,7 +275,6 @@ namespace
 		pObject->Transform()->SetRelativePos(0.f, 0.f, 0.f);
 		pObject->Transform()->SetRelativeScale(2000.f, 2000.f, 2000.f);
 		pObject->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
-
 		pObject->LandScape()->SetDynamicShadow(false);
 		pObject->LandScape()->SetFrustumCulling(false);
 		pObject->LandScape()->SetFaceCount(8, 8);
@@ -508,9 +478,9 @@ namespace
 
 		m_pBoneCollider->AddComponent(new CTransform);
 		m_pBoneCollider->AddComponent(new CCollider3D);
-
 		m_pBoneCollider->Collider3D()->SetOffsetScale(Vec3(30.f, 10.f, 200.f));
 		CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pBoneCollider, L"PLAYER");
+		m_pBoneCollider->Collider3D()->Deactivate();
 
 		pObjWeapon->AddChild(m_pBoneCollider);
 
@@ -552,14 +522,12 @@ namespace
 
 	void AddBoss(CScene* _pScene)
 	{
-		CGameObject* pBoss = new CGameObject;
+		/*CGameObject* pBoss = new CGameObject;
 		pBoss->SetName(L"BOSS_COMBAT");
 		pBoss->AddComponent(new CTransform);
 		pBoss->AddComponent(new BossJugCombatMgrScript);
 		_pScene->AddObject(pBoss, GAME::LAYER::OBJECT_MGR);
-		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
-
-		CObjectManager::GetInst()->SetSceneObject(pBoss, MAP_TYPE::_02);
+		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();*/
 	}
 
 	void AddHomonculus(CScene* _pScene)
@@ -592,9 +560,6 @@ namespace
 		CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
 		pMonsterHP->GetUIBaseComponenent()->SetTarget(pMonsterHP);
 		_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");
-
-		//TODO::MUST DELETE
-		pMonster->AddComponent(new TestDeadScript{});
 	}
 
 	void AddDeuxiemie(CScene* _pScene)
@@ -615,9 +580,6 @@ namespace
 		CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
 		pMonsterHP->GetUIBaseComponenent()->SetTarget(pMonsterHP);
 		_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");
-
-		//TODO::MUST DELETE
-		pMonster->AddComponent(new TestDeadScript{});
 	}
 
 	void TestNavi(CScene* _pScene)
@@ -683,18 +645,19 @@ namespace
 		CGameObject* pPlayerUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\PLAYER_UI_PANEL.pref")->Instantiate();
 		CObjectManager::GetInst()->SetPlayerUI(pPlayerUI);
 		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
-		//CObjectManager::GetInst()->AddToDontDestroy(pPlayerUI);
+		CObjectManager::GetInst()->AddToDontDestroy(pPlayerUI);
 
 		//MAIN_MENU
-		////CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
-		//_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
+		CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
+		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 
 		//BOSS_UI
 		CGameObject* pBossUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\BOSS_HP_PANEL.pref")->Instantiate();
 		_pScene->AddObject(pBossUI, L"UI_INTERACTIVE");
 		CObjectManager::GetInst()->SetBossUI(pBossUI);
-		//pBossUI->Deactivate();
-		//CObjectManager::GetInst()->SetSceneObject(pBossUI, MAP_TYPE::_02);
+		pBossUI->Deactivate();
+
+		CObjectManager::GetInst()->SetSceneObject(pBossUI, MAP_TYPE::_02);
 	}
 
 	void Map01(CScene* _pScene)
@@ -734,6 +697,11 @@ namespace
 
 		//SCENE OBJECT
 		CObjectManager::GetInst()->SetSceneObject(pMap01, MAP_TYPE::_01);
+
+		CGameObject* pGate = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\GATE.pref")->Instantiate();
+		_pScene->AddObject(pGate, L"ITEM");
+		CObjectManager::GetInst()->SetSceneObject(pGate, MAP_TYPE::_01);
+		CObjectManager::GetInst()->SetGate(pGate);
 	}
 
 	void Map02(CScene* _pScene)

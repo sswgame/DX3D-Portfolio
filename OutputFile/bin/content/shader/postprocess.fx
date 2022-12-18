@@ -241,6 +241,10 @@ float4 PS_SinePostProcess(VTX_OUT _in) : SV_Target
     float4 vOutColor = (float4) 0.f;
        
     // _in.vPosition; ÇÈ¼¿ ÁÂÇ¥
+    if(g_int_0 == 0)
+    {
+        return float4(0.f,0.f,0.f,1.f);
+    }
 
     if (IsBind)
     {
@@ -263,4 +267,64 @@ float4 PS_SinePostProcess(VTX_OUT _in) : SV_Target
     
     return vOutColor;
 }
+
+float2 Rotate(float2 xy, float theta)
+{
+    float cosX = xy.x;
+    float sinY = xy.y;
+
+    return -float2(cosX * cos(theta) - sinY * sin(theta), cosX * sin(theta) + sinY * cos(theta));
+}
+
+float Calc(float a, float b)
+{
+    if (a < 0.f)
+    {
+        return b - fmod(abs(a), b);
+    }
+    return fmod(a, b);
+}
+
+float atan3(float2 inputUV)
+{
+    return Calc(atan2(inputUV.y, inputUV.x), 2.f * 3.141592f);
+}
+
+float4 PS_AbsorbPostProcess(VTX_OUT _in) : SV_Target
+{
+    float4 vOutColor = (float4) 0.f;
+       
+    if (IsBind)
+    {
+        const float PI = 3.141592f;
+                
+        float factor = sin(g_float_0 / 2.f);
+        float2 size;
+        g_tex_0.GetDimensions(size.x, size.y);
+        float2 sizeUV = size / vResolution;
+        float2 UV = _in.vUV - sizeUV*float2(0.8f,0.5f);
+
+        UV = Rotate(UV, fAccTime + pow(length(UV), 0.4) * factor * 5.5);
+    
+        float angle = atan3(UV);
+        float magnitude = max(0.0, length(UV) + abs(factor));
+        UV = float2(cos(angle), sin(angle)) * magnitude;
+
+        vOutColor = lerp(PostProcessTarget.Sample(g_sam_0, UV),(float4)0.f, max(0.0, pow(magnitude - abs(factor) * 0.1f, 3.f    )));
+
+       
+    }
+    else
+    {
+        vOutColor = float4(1.f, 0.f, 1.f, 1.f);
+    }
+
+    if (g_float_0 > 3.5f)
+    {
+        vOutColor = float4(0.f, 0.f, 0.f, 1.f);
+    }
+
+    return vOutColor;
+}
+
 #endif

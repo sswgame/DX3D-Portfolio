@@ -3,6 +3,8 @@
 
 #include "CMeshRender.h"
 #include "CSerializer.h"
+#include "CUIBase.h"
+#include "CUIImage.h"
 
 CUIProgressBar::CUIProgressBar()
 	: CComponent{COMPONENT_TYPE::UIPROGRESSBAR}
@@ -32,7 +34,8 @@ void CUIProgressBar::finalupdate()
 		return;
 	}
 
-	if (nullptr != GetOwner()->GetUIBaseComponenent())
+	const CUIBase* pUIBase = GetOwner()->GetUIBaseComponenent();
+	if (nullptr != pUIBase)
 	{
 		int usePercentage = true;
 		MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_2, &usePercentage);

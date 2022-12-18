@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "ObjMgrState_LOADING.h"
 
+#include <Engine/CCollider3D.h>
 #include <Engine/CFSM.h>
 #include <Engine/CGameObject.h>
 #include <Engine/CRenderEffectMgr.h>
 
+#include "BossJugCombatMgrScript.h"
 #include "CObjectManager.h"
 
 ObjMgrState_LOADING::ObjMgrState_LOADING()
@@ -35,6 +37,14 @@ void ObjMgrState_LOADING::LateUpdate()
 
 void ObjMgrState_LOADING::Exit()
 {
+	CKeyMgr::GetInst()->EnableAll(true);
+
+	CGameObject* pBoss = new CGameObject;
+	pBoss->SetName(L"BOSS_COMBAT");
+	pBoss->AddComponent(new CTransform);
+	pBoss->AddComponent(new BossJugCombatMgrScript);
+	CSceneMgr::GetInst()->SpawnObject(pBoss, GAME::LAYER::OBJECT_MGR);
+	pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
 }
 
 void ObjMgrState_LOADING::EnableSceneObject()

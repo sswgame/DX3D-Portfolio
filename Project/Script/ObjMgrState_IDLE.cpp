@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "ObjMgrState_IDLE.h"
 
+#include <Engine/CCollider3D.h>
 #include <Engine/CFSM.h>
 #include <Engine/CGameObject.h>
 
 #include "CObjectManager.h"
+#include "DoorScript.h"
 
 ObjMgrState_IDLE::ObjMgrState_IDLE()
 	: CState{L"IDLE"}
@@ -27,9 +29,11 @@ void ObjMgrState_IDLE::Enter()
 
 void ObjMgrState_IDLE::LateUpdate()
 {
-	if (CObjectManager::GetInst()->CheckAllMonsterDead())
+	CGameObject* pDoor = CObjectManager::GetInst()->GetGate()->GetChild(L"DOOR");
+	if (CObjectManager::GetInst()->CheckAllMonsterDead() && false == pDoor->GetScript<DoorScript>()->IsDoorOpened())
 	{
-		//GetOwner()->FSM()->ChangeState(L"LOADING");
+		pDoor->GetScript<DoorScript>()->SetOpen(true);
+		pDoor->Collider3D()->Activate();
 	}
 }
 

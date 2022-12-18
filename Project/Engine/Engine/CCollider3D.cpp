@@ -36,7 +36,17 @@ CCollider3D::CCollider3D(const CCollider3D& _origin)
 	, m_eCollider3DType{ _origin.m_eCollider3DType }
 	, m_pMesh{ _origin.m_pMesh }
 	, m_pMaterial{ _origin.m_pMaterial }
-	, m_fLifeTime(-1.f) {}
+	, m_fLifeTime(-1.f)
+{
+	// Debug Obj Ãß°¡
+	if (nullptr == m_pDebugObj)
+	{
+		m_pDebugObj = new CGameObject;
+		m_pDebugObj->SetName(L"Collider_debug");
+		m_pDebugObj->AddComponent(new CTransform);
+		m_pDebugObj->AddComponent(new CMeshRender);
+	}
+}
 
 CCollider3D::~CCollider3D() {}
 

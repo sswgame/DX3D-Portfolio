@@ -5,6 +5,7 @@ CameraMoveScript
 CinemaCamScript
 ColumnFlameScript
 DestroyScript
+DoorScript
 EffectScript
 EnergyBallScript
 FieldMonsteScript
@@ -23,9 +24,7 @@ PaperBurnScript
 PlayerCamScript
 PlayerScript
 PotScript
-ScreenShakeScript
 SocketColliderScript
 SwordTrailScript
-TestDeadScript
 TotemScript
 TrailScript

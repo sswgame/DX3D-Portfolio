@@ -1,0 +1,50 @@
+NAME: GATE
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, -198.872665, 2566.78491]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+  - MESHRENDER:
+      MESH: [mesh\gate.mesh, mesh\gate.mesh]
+      MATERIAL COUNT: 1
+      0: [material\gate.mtrl, material\gate.mtrl]
+      USE DYNAMIC 0: false
+      MATERIAL 0 TEXTURE LIST:
+        0: texture\FBXTexture\t_wall01.png
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  []
+CHILDREN:
+  - NAME: DOOR
+    m_bActive: true
+    m_bDynamicShadow: false
+    m_bFrustumCulling: false
+    COMPONENTS:
+      - TRANSFORM:
+          m_vRelativePos: [0, 290, 0]
+          m_vRelativeScale: [500, 580, 1]
+          m_vRelativeRot: [0, 0, 0]
+          m_bIgnoreParentScale: false
+      - COLLIDER3D:
+          m_eCollider3DType: 0
+          m_vOffsetPos: [0, 0, 0]
+          m_vOffsetScale: [320, 450, 100]
+      - MESHRENDER:
+          MESH: [RectMesh, RectMesh]
+          MATERIAL COUNT: 1
+          0: [material\SineWaveMtrl.mtrl, material\SineWaveMtrl.mtrl]
+          USE DYNAMIC 0: false
+          MATERIAL 0 TEXTURE LIST:
+            0: texture\GateTexture_01.png
+          m_bDynamicShadow: false
+          m_bFrustumCulling: false
+    SCRIPTS:
+      - DoorScript:
+          {}
+    CHILDREN:
+      []

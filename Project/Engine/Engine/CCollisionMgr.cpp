@@ -521,16 +521,22 @@ tCollider3DInfo CCollisionMgr::ExtractColliderInfo(const CCollider3D* _pCollider
 		Vec3(-0.5f, -0.5f, 0.5f)	//7
 	};
 
-	const Vec3 vertexPos_0 = XMVector3TransformCoord(arrLocal[0], _pCollider->GetWorldMatrix());
-	const Vec3 vertexPos_1 = XMVector3TransformCoord(arrLocal[1], _pCollider->GetWorldMatrix());
-	const Vec3 vertexPos_3 = XMVector3TransformCoord(arrLocal[3], _pCollider->GetWorldMatrix());
-	const Vec3 vertexPos_7 = XMVector3TransformCoord(arrLocal[7], _pCollider->GetWorldMatrix());
+	//const Vec3 vertexPos_0 = XMVector3TransformCoord(arrLocal[0], _pCollider->GetWorldMatrix());
+	//const Vec3 vertexPos_1 = XMVector3TransformCoord(arrLocal[1], _pCollider->GetWorldMatrix());
+	//const Vec3 vertexPos_3 = XMVector3TransformCoord(arrLocal[3], _pCollider->GetWorldMatrix());
+	//const Vec3 vertexPos_7 = XMVector3TransformCoord(arrLocal[7], _pCollider->GetWorldMatrix());
+
+	//tCollider3DInfo info{};
+	////월드 상에서의 각 축의 위치벡터
+	//info.axisX = (vertexPos_1 - vertexPos_0).Normalize();
+	//info.axisY = (vertexPos_3 - vertexPos_0).Normalize();
+	//info.axisZ = (vertexPos_7 - vertexPos_0).Normalize();
 
 	tCollider3DInfo info{};
-	//월드 상에서의 각 축의 위치벡터
-	info.axisX = (vertexPos_1 - vertexPos_0).Normalize();
-	info.axisY = (vertexPos_3 - vertexPos_0).Normalize();
-	info.axisZ = (vertexPos_7 - vertexPos_0).Normalize();
+	info.axisX = _pCollider->GetWorldMatrix().Right().Normalize();
+	info.axisY = _pCollider->GetWorldMatrix().Up().Normalize();
+	info.axisZ = _pCollider->GetWorldMatrix().Forward().Normalize();
+
 	// 각 육면체의 중심부터 변까지의 거리
 	info.centerPos = XMVector3TransformCoord(Vec3(0.f, 0.f, 0.f), _pCollider->GetWorldMatrix());
 	info.centerPos.Normalize();

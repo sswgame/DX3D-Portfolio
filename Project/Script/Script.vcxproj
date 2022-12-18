@@ -138,7 +138,7 @@ call CodeGen.exe</Command>
     <ClInclude Include="CinemaCamScript.h" />
     <ClInclude Include="M_AttackScript.h" />
     <ClInclude Include="PotScript.h" />
-    <ClInclude Include="TestDeadScript.h" />
+    <ClInclude Include="DoorScript.h" />
     <ClInclude Include="Deux_Attack.h" />
     <ClInclude Include="Deux_Die.h" />
     <ClInclude Include="Deux_Hit.h" />
@@ -231,7 +231,7 @@ call CodeGen.exe</Command>
     <ClCompile Include="CinemaCamScript.cpp" />
     <ClCompile Include="M_AttackScript.cpp" />
     <ClCompile Include="PotScript.cpp" />
-    <ClCompile Include="TestDeadScript.cpp" />
+    <ClCompile Include="DoorScript.cpp" />
     <ClCompile Include="Deux_Attack.cpp" />
     <ClCompile Include="Deux_Die.cpp" />
     <ClCompile Include="Deux_Hit.cpp" />

@@ -29,6 +29,7 @@ public:
 	const std::string& CurrentInfoName() const { return m_currentFrameName; }
 	bool               HasCurrentInfo() const { return false == m_mapInfo.empty(); }
 
+	bool IsUseInfo() const { return m_useInfo; }
 
 	void SetPreserveRatio(bool enable);
 	bool IsPreserveRatio() const { return m_preserveRatio; }

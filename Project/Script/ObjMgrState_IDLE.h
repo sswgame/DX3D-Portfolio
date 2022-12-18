@@ -7,6 +7,7 @@ class ObjMgrState_IDLE
 private:
 	bool m_bGameStart;
 	bool m_bGameEnd;
+	int  m_bDoorEnabled = false;
 
 private:
 

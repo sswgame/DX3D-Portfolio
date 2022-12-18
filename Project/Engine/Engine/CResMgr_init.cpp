@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CResMgr.h"
 
-#include "CTestShader.h"
+# include "CTestShader.h"
 #include "CParticleUpdateShader.h"
 #include "CAnimation3DShader.h"
 #include "CThreadPool.h"
@@ -19,6 +19,15 @@ namespace
 		pShader->SetDSType(DS_TYPE::NO_WRITE);
 		pShader->SetRSType(RS_TYPE::CULL_NONE);
 		CResMgr::GetInst()->AddRes<CGraphicsShader>(L"SineWavePostProcessShader", pShader, true);
+
+		//Absorb POST-PROCESS 
+		pShader = new CGraphicsShader;
+		pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_FORWARD);
+		pShader->CreateVertexShader(L"Shader\\postprocess.fx", "VS_PostProcess");
+		pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_AbsorbPostProcess");
+		pShader->SetDSType(DS_TYPE::NO_WRITE);
+		pShader->SetRSType(RS_TYPE::CULL_NONE);
+		CResMgr::GetInst()->AddRes<CGraphicsShader>(L"AbsorbPostProcessShader", pShader, true);
 
 		//UI Shader
 		pShader = new CGraphicsShader;
@@ -65,9 +74,16 @@ namespace
 	void MakeGameMaterial()
 	{
 		CMaterial* pMtrl = nullptr;
-		pMtrl            = new CMaterial{};
+
+		//SINE POST PROCESS MATERIAL
+		pMtrl = new CMaterial{};
 		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"SineWavePostProcessShader"));
 		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\SineWaveMtrl.mtrl", pMtrl);
+
+		//ABSORB POST PROCESS MATERIAL
+		pMtrl = new CMaterial{};
+		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"AbsorbPostProcessShader"));
+		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\AbsorbMtrl.mtrl", pMtrl);
 
 		//UI(DEFAULT)
 		pMtrl = new CMaterial;
@@ -95,9 +111,7 @@ namespace
 		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIPlayer.mtrl", pMtrl);
 	}
 
-	void MakeGameCompute()
-	{
-	}
+	void MakeGameCompute() { }
 }
 
 void CResMgr::init()
@@ -1186,6 +1200,7 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"PostProcessShader"));
 	AddRes<CMaterial>(L"material\\PostProcessMtrl.mtrl", pMtrl);
 	
+
 	// FlamePostProcessMtrl
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"FlamePostProcessShader"));

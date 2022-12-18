@@ -38,6 +38,7 @@ void CSceneMgr::progress()
 	ClearLayer();
 	CRenderMgr::GetInst()->ClearCamera();
 
+
 	m_pCurScene->finalupdate();
 
 	// Collision Check

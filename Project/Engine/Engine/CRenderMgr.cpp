@@ -98,23 +98,22 @@ void CRenderMgr::Render_MainCamera()
 	if (m_pMainCamera)
 	{
 		m_pMainCamera->SortGameObject();
-		Render(MRT_TYPE::SHADOWMAP		, m_pMainCamera);
+		Render(MRT_TYPE::SHADOWMAP, m_pMainCamera);
 
 		g_transform.matView    = m_pMainCamera->GetViewMat();
 		g_transform.matViewInv = m_pMainCamera->GetViewInvMat();
 		g_transform.matProj    = m_pMainCamera->GetProjMat();
 
-		Render(MRT_TYPE::DEFERRED		, m_pMainCamera);
-		Render(MRT_TYPE::DEFERRED_DECAL	, m_pMainCamera);
-		Render(MRT_TYPE::SSAO			, m_pMainCamera);
-		Render(MRT_TYPE::PARTICLE		, m_pMainCamera);
-		Render(MRT_TYPE::LIGHT			, m_pMainCamera);
-		Render(MRT_TYPE::SWAPCHAIN		, m_pMainCamera);	// Back Buffer
+		Render(MRT_TYPE::DEFERRED, m_pMainCamera);
+		Render(MRT_TYPE::DEFERRED_DECAL, m_pMainCamera);
+		Render(MRT_TYPE::SSAO, m_pMainCamera);
+		Render(MRT_TYPE::PARTICLE, m_pMainCamera);
+		Render(MRT_TYPE::LIGHT, m_pMainCamera);
+		Render(MRT_TYPE::SWAPCHAIN, m_pMainCamera);	// Back Buffer
 	}
 
 	// 저장된 모든 카메라의 프러스텀을 출력합니다. ( 프러스텀 설정된 카메라만 ) 
 	Render_Camera_Frustum();
-
 }
 
 void CRenderMgr::Render_UICamera()
@@ -134,23 +133,19 @@ void CRenderMgr::Render_UICamera()
 	m_pUICamera->render_translucent();			// Alpha 물체 렌더링
 	m_pUICamera->render_debug();				// Debug Object Render
 	m_pUICamera->render_postprocess();			// PostProcess 물체 렌더링
-
-
 }
 
 
 void CRenderMgr::Render_Play()
 {
 	// 여러 카메라 중 메인 카메라로 장면을 찍는다.
-	Render_MainCamera();		
-	Render_UICamera();			
+	Render_MainCamera();
+	Render_UICamera();
 
 	// Post Process 
 	CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::FXAA);
 	CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::FADE_IN_PAPERBURN);
 	CRenderEffectMgr::GetInst()->Apply(EFFECT_TYPE::FADE_OUT_PAPERBURN);
-
-
 }
 
 void CRenderMgr::Render_Editor()
@@ -182,11 +177,10 @@ void CRenderMgr::Render(MRT_TYPE _eMRT, CCamera* _pCam)
 	{
 	case MRT_TYPE::SWAPCHAIN:
 		{
-
 			Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
 			m_pMergeMaterial->UpdateData();
 			pRectMesh->render(0);
-			
+
 			_pCam->render_forward();			// Foward 물체 렌더링
 			_pCam->render_masked();				// Masked 물체 렌더링
 			_pCam->render_forward_decal();		// Foward Decal 렌더링
