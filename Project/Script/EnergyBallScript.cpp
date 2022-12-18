@@ -48,7 +48,7 @@ void EnergyBallScript::Explode()
 	pParticle->Transform()->SetRelativePos(Transform()->GetWorldPos());
 	CSceneMgr::GetInst()->SpawnObject(pParticle, 1);
 
-	GetOwner()->AddComponent(new M_AttackScript);
+	//GetOwner()->AddComponent(new M_AttackScript);
 	CObjectManager::GetInst()->CreateAttackCollider(0.7f, 500.f, GetOwner()->Transform()->GetRelativePos());
 }
 

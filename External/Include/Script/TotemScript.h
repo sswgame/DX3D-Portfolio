@@ -15,6 +15,15 @@ private:
 
 	float	m_fPaperburnTime;
 
+	Vec3 m_pPlayerPrevPos;
+	Vec3 m_pPlayerCurPos;
+
+	CGameObject* m_pPlayer;
+
+	float m_fTimer;
+	int m_iShaker;
+	Vec3 m_vOriginPos;
+
 
 	BossJugCombatMgrScript* m_pCombatMgr;
 	bool                    m_bCanHit;

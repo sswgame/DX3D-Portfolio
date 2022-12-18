@@ -39,7 +39,7 @@ public:
 	void SetPlayer(CGameObject* _pObj) { m_pPlayer = _pObj; }
 
 	void                             RemoveFromDontDestroyList(CGameObject* pGameObject);
-	CGameObject*                     IsInDontDestroyList(const CGameObject* pGameObject);
+	CGameObject* IsInDontDestroyList(const CGameObject* pGameObject);
 	void                             AddToDontDestroy(CGameObject* pGameObject);
 	const std::vector<CGameObject*>& GetDontDestroyList() const { return m_vecDonDestroy; }
 
@@ -52,6 +52,9 @@ public:
 	const std::vector<CGameObject*>& GetSceneObjectList(MAP_TYPE _type) const;
 
 	bool CheckAllMonsterDead() const;
+
+public:
+	void CreateAttackCollider(float _lifeTime, float _sphereSize, Vec3 _pos);
 
 public:
 	void start() override;

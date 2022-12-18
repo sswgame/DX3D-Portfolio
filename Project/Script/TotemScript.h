@@ -20,6 +20,10 @@ private:
 
 	CGameObject* m_pPlayer;
 
+	float m_fTimer;
+	int m_iShaker;
+	Vec3 m_vOriginPos;
+
 
 	BossJugCombatMgrScript* m_pCombatMgr;
 	bool                    m_bCanHit;

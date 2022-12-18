@@ -182,8 +182,6 @@ void HandStateMgrScript::ResetCurAttackHandNumber()
 	if (1 == m_iCurAttackHandNumber)
 		m_iCurAttackHandNumber = 2;
 	else if (2 == m_iCurAttackHandNumber)
-		m_iCurAttackHandNumber = 3;
-	else if (3 == m_iCurAttackHandNumber)
 		m_iCurAttackHandNumber = 1;
 	else
 		m_iCurAttackHandNumber = 1;

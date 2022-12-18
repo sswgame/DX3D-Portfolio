@@ -43,71 +43,38 @@ struct VTX_OUT
 #define Percentage g_float_0
 #define Anisotropy g_sam_0
 
-#define	PROGRESSBAR_RIGHTTOLEFT	0
-#define	PROGRESSBAR_LEFTTORIGHT	1
-#define	PROGRESSBAR_TOPTOBOTTOM	2
-#define	PROGRESSBAR_BOTTOMTOTOP	3
+#define	RIGHT_TO_LEFT	0
+#define	LEFT_TO_RIGHT	1
+#define	TOP_TO_BOTTOM	2
+#define	BOTTOM_TO_TOP	3
 
 float2 ComputeUV(float2 inputUV, float2 pos, float2 size)
 {
-    float2 result = (float2) 0.f;
-    if (inputUV.x == 0.f)
+    float2 result = inputUV;
+    //좌상단
+    if (inputUV.x == 0.f && inputUV.y == 0.f)
     {
-        result.x = pos.x;
+        result.x = saturate(pos.x);
+        result.y = saturate(pos.y);
     }
-    else
+    //우상단
+    else if (inputUV.x == 1.f && inputUV.y == 0.f)
     {
-        result.x = pos.x + size.x;
+        result.x = saturate(pos.x + size.x);
+        result.y = saturate(pos.y);
     }
-
-    if (inputUV.y == 0.f)
+    //좌하단
+    else if (inputUV.x == 0.f && inputUV.y == 1.f)
     {
-        result.y = pos.y;
+        result.x = saturate(pos.x);
+        result.y = saturate(pos.y + size.y);
     }
-    else
+    else if (inputUV.x == 1.f && inputUV.y == 1.f)
     {
-        result.y = pos.y + size.y;
+        result.x = saturate(pos.x + size.x);
+        result.y = saturate(pos.y + size.y);
     }
     return result;
-}
-float2 ComputeProgressBarUV(float2 inputUV, float percentage, int direction, inout int isDiscarded)
-{
-	// 오른쪽 -> 왼쪽
-    if (direction == PROGRESSBAR_RIGHTTOLEFT)
-    {
-        if (inputUV.x > percentage)
-        {
-            isDiscarded = true;
-        }
-    }
-
-	// 왼쪽 -> 오른쪽
-    if (direction == PROGRESSBAR_LEFTTORIGHT)
-    {
-        if (inputUV.x < 1.f - percentage)
-        {
-            isDiscarded = true;
-        }
-    }
-
-	// 위 -> 아래
-    if (direction == PROGRESSBAR_TOPTOBOTTOM)
-    {
-        if (inputUV.y < 1.f - percentage)
-        {
-            isDiscarded = true;
-        }
-    }
-
-	// 아래 -> 위
-    if (direction == PROGRESSBAR_BOTTOMTOTOP)
-    {
-        if (inputUV.y > percentage)
-        {
-            isDiscarded = true;
-        }
-    }
-    return inputUV;
 }
 
 VTX_OUT VS_UI(VTX_IN input)
@@ -119,8 +86,14 @@ VTX_OUT VS_UI(VTX_IN input)
 
     if (UseInfo)
     {
-        float2 spritePosition = DrawInfo.xy / TextureSize;
-        float2 imageSizeUV = DrawInfo.zw / TextureSize;
+        float2 spritePosition;
+        spritePosition.x = saturate(DrawInfo.x / TextureSize.x);
+        spritePosition.y = saturate(DrawInfo.y / TextureSize.y);
+
+        float2 imageSizeUV;
+        imageSizeUV.x = saturate(DrawInfo.z / TextureSize.x);
+        imageSizeUV.y = saturate(DrawInfo.w / TextureSize.y);
+
         output.vUV = ComputeUV(input.vUV, spritePosition, imageSizeUV);
     }
 
@@ -134,13 +107,99 @@ float4 PS_UI(VTX_OUT input) : SV_Target
     {
         if (UseProgressBar)
         {
-            int isDiscarded = false;
-            float2 UV = ComputeProgressBarUV(input.vUV, Percentage, ProgressBarDirection, isDiscarded);
-            if (isDiscarded)
+        	float2 imageSizeUV = DrawInfo.zw / TextureSize;
+            // 오른쪽 -> 왼쪽
+            if (ProgressBarDirection == RIGHT_TO_LEFT)
             {
-                discard;
+                float2 leftPos;
+                leftPos.x = DrawInfo.x / TextureSize.x;
+
+                if(UseInfo)
+                {
+                    //currentWidth
+                    float width = saturate(input.vUV.x - leftPos.x);
+                    if(Percentage *imageSizeUV.x< width)
+                    {
+                        discard;
+                    }
+                }
+                else
+                {
+                    if (Percentage < input.vUV.x)
+                    {
+                        discard;
+                    }
+                }
             }
-            outputColor = UITexture.Sample(Anisotropy, UV);
+			// 왼쪽 -> 오른쪽
+            else if (ProgressBarDirection == LEFT_TO_RIGHT)
+            {
+                float2 leftPos;
+                leftPos.x = saturate(DrawInfo.x / TextureSize.x);
+                if (UseInfo)
+                {
+                    //currentWidth
+                    float width = saturate(input.vUV.x - leftPos.x);
+                    if (width < (1.f - Percentage) * imageSizeUV.x)
+                    {
+                        discard;
+                    }
+                }
+                else
+                {
+                    if (input.vUV.x <= 1.f - Percentage)
+                    {
+                        discard;
+                    }
+                }
+                
+            }
+			// 위 -> 아래
+            else if (ProgressBarDirection == TOP_TO_BOTTOM)
+            {
+                float2 topPos;
+                topPos.y = saturate(DrawInfo.y / TextureSize.y);
+                if (UseInfo)
+                {
+                    float height = saturate(input.vUV.y - topPos.y);
+                    if (height <= (1.f - Percentage) * imageSizeUV.y)
+                    {
+                        discard;
+                    }
+
+                }
+                else
+                {
+                    if (input.vUV.y <= 1.f - Percentage)
+                    {
+                        discard;
+                    }
+                }
+                
+            }
+			// 아래 -> 위
+            else if (ProgressBarDirection == BOTTOM_TO_TOP)
+            {
+                float2 topPos;
+                topPos.y = saturate(DrawInfo.y / TextureSize.y);
+                if (UseInfo)
+                {
+                    float height = saturate(input.vUV.y - topPos.y);
+                    if (height >= Percentage*imageSizeUV.y)
+                    {
+                        discard;
+                    }
+
+                }
+                else
+                {
+                    if (input.vUV.y >= Percentage)
+                    {
+                        discard;
+                    }
+                }
+            }
+            outputColor = UITexture.Sample(Anisotropy, input.vUV);
         }
         else
         {
@@ -149,13 +208,13 @@ float4 PS_UI(VTX_OUT input) : SV_Target
     }
     else
     {
-        if(false ==ShowAlpha)
+        if (false == ShowAlpha)
         {
             discard;
         }
         else
         {
-			outputColor = float4(1.f, 0.f, 1.f, 1.f);
+            outputColor = float4(1.f, 0.f, 1.f, 1.f);
         }
     }
     

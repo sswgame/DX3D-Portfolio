@@ -240,6 +240,41 @@ void JugHand_Attack::Hand03Attack()
 		// ==================
 		// create attack ball
 		// ==================
+
+		CGameObject* pEnergyBall = new CGameObject;
+		pEnergyBall->SetName(L"ENERGYBALL");
+		pEnergyBall->AddComponent(new CMeshRender);
+		pEnergyBall->AddComponent(new CTransform);
+		pEnergyBall->AddComponent(new CCollider3D{});
+		pEnergyBall->AddComponent(new EnergyBallScript{});
+
+		pEnergyBall->Transform()->SetRelativePos(Vec3());
+		pEnergyBall->Transform()->SetRelativeScale(Vec3(50.f, 50.f, 50.f));
+		pEnergyBall->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+
+		CMaterial* pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\EnergyBallMtrl.mtrl").Get();
+		pEnergyBall->MeshRender()->SetSharedMaterial(pMtrl, 0);
+		const Ptr<CTexture> pmagmaTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\FBXTexture\\T_Lava02.png",
+			L"texture\\FBXTexture\\T_Lava02.png");
+		pEnergyBall->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pmagmaTex);
+
+		pEnergyBall->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+		pEnergyBall->Collider3D()->SetOffsetScale(Vec3(50.f, 50.f, 50.f));
+		pEnergyBall->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
+		pEnergyBall->Collider3D()->SetLifeTime(-1.f);
+
+		pEnergyBall->GetScript<EnergyBallScript>()->SetCurMode(ENERGYBALL_MODE::MISSILE);
+
+		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\energy_ball.pref",
+			L"prefab\\energy_ball.pref").Get();
+		CGameObject* pEnergyBallParti = pPrefab->Instantiate();
+		pEnergyBallParti->ParticleSystem()->SetLifeTime(-1.f);
+		pEnergyBallParti->ParticleSystem()->SetMaterial(L"material\\energy_ball.mtrl");
+
+		pEnergyBall->AddChild(pEnergyBallParti);
+		m_vecEnergyBalls.push_back(pEnergyBall);
+		CSceneMgr::GetInst()->SpawnObject(pEnergyBall, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
+		pEnergyBall->Deactivate();
 	}
 	else
 	{

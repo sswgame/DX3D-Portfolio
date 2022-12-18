@@ -46,7 +46,6 @@ public:
 	void LoadFromScene(FILE* _pFile) override;
 
 public:
-	void CreateAttackCollider(float _lifeTime, float _sphereSize, Vec3 _pos);
 	void SetLifeTime(float _time) { m_fLifeTime = _time; }
 
 public:

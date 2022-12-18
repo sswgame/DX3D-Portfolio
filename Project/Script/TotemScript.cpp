@@ -18,6 +18,10 @@ TotemScript::TotemScript()
 	, m_fPaperburnTime(2.f)
 	, m_pPlayerPrevPos()
 	, m_pPlayerCurPos()
+	, m_fEffectTime(0.3f)
+	, m_fTimer(0.f)
+	, m_iShaker(1)
+	, m_vOriginPos()
 {
 }
 
@@ -27,35 +31,30 @@ TotemScript::~TotemScript()
 
 void TotemScript::HitEffect()
 {
-	static float Timer = 0.f;
-	static int   iShaker = 1;
-	static Vec3  vOriginalPos = Transform()->GetWorldPos();
 	int          iTrue = 1;
 	int          iFalse = -1;
 
-	Timer += DT;
+	m_fTimer += DT;
 
-	if (Timer >= m_fEffectTime)
+	if (m_fTimer >= m_fEffectTime)
 	{
-		Timer = 0.f;
+		m_fTimer = 0.f;
 		m_bHit = false;
 
-		MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_1, &iFalse);
-		Transform()->SetRelativePos(vOriginalPos);
+		Transform()->SetRelativePos(m_vOriginPos);
 
 	}
 	else
 	{
 		// 붉은색 효과
-		MeshRender()->GetDynamicMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_1, &iTrue);
 
 		// 진동
-		Vec3 vPos = vOriginalPos;
-		vPos.x += iShaker * 3.f;
-		vPos.y += iShaker * 3.f;
+		Vec3 vPos = m_vOriginPos;
+		vPos.x += m_iShaker * 3.f;
+		vPos.y += m_iShaker * 3.f;
 
 		Transform()->SetRelativePos(vPos);
-		iShaker *= -1;
+		m_iShaker *= -1;
 	}
 }
 
@@ -69,6 +68,8 @@ void TotemScript::start()
 
 	GetOwner()->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTexture);
 	GetOwner()->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::INT_0, &iHitOn);
+
+	m_vOriginPos = Transform()->GetRelativePos();
 }
 
 void TotemScript::update()
@@ -204,7 +205,7 @@ void TotemScript::OnCollisionExit(CGameObject* _OtherObject)
 				//BossJugScript* pJugScript = m_pCombatMgr->GetJug()->GetScript<BossJugScript>();
 				//pJugScript->GetHit(0.06f);
 				m_bHitOn = true;
-				m_fTotemCurHP -= 100.f;
+				m_fTotemCurHP -= 30.f;
 				m_bHit = true;
 			}
 		}

@@ -124,11 +124,11 @@ namespace
 		AddPlayer(pCurScene, pCamObj);
 		//AddDeuxiemie(pCurScene);
 		//AddHomonculus(pCurScene);
-		//AddDefaultUIObjects(pCurScene);
+		AddDefaultUIObjects(pCurScene);
 
 		//TestSineDistortion(pCurScene);
-		Map01(pCurScene);
-		//Map02(pCurScene);
+		//Map01(pCurScene);
+		Map02(pCurScene);
 
 		SetCollision();
 
