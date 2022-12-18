@@ -27,9 +27,9 @@ COMPONENTS:
       m_fEndSpeed: 10
       m_vStartColor: [0.393782377, 0.557115555, 1, 1]
       m_vEndColor: [1, 1, 1, 0]
-      m_fParticleCreateDistance: 150
+      m_fParticleCreateDistance: 50
       m_fParticleCreateTerm: 0.0199999996
-      m_vDirection: [1, 0]
+      m_vDirection: [0, 0]
       m_iEmissive: 0
       m_iLighting: 0
       m_fAngle: 0
@@ -40,8 +40,8 @@ COMPONENTS:
       m_bLinearParicle: true
       m_bUseSoftParticle: false
       m_bUseEmissive: true
-      m_vStartScale: [300, 300, 1]
-      m_vEndScale: [100, 100, 1]
+      m_vStartScale: [150, 150, 1]
+      m_vEndScale: [80, 80, 1]
 SCRIPTS:
   []
 CHILDREN:
