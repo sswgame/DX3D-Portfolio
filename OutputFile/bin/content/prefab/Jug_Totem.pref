@@ -1,0 +1,28 @@
+NAME: Jug_Totem
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [-1.59042454, 19.1939144, -1073.59644]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+  - COLLIDER3D:
+      m_eCollider3DType: 0
+      m_vOffsetPos: [0, 50, 0]
+      m_vOffsetScale: [300, 200, 50]
+  - MESHRENDER:
+      MESH: [mesh\totem.mesh, mesh\totem.mesh]
+      MATERIAL COUNT: 1
+      0: [material\totem.mtrl, material\totem.mtrl]
+      USE DYNAMIC 0: false
+      MATERIAL 0 TEXTURE LIST:
+        0: texture\FBXTexture\T_JuguArchi05Dark.png
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+SCRIPTS:
+  - TotemScript:
+      {}
+CHILDREN:
+  []
