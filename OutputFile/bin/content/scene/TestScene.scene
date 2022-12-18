@@ -18,7 +18,7 @@ LAYERS:
               0: [material\SkyBoxMtrl.mtrl, material\SkyBoxMtrl.mtrl]
               USE DYNAMIC 0: false
               MATERIAL 0 TEXTURE LIST:
-                6: texture\skybox\SkyDawn.dds
+                6: texture\skybox\nebula05_2048.dds
               m_bDynamicShadow: false
               m_bFrustumCulling: false
               m_eType: 1

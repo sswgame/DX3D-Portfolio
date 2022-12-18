@@ -109,4 +109,5 @@ void FieldM_StateMgr::ChangeState(wstring _sStateName)
 		return;
 
 	pFSM->ChangeState(_sStateName);
+	m_sCurState = _sStateName;
 }

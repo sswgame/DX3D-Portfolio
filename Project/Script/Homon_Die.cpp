@@ -2,6 +2,7 @@
 #include "Homon_Die.h"
 
 #include "FieldMonsteScript.h"
+#include "PaperBurnScript.h"
 
 // engine
 #include <Engine/CGameObject.h>
@@ -28,6 +29,15 @@ void Homon_Die::Enter()
 		m_pOwnerMGR = (GetOwner()->GetScript<FieldMonsteScript>()->GetMonsterMGR());
 	}
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), false);
+
+	CScript* pPaperburnScript = GetOwner()->GetScript<PaperBurnScript>();
+
+	((PaperBurnScript*)pPaperburnScript)->On();
+	((PaperBurnScript*)pPaperburnScript)->SetDir(1.f);
+	((PaperBurnScript*)pPaperburnScript)->SetStrength(0.f);
+	((PaperBurnScript*)pPaperburnScript)->SetFinishTime(5.f);
+	((PaperBurnScript*)pPaperburnScript)->SetColor(Vec4(0.f, 0.5f, 1.f, 1.f));
+	GetOwner()->MeshRender()->SetDynamicShadow(false);
 }
 
 void Homon_Die::Update()
@@ -37,19 +47,24 @@ void Homon_Die::Update()
 	if (nullptr == m_pAnimation)
 		return;
 
+	if (GetOwner()->IsDead() == true)
+		return;
+
 	if (m_pOwnerMGR->IsRunTimeEXIST())
 	{
 		if (m_pOwnerMGR->GetRunTime() <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
+			GetOwner()->Destroy();
 		}
 	}
 	else
 	{
 		float fAnimationLength = (float)(m_pAnimation->GetEndTime() - m_pAnimation->GetStartTime());
-		if (fAnimationLength + 2.f <= CState::GetTimer())
+		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
+			GetOwner()->Destroy();
 		}
 	}
 }

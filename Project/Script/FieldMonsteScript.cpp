@@ -289,6 +289,23 @@ void FieldMonsteScript::start()
 
 void FieldMonsteScript::update()
 {
+
+	if (m_fCurHP <= 0.f)
+	{
+		if (m_pMonsterMgr->GetCurState() != L"DIE")
+		{
+			m_pMonsterMgr->ChangeState(L"DIE");
+			m_pMonsterMgr->SetRunTime(-1.f);
+			m_pMonsterMgr->update();
+			return;
+		}	
+		else
+		{
+			return;
+		}
+
+	}
+
 	if (m_bHit)
 	{
 		return;

@@ -253,8 +253,8 @@ namespace
 
 	void AddSkybox(CScene* _pScene)
 	{
-		const Ptr<CTexture> pSkyTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\SkyDawn.dds",
-		                                                                 L"texture\\skybox\\SkyDawn.dds");
+		const Ptr<CTexture> pSkyTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\nebula05_2048.dds",
+		                                                                 L"texture\\skybox\\nebula05_2048.dds");
 		const auto pSkyBox = new CGameObject;
 
 		pSkyBox->SetName(L"SkyBox");
@@ -549,6 +549,7 @@ namespace
 		pMonster->AddComponent(new CCollider3D);
 		pMonster->AddComponent(new CRigidBody);
 		pMonster->AddComponent(new CNaviAgent);
+		pMonster->AddComponent(new PaperBurnScript);
 
 		pMonster->MeshRender()->SetDynamicShadow(true);
 
@@ -564,9 +565,11 @@ namespace
 		pMonster->GetScript<FieldMonsteScript>()->SetAttackRange(30.f);
 
 		_pScene->AddObject(pMonster, L"MONSTER");
-		CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
+
+
+	/*	CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
 		pMonsterHP->GetUIBaseComponenent()->SetTarget(pMonsterHP);
-		_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");
+		_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");*/
 	}
 
 	void AddDeuxiemie(CScene* _pScene)
@@ -579,14 +582,24 @@ namespace
 		pMonster->AddComponent(new FieldMonsteScript);
 		pMonster->AddComponent(new CFSM);
 		pMonster->AddComponent(new CCollider3D);
-		pMonster->Collider3D()->SetOffsetScale(Vec3(50.f, 100.f, 50.f));
+		pMonster->AddComponent(new CRigidBody);
+		pMonster->AddComponent(new CNaviAgent);
+		pMonster->AddComponent(new PaperBurnScript);
+
+		pMonster->MeshRender()->SetDynamicShadow(true);
+
+		pMonster->Transform()->SetRelativePos(Vec3(0.f, 5.f, 100.f));
+		pMonster->NaviAgent()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+		pMonster->NaviAgent()->SetOffsetSize(Vec3(15.f, 100.f, 15.f));
+
+		pMonster->Collider3D()->SetOffsetScale(Vec3(100.f, 200.f, 100.f));
 		pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::DEUXIEMIE);
 		_pScene->AddObject(pMonster, L"MONSTER");
 
-		CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
+		/*CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
 		pMonsterHP->GetUIBaseComponenent()->SetTarget(pMonsterHP);
-		_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");
+		_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");*/
 	}
 
 	void TestNavi(CScene* _pScene)
