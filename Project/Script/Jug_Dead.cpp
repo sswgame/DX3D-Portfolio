@@ -3,6 +3,8 @@
 
 // [ ENGINE PART ]
 #include <Engine/CAnimator3D.h>
+#include <Engine/CTransform.h>
+#include <Engine/CTimeMgr.h>
 
 Jug_Dead::Jug_Dead()
 	: CState(L"JUG_DEAD")
@@ -44,6 +46,13 @@ void Jug_Dead::Exit()
 
 void Jug_Dead::Update()
 {
+	if (GetOwner()->Animator3D()->GetCurAnim()->IsPlay())
+	{
+		Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
+		vPos.y -= DT * 5.f;
+
+		GetOwner()->Transform()->SetRelativePos(vPos);
+	}
 }
 
 void Jug_Dead::LateUpdate()

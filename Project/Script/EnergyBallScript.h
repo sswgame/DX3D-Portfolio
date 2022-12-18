@@ -24,7 +24,10 @@ private:
 	float           m_fRadius;
 	float           m_fSpeed;
 	float           m_fTimeLimit;
+	float           m_fAngle;
+	float           m_fTimer;
 	bool            m_bFinish;
+	bool            m_bMoveTargetPos;
 
 	void Explode();
 

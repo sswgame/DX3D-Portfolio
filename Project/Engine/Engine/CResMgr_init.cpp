@@ -1034,15 +1034,6 @@ void CResMgr::CreateEngineShader()
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	AddRes<CGraphicsShader>(L"PostProcessShader", pShader, true);
 
-	// ScreenShake Shader
-	pShader = new CGraphicsShader;
-	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
-	pShader->CreateVertexShader(L"Shader\\postprocess.fx", "VS_ScreenShake");
-	pShader->CreatePixelShader(L"Shader\\postprocess.fx", "PS_ScreenShake");
-	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
-	pShader->SetRSType(RS_TYPE::CULL_NONE);
-	AddRes<CGraphicsShader>(L"ScreenShakeShader", pShader, true);
-
 	// FlamePostProcess Shader
 	pShader = new CGraphicsShader;
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
@@ -1194,12 +1185,7 @@ void CResMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"PostProcessShader"));
 	AddRes<CMaterial>(L"material\\PostProcessMtrl.mtrl", pMtrl);
-
-	// ScreenShakeMtrl
-	pMtrl = new CMaterial;
-	pMtrl->SetShader(FindRes<CGraphicsShader>(L"ScreenShakeShader"));
-	AddRes<CMaterial>(L"material\\ScreenShakeMtrl.mtrl", pMtrl);
-
+	
 	// FlamePostProcessMtrl
 	pMtrl = new CMaterial;
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"FlamePostProcessShader"));

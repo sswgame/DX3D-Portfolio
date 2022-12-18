@@ -43,10 +43,10 @@ void EnergyBallScript::Explode()
 	Ptr<CPrefab> pPrefab   = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\explosion.pref");
 	CGameObject* pParticle = pPrefab->Instantiate();
 	pParticle->SetName(L"magma explode effect");
-	pParticle->ParticleSystem()->SetLifeTime(5.f);
+	pParticle->ParticleSystem()->SetLifeTime(3.f);
 	pParticle->ParticleSystem()->SetMaterial(L"material\\explosion.mtrl");
 	pParticle->Transform()->SetRelativePos(Transform()->GetWorldPos());
-	CSceneMgr::GetInst()->SpawnObject(pParticle, 1);
+	CSceneMgr::GetInst()->SpawnObject(pParticle, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
 
 	//GetOwner()->AddComponent(new M_AttackScript);
 	CObjectManager::GetInst()->CreateAttackCollider(0.7f, 500.f, GetOwner()->Transform()->GetRelativePos());
@@ -83,46 +83,42 @@ void EnergyBallScript::update()
 
 	case ENERGYBALL_MODE::ROTATION:
 		{
-			static bool  MoveTargetPos = false;
-			static float angle         = 0;
-			static float timer         = 0;
-
 			if (-1.f != m_fTimeLimit)
 			{
-				timer += DT;
+				m_fTimer += DT;
 
 				// 타이머가 다 되면 회전을 멈춘다.
-				if (timer > m_fTimeLimit)
+				if (m_fTimer > m_fTimeLimit)
 				{
-					m_bFinish     = true;
-					MoveTargetPos = false;
-					angle         = 0;
+					m_bFinish        = true;
+					m_bMoveTargetPos = false;
+					m_fAngle         = 0;
 
-					timer = 0.;
+					m_fTimer = 0.;
 					break;
 				}
 			}
 
 			// 현재 위치를 타겟 위치로 바꾼다.
-			if (!MoveTargetPos)
+			if (!m_bMoveTargetPos)
 			{
 				GetOwner()->Transform()->SetRelativePos(m_vTargetPos);
-				vPos          = m_vTargetPos;
-				MoveTargetPos = true;
+				vPos             = m_vTargetPos;
+				m_bMoveTargetPos = true;
 			}
 
 			// 회전한다
 			if (m_eRotDir == ROT_DIR::HORIZONTAL)
 			{
-				angle += m_fSpeed * DT;
-				vPos.x = m_vTargetPos.x + m_fRadius * cos(angle);
-				vPos.z = m_vTargetPos.z + m_fRadius * sin(angle);
+				m_fAngle += m_fSpeed * DT;
+				vPos.x = m_vTargetPos.x + m_fRadius * cos(m_fAngle);
+				vPos.z = m_vTargetPos.z + m_fRadius * sin(m_fAngle);
 			}
 			else if (m_eRotDir == ROT_DIR::VERTICAL)
 			{
-				angle += m_fSpeed * DT;
-				vPos.x = m_vTargetPos.x + m_fRadius * cos(angle);
-				vPos.y = m_vTargetPos.y + m_fRadius * sin(angle);
+				m_fAngle += m_fSpeed * DT;
+				vPos.x = m_vTargetPos.x + m_fRadius * cos(m_fAngle);
+				vPos.y = m_vTargetPos.y + m_fRadius * sin(m_fAngle);
 			}
 
 			GetOwner()->Transform()->SetRelativePos(vPos);

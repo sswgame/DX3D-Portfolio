@@ -29,6 +29,8 @@ JugPhase_2::JugPhase_2()
 	, m_pBossAnimator(nullptr)
 	, m_fIdleTime(3.f)
 	, m_fAttackTime(5.f)
+	, m_fRotTimer(1.5f)
+	, m_iRotCounter(0)
 	, m_iPrevAttackPattern(0)
 	, m_iAttackPattern(0)
 	, m_bRot(false)
@@ -48,6 +50,8 @@ JugPhase_2::JugPhase_2(const JugPhase_2& _origin)
 	, m_bAttackProceeding(false)
 	, m_bRot(false)
 	, m_fAttackTime(_origin.m_fAttackTime)
+	, m_fRotTimer(1.5f)
+	, m_iRotCounter(0)
 	, m_fDMG{80.f, 30.f, 0.f, 0.f}
 {
 }
@@ -239,6 +243,23 @@ void JugPhase_2::Update()
 	case 3:
 		Attack_3();
 		break;
+	}
+
+
+	for (size_t i = 0; i < ENERGYBALL_COUNT; i++)
+	{
+		if (m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->IsFinish())
+		{
+			if (ENERGYBALL_MODE::ROTATION == m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->GetCurMode())
+			{
+				Vec3 vPlayerPos = m_pCombatMgr->GetPlayer()->Transform()->GetWorldPos();
+				m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->SetSpeed(800.f);
+				m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->
+				                     Start(ENERGYBALL_MODE::MISSILE,
+				                           vPlayerPos,
+				                           2.5f);
+			}
+		}
 	}
 }
 
@@ -435,17 +456,14 @@ void JugPhase_2::Attack_3()
 	}
 	else
 	{
-		static int   fRotCounter = 0;
-		static float fRotTimer   = 0.f;
-
 		if (GetTimer() > m_fAttackTime)
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
-			fRotCounter          = 0;
-			fRotTimer            = 1.5f;
+			m_iRotCounter        = 0;
+			m_fRotTimer          = 1.5f;
 			ResetTimer();
 
 			return;
@@ -455,43 +473,26 @@ void JugPhase_2::Attack_3()
 		if (m_pBossAnimator->GetCurAnim()->IsFinish())
 			m_bRot = false;
 
-		if (fRotTimer <= 0.f)
+		if (m_fRotTimer <= 0.f)
 		{
-			if (fRotCounter >= ENERGYBALL_COUNT)
+			if (m_iRotCounter >= ENERGYBALL_COUNT)
 				return;
 
-			m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->SetRadius(300.f);
-			m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->SetSpeed(6.f);
-			m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->SetRotDir(ROT_DIR::VERTICAL);
-			m_vecEnergyBalls[fRotCounter]->Activate();
-			m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->
-			                               Start(ENERGYBALL_MODE::ROTATION,
-			                                     Vec3(0.f, 400.f, -200.f),
-			                                     1.5f);
+			m_vecEnergyBalls[m_iRotCounter]->GetScript<EnergyBallScript>()->SetRadius(300.f);
+			m_vecEnergyBalls[m_iRotCounter]->GetScript<EnergyBallScript>()->SetSpeed(6.f);
+			m_vecEnergyBalls[m_iRotCounter]->GetScript<EnergyBallScript>()->SetRotDir(ROT_DIR::VERTICAL);
+			m_vecEnergyBalls[m_iRotCounter]->Activate();
+			m_vecEnergyBalls[m_iRotCounter]->GetScript<EnergyBallScript>()->
+			                                 Start(ENERGYBALL_MODE::ROTATION,
+			                                       Vec3(0.f, 400.f, -200.f),
+			                                       1.0f);
 
-			++fRotCounter;
-			fRotTimer = 1.5f;
+			++m_iRotCounter;
+			m_fRotTimer = 0.5f;
 		}
 		else
 		{
-			fRotTimer -= DT;
-		}
-
-
-		for (size_t i = 0; i < ENERGYBALL_COUNT; i++)
-		{
-			if (m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->IsFinish())
-			{
-				if (ENERGYBALL_MODE::ROTATION == m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->GetCurMode())
-				{
-					Vec3 vPlayerPos = m_pCombatMgr->GetPlayer()->Transform()->GetWorldPos();
-					m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->SetSpeed(800.f);
-					m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->
-					                     Start(ENERGYBALL_MODE::MISSILE,
-					                           vPlayerPos,
-					                           2.5f);
-				}
-			}
+			m_fRotTimer -= DT;
 		}
 	}
 }

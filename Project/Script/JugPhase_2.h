@@ -21,6 +21,8 @@ private:
 
 	float m_fIdleTime;
 	float m_fAttackTime;
+	float m_fRotTimer;
+	int   m_iRotCounter;
 
 	float m_fDMG[4];
 

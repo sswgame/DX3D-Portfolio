@@ -29,7 +29,7 @@ BossJugScript::BossJugScript()
 	: CScript((int)SCRIPT_TYPE::BOSSJUGSCRIPT)
 	, m_pBossFSM(nullptr)
 	, m_pBossAnimator(nullptr)
-	, m_fHP(1000.f)
+	, m_fHP(10000.f)
 	, m_fMaxHP(10000.f)
 {
 	AddScriptParam("BOSS STATE", SCRIPTPARAM_TYPE::TEXT, &m_strCurState);

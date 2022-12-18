@@ -3,7 +3,7 @@
 
 #include "CGraphicsShader.h"
 #include "CTexture.h"
-
+#include "CSerializer.h"
 class CMaterial : public CRes
 {
 private:
