@@ -12,7 +12,8 @@
 #define ResultTexture   g_tex_2
 #define BurnColor       g_vec4_0
 #define BurnStrength    g_float_0
-
+#define EnableAllBlack g_int_0
+#define Ratio          g_float_1
 // g_tex_0 : Output Texture
 // Rasterizer : CULL_NONE
 // BlendState : Default
@@ -59,6 +60,10 @@ float4 PS_PaperBurn(VTX_OUT _in) : SV_Target
 {
     float4 vOutColor = (float4) 0.f;
 
+    if(EnableAllBlack)
+    {
+        return float4(0.f, 0.f, 0.f, Ratio);
+    }
     // Animation 정보가 있는 경우
     if (g_useAnim2D)
     {

@@ -111,6 +111,11 @@ void CRenderEffectMgr::Apply_FadeInOut_PaperBurn()
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_2, pResultTex);
 	pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fPaperBurn_Timer);
 	pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_color);
+	if (m_bBlack)
+	{
+		pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &m_bBlack);
+		pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_1, &m_fPaperBurn_Timer);
+	}
 	pPaperBurnMtrl->UpdateData();
 
 	CONTEXT->IASetInputLayout(nullptr);

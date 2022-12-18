@@ -26,6 +26,7 @@ void ObjMgrState_LOADING::LateUpdate()
 {
 	if (CRenderEffectMgr::GetInst()->IsEnable_FadeInPaperBurn() && CRenderEffectMgr::GetInst()->IsFadeInFinished())
 	{
+		CRenderEffectMgr::GetInst()->UseAllBlack(true);
 		CRenderEffectMgr::GetInst()->Enable_FadeOutPaperBurn();
 		EnableSceneObject();
 	}
