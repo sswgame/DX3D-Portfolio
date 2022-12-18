@@ -279,11 +279,15 @@ void CTranslateMgr::UpdateMovePlayer()
 		fMoveSideDT -= DT * pPlayerScript->GetPlayerStat()->GetStat().fSpeed;
 	}
 
+	m_vPrevPos = m_pOwner->Transform()->GetRelativePos();
+
 	TranslateByRigidBody(m_vCamAxis.vFrontAxis, fMoveForwardDT * 10.f);
 	TranslateByRigidBody(m_vCamAxis.vRightAxis, fMoveSideDT * 10.f);
 
 	Walk(fMoveForwardDT * 2.f); // ╬у ╣з 
 	Strafe(fMoveSideDT * 2.f);  // аб ©Л 
+
+	m_vCurPos = m_pOwner->Transform()->GetRelativePos();
 
 }
 
@@ -1038,4 +1042,14 @@ void CTranslateMgr::CheckLeftKey()
 	{
 
 	}
+}
+
+Vec3 CTranslateMgr::GetMoveDir()
+{
+	Vec3 vMoveDir = Vec3(0.f, 0.f, 0.f);
+
+	vMoveDir = m_vCurPos - m_vPrevPos;
+	vMoveDir.Normalize();
+
+	return vMoveDir;
 }

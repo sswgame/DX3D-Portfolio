@@ -23,9 +23,7 @@ private:
 	
 	CGameObject*	m_pSwordCollider;	// 무기		충돌체
 	CGameObject*	m_pSword_Trail;		// 무기		트레일 
-
 	CGameObject*	m_pDirectionalLight;
-
 
 public:
 	virtual void start();
@@ -47,6 +45,8 @@ public:
 	CGameObject* GetCamera()			{ return m_pCamera; }
 	Vec3		 GetForwardAxis()		{ return m_vObjForwardAxis; }
 	CGameObject* GetSwordBoneCollider() { return m_pSwordCollider; }
+	Vec3		 GetMoveDir();
+
 
 	void SetCamera(CGameObject* _pCameraObj)	{ m_pCamera = _pCameraObj; }
 	void SetForwardAxis(Vec3 _vForwardAxis)		{ m_vObjForwardAxis = _vForwardAxis; }

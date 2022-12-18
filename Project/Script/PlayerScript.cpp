@@ -14,6 +14,8 @@
 #include <Engine/CAnimation3D.h>
 #include <Engine/CAnimator3D.h>
 #include <Engine/CParticleSystem.h>
+#include <Engine/CFSM.h>
+
 
 #include "SwordTrailScript.h"
 
@@ -141,6 +143,14 @@ void PlayerScript::start()
 
 void PlayerScript::update()
 {
+
+	if (KEY_TAP(KEY::U))
+	{
+
+		GetOwner()->FSM()->ChangeState(L"HIT");
+
+	}
+
 	// 1. 키 상태 업데이트 
 	m_pKeyMgr->update();
 	tKey_Zip tCurKeyInfo  = m_pKeyMgr->GetCurKeyInfo();

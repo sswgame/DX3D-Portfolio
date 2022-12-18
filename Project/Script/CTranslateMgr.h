@@ -63,6 +63,10 @@ private:
 
     bool                m_bEqualizePlayerAxis_CamForward;       // Player 를 무조건 Camera가 바라보는 방향으로 회전 시킨다
 
+    Vec3                m_vPrevPos;
+    Vec3                m_vCurPos;
+
+
 public:
     void    Init(CGameObject* _pOwner, CGameObject* _pCamera, CScript* _pPlayerScript);
     void	Update();
@@ -100,6 +104,7 @@ public:
 
     void SetEqualize_Player_and_Camera(bool _b) { m_bEqualizePlayerAxis_CamForward = _b; }
 
+    Vec3 GetMoveDir();
 
 
     // CALCULATE POSITION

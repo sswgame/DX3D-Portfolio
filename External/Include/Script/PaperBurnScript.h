@@ -6,11 +6,24 @@ class PaperBurnScript :
 {
 private:
 	bool		m_bApply;
-	Vec4		m_vColor;
+	bool		m_bFinish;
+
 	float		m_fStrength;
+	Vec4		m_vColor;
+
+	int			m_iDir;
 
 
 public:
+
+	void On();
+	void Off();
+	void Stop();
+	void ReturnOriginalState();
+
+	void SetDir(int _dir) { m_iDir = _dir; }
+
+
 	virtual void start();
 	virtual void update();
 	virtual void lateupdate();

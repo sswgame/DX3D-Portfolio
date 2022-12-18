@@ -10,16 +10,22 @@
 PaperBurnScript::PaperBurnScript()
 	: CScript((int)SCRIPT_TYPE::PAPERBURNSCRIPT)
 	, m_bApply(false)
-	, m_vColor(WHITE)
+	, m_vColor(RED)
 	, m_fStrength(0.f)
+	, m_iDir(1)
 
 {
+	SetName(L"PaperBurnScript");
+
 }
 
 PaperBurnScript::PaperBurnScript(const PaperBurnScript& _origin)
 	: CScript((int)SCRIPT_TYPE::PAPERBURNSCRIPT)
 
 {
+	SetName(L"PaperBurnScript");
+
+
 }
 
 
@@ -27,13 +33,98 @@ PaperBurnScript::~PaperBurnScript()
 {
 }
 
-void PaperBurnScript::start()
+void PaperBurnScript::On()
 {
+	CMeshRender* pMeshRender = GetOwner()->MeshRender();
+	if (pMeshRender == nullptr)
+		return;
+
+	if (m_bApply == false)
+		m_bApply = true;
+
+
+	if (m_bApply)
+	{
+		m_fStrength = 0.f;
+		int MtrlCnt = pMeshRender->MeshRender()->GetMtrlCount();
+		for (int i = 0; i < MtrlCnt; ++i)
+		{
+			pMeshRender->SetUseDynamicMaterial(i, true);
+			pMeshRender->GetDynamicMaterial(i)->SetUseDynamicShader(true);
+			pMeshRender->GetDynamicMaterial(i)->GetDynamicShader()->SetBSType(BS_TYPE::NO_ALPHA_COVERAGE);
+
+		}
+	}
+
+	m_bFinish = false;
+}
+
+void PaperBurnScript::Off()
+{
+
+	CMeshRender* pMeshRender = GetOwner()->MeshRender();
+	if (pMeshRender == nullptr)
+		return;
+
+	m_bFinish = true;
+	m_bApply = false;
+	m_fStrength = 0.f;
+
 	int MtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
 	for (int i = 0; i < MtrlCnt; ++i)
 	{
-		GetOwner()->MeshRender()->SetUseDynamicMaterial(i, true);
-		GetOwner()->MeshRender()->GetDynamicMaterial(i)->CreateDynamicShader();
+		pMeshRender->GetDynamicMaterial(i)->SetUseDynamicShader(false);
+
+		pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
+		pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fStrength);
+		pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vColor);
+	}
+
+
+}
+
+void PaperBurnScript::Stop()
+{
+	CMeshRender* pMeshRender = GetOwner()->MeshRender();
+	if (pMeshRender == nullptr)
+		return;
+
+	m_bFinish = true;
+	m_bApply = false;
+	m_fStrength = 0.f;
+
+}
+
+void PaperBurnScript::ReturnOriginalState()
+{
+	CMeshRender* pMeshRender = GetOwner()->MeshRender();
+	if (pMeshRender == nullptr)
+		return;
+
+	int MtrlCnt = pMeshRender->GetMtrlCount();
+	for (int i = 0; i < MtrlCnt; ++i)
+	{
+
+		pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
+		pMeshRender->GetDynamicMaterial(i)->GetDynamicShader()->SetBSType(BS_TYPE::DEFAULT);
+		pMeshRender->GetDynamicMaterial(i)->SetUseDynamicShader(false);
+		pMeshRender->SetUseDynamicMaterial(i, false);
+
+	}
+}
+
+void PaperBurnScript::start()
+{
+	CMeshRender* pMeshRender = GetOwner()->MeshRender();
+	if (pMeshRender == nullptr)
+		return;
+
+	int MtrlCnt = pMeshRender->GetMtrlCount();
+	for (int i = 0; i < MtrlCnt; ++i)
+	{
+
+		pMeshRender->SetUseDynamicMaterial(i, true);
+		pMeshRender->GetDynamicMaterial(i)->CreateDynamicShader();
 
 	}
 
@@ -44,58 +135,50 @@ void PaperBurnScript::update()
 	if (KEY_TAP(KEY::O))
 	{
 		m_bApply = !m_bApply;
-		if (m_bApply)
-		{
-			m_fStrength = 0.f;
-			int MtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
-			for (int i = 0; i < MtrlCnt; ++i)
-			{
-				GetOwner()->MeshRender()->SetUseDynamicMaterial(i, true);
-				GetOwner()->MeshRender()->GetDynamicMaterial(i)->SetUseDynamicShader(true);
-				GetOwner()->MeshRender()->GetDynamicMaterial(i)->GetDynamicShader()->SetBSType(BS_TYPE::NO_ALPHA_COVERAGE);
 
-			}
-		}
+		if (m_bApply)
+			On();
+		else
+			Stop();
 	}
 
+	if (KEY_TAP(KEY::P))
+	{
+		Off();
+
+	}
 	if (!m_bApply)
 		return;
 
 
-	m_fStrength += DT;
+	m_fStrength += DT * m_iDir;
 	if (!GetOwner()->GetRenderComponent())
 		return;
 
 	CMeshRender* pMeshRender = GetOwner()->MeshRender();
 	if (pMeshRender)
 	{
+
 		int MtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
 		for (int i = 0; i < MtrlCnt; ++i)
 		{
+
 			pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
 			pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fStrength);
 			pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vColor);
-		}
 
+		}
 
 		if (m_fStrength >= 3.f)
 		{
-			m_bApply = false;
-			m_fStrength = 0.f;
-
-			int MtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
-			for (int i = 0; i < MtrlCnt; ++i)
-			{
-				pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
-				GetOwner()->MeshRender()->GetDynamicMaterial(i)->GetDynamicShader()->SetBSType(BS_TYPE::DEFAULT);
-				GetOwner()->MeshRender()->GetDynamicMaterial(i)->SetUseDynamicShader(false);
-				GetOwner()->MeshRender()->SetUseDynamicMaterial(i, false);
-
-			}
-
+			Off();
 		}
 
 	}
+
+	if (m_fStrength <= 0.f)
+		m_fStrength = 0.f;
+
 
 }
 

@@ -17,27 +17,27 @@ class CAnimator3D
 {
 private:
 	// [ 3D MODEL INFO ]
-	const vector<tMTBone>*     m_pVecBones;
-	const vector<tMTAnimClip>* m_pVecClip;
-	int                        m_iFrameCount;			 // 30
-	CStructuredBuffer*         m_pBoneFinalMatBuffer;   // 특정 프레임의 최종 행렬'
+	const vector<tMTBone>*		m_pVecBones;
+	const vector<tMTAnimClip>*	m_pVecClip;
+	int							m_iFrameCount;			 // 30
+	CStructuredBuffer*			m_pBoneFinalMatBuffer;   // 특정 프레임의 최종 행렬'
 
-	CStructuredBuffer*  m_pSocketBuffer;
-	std::vector<Matrix> m_vecSocketMatrix;
-	bool                m_bUseSocket;
+	CStructuredBuffer*			m_pSocketBuffer;
+	std::vector<Matrix>			m_vecSocketMatrix;
+	bool						m_bUseSocket;
 
 private:
 	// [ 3D ANIMATION INFO ]
 	map<wstring, CAnimation3D*> m_mapAnim;  // 전체 애니메이션 
 
-	CAnimation3D* m_pPrevAnim;				// 이전 애니메이션 
-	CAnimation3D* m_pCurAnim;				// 현재 애니메이션 
-	CAnimation3D* m_pNextAnim;				// 다음 애니메이션 
+	CAnimation3D*				m_pPrevAnim;	// 이전 애니메이션 
+	CAnimation3D*				m_pCurAnim;		// 현재 애니메이션 
+	CAnimation3D*				m_pNextAnim;	// 다음 애니메이션 
 
-	bool m_bRepeat;							// 애니메이션 반복 여부 
-	bool m_bPlayWithChild;					// 하위 객체 오브젝트와 동시에 재생 여부 
+	bool						m_bRepeat;							// 애니메이션 반복 여부 
+	bool						m_bPlayWithChild;					// 하위 객체 오브젝트와 동시에 재생 여부 
 
-	CREATE_ANIMATION_MODE m_eCreateMode;	// 애니메이션 생성 모드 
+	CREATE_ANIMATION_MODE		m_eCreateMode;	// 애니메이션 생성 모드 
 
 public:
 	void finalupdate() override;
