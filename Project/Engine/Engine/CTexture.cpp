@@ -34,6 +34,7 @@ int CTexture::Load(const wstring& _strFilePath)
 
 	if (CheckFail(hr))
 	{
+		LOG_WARN("TEXTURE PATH : %s", ToString(_strFilePath).c_str());
 		LOG_ASSERT(hr == S_OK, "TEXTURE FORMAT NOT SUPPORTED");
 		return E_FAIL;
 	}

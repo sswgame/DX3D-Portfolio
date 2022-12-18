@@ -9,8 +9,6 @@ private:
 	float m_fEffectTime;
 	float m_fTimer;
 
-	Vec3 m_vOriginPos;
-
 public:
 	virtual void update();
 	virtual void lateupdate();

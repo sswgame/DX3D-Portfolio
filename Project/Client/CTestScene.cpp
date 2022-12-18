@@ -91,7 +91,7 @@ namespace
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
 
-		AddCinemaCamera(pCurScene);
+		//AddCinemaCamera(pCurScene);
 		AddPlayer(pCurScene, pCamObj);
 		AddDeuxiemie(pCurScene);
 		AddHomonculus(pCurScene);
