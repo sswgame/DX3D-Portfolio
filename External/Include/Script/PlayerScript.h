@@ -50,7 +50,6 @@ public:
 
 	void SetCamera(CGameObject* _pCameraObj)	{ m_pCamera = _pCameraObj; }
 	void SetForwardAxis(Vec3 _vForwardAxis)		{ m_vObjForwardAxis = _vForwardAxis; }
-	void HitSuccess();
 
 public:
 	void UpdateCamera();

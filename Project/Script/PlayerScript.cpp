@@ -258,11 +258,6 @@ CGameObject* PlayerScript::GetChildObj(CGameObject* _parent, wstring _name)
 	return nullptr;
 }
 
-void PlayerScript::HitSuccess()
-{
-	GetOwner()->FSM()->ChangeState(L"HIT");
-
-}
 void PlayerScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
 	// 상태 바뀌는거 
@@ -373,6 +368,7 @@ void PlayerScript::Stat_Down(STAT_TYPE _eType, float _fPercent)
 
 			float fHP = MaxStat.fHp * _fPercent;
 			m_pStat->SubHp(fHP);
+			GetOwner()->FSM()->ChangeState(L"HIT");
 
 		}
 		
