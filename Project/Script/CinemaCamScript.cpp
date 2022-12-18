@@ -27,51 +27,67 @@ void CinemaCamScript::start()
 		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(GAME::LAYER::PLAYER);
 		if (pLayer)
 			m_pTargetObject = pLayer->FindRootObject(L"player");
+
 	}
 
-#ifdef CATMULLROM_TEST
-	CatmullRomSpline tCatmullRom;
+	if (m_pTargetObject)
+	{
+		Vec3 vPos;
+		Vec3 vForwardAxis = m_pTargetObject->Transform()->GetWorldFrontDir();
+		Vec3 vBackWardAxis = vForwardAxis * -1;
+		Vec3 vRightAxis = m_pTargetObject->Transform()->GetWorldRightDir();
+		Vec3 vLeftAxis = vRightAxis * -1;
 
-	tCatmullRom.m_fInterPolation_Control_Coefficient = 0.f;
-	tCatmullRom.SetP0(Vec3(0.f, 0.f, 0.f));
-	tCatmullRom.SetP1(Vec3(-500.f, 500.f, 500.f));
-	tCatmullRom.SetP2(Vec3(500.f, 500.f, 500.f));
-	tCatmullRom.SetP3(Vec3(1500.f, 0.f, 1000.f));
-	tCatmullRom.m_bStart = true;
-	tCatmullRom.m_bIsEnd = false;
-	AddCatmullRomSpline(tCatmullRom);
+		Vec3 vPlayerPos = m_pTargetObject->Transform()->GetRelativePos();
+		Vec3 vPos0 = vPlayerPos;
 
-	tCatmullRom.m_fInterPolation_Control_Coefficient = 0.f;
-	tCatmullRom.SetP0(Vec3(-500.f, 500.f, 500.f));
-	tCatmullRom.SetP1(Vec3(500.f, 500.f, 500.f));
-	tCatmullRom.SetP2(Vec3(1000.f, 0.f, -1000.f));
-	tCatmullRom.SetP3(Vec3(-500.f, -500.f, 200.f));
-	tCatmullRom.m_bStart = false;
-	tCatmullRom.m_bIsEnd = false;
-	AddCatmullRomSpline(tCatmullRom);
+		vector<Vec3> MainPos;
+		vPos = vPos0 + vForwardAxis * 1000.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vForwardAxis * 300.f;
+		vPos = vPos + vLeftAxis * 500.f;
+		vPos.y += 200.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vRightAxis * 1400.f + vForwardAxis * 1000.f;
+		vPos.y += 400.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vForwardAxis * 300.f + vLeftAxis * 500.f;
+		vPos.y += 200.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vForwardAxis * 300.f;
+		vPos.y += 400.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vForwardAxis * 300.f;
+		vPos.y -= 200.f;
+		MainPos.push_back(vPos);
+		vPos = vPos + vForwardAxis * 300.f;
+		vPos.y -= 400.f;
+		MainPos.push_back(vPos);
 
-	// 마지막과 처음을 이어주는 캣멀롬 요소 추가
-	tCatmullRom.m_fInterPolation_Control_Coefficient = 0.f;
-	tCatmullRom.SetStartPos(m_vecCatmullRom[m_vecCatmullRom.size() - 1].GetP2());
-	tCatmullRom.SetEndPos(m_vecCatmullRom[0].GetP1());
-	tCatmullRom.m_bIsEnd = false;
-	tCatmullRom.m_bStart = false;
-	AddCatmullRomSpline(tCatmullRom);
+		Vec3 vPos1 = vPos + vForwardAxis * 800.f;
+		CreateCatmullRomRoute(vPos0, MainPos, vPos1);
+		m_vecCatmullRom[0].m_bStart = true;
+		m_vecCatmullRom[3].SetSpeed(0.4f);
+		m_vecCatmullRom[4].SetSpeed(0.3f);
+		m_vecCatmullRom[5].SetSpeed(0.2f);
 
-	//tCatmullRom.CreateRoute(Vec3(0.f, 0.f, 0.f), Vec3(-100.f, -100.f, -100.f), 0);
-	SetLoopRepeat(true);
-#endif // CATMULLROM_TEST
 
-	Vec3 vPos0 = Vec3(0.f, 0.f, 0.f);
-	Vec3 vPos1 = Vec3(1000.f, 1000.f, 1000.f);
+	}
+	else
+	{
+		Vec3 vPos0 = Vec3(0.f, 0.f, 0.f);
+		Vec3 vPos1 = Vec3(1000.f, 1000.f, 1000.f);
 
-	vector<Vec3> mainPos;
-	mainPos.push_back(Vec3(500.f, 500.f, 500.f));
-	mainPos.push_back(Vec3(100.f, 100.f, 100.f));
-	mainPos.push_back(Vec3(-500.f, -500.f, 100.f));
+		vector<Vec3> mainPos;
+		mainPos.push_back(Vec3(500.f, 500.f, 500.f));
+		mainPos.push_back(Vec3(100.f, 100.f, 100.f));
+		mainPos.push_back(Vec3(-500.f, -500.f, 100.f));
 
-	CreateCatmullRomRoute(vPos0, mainPos, vPos1);
-	m_vecCatmullRom[0].m_bStart = true;
+		CreateCatmullRomRoute(vPos0, mainPos, vPos1);
+		m_vecCatmullRom[0].m_bStart = true;
+	}
+
+
 	SetLoopRepeat(true);
 }
 

@@ -144,13 +144,6 @@ void PlayerScript::start()
 void PlayerScript::update()
 {
 
-	if (KEY_TAP(KEY::U))
-	{
-
-		GetOwner()->FSM()->ChangeState(L"HIT");
-
-	}
-
 	// 1. 키 상태 업데이트 
 	m_pKeyMgr->update();
 	tKey_Zip tCurKeyInfo  = m_pKeyMgr->GetCurKeyInfo();
@@ -172,6 +165,7 @@ void PlayerScript::update()
 
 	// 6. 빛 업데이트 
 	UpdateDirectionalLight();
+
 }
 
 void PlayerScript::lateupdate()
@@ -264,6 +258,11 @@ CGameObject* PlayerScript::GetChildObj(CGameObject* _parent, wstring _name)
 	return nullptr;
 }
 
+void PlayerScript::HitSuccess()
+{
+	GetOwner()->FSM()->ChangeState(L"HIT");
+
+}
 void PlayerScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
 	// 상태 바뀌는거 
