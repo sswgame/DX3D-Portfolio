@@ -46,10 +46,10 @@ void Jug_Dead::Exit()
 
 void Jug_Dead::Update()
 {
-	if (GetOwner()->Animator3D()->GetCurAnim()->IsPlay())
+	Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
+	if (vPos.y > -210.f)
 	{
-		Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
-		vPos.y -= DT * 5.f;
+		vPos.y -= DT * 100.f;
 
 		GetOwner()->Transform()->SetRelativePos(vPos);
 	}

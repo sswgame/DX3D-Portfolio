@@ -4,6 +4,7 @@
 // [ SCRIPT PART ]
 #include "BossJugCombatMgrScript.h"
 #include "BossJugScript.h"
+#include "BossJugHandScript.h"
 
 JugPhase_1::JugPhase_1()
 	: CState(L"JUG_PHASE_1")
@@ -29,10 +30,12 @@ void JugPhase_1::Init()
 
 void JugPhase_1::Enter()
 {
+	m_pCombatMgr->GetJugHand()->Activate();
 }
 
 void JugPhase_1::Exit()
 {
+	m_pCombatMgr->GetJugHand()->Deactivate();
 }
 
 void JugPhase_1::Update()

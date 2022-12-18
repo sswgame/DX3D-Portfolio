@@ -6,6 +6,7 @@
 #include "BossJugHandScript.h"
 #include "BossJugScript.h"
 #include "CameraMoveScript.h"
+#include "CameraShakeScript.h"
 #include "CinemaCamScript.h"
 #include "ColumnFlameScript.h"
 #include "DestroyScript.h"
@@ -25,6 +26,7 @@
 #include "MonsterSwordScript.h"
 #include "M_AttackScript.h"
 #include "PaperBurnScript.h"
+#include "Phase01TriggerScript.h"
 #include "PlayerCamScript.h"
 #include "PlayerScript.h"
 #include "PotScript.h"
@@ -39,6 +41,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"BossJugHandScript");
 	_vec.push_back(L"BossJugScript");
 	_vec.push_back(L"CameraMoveScript");
+	_vec.push_back(L"CameraShakeScript");
 	_vec.push_back(L"CinemaCamScript");
 	_vec.push_back(L"ColumnFlameScript");
 	_vec.push_back(L"DestroyScript");
@@ -58,6 +61,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"MonsterSwordScript");
 	_vec.push_back(L"M_AttackScript");
 	_vec.push_back(L"PaperBurnScript");
+	_vec.push_back(L"Phase01TriggerScript");
 	_vec.push_back(L"PlayerCamScript");
 	_vec.push_back(L"PlayerScript");
 	_vec.push_back(L"PotScript");
@@ -78,6 +82,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new BossJugScript;
 	if (L"CameraMoveScript"== _strScriptName)
 		return new CameraMoveScript;
+	if (L"CameraShakeScript"== _strScriptName)
+		return new CameraShakeScript;
 	if (L"CinemaCamScript"== _strScriptName)
 		return new CinemaCamScript;
 	if (L"ColumnFlameScript"== _strScriptName)
@@ -116,6 +122,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 		return new M_AttackScript;
 	if (L"PaperBurnScript"== _strScriptName)
 		return new PaperBurnScript;
+	if (L"Phase01TriggerScript"== _strScriptName)
+		return new Phase01TriggerScript;
 	if (L"PlayerCamScript"== _strScriptName)
 		return new PlayerCamScript;
 	if (L"PlayerScript"== _strScriptName)
@@ -146,6 +154,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new BossJugScript;
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return new CameraMoveScript;
+	case SCRIPT_TYPE::CAMERASHAKESCRIPT:
+		return new CameraShakeScript;
 	case SCRIPT_TYPE::CINEMACAMSCRIPT:
 		return new CinemaCamScript;
 	case SCRIPT_TYPE::COLUMNFLAMESCRIPT:
@@ -184,6 +194,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new M_AttackScript;
 	case SCRIPT_TYPE::PAPERBURNSCRIPT:
 		return new PaperBurnScript;
+	case SCRIPT_TYPE::PHASE01TRIGGERSCRIPT:
+		return new Phase01TriggerScript;
 	case SCRIPT_TYPE::PLAYERCAMSCRIPT:
 		return new PlayerCamScript;
 	case SCRIPT_TYPE::PLAYERSCRIPT:
@@ -215,6 +227,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"BossJugScript";
 	case SCRIPT_TYPE::CAMERAMOVESCRIPT:
 		return L"CameraMoveScript";
+	case SCRIPT_TYPE::CAMERASHAKESCRIPT:
+		return L"CameraShakeScript";
 	case SCRIPT_TYPE::CINEMACAMSCRIPT:
 		return L"CinemaCamScript";
 	case SCRIPT_TYPE::COLUMNFLAMESCRIPT:
@@ -253,6 +267,8 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"M_AttackScript";
 	case SCRIPT_TYPE::PAPERBURNSCRIPT:
 		return L"PaperBurnScript";
+	case SCRIPT_TYPE::PHASE01TRIGGERSCRIPT:
+		return L"Phase01TriggerScript";
 	case SCRIPT_TYPE::PLAYERCAMSCRIPT:
 		return L"PlayerCamScript";
 	case SCRIPT_TYPE::PLAYERSCRIPT:

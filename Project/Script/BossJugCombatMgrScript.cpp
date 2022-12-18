@@ -22,6 +22,7 @@
 #include "CObjectManager.h"
 #include "BossJugScript.h"
 #include "HandStateMgrScript.h"
+#include "Phase01TriggerScript.h"
 
 #include "JugPhase_None.h"
 #include "JugPhase_Intro.h"
@@ -64,19 +65,19 @@ void BossJugCombatMgrScript::SpawnStage()
 		CSceneMgr::GetInst()->SpawnObject(m_pStage, L"BG");
 
 
-		CGameObject* pNMesh = new CGameObject;
-		pNMesh->SetName(L"NaviMesh");
-		pNMesh->AddComponent(new CTransform);
-		pNMesh->AddComponent(new CNaviMap);
+		m_pNaviMap = new CGameObject;
+		m_pNaviMap->SetName(L"NaviMesh");
+		m_pNaviMap->AddComponent(new CTransform);
+		m_pNaviMap->AddComponent(new CNaviMap);
 
 		CNaviMapData* pNaviMap = CResMgr::GetInst()->Load<CNaviMapData>(L"navimap\\boss_stage.map",
 		                                                                L"navimap\\boss_stage.map").
 		                                             Get();
-		pNMesh->NaviMap()->SetNaviMapData(pNaviMap);
-		pNMesh->Transform()->SetRelativeScale(2.5f, 2.5f, 2.5f);
-		pNMesh->Transform()->SetRelativePos(0.f, -345.f, 0.f);
+		m_pNaviMap->NaviMap()->SetNaviMapData(pNaviMap);
+		m_pNaviMap->Transform()->SetRelativeScale(2.5f, 2.5f, 2.5f);
+		m_pNaviMap->Transform()->SetRelativePos(0.f, -345.f, 0.f);
 
-		m_pStage->AddChild(pNMesh);
+		m_pStage->AddChild(m_pNaviMap);
 		//CObjectManager::GetInst()->SetSceneObject(m_pStage, MAP_TYPE::_02);
 		//m_pStage->Deactivate();
 
@@ -151,7 +152,7 @@ void BossJugCombatMgrScript::SpawnStage()
 
 
 			m_pJug->AddChild(m_pHammer);
-			//m_pHammer->Deactivate();
+			m_pHammer->Deactivate();
 		}
 
 
@@ -174,7 +175,7 @@ void BossJugCombatMgrScript::SpawnStage()
 		m_pJugHandMgr->GetScript<HandStateMgrScript>()->init();
 
 		//CObjectManager::GetInst()->SetSceneObject(m_pJugHandMgr, MAP_TYPE::_02);
-		//m_pJugHandMgr->Deactivate();
+		m_pJugHandMgr->Deactivate();
 	}
 
 	/* Pot 생성 */
@@ -186,8 +187,28 @@ void BossJugCombatMgrScript::SpawnStage()
 		m_pPot = pStagePref->Instantiate();
 		m_pPot->Animator3D()->SetPlayWithChild(true);
 		m_pPot->Animator3D()->MakeAnimationFromTXT("PotAnimInfo.txt");
+		m_pPot->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 		CSceneMgr::GetInst()->SpawnObject(m_pPot, GAME::LAYER::ITEM);
 	}
+
+	/*Trigger 생성*/
+	if (nullptr == m_pPhase01Trigger)
+	{
+		m_pPhase01Trigger = new CGameObject;
+		m_pPhase01Trigger->SetName(L"Phase01Trigger");
+		m_pPhase01Trigger->AddComponent(new CTransform);
+		m_pPhase01Trigger->AddComponent(new CCollider3D);
+		m_pPhase01Trigger->AddComponent(new Phase01TriggerScript);
+
+		m_pPhase01Trigger->Transform()->SetRelativePos(Vec3(0.f, 75.f, -1690.f));
+		m_pPhase01Trigger->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+		m_pPhase01Trigger->Collider3D()->SetOffsetScale(Vec3(620.f, 620.f, 620.f));
+
+		CSceneMgr::GetInst()->SpawnObject(m_pPhase01Trigger, GAME::LAYER::ITEM);
+	}
+
+	if (nullptr != m_pPlayer)
+		m_pPlayer->Transform()->SetRelativePos(Vec3(0.f, 700, -4000.f));
 }
 
 void BossJugCombatMgrScript::InitState()
@@ -235,9 +256,10 @@ void BossJugCombatMgrScript::CheckPhase()
 	}
 	// [ Phase 1 ]
 	if (L"JUG_PHASE_INTRO" == m_pPhaseFSM->GetCurState()->GetStateType()
-	    && 4.f < m_pPhaseFSM->GetCurState()->GetTimer())
+	    && m_bPhase1Enter)
 	{
 		m_pPhaseFSM->ChangeState(GAME::BOSS::PHASE::JUG_PHASE_1);
+		m_pPhase01Trigger->Destroy();
 		return;
 	}
 
@@ -253,7 +275,8 @@ void BossJugCombatMgrScript::CheckPhase()
 		}
 	}
 	// [ Dead ]
-	if (0 >= m_pJug->GetScript<BossJugScript>()->GetHP())
+	if (GAME::BOSS::PHASE::JUG_PHASE_DEAD != m_pPhaseFSM->GetCurState()->GetStateType()
+	    && 0 >= m_pJug->GetScript<BossJugScript>()->GetHP())
 	{
 		m_pPhaseFSM->ChangeState(GAME::BOSS::PHASE::JUG_PHASE_DEAD);
 		return;
@@ -283,6 +306,8 @@ void BossJugCombatMgrScript::update()
 	{
 		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"PLAYER");
 		m_pPlayer      = pLayer->FindRootObject(L"player");
+
+		m_pNaviMap->NaviMap()->SetNavimapToAgent();
 	}
 	else
 	{
@@ -293,9 +318,9 @@ void BossJugCombatMgrScript::update()
 	// 현재 타입 이름
 	m_strCurState = ToString(m_pPhaseFSM->GetCurState()->GetStateType());
 
-	if (GAME::BOSS::PHASE::JUG_PHASE_DEAD != ToWString(m_strCurState))
-		/* Phase 전환 체크 */
-		CheckPhase();
+	//if (GAME::BOSS::PHASE::JUG_PHASE_DEAD != ToWString(m_strCurState))
+	/* Phase 전환 체크 */
+	CheckPhase();
 }
 
 void BossJugCombatMgrScript::lateupdate()

@@ -97,8 +97,7 @@ void CNaviMap::SetNavimapToAgent()
 	if (pPlayer != nullptr)
 	{
 		if (nullptr != pPlayer->NaviAgent())
-			if (nullptr == pPlayer->NaviAgent()->GetNaviMap())
-				pPlayer->NaviAgent()->SetNaviMap(this);
+			pPlayer->NaviAgent()->SetNaviMap(this);
 	}
 
 	// monster

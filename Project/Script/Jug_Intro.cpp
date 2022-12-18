@@ -37,7 +37,7 @@ void Jug_Intro::Init()
 void Jug_Intro::Enter()
 {
 	// IDLE 애니메이션 플레이
-	GetOwner()->Animator3D()->Play(m_pAnim->GetName(), false);
+	GetOwner()->Animator3D()->Play(m_pAnim->GetName(), true);
 }
 
 void Jug_Intro::Exit()

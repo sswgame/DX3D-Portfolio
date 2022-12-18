@@ -182,7 +182,6 @@
       <Filter>Script\MIssile</Filter>
     </ClInclude>
     <ClInclude Include="MagmaScript.h" />
-    <ClInclude Include="MagmaScript.h" />
     <ClInclude Include="SwordTrailScript.h" />
     <ClInclude Include="ColumnFlameScript.h">
       <Filter>Script\Boss\Jug\Attack</Filter>
@@ -254,7 +253,6 @@
       <Filter>Script\SocketCollider</Filter>
     </ClInclude>
     <ClInclude Include="DoorScript.h" />
-    <ClInclude Include="TotemScript.h" />
     <ClInclude Include="ObjMgrState_IDLE.h">
       <Filter>Script\Common\State</Filter>
     </ClInclude>
@@ -267,10 +265,20 @@
     <ClInclude Include="CinemaCamScript.h">
       <Filter>Script\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="PotScript.h">
-      <Filter>Script\Boss\Jug</Filter>
-    </ClInclude>
     <ClInclude Include="M_AttackScript.h" />
+    <ClInclude Include="PotScript.h">
+      <Filter>Script\Boss\Jug\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="TotemScript.h">
+      <Filter>Script\Boss\Jug\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MagmaScript.h">
+      <Filter>Script\Boss\Jug\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Phase01TriggerScript.h">
+      <Filter>Script\Boss\Jug\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraShakeScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -445,7 +453,6 @@
       <Filter>Script\MIssile</Filter>
     </ClCompile>
     <ClCompile Include="MagmaScript.cpp" />
-    <ClCompile Include="MagmaScript.cpp" />
     <ClCompile Include="SwordTrailScript.cpp" />
     <ClCompile Include="ColumnFlameScript.cpp">
       <Filter>Script\Boss\Jug\Attack</Filter>
@@ -517,7 +524,6 @@
       <Filter>Script\SocketCollider</Filter>
     </ClCompile>
     <ClCompile Include="DoorScript.cpp" />
-    <ClCompile Include="TotemScript.cpp" />
     <ClCompile Include="ObjMgrState_IDLE.cpp">
       <Filter>Script\Common\State</Filter>
     </ClCompile>
@@ -530,10 +536,20 @@
     <ClCompile Include="CinemaCamScript.cpp">
       <Filter>Script\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="PotScript.cpp">
-      <Filter>Script\Boss\Jug</Filter>
-    </ClCompile>
     <ClCompile Include="M_AttackScript.cpp" />
+    <ClCompile Include="PotScript.cpp">
+      <Filter>Script\Boss\Jug\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="TotemScript.cpp">
+      <Filter>Script\Boss\Jug\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MagmaScript.cpp">
+      <Filter>Script\Boss\Jug\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Phase01TriggerScript.cpp">
+      <Filter>Script\Boss\Jug\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraShakeScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Default">
@@ -688,6 +704,9 @@
     </Filter>
     <Filter Include="Utility\CatmullRomSpline">
       <UniqueIdentifier>{da2b6be9-5177-4704-99f2-2d7e412c4031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Boss\Jug\Object">
+      <UniqueIdentifier>{ac4ee31c-31a1-41c3-a038-37c549156289}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

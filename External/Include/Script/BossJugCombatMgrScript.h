@@ -10,6 +10,7 @@ private:
 	string m_strCurState;
 
 	CGameObject*       m_pStage;
+	CGameObject*       m_pNaviMap;
 	CGameObject*       m_pJug;
 	CGameObject*       m_pHammer;
 	CGameObject*       m_pJugHandMgr;
@@ -29,6 +30,7 @@ public:
 	void InitState();
 	void CheckPhase();
 	void TotemDeadCheck();
+	void Phase1Enter() { m_bPhase1Enter = true; }
 
 	// [ GET / SET ]
 	CGameObject* GetJug() { return m_pJug; }

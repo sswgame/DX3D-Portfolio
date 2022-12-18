@@ -60,8 +60,8 @@ void PotScript::HitEffect()
 
 		// Áøµ¿
 		Vec3 vPos = vOriginalPos;
-		vPos.x += iShaker * 3.f;
-		vPos.y += iShaker * 3.f;
+		vPos.x += iShaker * 300.f * DT;
+		vPos.y += iShaker * 300.f * DT;
 
 		Transform()->SetRelativePos(vPos);
 		iShaker *= -1;

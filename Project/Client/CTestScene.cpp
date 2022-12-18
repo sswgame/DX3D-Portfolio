@@ -480,7 +480,6 @@ namespace
 		m_pBoneCollider->AddComponent(new CCollider3D);
 		m_pBoneCollider->Collider3D()->SetOffsetScale(Vec3(30.f, 10.f, 200.f));
 		CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pBoneCollider, L"PLAYER");
-		m_pBoneCollider->Collider3D()->Deactivate();
 
 		pObjWeapon->AddChild(m_pBoneCollider);
 

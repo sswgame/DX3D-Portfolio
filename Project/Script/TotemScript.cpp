@@ -50,8 +50,8 @@ void TotemScript::HitEffect()
 
 		// Áøµ¿
 		Vec3 vPos = m_vOriginPos;
-		vPos.x += m_iShaker * 3.f;
-		vPos.y += m_iShaker * 3.f;
+		vPos.x += m_iShaker * 300.f * DT;
+		vPos.y += m_iShaker * 300.f * DT;
 
 		Transform()->SetRelativePos(vPos);
 		m_iShaker *= -1;
