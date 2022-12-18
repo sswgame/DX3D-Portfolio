@@ -228,6 +228,7 @@ void PlayerScript::UpdateSwordCollider()
 
 void PlayerScript::UpdateDirectionalLight()
 {
+
 	if (!m_pDirectionalLight)
 		return;
 
@@ -240,6 +241,7 @@ void PlayerScript::UpdateDirectionalLight()
 	                      vCamPos.z + vCamBackward.z * 500.f);
 
 	m_pDirectionalLight->Transform()->SetRelativePos(vLightPos);
+
 }
 
 CGameObject* PlayerScript::GetChildObj(CGameObject* _parent, wstring _name)

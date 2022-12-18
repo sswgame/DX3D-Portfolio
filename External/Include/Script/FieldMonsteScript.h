@@ -36,6 +36,15 @@ private:
 
 	FieldMonsterType m_eMonsterType;
 
+private:
+
+	float m_fRotateSpeed;
+	int m_iRotateDir;
+	bool m_bRotateFinish;
+	float m_fMoveAccRot; // 회전해야할 총 각도 ( 0 ~ 360 )
+
+
+
 public:
 	virtual void start();
 	virtual void update();
@@ -60,10 +69,16 @@ public:
 	FieldMonsterType GetFieldMonsterType() { return m_eMonsterType; }
 
 	FieldM_StateMgr* GetMonsterMGR() { return m_pMonsterMgr; }
+	CGameObject* GetPlayer() { return m_pPlayer; }
 
 public:
 	bool DetectPlayer();
-	void MonsterRotation();
+	void MonsterRotation(Vec3 _vPos);
+
+	// _vDir 방향으로 돈다  
+	void RotateY(Vec3 _vDir);
+	float GetAngleRadian(Vec3 _v1, Vec3 _v2);
+
 	void PeaceStateRotation();
 
 public:

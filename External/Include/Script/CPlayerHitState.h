@@ -15,9 +15,9 @@ class CPlayerHitState :
     public CState
 {
 private:
-    HIT_STATE m_eState;
-    CAnimation3D* m_pCurAnim;
-    PaperBurnScript* m_pPaperBurn;
+    HIT_STATE           m_eState;
+    CAnimation3D*       m_pCurAnim;
+    PaperBurnScript*    m_pPaperBurn;
 
 
 public:

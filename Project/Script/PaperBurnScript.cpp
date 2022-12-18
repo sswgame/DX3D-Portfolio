@@ -173,11 +173,9 @@ void PaperBurnScript::update()
 		int MtrlCnt = GetOwner()->MeshRender()->GetMtrlCount();
 		for (int i = 0; i < MtrlCnt; ++i)
 		{
-
 			pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
 			pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fStrength);
 			pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vColor);
-
 		}
 
 		if (m_fStrength >= m_fFinishTime)

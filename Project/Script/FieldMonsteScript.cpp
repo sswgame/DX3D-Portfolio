@@ -11,7 +11,12 @@
 #include <Engine/CGameObject.h>
 #include <Engine/CParticleSystem.h>
 
+namespace MONSTER
+{
+	constexpr float DEFAULT_DETECT_RANGE = 800.f;
+	constexpr float DEFAULT_ATTACK_RANGE = 200.f;
 
+}
 FieldMonsteScript::FieldMonsteScript()
 	: CScript{ (int)SCRIPT_TYPE::FIELDMONSTESCRIPT }
 	, m_pMonsterMgr(nullptr)
@@ -27,12 +32,17 @@ FieldMonsteScript::FieldMonsteScript()
 	, m_bCurAnimationDone(true)
 	, m_bIsChasing(false)
 	, m_bChasingON(false)
+	, m_fRotateSpeed(10.f)
+
 {
 	SetName(L"FieldMonsterScript");
 
 	m_iFullHP = 100;
-	m_fDetachRange = 500.f;
-	m_fAttackRange = 300.f;
+	m_fDetachRange = MONSTER::DEFAULT_DETECT_RANGE;
+	m_fAttackRange = MONSTER::DEFAULT_ATTACK_RANGE;
+
+	AddScriptParam("DETECT_RANGE", SCRIPTPARAM_TYPE::INT, &m_fDetachRange);
+	AddScriptParam("ATTACK_RANGE", SCRIPTPARAM_TYPE::INT, &m_fAttackRange);
 }
 
 FieldMonsteScript::FieldMonsteScript(const FieldMonsteScript& _origin)
@@ -50,8 +60,12 @@ FieldMonsteScript::FieldMonsteScript(const FieldMonsteScript& _origin)
 	, m_bCurAnimationDone(true)
 	, m_bIsChasing(false)
 	, m_bChasingON(false)
+	, m_fRotateSpeed(10.f)
+
 {
 	SetName(L"FieldMonsterScript");
+	AddScriptParam("DETECT_RANGE", SCRIPTPARAM_TYPE::INT, &m_fDetachRange);
+	AddScriptParam("ATTACK_RANGE", SCRIPTPARAM_TYPE::INT, &m_fAttackRange);
 }
 
 FieldMonsteScript::~FieldMonsteScript()
@@ -78,22 +92,21 @@ bool FieldMonsteScript::DetectPlayer()
 		return false;
 
 	Vec3 vPlayerPos = m_pPlayer->Transform()->GetRelativePos();
-	Vec3 vMonsterPOs = m_pOwnerMonster->Transform()->GetRelativePos();
+	Vec3 vMonsterPos = m_pOwnerMonster->Transform()->GetRelativePos();
 
-	m_fCurDistance = sqrt((vPlayerPos.x - vMonsterPOs.x) * (vPlayerPos.x - vMonsterPOs.x) +
-		(vPlayerPos.y - vMonsterPOs.y) * (vPlayerPos.y - vMonsterPOs.y) +
-		(vPlayerPos.z - vMonsterPOs.z) * (vPlayerPos.z - vMonsterPOs.z));
-
+	m_fCurDistance = (vPlayerPos - vMonsterPos).Length();
 	if (m_fCurDistance <= m_fDetachRange)
 	{
-		MonsterRotation();
+		Vec3 vPlayerPos = m_pPlayer->Transform()->GetRelativePos();
+		MonsterRotation(vPlayerPos);
 		return true;
 	}
 	else
 		return false;
+
 }
 
-void FieldMonsteScript::MonsterRotation()
+void FieldMonsteScript::MonsterRotation(Vec3 _vPos)
 {
 	if (L"WALK" != m_pMonsterMgr->GetCurState())
 		return;
@@ -102,19 +115,23 @@ void FieldMonsteScript::MonsterRotation()
 	Vec3 pCurMonsterRotation = GetOwner()->Transform()->GetRelativeRotation();
 	Vec3 pNewMonsterRotation;
 
-	Vec3 vPlayerPos = m_pPlayer->Transform()->GetRelativePos();
+	//Vec3 vPlayerPos = m_pPlayer->Transform()->GetRelativePos();
 
 	Vec3 vBossFront = GetOwner()->Transform()->GetWorldFrontDir();
 	vBossFront *= -1;
 
 	// 보스의 정면 벡터와 보스-플레이어 벡터 사이의 각을 구한다.
 	Vec3 v1(vBossFront.x, 0.f, vBossFront.z);
-	Vec3 v2(vPlayerPos.x - pCurMonsterPos.x, 0.f, vPlayerPos.z - pCurMonsterPos.z);
+	Vec3 v2(_vPos.x - pCurMonsterPos.x, 0.f, _vPos.z - pCurMonsterPos.z);
 
 	v1.Normalize();
 	v2.Normalize();
 
-	float dot = XMConvertToDegrees(v1.Dot(v2)); // 0 ~ 180
+	float fCos = v1.Dot(v2);
+	if (fCos >= 1.f) fCos = 1.f;
+	if (fCos <= -1.f) fCos = -1.f;
+
+	float dot = XMConvertToDegrees(acosf(fCos)); // 0 ~ 180
 	Vec3  cross = v1.Cross(v2); // -1 ~ 1
 
 	if (-5.f < dot && dot < 5.f)
@@ -124,9 +141,9 @@ void FieldMonsteScript::MonsterRotation()
 
 	// 회전 방향을 찾는다
 	if (0.f < cross.y)
-		fSpeed = 60.f;
+		fSpeed = 80.f;
 	else if (0.f > cross.y)
-		fSpeed = -60.f;
+		fSpeed = -80.f;
 
 	// 각이 5도 이상이면 플레이어 방향으로 지속적으로 회전하고 5도 이하이면 플레이를 바로 바라본다.
 	if (fabsf(dot) > 5.f)
@@ -146,7 +163,73 @@ void FieldMonsteScript::MonsterRotation()
 		pNewMonsterRotation = vBossRot;
 	}
 
+
 	GetOwner()->Transform()->SetRelativeRotation(pNewMonsterRotation);
+}
+
+void FieldMonsteScript::RotateY(Vec3 _vDir)
+{
+	Vec3 vRot   = GetOwner()->Transform()->GetRelativeRotation();
+
+	Vec3 vFrom	= GetOwner()->Transform()->GetWorldFrontDir();
+	Vec3 vTo	= _vDir;
+
+	// Y 값 무시  
+	vFrom = Vec3(vFrom.x, 0.f, vFrom.z);
+	vTo   = Vec3(vTo.x, 0.f, vTo.z);
+	vFrom.Normalize();
+	vTo.Normalize();
+
+	float fCos = vFrom.Dot(vTo);
+	if (fCos >= 1.f) fCos = 1.f;
+	if (fCos <= -1.f) fCos = -1.f;
+
+	float fRad = GetAngleRadian(vFrom, vTo);
+	Vec3 vCross = XMVector3Cross(vTo, vFrom);
+
+	if (-5.f < fCos && fCos < 5.f)
+		return;
+
+	// 회전 방향을 찾는다
+	if (0.f < vCross.y)
+		m_iRotateDir = 1;
+	else if (0.f > vCross.y)
+		m_iRotateDir = -1;
+
+
+	if (fabsf(fCos) > 5.f)
+	{
+		vRot.y += DT * m_iRotateDir * m_fRotateSpeed;
+	}
+
+	GetOwner()->Transform()->SetRelativeRotation(vRot);
+
+}
+
+float FieldMonsteScript::GetAngleRadian(Vec3 _v1, Vec3 _v2)
+{
+	// Degree : -180 ~ 180
+	Vec3 vFrom = _v1;
+	vFrom.Normalize();
+
+	Vec3 vTo = _v2;
+	vTo.Normalize();
+
+	float fCos = vFrom.Dot(vTo);
+	if (fCos >= 1.f) fCos = 1.f;
+	if (fCos <= -1.f) fCos = -1.f;
+
+	float fRad = acosf(fCos);					// 사이각 ( Radian )
+	float fAng = fRad * (180.f / XM_PI);		// 사이각 ( Angle )	}
+
+	if (fAng == -180.f)
+		fRad = XM_PI;
+
+	Vec3 vCross = XMVector3Normalize(XMVector3Cross(vTo, vFrom));
+
+
+
+	return fRad;
 }
 
 void FieldMonsteScript::PeaceStateRotation()
@@ -246,7 +329,7 @@ void FieldMonsteScript::update()
 			// Set RunTime
 			if (L"IDLE" == m_pMonsterMgr->GetCurState())
 			{
-				PeaceStateRotation();
+				//PeaceStateRotation();
 				m_pMonsterMgr->SetNextState(L"WALK");
 			}
 			else
