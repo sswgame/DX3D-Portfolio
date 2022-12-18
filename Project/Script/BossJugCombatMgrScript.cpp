@@ -28,6 +28,7 @@
 #include "JugPhase_1.h"
 #include "JugPhase_2.h"
 #include "JugPhase_Dead.h"
+#include "TotemScript.h"
 
 BossJugCombatMgrScript::BossJugCombatMgrScript()
 	: CScript((int)SCRIPT_TYPE::BOSSJUGCOMBATMGRSCRIPT)
@@ -72,6 +73,44 @@ void BossJugCombatMgrScript::SpawnStage()
 		m_pStage->AddChild(pNMesh);
 		//CObjectManager::GetInst()->SetSceneObject(m_pStage, MAP_TYPE::_02);
 		//m_pStage->Deactivate();
+
+		// totem 1
+		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\Jug_Totem.pref",
+			L"prefab\\Jug_Totem.pref").Get();
+		CGameObject* pTotem1 = pPrefab->Instantiate();
+		pTotem1->SetName(L"Jug_Totem_01");
+		pTotem1->Transform()->SetRelativePos(Vec3(0.f, 0.f, -1087.f));
+		pTotem1->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
+		pTotem1->Collider3D()->SetOffsetScale(Vec3(300.f, 200.f, 50.f));
+		pTotem1->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+		m_pStage->AddChild(pTotem1);
+
+
+		// totem 2
+		Vec3 rotateValue2 = Vec3(0.f, -70.f, 0.f);
+		rotateValue2.ToRadian();
+		CGameObject* pTotem2 = pPrefab->Instantiate();
+		pTotem2->SetName(L"Jug_Totem_02");
+		pTotem2->Transform()->SetRelativePos(Vec3(1083.f, 0.f, -376.f));
+		pTotem2->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
+		pTotem2->Transform()->SetRelativeRotation(rotateValue2);
+		pTotem2->Collider3D()->SetOffsetScale(Vec3(300.f, 200.f, 50.f));
+		pTotem2->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+		m_pStage->AddChild(pTotem2);
+
+
+		Vec3 rotateValue3 = Vec3(0.f, 70.f, 0.f);
+		rotateValue3.ToRadian();
+
+		// totem 3
+		CGameObject* pTotem3 = pPrefab->Instantiate();
+		pTotem3->SetName(L"Jug_Totem_03");
+		pTotem3->Transform()->SetRelativePos(Vec3(-1083.f, 0.f, -390.f));
+		pTotem3->Transform()->SetRelativeScale(Vec3(1.f, 1.f, 1.f));
+		pTotem3->Transform()->SetRelativeRotation(rotateValue3);
+		pTotem3->Collider3D()->SetOffsetScale(Vec3(300.f, 200.f, 50.f));
+		pTotem3->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+		m_pStage->AddChild(pTotem3);
 	}
 
 	/* 보스 생성 */

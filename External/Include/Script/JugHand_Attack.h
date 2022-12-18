@@ -10,6 +10,8 @@ public:
 	CAnimation3D* m_pAnimation;
 	float			m_fLerfTime;
 
+	vector<CGameObject*> m_vecEnergyBalls;
+
 	bool			m_bFirstAttackDone;
 	bool			m_bSecondAttackDone;
 	bool			m_bThirdAttackDone;
@@ -22,6 +24,8 @@ public:
 	void Hand02Attack();
 	void Hand03Attack();
 
+public:
+	virtual void Init();
 
 public:
 	void Enter() override;

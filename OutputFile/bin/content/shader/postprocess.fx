@@ -263,4 +263,53 @@ float4 PS_SinePostProcess(VTX_OUT _in) : SV_Target
     
     return vOutColor;
 }
+
+
+// =====================================
+// ScreenShake Shader
+// Domain       : Post Process
+// Mesh         : RectMesh
+// Blend        : Default
+// DepthStencil : NoTest NoWrite
+#define PostProcessTarget   g_tex_0
+#define IsBind              g_btex_0
+#define iShacker            g_int_0
+#define fStrength           g_float_1
+// =====================================
+VTX_OUT VS_ScreenShake(VTX_IN _in)
+{
+    VTX_OUT output = (VTX_OUT) 0.f;
+    
+    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+    output.vUV = _in.vUV;
+    
+    return output;
+}
+
+float4 PS_ScreenShake(VTX_OUT _in) : SV_Target
+{
+    float4 vOutColor = (float4) 0.f;
+       
+    // _in.vPosition; ÇÈ¼¿ ÁÂÇ¥
+    float2 vScreenUV = _in.vPosition.xy / vResolution;
+    
+    if (IsBind)
+    {
+        //vScreenUV.y += sin(vScreenUV.x * 3.141592f * 20.f + (fAccTime * 4.f)) * 0.01;
+                
+        _in.vUV.x += fAccTime * 0.1f * iShacker;
+        _in.vUV.y += fAccTime * 0.1f * iShacker;
+        vScreenUV += PostProcessTarget.Sample(g_sam_0, _in.vUV);
+        vScreenUV = saturate(vScreenUV);
+                
+        vOutColor = PostProcessTarget.Sample(g_sam_1, vScreenUV);
+    }
+    else
+    {
+        vOutColor = float4(1.f, 0.f, 1.f, 1.f);
+    }
+    
+    return vOutColor;
+}
+
 #endif

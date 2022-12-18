@@ -4,12 +4,16 @@
 #include "BossJugHandScript.h"
 #include "EffectScript.h"
 #include "MagmaScript.h"
+#include "EnergyBallScript.h"
 
 // Engine
 #include <Engine/CAnimation3D.h>
 #include <Engine/CAnimator3D.h>
 #include <Engine/CFSM.h>
 #include <Engine/CCollider3D.h>
+#include <Engine/CParticleSystem.h>
+
+#define ENERGYBALL_COUNT 3
 
 JugHand_Attack::JugHand_Attack()
 	: CState{ L"ATTACK" }
@@ -19,6 +23,7 @@ JugHand_Attack::JugHand_Attack()
 	, m_bThirdAttackDone(false)
 	, m_fLerfTime(0.f)
 	, m_bLandingEffectOn(false)
+	, m_vecEnergyBalls()
 {
 }
 
@@ -180,7 +185,6 @@ void JugHand_Attack::Hand02Attack()
 			pMagma->SetName(L"Magma");
 			pMagma->AddComponent(new MagmaScript);
 			CSceneMgr::GetInst()->SpawnObject(pMagma, L"MONSTER");
-
 		}
 
 	}
@@ -240,6 +244,51 @@ void JugHand_Attack::Hand03Attack()
 
 	GetOwner()->Transform()->SetRelativePos(vPos);
 	//GetOwner()->Transform()->SetRelativeRotation(vRotate);
+}
+
+void JugHand_Attack::Init()
+{
+	// 에너지볼 생성
+	if (m_vecEnergyBalls.empty())
+	{
+		for (int i = 0; i < ENERGYBALL_COUNT; i++)
+		{
+			// new energyball - update 12/17 AM 03:30
+			CGameObject* pEnergyBall = new CGameObject;
+			pEnergyBall->SetName(L"ENERGYBALL_" + std::to_wstring(i));
+			pEnergyBall->AddComponent(new CMeshRender);
+			pEnergyBall->AddComponent(new CTransform);
+			pEnergyBall->AddComponent(new CCollider3D{});
+			pEnergyBall->AddComponent(new EnergyBallScript{});
+
+			pEnergyBall->Transform()->SetRelativePos(Vec3());
+			pEnergyBall->Transform()->SetRelativeScale(Vec3(50.f, 50.f, 50.f));
+			pEnergyBall->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+
+			CMaterial* pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\EnergyBallMtrl.mtrl").Get();
+			pEnergyBall->MeshRender()->SetSharedMaterial(pMtrl, 0);
+			const Ptr<CTexture> pmagmaTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\FBXTexture\\T_Lava02.png",
+				L"texture\\FBXTexture\\T_Lava02.png");
+			pEnergyBall->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pmagmaTex);
+
+			pEnergyBall->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+			pEnergyBall->Collider3D()->SetOffsetScale(Vec3(50.f, 50.f, 50.f));
+			pEnergyBall->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
+			pEnergyBall->Collider3D()->SetLifeTime(-1.f);
+
+			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\energy_ball.pref",
+				L"prefab\\energy_ball.pref").Get();
+			CGameObject* pEnergyBallParti = pPrefab->Instantiate();
+			pEnergyBallParti->ParticleSystem()->SetLifeTime(-1.f);
+			pEnergyBallParti->ParticleSystem()->SetMaterial(L"material\\energy_ball.mtrl");
+
+			pEnergyBall->AddChild(pEnergyBallParti);
+			m_vecEnergyBalls.push_back(pEnergyBall);
+			CSceneMgr::GetInst()->SpawnObject(pEnergyBall, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
+			pEnergyBall->Deactivate();
+
+		}
+	}
 }
 
 void JugHand_Attack::Enter()

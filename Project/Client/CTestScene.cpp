@@ -66,6 +66,7 @@ namespace
 	void AddTessellation(CScene* _pScene);
 
 	void AddFogTexture(CScene* _pScene);
+	void AddShakeScreenTest(CScene* _pScene);
 
 	void AddItem(CScene* _pScene);
 	void AddPlayer(CScene* _pScene, CGameObject* _pCamera);
@@ -741,4 +742,20 @@ namespace
 	{
 		AddBoss(_pScene);
 	}
+
+	void AddShakeScreenTest(CScene* _pScene)
+	{
+		CGameObject* pScreenShakeObj = new CGameObject;
+		pScreenShakeObj->AddComponent(new CTransform);
+		pScreenShakeObj->AddComponent(new CMeshRender);
+
+		Ptr<CMesh>     pMesh     = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+		Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\ScreenShakeMtrl.mtrl");
+		pScreenShakeObj->MeshRender()->SetMesh(pMesh);
+		pScreenShakeObj->MeshRender()->SetSharedMaterial(pMaterial, 0);
+
+
+		_pScene->AddObject(pScreenShakeObj, GAME::LAYER::PLAYER);
+	}
+
 }

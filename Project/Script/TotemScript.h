@@ -2,9 +2,26 @@
 
 #include <Engine/CScript.h>
 
+class BossJugCombatMgrScript;
+
 class TotemScript : public CScript
 {
 private:
+	float	m_fTotemFullHP;
+	float	m_fTotemCurHP;
+
+	bool	m_bHitOn;
+	bool	m_bPrevHitOn;
+
+	float	m_fPaperburnTime;
+
+
+	BossJugCombatMgrScript* m_pCombatMgr;
+	bool                    m_bCanHit;
+	bool                    m_bHit;
+	float                   m_fEffectTime;
+
+	void HitEffect();
 
 public:
 	virtual void start();
@@ -15,9 +32,10 @@ public:
 	virtual void OnCollision(CGameObject* _OtherObject) override;
 	virtual void OnCollisionExit(CGameObject* _OtherObject) override;
 
-	CLONE(TotemScript)
+	CLONE(TotemScript);
 
 public:
+
 	TotemScript();
 	virtual ~TotemScript();
 };
