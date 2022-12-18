@@ -100,7 +100,6 @@ void CRenderEffectMgr::Apply_FadeInOut_PaperBurn()
 	Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
 	Ptr<CMaterial> pPaperBurnMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\PaperBurnFullScreenMtrl.mtrl");
 	const Ptr<CTexture> pPostTex = CResMgr::GetInst()->FindRes<CTexture>(L"PostProcessTex");
-	Vec4 vColor = WHITE;
 
 	const Ptr<CTexture> pNoiseTex
 		= CResMgr::GetInst()->FindRes<CTexture>(L"texturetexture\\UI\\FX\\UI_StylizedClouds_FX.png");
@@ -111,7 +110,7 @@ void CRenderEffectMgr::Apply_FadeInOut_PaperBurn()
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_1, pNoiseTex);
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_2, pResultTex);
 	pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fPaperBurn_Timer);
-	pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::VEC4_0, &vColor);
+	pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_color);
 	pPaperBurnMtrl->UpdateData();
 
 	CONTEXT->IASetInputLayout(nullptr);

@@ -92,12 +92,12 @@ namespace
 
 		//AddCinemaCamera(pCurScene);
 		AddPlayer(pCurScene, pCamObj);
-		//AddDeuxiemie(pCurScene);
-		//AddHomonculus(pCurScene);
+		AddDeuxiemie(pCurScene);
+		AddHomonculus(pCurScene);
 		AddDefaultUIObjects(pCurScene);
 
-		//Map01(pCurScene);
-		Map02(pCurScene);
+		Map01(pCurScene);
+		//Map02(pCurScene);
 
 		SetCollision();
 
@@ -375,7 +375,7 @@ namespace
 			                                                   CTexture>(L"PositionTargetTex")));
 
 		_pScene->AddObject(pObject, L"BG");
-		
+
 		CGameObject* pObject1;
 		pObject1 = pObject->Clone();
 		pObject1->Transform()->SetRelativePos(-12, 3, -1615);
@@ -647,9 +647,9 @@ namespace
 		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
 		CObjectManager::GetInst()->AddToDontDestroy(pPlayerUI);
 
-		////MAIN_MENU
-		//CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
-		//_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
+		//MAIN_MENU
+		CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
+		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 
 		//BOSS_UI
 		CGameObject* pBossUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\BOSS_HP_PANEL.pref")->Instantiate();

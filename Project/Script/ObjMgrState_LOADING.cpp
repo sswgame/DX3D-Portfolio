@@ -17,6 +17,7 @@ ObjMgrState_LOADING::~ObjMgrState_LOADING() {}
 
 void ObjMgrState_LOADING::Enter()
 {
+	CRenderEffectMgr::GetInst()->ChangeBurnColor(BLACK);
 	CRenderEffectMgr::GetInst()->Enable_FadeInPaperBurn();
 }
 

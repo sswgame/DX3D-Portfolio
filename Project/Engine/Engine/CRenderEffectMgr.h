@@ -33,6 +33,8 @@ private:
 	bool  m_bFadeInOutFinished = false;
 	float m_fDuration;
 
+	Vec4 m_color = WHITE;
+
 public:
 	void Init();
 	void Apply(EFFECT_TYPE _eType);
@@ -51,6 +53,8 @@ public:
 	// [ FADE_IN_OUT_PAPERBURN ]
 	void Init_FadePaperBurn();
 	void Apply_FadeInOut_PaperBurn();
+
+	void ChangeBurnColor(const Vec4& color) { m_color = color; };
 
 	bool IsFadeOutFinished() const { return m_bEnable_FadeOut_PaperBurn && m_bFadeInOutFinished; }
 	bool IsFadeInFinished() const { return m_bEnable_FadeIn_PaperBurn && m_bFadeInOutFinished; }
