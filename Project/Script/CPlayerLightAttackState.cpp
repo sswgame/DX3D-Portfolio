@@ -4,6 +4,7 @@
 #include "CStateMgr.h"
 
 #include "SwordTrailScript.h"
+#include "TrailScript.h"
 
 
 #include <Engine/CFSM.h>
@@ -141,7 +142,7 @@ void CPlayerLightAttackState::UpdateWeaponTrailState()
 
 void CPlayerLightAttackState::Enter()
 {
-#define LIGHT_ATTACK_IGNORE
+//#define LIGHT_ATTACK_IGNORE
 #ifdef	LIGHT_ATTACK_IGNORE
 	GetOwner()->FSM()->ChangeState(L"IDLE");
 
@@ -181,6 +182,13 @@ void CPlayerLightAttackState::Enter()
 	m_bSwordTrail_Play_1 = false;
 	m_bSwordTrail_Play_2 = false;
 	m_bSwordTrail_Play_3 = false;
+
+	TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+	if (pTrail)
+	{
+		pTrail->Off();
+	}
+
 }
 
 void CPlayerLightAttackState::Exit()

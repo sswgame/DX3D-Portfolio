@@ -5,6 +5,7 @@
 #include "CStateMgr.h"
 #include "PlayerScript.h"
 #include "CPlayerStat.h"
+#include "TrailScript.h"
 
 
 
@@ -92,6 +93,13 @@ void CPlayerJumpState::Enter()
 
 	//	CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pJumpEffect_Land, CState::GetOwner()->GetLayerIndex());
 	//}
+
+
+	TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+	if (pTrail)
+	{
+		pTrail->Off();
+	}
 
 }
 

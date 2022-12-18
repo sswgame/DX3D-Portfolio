@@ -6,6 +6,8 @@
 #include "PlayerScript.h"
 
 #include "CStateMgr.h"
+#include "TrailScript.h"
+
 
 
 CPlayerIdleState::CPlayerIdleState()
@@ -37,6 +39,13 @@ void CPlayerIdleState::Enter()
 		m_pStateMgr = pScript->GetStateMgr();
 		m_pStateMgr->ChangeCurStateType(L"IDLE");
 	}
+
+	TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+	if (pTrail)
+	{
+		pTrail->Off();
+	}
+
 }
 
 void CPlayerIdleState::Exit()

@@ -357,8 +357,12 @@ void PlayerScript::Stat_Down(STAT_TYPE _eType, float _fPercent)
 	{
 	case STAT_TYPE::HP:
 		{
+			if (m_pStateMgr->GetCurstate() != L"SPRINT")
+				break;
+
 			float fHP = MaxStat.fHp * _fPercent;
 			m_pStat->SubHp(fHP);
+
 		}
 		
 		break;

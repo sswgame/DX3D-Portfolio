@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CPlayerHitState.h"
+#include "TrailScript.h"
 
 CPlayerHitState::CPlayerHitState()
 	: CState(L"HIT")
@@ -20,6 +21,13 @@ CPlayerHitState::~CPlayerHitState()
 void CPlayerHitState::Enter()
 {
 	CState::ResetTimer();
+
+	TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+	if (pTrail)
+	{
+		pTrail->Off();
+	}
+
 
 }
 

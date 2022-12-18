@@ -48,7 +48,6 @@ CTranslateMgr::CTranslateMgr()
 	, m_pScript(nullptr)
 	, m_pTransform(nullptr)
 	, m_bEqualizePlayerAxis_CamForward(false)
-
 {
 
 }

@@ -6,6 +6,7 @@
 #include <Engine/CTransform.h>
 #include <Engine/CTimeMgr.h>
 #include <Engine/CAnimator3D.h>
+#include "TrailScript.h"
 
 
 #include "PlayerScript.h"
@@ -68,6 +69,13 @@ void CPlayerMoveState::Enter()
 	// StateMGr 에 현재상태가 변경됨을 알린다. 
 	m_pStateMgr = pPlayerScript->GetStateMgr();
 	m_pStateMgr->ChangeCurStateType(L"MOVE");
+
+
+	TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+	if (pTrail)
+	{
+		pTrail->Off();
+	}
 
 }
 
@@ -148,11 +156,12 @@ void CPlayerMoveState::UpdateMoveMode()
 	{
 		PlayerScript* pPlayer = (PlayerScript*)CState::GetOwner()->GetScriptByName(L"PlayerScript");
 		m_pStat = pPlayer->GetPlayerStat();
-
 		if (pPlayer)
 		{
+
 			CGameObject* pCam = pPlayer->GetCamera();
 			m_pCamScript = (PlayerCamScript*)pCam->GetScriptByName(L"PlayerCamScript");
+
 		}
 	}
 

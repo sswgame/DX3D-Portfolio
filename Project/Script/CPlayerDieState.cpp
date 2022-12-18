@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "CPlayerDieState.h"
+#include "TrailScript.h"
+
 
 
 CPlayerDieState::CPlayerDieState()
@@ -21,7 +23,11 @@ CPlayerDieState::~CPlayerDieState()
 void CPlayerDieState::Enter()
 {
 	CState::ResetTimer();
-
+	TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+	if (pTrail)
+	{
+		pTrail->Off();
+	}
 
 }
 

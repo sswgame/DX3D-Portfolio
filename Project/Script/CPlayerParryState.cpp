@@ -2,7 +2,7 @@
 #include "CPlayerParryState.h"
 
 #include "PlayerScript.h"
-
+#include "TrailScript.h"
 #include "CStateMgr.h"
 
 
@@ -46,6 +46,12 @@ void CPlayerParryState::Enter()
 
 	// [ 애니메이션 ]플레이 
 	PlayParryAnim(L"parry_1", false, 0.3f);
+
+	TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+	if (pTrail)
+	{
+		pTrail->Off();
+	}
 
 }
 

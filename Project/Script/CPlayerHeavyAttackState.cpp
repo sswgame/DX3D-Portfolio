@@ -2,6 +2,7 @@
 #include "CPlayerHeavyAttackState.h"
 #include "PlayerScript.h"
 #include "CStateMgr.h"
+#include "TrailScript.h"
 
 
 #include <Engine/CFSM.h>
@@ -62,6 +63,14 @@ void CPlayerHeavyAttackState::Enter()
 	m_bComboAtt_Start = true;
 	m_bCombo1_2_Success = false;
 	m_bCombo2_3_Success = false;
+
+	TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
+	if (pTrail)
+	{
+		pTrail->Off();
+	}
+
+
 }
 
 void CPlayerHeavyAttackState::Exit()
