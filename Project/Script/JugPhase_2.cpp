@@ -18,6 +18,7 @@
 #include "EnergyBallScript.h"
 #include "HammerScript.h"
 #include "PlayerScript.h"
+#include "PaperBurnScript.h"
 
 #define FLAME_COUNT 6
 #define ENERGYBALL_COUNT 3
@@ -218,7 +219,27 @@ void JugPhase_2::Update()
 		{
 			// 507 
 			if (507 == m_pBossAnimator->GetCurAnim()->GetCurFrameIdx())
+			{
 				m_pCombatMgr->GetHammer()->Activate();
+
+				CScript* pPaperburnScript = m_pCombatMgr->GetHammer()->GetScript<PaperBurnScript>();
+
+				((PaperBurnScript*)pPaperburnScript)->On();
+				((PaperBurnScript*)pPaperburnScript)->SetDir(-1.f);
+				((PaperBurnScript*)pPaperburnScript)->SetStrength(1.f);
+			}
+		}
+	}
+	else
+	{
+		CScript* pPaperburnScript = GetOwner()->GetScript<PaperBurnScript>();
+		if (pPaperburnScript)
+		{
+			if (((PaperBurnScript*)pPaperburnScript)->GetStrength() <= 0.f &&
+				((PaperBurnScript*)pPaperburnScript)->IsFinish() == false)
+			{
+				((PaperBurnScript*)pPaperburnScript)->Off();
+			}
 		}
 	}
 

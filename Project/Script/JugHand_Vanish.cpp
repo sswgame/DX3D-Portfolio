@@ -2,6 +2,7 @@
 #include "JugHand_Vanish.h"
 
 #include "BossJugHandScript.h"
+#include "PaperBurnScript.h"
 
 // Engine
 #include <Engine/CAnimation3D.h>
@@ -11,6 +12,7 @@ JugHand_Vanish::JugHand_Vanish()
 	: CState{L"VANISH"}
 	, m_pAnimation(nullptr)
 	, m_fLerfTime(0.f)
+	, m_bPaperburnOn(false)
 {
 }
 
@@ -54,6 +56,7 @@ void JugHand_Vanish::Enter()
 	sAnimName = m_pAnimation->GetName();
 	// Vanish는 공격 모션 마지막 Frame 을 계속 유지한다.
 
+
 	if (1 == iIndex)
 	{
 		//GetOwner()->Animator3D()->Play(sAnimName, false);
@@ -67,6 +70,14 @@ void JugHand_Vanish::Enter()
 		GetOwner()->Animator3D()->Play(sAnimName, true);
 		((BossJugHandScript*)pScript)->SetRunningTime(3.f);
 	}
+
+
+	CScript* pPaperburnScript = GetOwner()->GetScript<PaperBurnScript>();
+
+	((PaperBurnScript*)pPaperburnScript)->On();
+	((PaperBurnScript*)pPaperburnScript)->SetDir(1.f);
+	((PaperBurnScript*)pPaperburnScript)->SetStrength(0.f);
+
 }
 
 void JugHand_Vanish::Update()
@@ -86,5 +97,6 @@ void JugHand_Vanish::Update()
 
 void JugHand_Vanish::Exit()
 {
+
 	GetOwner()->Deactivate();
 }

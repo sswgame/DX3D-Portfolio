@@ -29,6 +29,7 @@
 #include "JugPhase_2.h"
 #include "JugPhase_Dead.h"
 #include "TotemScript.h"
+#include "PaperBurnScript.h"
 
 #define TOTEM_COUNT 3
 
@@ -142,6 +143,7 @@ void BossJugCombatMgrScript::SpawnStage()
 			m_pHammer = pMeshData->Instantiate();
 			m_pHammer->SetName(L"JUG_Hammer");
 
+			m_pHammer->AddComponent(new PaperBurnScript);
 			m_pHammer->Transform()->SetRelativePos(-320.f, 0.f, -40.f);
 			Vec3 Rot(-90.f, 0.f, 0.f);
 			Rot.ToRadian();

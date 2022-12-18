@@ -9,6 +9,8 @@ class JugHand_Vanish :
 	CAnimation3D* m_pAnimation;
 	float			m_fLerfTime;
 
+	bool		m_bPaperburnOn;
+
 public:
 	void Enter() override;
 	void Exit() override;

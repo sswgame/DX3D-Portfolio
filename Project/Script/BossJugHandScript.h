@@ -26,6 +26,7 @@ private:
 	bool					m_bVanishStateDone;
 
 	bool					m_bAttackRepeat;
+	bool				m_bPaperburnOn;
 
 public:
 	// [ GET ]

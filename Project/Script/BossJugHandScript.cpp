@@ -12,6 +12,7 @@
 #include "CPlayerStat.h"
 #include "BossJugScript.h"
 #include "CObjectManager.h"
+#include "PaperBurnScript.h"
 #include <Engine/CSerializer.h>
 BossJugHandScript::BossJugHandScript()
 	: CScript{ (int)SCRIPT_TYPE::BOSSJUGHANDSCRIPT }
@@ -28,6 +29,7 @@ BossJugHandScript::BossJugHandScript()
 	, m_bVanishStateDone(false)
 	, m_bAttackRepeat(false)
 	, m_pPlayer(nullptr)
+	, m_bPaperburnOn(false)
 {
 }
 
@@ -153,13 +155,16 @@ void BossJugHandScript::update()
 		if (true == GetOwner()->IsActive())
 		{
 			GetOwner()->Deactivate();
+
 		}
 		return;
 	}
 	else
 	{
 		if (false == GetOwner()->IsActive())
+		{
 			GetOwner()->Activate();
+		}
 	}
 
 
@@ -183,6 +188,11 @@ void BossJugHandScript::update()
 
 	if (L"GEN" == sCurStateName)
 	{
+		if (m_bPaperburnOn == false)
+		{
+			m_bPaperburnOn = true;
+		}
+
 		if (m_bGenStateDone)
 		{
 			pHandMgr->GetScript<HandStateMgrScript>()->SetNextState(L"ATTACK");
@@ -190,6 +200,7 @@ void BossJugHandScript::update()
 	}
 	else if (L"ATTACK" == sCurStateName)
 	{
+		m_bPaperburnOn = false;
 		if (m_bAttackStateDone)
 		{
 			pHandMgr->GetScript<HandStateMgrScript>()->SetNextState(L"VANISH");
@@ -211,9 +222,11 @@ void BossJugHandScript::update()
 
 			if (true == m_bAllAttackIsDone)
 			{
-				//GetOwner()->Deactivate();
 				if (false == m_bAttackRepeat)
+				{
 					pHandMgr->GetScript<HandStateMgrScript>()->ResetCurAttackHandNumber();
+			
+				}
 				pHandMgr->GetScript<HandStateMgrScript>()->SetNextState(L"GEN");
 			}
 			else
@@ -246,10 +259,6 @@ void BossJugHandScript::OnCollision(CGameObject* _OtherObject)
 	if (nullptr == pBossJugScript)
 		return;
 
-	//float fDamage = _OtherObject->GetScript<PlayerScript>()->GetPlayerStat()->GetDamage();	
-	//														===============================
-	//((BossJugScript*)pBossJugScript)->GetHit(fDamage);		   <<< 데미지 주기 >>>
-	//	
 }
 
 void BossJugHandScript::OnCollisionExit(CGameObject* _OtherObject)

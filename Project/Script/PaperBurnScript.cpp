@@ -13,6 +13,8 @@ PaperBurnScript::PaperBurnScript()
 	, m_vColor(RED)
 	, m_fStrength(0.f)
 	, m_iDir(1)
+	, m_fFinishTime(3.f)
+	, m_fSpeed(1.f)
 
 {
 	SetName(L"PaperBurnScript");
@@ -78,6 +80,10 @@ void PaperBurnScript::Off()
 		pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::INT_0, &m_bApply);
 		pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fStrength);
 		pMeshRender->GetMaterial(i)->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_vColor);
+
+		//pMeshRender->SetUseDynamicMaterial(i, false);
+
+
 	}
 
 
@@ -151,7 +157,12 @@ void PaperBurnScript::update()
 		return;
 
 
-	m_fStrength += DT * m_iDir;
+	m_fStrength += DT * m_iDir * m_fSpeed;
+
+	if (m_fStrength <= 0.f)
+		m_fStrength = 0.f;
+
+
 	if (!GetOwner()->GetRenderComponent())
 		return;
 
@@ -169,15 +180,13 @@ void PaperBurnScript::update()
 
 		}
 
-		if (m_fStrength >= 3.f)
+		if (m_fStrength >= m_fFinishTime)
 		{
 			Off();
 		}
 
 	}
 
-	if (m_fStrength <= 0.f)
-		m_fStrength = 0.f;
 
 
 }

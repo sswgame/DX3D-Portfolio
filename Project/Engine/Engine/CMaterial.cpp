@@ -154,6 +154,8 @@ CGraphicsShader* CMaterial::CreateDynamicShader()
 	{
 		return nullptr;
 	}
+	if (m_pDynamicShader != nullptr)
+		return nullptr;
 
 	auto                      pDynamicShader    = new CGraphicsShader;
 	const tShaderCompileInfo* ShaderCompileInfo = m_pShader->GetCompileShaderInfo();

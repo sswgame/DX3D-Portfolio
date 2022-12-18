@@ -8,11 +8,13 @@ private:
 	bool		m_bApply;
 	bool		m_bFinish;
 
+	float		m_fSpeed;
+	float		m_fFinishTime;
+
 	float		m_fStrength;
 	Vec4		m_vColor;
 
 	int			m_iDir;
-
 
 public:
 
@@ -22,7 +24,14 @@ public:
 	void ReturnOriginalState();
 
 	void SetDir(int _dir) { m_iDir = _dir; }
+	void SetColor(Vec4 _color) { m_vColor = _color; }
 
+	void SetFinishTime(float _time) { m_fFinishTime = _time; }
+	void SetSpeed(float _speed) { m_fSpeed = _speed; }
+	void SetStrength(float _power) { m_fStrength = _power; }
+	float GetStrength() { return m_fStrength; }
+
+	bool IsFinish() { return m_bFinish; }
 
 	virtual void start();
 	virtual void update();

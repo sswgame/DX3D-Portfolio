@@ -7,6 +7,7 @@
 #include "EnergyBallScript.h"
 #include "CObjectManager.h"
 #include "M_AttackScript.h"
+#include "PaperBurnScript.h"
 
 // Engine
 #include <Engine/CAnimation3D.h>
@@ -51,7 +52,7 @@ void JugHand_Attack::Hand01Attack()
 
 	bool repeat = ((BossJugHandScript*)pScript)->GetAttackRepeat();
 
-	Vec3 vDir = vPlayerPos - vPos;
+	Vec3 vDir = vPlayerPos - vPos + vHandCenterPos;
 	vDir = vDir.Normalize();
 
 	if (repeat) // 마지막 공격이 아니다 (첫번째 공격이다)
@@ -103,13 +104,13 @@ void JugHand_Attack::Hand01Attack()
 			}
 			else
 			{
-				vPos.y -= 20.f;
+				vPos.y -= DT * 100.f;
 			}
 		}
 		else
 		{
 			vPos.x += vDir.x * DT * fSpeed;
-			vPos.z += vDir.z * DT * fSpeed + vHandCenterPos.z;
+			vPos.z += vDir.z * DT * fSpeed;
 		}
 	}
 	else
@@ -147,7 +148,7 @@ void JugHand_Attack::Hand01Attack()
 				}
 				else
 				{
-					//vPos.y -= 10.f;
+					vPos.y -= DT * 100.f;
 				}
 			}
 		}
@@ -417,6 +418,18 @@ void JugHand_Attack::Enter()
 		if (true == m_bFirstAttackDone)
 		{
 			m_pAnimation->SetCurFrameIdx(238);
+		}
+	}
+
+
+	CScript* pPaperburnScript = GetOwner()->GetScript<PaperBurnScript>();
+	if (pPaperburnScript)
+	{
+		if (((PaperBurnScript*)pPaperburnScript)->GetStrength() <= 0.f &&
+			((PaperBurnScript*)pPaperburnScript)->IsFinish() == false)
+		{
+			((PaperBurnScript*)pPaperburnScript)->Off();
+
 		}
 	}
 }

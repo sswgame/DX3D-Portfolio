@@ -2,6 +2,7 @@
 #include "JugHand_Gen.h"
 
 #include "BossJugHandScript.h"
+#include "PaperBurnScript.h"
 
 // Engine
 #include <Engine/CAnimation3D.h>
@@ -22,19 +23,23 @@ void JugHand_Gen::Enter()
 
 	GetOwner()->Activate();
 
+	CScript* pPaperburnScript = GetOwner()->GetScript<PaperBurnScript>();
+
+	((PaperBurnScript*)pPaperburnScript)->On();
+	((PaperBurnScript*)pPaperburnScript)->SetDir(-1.f);
+	((PaperBurnScript*)pPaperburnScript)->SetStrength(1.f);
+
 	CGameObject* pMgrObject = GetOwner()->GetParent();
 
 	CScript* pMgrScript = pMgrObject->GetScript<HandStateMgrScript>();
-
-	if (nullptr == pMgrScript)
-		int i = 0;
-
 
 	m_fLerfTime = 5.f;
 
 	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
 	int iIndex = ((BossJugHandScript*)pScript)->GetHandIndexNumber();
 	wstring sAnimName = L"";
+
+
 
 	if (nullptr == m_pAnimation)
 	{
@@ -91,11 +96,13 @@ void JugHand_Gen::Enter()
 		GetOwner()->GetParent()->Transform()->SetRelativePos(pos);
 
 	}
+
 }
 
 void JugHand_Gen::Update()
 {
 	CState::Update();
+
 
 	CGameObject* pobj = GetOwner();
 
@@ -106,9 +113,21 @@ void JugHand_Gen::Update()
 		((BossJugHandScript*)pScript)->SetGenStateDone(true);
 		return;
 	}
+
+	CScript* pPaperburnScript = GetOwner()->GetScript<PaperBurnScript>();
+	if (pPaperburnScript)
+	{
+		if (((PaperBurnScript*)pPaperburnScript)->GetStrength() <= 0.f &&
+			((PaperBurnScript*)pPaperburnScript)->IsFinish() == false)
+		{
+			((PaperBurnScript*)pPaperburnScript)->Off();
+
+		}
+	}
 }
 
 void JugHand_Gen::Exit()
 {
+
 }
 

@@ -16,6 +16,8 @@
 #include "JugHand_Idle.h"
 #include "JugHand_None.h"
 #include "JugHand_Vanish.h"
+#include "PaperBurnScript.h"
+
 #include <random>
 #include <Engine/CSerializer.h>
 
@@ -40,7 +42,9 @@ void HandStateMgrScript::update()
 	if (1 == m_iCurAttackHandNumber)
 	{
 		if (false == m_pHand1->IsActive())
+		{
 			m_pHand1->Activate();
+		}
 	}
 	else if (2 == m_iCurAttackHandNumber)
 	{
@@ -84,6 +88,7 @@ void HandStateMgrScript::init()
 	m_pHand1->SetName(L"Hand01");
 	m_pHand1->AddComponent(new BossJugHandScript);
 	m_pHand1->AddComponent(new CFSM);
+	m_pHand1->AddComponent(new PaperBurnScript);
 	//CSceneMgr::GetInst()->SpawnObject(m_pHand1, GetOwner()->GetLayerIndex());
 	pHandMgr->AddChild(m_pHand1);
 
@@ -102,6 +107,7 @@ void HandStateMgrScript::init()
 	m_pHand2->SetName(L"Hand02");
 	m_pHand2->AddComponent(new BossJugHandScript);
 	m_pHand2->AddComponent(new CFSM);
+	m_pHand2->AddComponent(new PaperBurnScript);
 	//CSceneMgr::GetInst()->SpawnObject(m_pHand2, GetOwner()->GetLayerIndex());
 	pHandMgr->AddChild(m_pHand2);
 
@@ -115,6 +121,7 @@ void HandStateMgrScript::init()
 	m_pHand3->SetName(L"Hand03");
 	m_pHand3->AddComponent(new BossJugHandScript);
 	m_pHand3->AddComponent(new CFSM);
+	m_pHand3->AddComponent(new PaperBurnScript);
 	//CSceneMgr::GetInst()->SpawnObject(m_pHand3, GetOwner()->GetLayerIndex());
 	pHandMgr->AddChild(m_pHand3);
 

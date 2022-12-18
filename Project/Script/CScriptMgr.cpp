@@ -1,3 +1,4 @@
+
 #include "pch.h"
 
 #include "CScriptMgr.h"
@@ -29,6 +30,7 @@
 #include "PotScript.h"
 #include "SocketColliderScript.h"
 #include "SwordTrailScript.h"
+#include "TestDeadScript.h"
 #include "TotemScript.h"
 #include "TrailScript.h"
 
@@ -62,6 +64,7 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 	_vec.push_back(L"PotScript");
 	_vec.push_back(L"SocketColliderScript");
 	_vec.push_back(L"SwordTrailScript");
+	_vec.push_back(L"TestDeadScript");
 	_vec.push_back(L"TotemScript");
 	_vec.push_back(L"TrailScript");
 }
@@ -69,65 +72,67 @@ void CScriptMgr::GetScriptInfo(vector<wstring>& _vec)
 
 CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 {
-	if (L"BossJugCombatMgrScript" == _strScriptName)
+	if (L"BossJugCombatMgrScript"== _strScriptName)
 		return new BossJugCombatMgrScript;
-	if (L"BossJugHandScript" == _strScriptName)
+	if (L"BossJugHandScript"== _strScriptName)
 		return new BossJugHandScript;
-	if (L"BossJugScript" == _strScriptName)
+	if (L"BossJugScript"== _strScriptName)
 		return new BossJugScript;
-	if (L"CameraMoveScript" == _strScriptName)
+	if (L"CameraMoveScript"== _strScriptName)
 		return new CameraMoveScript;
-	if (L"CinemaCamScript" == _strScriptName)
+	if (L"CinemaCamScript"== _strScriptName)
 		return new CinemaCamScript;
-	if (L"ColumnFlameScript" == _strScriptName)
+	if (L"ColumnFlameScript"== _strScriptName)
 		return new ColumnFlameScript;
-	if (L"DestroyScript" == _strScriptName)
+	if (L"DestroyScript"== _strScriptName)
 		return new DestroyScript;
-	if (L"DoorScript" == _strScriptName)
+	if (L"DoorScript"== _strScriptName)
 		return new DoorScript;
-	if (L"EffectScript" == _strScriptName)
+	if (L"EffectScript"== _strScriptName)
 		return new EffectScript;
-	if (L"EnergyBallScript" == _strScriptName)
+	if (L"EnergyBallScript"== _strScriptName)
 		return new EnergyBallScript;
-	if (L"FieldMonsteScript" == _strScriptName)
+	if (L"FieldMonsteScript"== _strScriptName)
 		return new FieldMonsteScript;
-	if (L"HammerScript" == _strScriptName)
+	if (L"HammerScript"== _strScriptName)
 		return new HammerScript;
-	if (L"HandStateMgrScript" == _strScriptName)
+	if (L"HandStateMgrScript"== _strScriptName)
 		return new HandStateMgrScript;
-	if (L"ItemScript" == _strScriptName)
+	if (L"ItemScript"== _strScriptName)
 		return new ItemScript;
-	if (L"MagmaScript" == _strScriptName)
+	if (L"MagmaScript"== _strScriptName)
 		return new MagmaScript;
-	if (L"MainMenuScript" == _strScriptName)
+	if (L"MainMenuScript"== _strScriptName)
 		return new MainMenuScript;
-	if (L"MissileScript" == _strScriptName)
+	if (L"MissileScript"== _strScriptName)
 		return new MissileScript;
-	if (L"MonsterGunScript" == _strScriptName)
+	if (L"MonsterGunScript"== _strScriptName)
 		return new MonsterGunScript;
-	if (L"MonsterSearchScript" == _strScriptName)
+	if (L"MonsterSearchScript"== _strScriptName)
 		return new MonsterSearchScript;
-	if (L"MonsterShieldScript" == _strScriptName)
+	if (L"MonsterShieldScript"== _strScriptName)
 		return new MonsterShieldScript;
-	if (L"MonsterSwordScript" == _strScriptName)
+	if (L"MonsterSwordScript"== _strScriptName)
 		return new MonsterSwordScript;
-	if (L"M_AttackScript" == _strScriptName)
+	if (L"M_AttackScript"== _strScriptName)
 		return new M_AttackScript;
-	if (L"PaperBurnScript" == _strScriptName)
+	if (L"PaperBurnScript"== _strScriptName)
 		return new PaperBurnScript;
-	if (L"PlayerCamScript" == _strScriptName)
+	if (L"PlayerCamScript"== _strScriptName)
 		return new PlayerCamScript;
-	if (L"PlayerScript" == _strScriptName)
+	if (L"PlayerScript"== _strScriptName)
 		return new PlayerScript;
-	if (L"PotScript" == _strScriptName)
+	if (L"PotScript"== _strScriptName)
 		return new PotScript;
-	if (L"SocketColliderScript" == _strScriptName)
+	if (L"SocketColliderScript"== _strScriptName)
 		return new SocketColliderScript;
-	if (L"SwordTrailScript" == _strScriptName)
+	if (L"SwordTrailScript"== _strScriptName)
 		return new SwordTrailScript;
-	if (L"TotemScript" == _strScriptName)
+	if (L"TestDeadScript"== _strScriptName)
+		return new TestDeadScript;
+	if (L"TotemScript"== _strScriptName)
 		return new TotemScript;
-	if (L"TrailScript" == _strScriptName)
+	if (L"TrailScript"== _strScriptName)
 		return new TrailScript;
 	return nullptr;
 }
@@ -135,8 +140,8 @@ CScript* CScriptMgr::GetScript(const wstring& _strScriptName)
 
 CScript* CScriptMgr::GetScript(UINT _iScriptType)
 {
-	switch ((SCRIPT_TYPE)_iScriptType)
-	{
+    switch((SCRIPT_TYPE)_iScriptType)
+    {
 	case SCRIPT_TYPE::BOSSJUGCOMBATMGRSCRIPT:
 		return new BossJugCombatMgrScript;
 	case SCRIPT_TYPE::BOSSJUGHANDSCRIPT:
@@ -193,6 +198,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 		return new SocketColliderScript;
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
 		return new SwordTrailScript;
+	case SCRIPT_TYPE::TESTDEADSCRIPT:
+		return new TestDeadScript;
 	case SCRIPT_TYPE::TOTEMSCRIPT:
 		return new TotemScript;
 	case SCRIPT_TYPE::TRAILSCRIPT:
@@ -204,8 +211,8 @@ CScript* CScriptMgr::GetScript(UINT _iScriptType)
 
 const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 {
-	switch ((SCRIPT_TYPE)_pScript->GetScriptType())
-	{
+    switch((SCRIPT_TYPE)_pScript->GetScriptType())
+    {
 	case SCRIPT_TYPE::BOSSJUGCOMBATMGRSCRIPT:
 		return L"BossJugCombatMgrScript";
 	case SCRIPT_TYPE::BOSSJUGHANDSCRIPT:
@@ -262,10 +269,13 @@ const wchar_t* CScriptMgr::GetScriptName(CScript* _pScript)
 		return L"SocketColliderScript";
 	case SCRIPT_TYPE::SWORDTRAILSCRIPT:
 		return L"SwordTrailScript";
+	case SCRIPT_TYPE::TESTDEADSCRIPT:
+		return L"TestDeadScript";
 	case SCRIPT_TYPE::TOTEMSCRIPT:
 		return L"TotemScript";
 	case SCRIPT_TYPE::TRAILSCRIPT:
 		return L"TrailScript";
-	}
+		}
 	return nullptr;
 }
+
