@@ -91,13 +91,13 @@ namespace
 		AddSkybox(pCurScene);
 
 		//AddCinemaCamera(pCurScene);
-		//AddPlayer(pCurScene, pCamObj);
+		AddPlayer(pCurScene, pCamObj);
 		//AddDeuxiemie(pCurScene);
 		//AddHomonculus(pCurScene);
-		//AddDefaultUIObjects(pCurScene);
+		AddDefaultUIObjects(pCurScene);
 
 		//Map01(pCurScene);
-		//Map02(pCurScene);
+		Map02(pCurScene);
 
 		SetCollision();
 
@@ -522,12 +522,12 @@ namespace
 
 	void AddBoss(CScene* _pScene)
 	{
-		/*CGameObject* pBoss = new CGameObject;
+		CGameObject* pBoss = new CGameObject;
 		pBoss->SetName(L"BOSS_COMBAT");
 		pBoss->AddComponent(new CTransform);
 		pBoss->AddComponent(new BossJugCombatMgrScript);
 		_pScene->AddObject(pBoss, GAME::LAYER::OBJECT_MGR);
-		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();*/
+		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
 	}
 
 	void AddHomonculus(CScene* _pScene)
@@ -647,9 +647,9 @@ namespace
 		_pScene->AddObject(pPlayerUI, L"UI_INTERACTIVE");
 		CObjectManager::GetInst()->AddToDontDestroy(pPlayerUI);
 
-		//MAIN_MENU
-		CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
-		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
+		////MAIN_MENU
+		//CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
+		//_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 
 		//BOSS_UI
 		CGameObject* pBossUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\BOSS_HP_PANEL.pref")->Instantiate();

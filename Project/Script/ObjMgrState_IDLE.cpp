@@ -29,6 +29,7 @@ void ObjMgrState_IDLE::Enter()
 
 void ObjMgrState_IDLE::LateUpdate()
 {
+	return;
 	CGameObject* pDoor = CObjectManager::GetInst()->GetGate()->GetChild(L"DOOR");
 	if (CObjectManager::GetInst()->CheckAllMonsterDead() && false == pDoor->GetScript<DoorScript>()->IsDoorOpened())
 	{

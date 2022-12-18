@@ -133,7 +133,7 @@ void JugHand_Attack::Hand01Attack()
 				{
 					if (false == m_bLandingEffectOn)
 					{
-						CGameObject* pLandingEffect = new CGameObject;
+						/*CGameObject* pLandingEffect = new CGameObject;
 						pLandingEffect->SetName(L"Hand Landing Effect");
 						pLandingEffect->AddComponent(new EffectScript);
 						pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
@@ -143,7 +143,7 @@ void JugHand_Attack::Hand01Attack()
 
 						GetOwner()->AddComponent(new M_AttackScript);
 						CObjectManager::GetInst()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
-						m_bLandingEffectOn = true;
+						m_bLandingEffectOn = true;*/
 					}
 				}
 				else
