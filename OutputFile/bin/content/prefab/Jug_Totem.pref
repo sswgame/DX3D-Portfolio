@@ -4,14 +4,14 @@ m_bDynamicShadow: false
 m_bFrustumCulling: false
 COMPONENTS:
   - TRANSFORM:
-      m_vRelativePos: [-1.59042454, 19.1939144, -1073.59644]
+      m_vRelativePos: [0, 0, 0]
       m_vRelativeScale: [1, 1, 1]
       m_vRelativeRot: [0, 0, 0]
       m_bIgnoreParentScale: false
   - COLLIDER3D:
-      m_eCollider3DType: 0
-      m_vOffsetPos: [0, 50, 0]
-      m_vOffsetScale: [300, 200, 50]
+      m_eCollider3DType: 1
+      m_vOffsetPos: [0, 85, 0]
+      m_vOffsetScale: [150, 150, 150]
   - MESHRENDER:
       MESH: [mesh\totem.mesh, mesh\totem.mesh]
       MATERIAL COUNT: 1
