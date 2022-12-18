@@ -2,6 +2,9 @@
 #include "FieldMonsteScript.h"
 #include "FieldM_StateMgr.h"
 #include "PlayerScript.h"
+#include "BossJugCombatMgrScript.h"
+#include "CStateMgr.h"
+#include "CObjectManager.h"
 
 #include <random>
 
@@ -26,8 +29,8 @@ FieldMonsteScript::FieldMonsteScript()
 	, m_fDetachRange(0.f)
 	, m_fCurDistance(0.f)
 	, m_fAttackRange(0.f)
-	, m_iFullHP(0)
-	, m_iCurHP(0)
+	, m_fFullHP(0.f)
+	, m_fCurHP(0.f)
 	, m_eMonsterType(FieldMonsterType::NONE)
 	, m_bCurAnimationDone(true)
 	, m_bIsChasing(false)
@@ -37,7 +40,7 @@ FieldMonsteScript::FieldMonsteScript()
 {
 	SetName(L"FieldMonsterScript");
 
-	m_iFullHP = 100;
+	m_fFullHP = 500;
 	m_fDetachRange = MONSTER::DEFAULT_DETECT_RANGE;
 	m_fAttackRange = MONSTER::DEFAULT_ATTACK_RANGE;
 
@@ -54,8 +57,8 @@ FieldMonsteScript::FieldMonsteScript(const FieldMonsteScript& _origin)
 	, m_fDetachRange(_origin.m_fDetachRange)
 	, m_fCurDistance(_origin.m_fCurDistance)
 	, m_fAttackRange(_origin.m_fAttackRange)
-	, m_iFullHP(_origin.m_iFullHP)
-	, m_iCurHP(_origin.m_iCurHP)
+	, m_fFullHP(_origin.m_fFullHP)
+	, m_fCurHP(_origin.m_fCurHP)
 	, m_eMonsterType(_origin.m_eMonsterType)
 	, m_bCurAnimationDone(true)
 	, m_bIsChasing(false)
@@ -279,13 +282,18 @@ void FieldMonsteScript::start()
 			return;
 	}
 
-	m_iCurHP = m_iFullHP;
+	m_fCurHP = m_fFullHP;
 	m_pMonsterMgr->SetNextState(L"IDLE");
 
 }
 
 void FieldMonsteScript::update()
 {
+	if (m_bHit)
+	{
+		return;
+	}
+
 	if (m_bCurAnimationDone)
 	{
 		if (DetectPlayer())
@@ -368,30 +376,52 @@ void FieldMonsteScript::lateupdate()
 
 void FieldMonsteScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
-	// particle 추가
-	CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\attack_01.pref", L"prefab\\attack_01.pref").Get();
-	CGameObject* pParticle = pPrefab->Instantiate();
-	pParticle->ParticleSystem()->SetLifeTime(3.f);
-	pParticle->ParticleSystem()->SetLinearParticle(true);
-	pParticle->ParticleSystem()->SetParticlePlayOneTime();
-	pParticle->ParticleSystem()->SetMaterial(L"material\\attack_01.mtrl");
-	GetOwner()->AddChild(pParticle);
+
+	if (_OtherObject->GetName() == L"Sword_Bone_Collider")
+	{
+		if (false == m_bHit)
+		{
+			vector<CGameObject*> vecPlayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"PLAYER")->GetObjects();
+			PlayerScript* pPlayerScript = nullptr;
+			for (int i = 0; i < vecPlayer.size(); i++)
+			{
+				if (vecPlayer[i]->GetName() == L"player")
+				{
+					pPlayerScript = vecPlayer[i]->GetScript<PlayerScript>();
+				}
+			}
+
+			if (nullptr != pPlayerScript)
+			{
+				wstring playerState = pPlayerScript->GetStateMgr()->GetCurstate();
+				if (L"LIGHT_ATTACK" == playerState
+					|| L"HEAVY_ATTACK" == playerState)
+				{
+					m_fCurHP -= ((PlayerScript*)pPlayerScript)->GetPlayerStat()->GetDamage();
+				}
+			}
+
+			// particle 추가
+			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\attack_01.pref", L"prefab\\attack_01.pref").Get();
+			CGameObject* pParticle = pPrefab->Instantiate();
+			pParticle->Transform()->SetRelativePos(Vec3(0, 50, 0));
+			pParticle->ParticleSystem()->SetLifeTime(3.f);
+			pParticle->ParticleSystem()->SetLinearParticle(true);
+			pParticle->ParticleSystem()->SetParticlePlayOneTime();
+			pParticle->ParticleSystem()->SetMaterial(L"material\\attack_01.mtrl");
+			GetOwner()->AddChild(pParticle);
+
+			m_bHit = true;
+			m_pMonsterMgr->ChangeState(L"HIT");
+			m_pMonsterMgr->SetRunTime(-1.f);
+			m_bCurAnimationDone = false;
+		}
+	}
 }
 
 void FieldMonsteScript::OnCollision(CGameObject* _OtherObject)
 {
-	if (nullptr != _OtherObject->GetScript<PlayerScript>())
-	{
-		// 플레이어 한테 데미지 가져온다.
-		//((PlayerScript*)_OtherObject)->GetDamage
 
-		m_pMonsterMgr->SetNextState(L"HIT");
-		m_pMonsterMgr->SetRunTime(-1.f);
-		m_bCurAnimationDone = false;
-
-
-		
-	}
 }
 
 void FieldMonsteScript::OnCollisionExit(CGameObject* _OtherObject)
@@ -402,7 +432,7 @@ void FieldMonsteScript::Serialize(YAML::Emitter& emitter)
 {
 	emitter << YAML::Key << NAME_OF(m_fDetachRange) << YAML::Value << m_fDetachRange;
 	emitter << YAML::Key << NAME_OF(m_fAttackRange) << YAML::Value << m_fAttackRange;
-	emitter << YAML::Key << NAME_OF(m_iFullHP) << YAML::Value << m_iFullHP;
+	emitter << YAML::Key << NAME_OF(m_fFullHP) << YAML::Value << m_fFullHP;
 
 	CScript::Serialize(emitter);
 }
@@ -411,7 +441,7 @@ void FieldMonsteScript::Deserialize(const YAML::Node& node)
 {
 	m_fDetachRange = node[NAME_OF(m_fHP)].as<float>();
 	m_fAttackRange = node[NAME_OF(m_fMaxHP)].as<float>();
-	m_iFullHP = node[NAME_OF(m_fMaxHP)].as<int>();
+	m_fFullHP = node[NAME_OF(m_fFullHP)].as<int>();
 
 	CScript::Deserialize(node);
 }

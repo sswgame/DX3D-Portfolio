@@ -4,6 +4,7 @@
 #include "FieldM_StateMgr.h"
 
 class CGameObject;
+class BossJugCombatMgrScript;
 
 enum class FieldMonsterType
 {
@@ -26,8 +27,8 @@ private:
 	float m_fAttackRange;
 	float m_fCurDistance;
 
-	int m_iFullHP;
-	int m_iCurHP;
+	float m_fFullHP;
+	float m_fCurHP;
 
 	bool	m_bIsChasing;
 
@@ -35,6 +36,11 @@ private:
 	bool m_bChasingON;
 
 	FieldMonsterType m_eMonsterType;
+
+	BossJugCombatMgrScript* m_pCombatMgr;
+	bool                    m_bCanHit;
+	bool                    m_bHit;
+	float                   m_fEffectTime;
 
 private:
 
@@ -55,10 +61,13 @@ public:
 	virtual void OnCollisionExit(CGameObject* _OtherObject) override;
 
 public:
-	void SetMonsterFullHP(int _hp) { m_iFullHP = _hp; }
+	void SetMonsterFullHP(float _hp) { m_fFullHP = _hp; }
 
-	void SetMonsterHP(int _curHP) { m_iCurHP = _curHP; }
-	int GetMonsterHP() { return m_iCurHP; }
+	void SetMonsterHP(float _curHP) { m_fCurHP = _curHP; }
+	float GetMonsterHP() { return m_fCurHP; }
+
+	void SetHitStateOn(bool _TorF) { m_bHit = _TorF; }
+	bool GetHitOn() { return m_bHit; }
 
 	void SetDetectRange(float _range) { m_fDetachRange = _range; }
 	void SetAttackRange(float _range) { m_fAttackRange = _range; }

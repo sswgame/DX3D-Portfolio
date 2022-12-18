@@ -42,6 +42,7 @@ void Deux_Hit::Update()
 		if (m_pOwnerMGR->GetRunTime() <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
+			GetOwner()->GetScript<FieldMonsteScript>()->SetHitStateOn(false);
 		}
 	}
 	else
@@ -50,6 +51,7 @@ void Deux_Hit::Update()
 		if (fAnimationLength <= CState::GetTimer())
 		{
 			GetOwner()->GetScript<FieldMonsteScript>()->SetCurAnimationDone();
+			GetOwner()->GetScript<FieldMonsteScript>()->SetHitStateOn(false);
 		}
 	}
 }

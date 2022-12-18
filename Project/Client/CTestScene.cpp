@@ -647,8 +647,8 @@ namespace
 		CObjectManager::GetInst()->AddToDontDestroy(pPlayerUI);
 
 		//MAIN_MENU
-		CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
-		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
+		//CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
+		//_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 
 		//BOSS_UI
 		CGameObject* pBossUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\BOSS_HP_PANEL.pref")->Instantiate();

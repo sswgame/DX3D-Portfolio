@@ -35,7 +35,7 @@ public:
 	void SetNextState(wstring _state) { m_sNextState = _state; }
 	CLONE(FieldM_StateMgr)
 
-private:
+public:
 	void ChangeState(wstring _sStateName);
 
 public:
