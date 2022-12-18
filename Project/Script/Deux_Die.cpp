@@ -7,6 +7,7 @@
 // engine
 #include <Engine/CGameObject.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CParticleSystem.h>
 
 Deux_Die::Deux_Die()
 	: CState{L"DEATH"}
@@ -39,6 +40,15 @@ void Deux_Die::Enter()
 	((PaperBurnScript*)pPaperburnScript)->SetColor(Vec4(0.f, 0.5f, 1.f, 1.f));
 
 	GetOwner()->MeshRender()->SetDynamicShadow(false);
+
+	// particle Ãß°¡
+	CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\monster_die.pref", L"prefab\\monster_die.pref").Get();
+	CGameObject* pParticle = pPrefab->Instantiate();
+	pParticle->Transform()->SetRelativePos(GetOwner()->Transform()->GetRelativePos());
+	pParticle->ParticleSystem()->SetLifeTime(3.f);
+	pParticle->ParticleSystem()->SetParticlePlayOneTime();
+	pParticle->ParticleSystem()->SetMaterial(L"material\\monster_die.mtrl");
+	CSceneMgr::GetInst()->SpawnObject(pParticle, GAME::LAYER::BG);
 }
 
 void Deux_Die::Update()

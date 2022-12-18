@@ -1,0 +1,48 @@
+NAME: monster_die
+m_bActive: true
+m_bDynamicShadow: false
+m_bFrustumCulling: false
+COMPONENTS:
+  - TRANSFORM:
+      m_vRelativePos: [0, 51.3051834, -69.5710449]
+      m_vRelativeScale: [1, 1, 1]
+      m_vRelativeRot: [0, 0, 0]
+      m_bIgnoreParentScale: false
+  - PARTICLESYSTEM:
+      MESH: [PointMesh, PointMesh]
+      MATERIAL COUNT: 1
+      0: [material\ParticleRenderMtrl.mtrl, material\ParticleRenderMtrl.mtrl]
+      USE DYNAMIC 0: false
+      MATERIAL 0 TEXTURE LIST:
+        {}
+      m_bDynamicShadow: false
+      m_bFrustumCulling: false
+      SHADER: [ParticleUpdateShader, ParticleUpdateShader]
+      m_iMaxCount: 1000
+      m_bPosInherit: 0
+      m_iAliveCount: 100
+      m_fMinLifeTime: 2
+      m_fMaxLifeTime: 4
+      m_fStartSpeed: 200
+      m_fEndSpeed: 10
+      m_vStartColor: [0.381755203, 0.676038802, 0.818652868, 1]
+      m_vEndColor: [0, 0, 0, 1]
+      m_fParticleCreateDistance: 50
+      m_fParticleCreateTerm: 0.100000001
+      m_vDirection: [0, 1]
+      m_iEmissive: 0
+      m_iLighting: 0
+      m_fAngle: 308
+      m_iSpeedDetail_Func: 1
+      m_vStartEmissiveColor: [0, 0, 0, 1]
+      m_vEndEmissiveColor: [0, 0, 0, 1]
+      SOUND_NAME: ""
+      m_bLinearParicle: false
+      m_bUseSoftParticle: false
+      m_bUseEmissive: false
+      m_vStartScale: [8, 8, 1]
+      m_vEndScale: [5, 5, 1]
+SCRIPTS:
+  []
+CHILDREN:
+  []

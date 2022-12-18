@@ -7,6 +7,7 @@
 // engine
 #include <Engine/CGameObject.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CParticleSystem.h>
 
 Homon_Die::Homon_Die()
 	: CState{L"DIE"}
@@ -38,6 +39,15 @@ void Homon_Die::Enter()
 	((PaperBurnScript*)pPaperburnScript)->SetFinishTime(5.f);
 	((PaperBurnScript*)pPaperburnScript)->SetColor(Vec4(0.f, 0.5f, 1.f, 1.f));
 	GetOwner()->MeshRender()->SetDynamicShadow(false);
+
+	//// particle Ãß°¡
+	CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\monster_die.pref", L"prefab\\monster_die.pref").Get();
+	CGameObject* pParticle = pPrefab->Instantiate();
+	pParticle->Transform()->SetRelativePos(GetOwner()->Transform()->GetRelativePos());
+	pParticle->ParticleSystem()->SetLifeTime(3.f);
+	pParticle->ParticleSystem()->SetParticlePlayOneTime();
+	pParticle->ParticleSystem()->SetMaterial(L"material\\monster_die.mtrl");
+	CSceneMgr::GetInst()->SpawnObject(pParticle, GAME::LAYER::BG);
 }
 
 void Homon_Die::Update()

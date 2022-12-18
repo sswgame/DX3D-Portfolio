@@ -80,7 +80,7 @@ void CS_Particle(int3 _id : SV_DispatchThreadID)
             };                        
             
             ParticleBuffer[_id.x].vPos = WorldPos + (vOut - 0.5f) * CreateRange;
-            ParticleBuffer[_id.x].vScale = float3(10.f, 10.f, 1.f);
+            ParticleBuffer[_id.x].vScale = float3(1.f, 1.f, 1.f);
             ParticleBuffer[_id.x].vDir = normalize(vRandom - 0.5f);
                         
             ParticleBuffer[_id.x].m_fCurTime = 0.f;
