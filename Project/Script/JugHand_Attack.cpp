@@ -44,6 +44,7 @@ void JugHand_Attack::Hand01Attack()
 
 	CScript* pScript = pScript = GetOwner()->GetScript<BossJugHandScript>();
 	Vec3 vPos = GetOwner()->GetParent()->Transform()->GetRelativePos();
+	Vec3 vHandCenterPos = Vec3(0.f, 0.f, - 50.f);
 	Vec3 vRotate = GetOwner()->GetParent()->Transform()->GetRelativeRotation();
 	Vec3 vPlayerPos = ((BossJugHandScript*)pScript)->GetPlayerPosition();
 	float fSpeed = ((BossJugHandScript*)pScript)->GetSpeed();
@@ -67,18 +68,29 @@ void JugHand_Attack::Hand01Attack()
 			if (ANIMATION_STATE::STOP == m_pAnimation->GetState())
 				m_pAnimation->SetAnimState(ANIMATION_STATE::PLAY);
 
-			// =======
-			// ³»·ÁÂï±â
-			// =======
-
 			// Landing Effect N Collider
 			if ((m_pAnimation->GetEndFrameIdx() - 5) <= m_pAnimation->GetCurFrameIdx())
 			{
 				if (false == m_bLandingEffectOn)
 				{
-					CGameObject* pLandingEffect = new CGameObject;
+					/*CGameObject* pLandingEffect = new CGameObject;
 					pLandingEffect->SetName(L"Hand Landing Effect");
+					pLandingEffect->AddComponent(new CMeshRender);
+					pLandingEffect->AddComponent(new CTransform);
 					pLandingEffect->AddComponent(new EffectScript);
+
+					pLandingEffect->Transform()->SetRelativePos(vPos + vHandCenterPos);
+					pLandingEffect->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 1.f));
+					pLandingEffect->Transform()->SetRelativeRotation(Vec3(XM_PI / 2.f, 0.f, 0.f));
+
+					CMesh* pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
+					CTexture* pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\particle\\CircleImpact.png"
+						, L"texture\\particle\\CircleImpact.png").Get();
+					GetOwner()->MeshRender()->SetMesh(pMesh);
+					const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std2DAlphaBlendMtrl.mtrl");
+					GetOwner()->MeshRender()->SetSharedMaterial(pMaterial, 0);
+					GetOwner()->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTex);
+
 					pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
 					pLandingEffect->GetScript<EffectScript>()->SetEffectLifeTime(2.f);
 
@@ -86,14 +98,18 @@ void JugHand_Attack::Hand01Attack()
 
 					GetOwner()->AddComponent(new M_AttackScript);
 					CObjectManager::GetInst()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
-					m_bLandingEffectOn = true;
+					m_bLandingEffectOn = true;*/
 				}
+			}
+			else
+			{
+				vPos.y -= 20.f;
 			}
 		}
 		else
 		{
 			vPos.x += vDir.x * DT * fSpeed;
-			vPos.z += vDir.z * DT * fSpeed;
+			vPos.z += vDir.z * DT * fSpeed + vHandCenterPos.z;
 		}
 	}
 	else
@@ -110,10 +126,6 @@ void JugHand_Attack::Hand01Attack()
 			}
 			else
 			{
-				// =======
-				// ³»·ÁÂï±â
-				// =======
-
 
 				// Landing Effect N Collider
 				if ((m_pAnimation->GetEndFrameIdx() - 5) <= m_pAnimation->GetCurFrameIdx())
@@ -132,6 +144,10 @@ void JugHand_Attack::Hand01Attack()
 						CObjectManager::GetInst()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
 						m_bLandingEffectOn = true;
 					}
+				}
+				else
+				{
+					//vPos.y -= 10.f;
 				}
 			}
 		}

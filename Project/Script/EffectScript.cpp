@@ -31,21 +31,6 @@ void EffectScript::start()
 
 	if (m_eEffectType == EffectType::BOSS_HANP_DROP_EFFECT)
 	{
-		GetOwner()->AddComponent(new CMeshRender);
-		GetOwner()->AddComponent(new CTransform);
-
-		GetOwner()->Transform()->SetRelativePos(Vec3(0.f, 0.f, 100.f));
-		GetOwner()->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 1.f));
-		GetOwner()->Transform()->SetRelativeRotation(Vec3(0.f, 0.f, 0.f));
-
-
-		CMesh* pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
-		m_pEffectTexture = CResMgr::GetInst()->Load<CTexture>(L"texture\\particle\\CircleImpact.png"
-			, L"texture\\particle\\CircleImpact.png").Get();
-		GetOwner()->MeshRender()->SetMesh(pMesh);
-		const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std2DAlphaBlendMtrl.mtrl");
-		GetOwner()->MeshRender()->SetSharedMaterial(pMaterial, 0);
-		GetOwner()->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, m_pEffectTexture);
 
 	}
 	else if (m_eEffectType == EffectType::NONE)
@@ -56,6 +41,9 @@ void EffectScript::start()
 
 void EffectScript::update()
 {
+
+	return;
+
 	Vec3 vPos = GetOwner()->Transform()->GetRelativePos();
 	Vec3 vRotation = GetOwner()->Transform()->GetRelativeRotation();
 	Vec3 vScale = GetOwner()->Transform()->GetRelativeScale();

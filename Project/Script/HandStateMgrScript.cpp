@@ -89,7 +89,7 @@ void HandStateMgrScript::init()
 
 	CGameObject* pHand01Collider = new CGameObject;
 	pHand01Collider->AddComponent(new CTransform);
-	pHand01Collider->AddComponent(new SocketColliderScript);
+	//pHand01Collider->AddComponent(new SocketColliderScript);
 	m_pHand1->AddChild(pHand01Collider);
 
 
