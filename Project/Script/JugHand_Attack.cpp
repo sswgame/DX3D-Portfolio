@@ -27,6 +27,7 @@ JugHand_Attack::JugHand_Attack()
 	, m_fLerfTime(0.f)
 	, m_bLandingEffectOn(false)
 	, m_vecEnergyBalls()
+	, m_bMagmaOn(false)
 {
 }
 
@@ -157,6 +158,8 @@ void JugHand_Attack::Hand01Attack()
 	GetOwner()->GetParent()->Transform()->SetRelativePos(vPos);
 	GetOwner()->GetParent()->Transform()->SetRelativeRotation(vRotate);
 
+	if (true == m_bMagmaOn)
+		m_bMagmaOn = false;
 
 }
 
@@ -193,19 +196,24 @@ void JugHand_Attack::Hand02Attack()
 			// ==========================
 			//	       magma »ý¼º  
 			// ==========================
-			CGameObject* pMagma = nullptr;
-			wstring pMagmaName = L"";
-			pMagmaName = L"meshdata//magma.mdat";
-			Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
-				pMagmaName.c_str());
-			pMagma = pMagmaMeshData->Instantiate();
-			Vec3 playerpos = GetOwner()->GetScript<BossJugHandScript>()->GetPlayerPosition();
-			playerpos.y -= 10;
-			pMagma->Transform()->SetRelativePos(playerpos);
-			pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
-			pMagma->SetName(L"Magma");
-			pMagma->AddComponent(new MagmaScript);
-			CSceneMgr::GetInst()->SpawnObject(pMagma, L"MONSTER");
+			if (false == m_bMagmaOn)
+			{
+				CGameObject* pMagma = nullptr;
+				wstring pMagmaName = L"";
+				pMagmaName = L"meshdata//magma.mdat";
+				Ptr<CMeshData> pMagmaMeshData = CResMgr::GetInst()->Load<CMeshData>(pMagmaName.c_str(),
+					pMagmaName.c_str());
+				pMagma = pMagmaMeshData->Instantiate();
+				Vec3 playerpos = GetOwner()->GetScript<BossJugHandScript>()->GetPlayerPosition();
+				playerpos.y -= 10;
+				pMagma->Transform()->SetRelativePos(playerpos);
+				pMagma->Transform()->SetRelativeScale(Vec3(1.f, 0.f, 1.f));
+				pMagma->SetName(L"Magma");
+				pMagma->AddComponent(new MagmaScript);
+				CSceneMgr::GetInst()->SpawnObject(pMagma, L"MONSTER");
+				m_bMagmaOn = true;
+			}
+			
 		}
 
 	}

@@ -17,6 +17,7 @@ public:
 	bool			m_bThirdAttackDone;
 
 	bool		m_bLandingEffectOn;
+	bool		m_bMagmaOn;
 
 
 public:
