@@ -109,7 +109,7 @@ void ColumnFlameScript::update()
 {
 	m_fTimer += DT;
 
-	if (0.3f < m_fTimer)
+	if (0.5f < m_fTimer)
 	{
 		if (!m_fActiveLaser)
 		{
@@ -175,7 +175,7 @@ void ColumnFlameScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
 	PlayerScript* pPlayerScript = _OtherObject->GetScript<PlayerScript>();
 	if (nullptr != pPlayerScript)
-		pPlayerScript->Stat_Down(STAT_TYPE::HP, 0.1f);
+		pPlayerScript->Stat_Down(STAT_TYPE::HP, 0.03f);
 }
 
 void ColumnFlameScript::OnCollision(CGameObject* _OtherObject)

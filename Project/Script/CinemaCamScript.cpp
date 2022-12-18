@@ -18,12 +18,10 @@ CinemaCamScript::CinemaCamScript(const CinemaCamScript& _origin)
 
 CinemaCamScript::~CinemaCamScript()
 {
-
 }
 
 void CinemaCamScript::start()
 {
-
 	if (!m_pTargetObject)
 	{
 		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(GAME::LAYER::PLAYER);
@@ -75,29 +73,22 @@ void CinemaCamScript::start()
 	CreateCatmullRomRoute(vPos0, mainPos, vPos1);
 	m_vecCatmullRom[0].m_bStart = true;
 	SetLoopRepeat(true);
-
 }
 
 void CinemaCamScript::update()
 {
-
 	UpdatePosition();
 	UpdateRotation();
-
 }
 
 
 void CinemaCamScript::lateupdate()
 {
-
 }
-
-
 
 
 void CinemaCamScript::UpdatePosition()
 {
-
 	if (m_vecCatmullRom.empty())
 		return;
 
@@ -124,28 +115,27 @@ void CinemaCamScript::UpdatePosition()
 
 	// [0] - > [1] - > [2] ---...[0] - > ...
 	if (m_bLoopRepeat
-		&& m_vecCatmullRom[m_vecCatmullRom.size() - 1].m_bIsEnd)
+	    && m_vecCatmullRom[m_vecCatmullRom.size() - 1].m_bIsEnd)
 	{
 		ResetCatmullRom();
 	}
-
 }
 
 void CinemaCamScript::UpdateRotation()
 {
 	if (!m_pTargetObject)
 	{
-		CLayer* pLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"Player");
+		CLayer* pLayer  = CSceneMgr::GetInst()->GetCurScene()->GetLayer(L"Player");
 		m_pTargetObject = pLayer->FindRootObject(L"player");
 		return;
 	}
 
 	Vec3 vTargetPos = m_pTargetObject->Transform()->GetWorldPos();
-	Vec3 vCamPos = GetOwner()->Transform()->GetWorldPos();
+	Vec3 vCamPos    = GetOwner()->Transform()->GetWorldPos();
 	Vec3 vTargetDir = vTargetPos - vCamPos;
 
 	Vec3 vFrom = Vec3(0.f, 0.f, 1.f);
-	Vec3 vTo = vTargetDir.Normalize();
+	Vec3 vTo   = vTargetDir.Normalize();
 	RotateCamera(vFrom, vTo);
 }
 
@@ -158,11 +148,11 @@ bool CinemaCamScript::RotateCamera(Vec3 _vFrom, Vec3 _vTo)
 
 #pragma region Y_Axis_Rotate
 	// Y 축 회전 업데이트  
-	Vec3 vFrom_Y = Vec3(_vFrom.x, 0.f, _vFrom.z).Normalize();
-	Vec3 vTo_Y = Vec3(_vTo.x, 0.f, _vTo.z).Normalize();
-	float fRad_Y = GetAngleRadian(vFrom_Y, vTo_Y);
+	Vec3  vFrom_Y = Vec3(_vFrom.x, 0.f, _vFrom.z).Normalize();
+	Vec3  vTo_Y   = Vec3(_vTo.x, 0.f, _vTo.z).Normalize();
+	float fRad_Y  = GetAngleRadian(vFrom_Y, vTo_Y);
 
-	Vec3 vCross_Y = XMVector3Normalize(XMVector3Cross(vTo_Y, vFrom_Y));
+	Vec3 vCross_Y   = XMVector3Normalize(XMVector3Cross(vTo_Y, vFrom_Y));
 	iCamRotationDir = (vCross_Y.y >= 0.f) ? -1 : 1;		// 현재 회전 방향 ( 시계 : 1 / 반시계 : -1 )
 
 	// 회전  
@@ -181,11 +171,11 @@ bool CinemaCamScript::RotateCamera(Vec3 _vFrom, Vec3 _vTo)
 				↘
 				  ↘ ( vTo_X )
 	*/
-	Vec3 vFrom_X = Vec3(_vTo.x, 0.f, _vTo.z);
-	Vec3 vTo_X = Vec3(_vTo.x, _vTo.y, _vTo.z);
-	float fRad_X = GetAngleRadian(vFrom_X, vTo_X);
+	Vec3  vFrom_X = Vec3(_vTo.x, 0.f, _vTo.z);
+	Vec3  vTo_X   = Vec3(_vTo.x, _vTo.y, _vTo.z);
+	float fRad_X  = GetAngleRadian(vFrom_X, vTo_X);
 
-	Vec3 vCross_X = XMVector3Cross(vTo_X, vFrom_X);
+	Vec3 vCross_X   = XMVector3Cross(vTo_X, vFrom_X);
 	iCamRotationDir = (vCross_X.y > 0.f) ? -1 : 1;		// 현재 회전 방향 ( 시계 : 1 / 반시계 : -1 )
 	if (_vTo.y > 0.f)
 		iCamRotationDir *= -1;
@@ -200,7 +190,6 @@ bool CinemaCamScript::RotateCamera(Vec3 _vFrom, Vec3 _vTo)
 
 
 	return true;
-
 }
 
 float CinemaCamScript::GetAngleRadian(Vec3 _v1, Vec3 _v2)
@@ -213,7 +202,7 @@ float CinemaCamScript::GetAngleRadian(Vec3 _v1, Vec3 _v2)
 	vTo.Normalize();
 
 	float fCos = vFrom.Dot(vTo);
-	if (fCos >= 1.f)  fCos = 1.f;
+	if (fCos >= 1.f) fCos = 1.f;
 	if (fCos <= -1.f) fCos = -1.f;
 
 	float fRad = acosf(fCos);					// 사이각 ( Radian )
@@ -233,8 +222,8 @@ void CinemaCamScript::CreateCatmullRomRoute(Vec3 _vPos0, vector<Vec3> _vecMainPo
 
 	// [0] ---- Mainpos[0] -> MainPos[1] ... -> [1]
 	vector<Vec3> MainPos = _vecMainPos;
-	Vec3 vPos0 = _vPos0;
-	Vec3 vPos1 = _vPos1;
+	Vec3         vPos0   = _vPos0;
+	Vec3         vPos1   = _vPos1;
 
 	int EndIdx = MainPos.size() - 1;
 
@@ -245,11 +234,11 @@ void CinemaCamScript::CreateCatmullRomRoute(Vec3 _vPos0, vector<Vec3> _vecMainPo
 		CatmullRom.m_bStart = false;
 
 		Vec3 from = Vec3{};
-		Vec3 to = Vec3{};
+		Vec3 to   = Vec3{};
 		if (i + 1 <= EndIdx)
 		{
 			from = MainPos[i];
-			to = MainPos[i + 1];
+			to   = MainPos[i + 1];
 		}
 
 		// First 
@@ -266,16 +255,13 @@ void CinemaCamScript::CreateCatmullRomRoute(Vec3 _vPos0, vector<Vec3> _vecMainPo
 				CatmullRom.CreateRoute(MainPos[i - 1], from, to, MainPos[i + 2]);
 			else
 				CatmullRom.CreateRoute(MainPos[i - 1], from, to, vPos1);
-
 		}
 
 		AddCatmullRomSpline(CatmullRom);
 	}
 
 
-
 	return;
-
 }
 
 Vec3 CinemaCamScript::CalCulateCatmullRom(Vec3 _p0, Vec3 _p1, Vec3 _p2, Vec3 _p3, float _t)
@@ -306,43 +292,35 @@ void CinemaCamScript::ClearCatmullRom()
 }
 
 
-
 void CinemaCamScript::ResetCatmullRom()
 {
 	for (int i = 0; i < m_vecCatmullRom.size(); ++i)
 	{
-		m_vecCatmullRom[i].m_bStart = false;
-		m_vecCatmullRom[i].m_bIsEnd = false;
+		m_vecCatmullRom[i].m_bStart                             = false;
+		m_vecCatmullRom[i].m_bIsEnd                             = false;
 		m_vecCatmullRom[i].m_fInterPolation_Control_Coefficient = 0.f;
 	}
 
 	if (!m_vecCatmullRom.empty())
 		m_vecCatmullRom[0].m_bStart = true;
-
-
 }
 
 void CinemaCamScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
-
 }
 
 void CinemaCamScript::OnCollision(CGameObject* _OtherObject)
 {
-
 }
 
 void CinemaCamScript::OnCollisionExit(CGameObject* _OtherObject)
 {
-
 }
 
 void CinemaCamScript::SaveToScene(FILE* _pFile)
 {
-
 }
 
 void CinemaCamScript::LoadFromScene(FILE* _pFile)
 {
-
 }

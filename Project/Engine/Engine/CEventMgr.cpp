@@ -39,8 +39,9 @@ void CEventMgr::update()
 	m_vecDead.clear();
 
 	// Event Ã³¸®
-	for (const auto& eventInfo : m_vecEvent)
+	for (size_t i = 0; i < m_vecEvent.size(); ++i)
 	{
+		tEventInfo eventInfo = m_vecEvent[i];
 		switch (eventInfo.eType)
 		{
 		case EVENT_TYPE::CREATE_OBJ:

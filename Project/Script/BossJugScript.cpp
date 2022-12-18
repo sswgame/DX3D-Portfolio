@@ -52,6 +52,11 @@ BossJugScript::~BossJugScript()
 }
 
 
+void BossJugScript::GetHit(float _fDamageRate)
+{
+	SetHP(m_fHP - (m_fMaxHP * _fDamageRate));
+}
+
 void BossJugScript::Init()
 {
 	// 애니메이션 로드
@@ -109,6 +114,8 @@ void BossJugScript::InitState()
 void BossJugScript::start()
 {
 	CScript::start();
+
+	CObjectManager::GetInst()->GetBossUI()->GetChild(L"PROGRESS_BAR")->UIProgressBar()->SetPercent(m_fHP / m_fMaxHP);
 }
 
 void BossJugScript::update()
@@ -158,8 +165,9 @@ void BossJugScript::Deserialize(const YAML::Node& node)
 	CScript::Deserialize(node);
 }
 
-void BossJugScript::SetHP(float _hp) 
+void BossJugScript::SetHP(float _hp)
 {
 	m_fHP = _hp;
-	CObjectManager::GetInst()->GetBossUI()->GetChild(L"PROGRESS_BAR")->UIProgressBar()->SetPercent(m_fHP / m_fMaxHP);
+	CObjectManager::GetInst()->GetBossUI()->GetChild(L"PROGRESS_BAR")->UIProgressBar()->
+	                           SetPercent(m_fHP / m_fMaxHP);
 }

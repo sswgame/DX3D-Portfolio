@@ -267,6 +267,9 @@
     <ClInclude Include="CinemaCamScript.h">
       <Filter>Script\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="PotScript.h">
+      <Filter>Script\Boss\Jug</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -525,6 +528,9 @@
     </ClCompile>
     <ClCompile Include="CinemaCamScript.cpp">
       <Filter>Script\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="PotScript.cpp">
+      <Filter>Script\Boss\Jug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

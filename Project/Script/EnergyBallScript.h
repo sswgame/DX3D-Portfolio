@@ -23,8 +23,10 @@ private:
 	Vec3            m_vDir;
 	float           m_fRadius;
 	float           m_fSpeed;
-	float           m_fRotTime;
+	float           m_fTimeLimit;
 	bool            m_bFinish;
+
+	void Explode();
 
 public:
 	void            SetCurMode(ENERGYBALL_MODE _eMode) { m_eCurMode = _eMode; }
@@ -40,11 +42,11 @@ public:
 
 	bool IsFinish() { return m_bFinish; }
 
-	void Start(ENERGYBALL_MODE _eMode, Vec3 _vTargetPos = Vec3(0.f, 0.f, 0.f), float _fRotTime = 0.f)
+	void Start(ENERGYBALL_MODE _eMode, Vec3 _vTargetPos = Vec3(0.f, 0.f, 0.f), float _fTimeLimit = 0.f)
 	{
-		m_eCurMode   = _eMode;
+		m_eCurMode = _eMode;
 		SetTargetPos(_vTargetPos);
-		m_fRotTime   = _fRotTime;
+		m_fTimeLimit = _fTimeLimit;
 		m_bFinish    = false;
 	}
 

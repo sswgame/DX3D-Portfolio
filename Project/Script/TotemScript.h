@@ -18,9 +18,6 @@ public:
 	CLONE(TotemScript)
 
 public:
-	void Deserialize(const YAML::Node& node) override;
-
-public:
 	TotemScript();
 	virtual ~TotemScript();
 };

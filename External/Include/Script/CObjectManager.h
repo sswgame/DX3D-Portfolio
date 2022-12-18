@@ -34,7 +34,7 @@ public:
 	CGameObject* GetBossUI() const { return m_pBossUI; }
 
 	void SetPlayerUI(CGameObject* _pGameObject) { m_pPlayerUI = _pGameObject; }
-	void SetBossUI(CGameObject* _pGameObject) { m_pBossUI; }
+	void SetBossUI(CGameObject* _pGameObject) { m_pBossUI = _pGameObject; }
 	void SetBossCombatMgr(CGameObject* _pMgr) { m_pBossCombatMgr = _pMgr; }
 	void SetPlayer(CGameObject* _pObj) { m_pPlayer = _pObj; }
 

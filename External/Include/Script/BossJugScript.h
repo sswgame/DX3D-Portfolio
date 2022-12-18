@@ -11,7 +11,7 @@ class BossJugScript
 private:
 	CFSM*        m_pBossFSM;
 	CAnimator3D* m_pBossAnimator;
-	
+
 	string m_strCurState;
 	string m_strCurAnimName;
 
@@ -29,11 +29,11 @@ public:
 	void SetHP(float _hp);
 	void SetMaxHP(float _hp) { m_fMaxHP = _hp; }
 
-	void GetHit(float _fDamage) { m_fHP -= _fDamage; }
+	void GetHit(float _fDamageRate);
 
 	void Init();
 	void InitState();
-	
+
 	virtual void start();
 	virtual void update();
 	virtual void lateupdate();

@@ -95,7 +95,9 @@ namespace
 		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIPlayer.mtrl", pMtrl);
 	}
 
-	void MakeGameCompute() { }
+	void MakeGameCompute()
+	{
+	}
 }
 
 void CResMgr::init()
@@ -862,6 +864,7 @@ void CResMgr::CreateEngineShader()
 	pShader->AddTexParamInfo(L"NormapMap", TEX_PARAM::TEX_1);
 	pShader->AddTexParamInfo(L"SpecularMap", TEX_PARAM::TEX_2);
 	pShader->AddTexParamInfo(L"EmbientMap", TEX_PARAM::TEX_3);
+	pShader->AddScalarParamInfo(L"HitOn", SCALAR_PARAM::INT_1);
 	AddRes<CGraphicsShader>(L"Std3D_DeferredShader", pShader, true);
 
 	// Std3D fog Shader

@@ -42,7 +42,9 @@ BossJugCombatMgrScript::BossJugCombatMgrScript()
 	AddScriptParam("PHASE INFO", SCRIPTPARAM_TYPE::TEXT, &m_strCurState);
 }
 
-BossJugCombatMgrScript::~BossJugCombatMgrScript() {}
+BossJugCombatMgrScript::~BossJugCombatMgrScript()
+{
+}
 
 void BossJugCombatMgrScript::SpawnStage()
 {
@@ -124,6 +126,18 @@ void BossJugCombatMgrScript::SpawnStage()
 
 		//CObjectManager::GetInst()->SetSceneObject(m_pJugHandMgr, MAP_TYPE::_02);
 		//m_pJugHandMgr->Deactivate();
+	}
+
+	/* Pot 생성 */
+	if (nullptr == m_pPot)
+	{
+		Ptr<CPrefab> pStagePref = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\Pot.pref",
+		                                                            L"prefab\\Pot.pref");
+
+		m_pPot = pStagePref->Instantiate();
+		m_pPot->Animator3D()->SetPlayWithChild(true);
+		m_pPot->Animator3D()->MakeAnimationFromTXT("PotAnimInfo.txt");
+		CSceneMgr::GetInst()->SpawnObject(m_pPot, GAME::LAYER::ITEM);
 	}
 }
 
@@ -214,11 +228,14 @@ void BossJugCombatMgrScript::update()
 	// 현재 타입 이름
 	m_strCurState = ToString(m_pPhaseFSM->GetCurState()->GetStateType());
 
+	if (GAME::BOSS::PHASE::JUG_PHASE_DEAD != ToWString(m_strCurState))
 	/* Phase 전환 체크 */
 	CheckPhase();
 }
 
-void BossJugCombatMgrScript::lateupdate() {}
+void BossJugCombatMgrScript::lateupdate()
+{
+}
 
 void BossJugCombatMgrScript::Serialize(YAML::Emitter& emitter)
 {

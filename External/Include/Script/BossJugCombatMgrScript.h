@@ -14,6 +14,7 @@ private:
 	CGameObject* m_pHammer;
 	CGameObject* m_pJugHandMgr;
 	CGameObject* m_pPlayer;
+	CGameObject* m_pPot;
 
 	CGameObject* m_pStageInnerCollider;
 	CGameObject* m_pStageOuterCollider;
@@ -31,7 +32,9 @@ public:
 	CGameObject* GetHammer() { return m_pHammer; }
 	CGameObject* GetJugHand() { return m_pJugHandMgr; }
 	CGameObject* GetPlayer() { return m_pPlayer; }
+	CGameObject* GetPot() { return m_pPot; }
 	CFSM*        GetPhaseFSM() { return m_pPhaseFSM; }
+	wstring      GetCurPhase() { return ToWString(m_strCurState); }
 
 	void start() override;
 	void update() override;

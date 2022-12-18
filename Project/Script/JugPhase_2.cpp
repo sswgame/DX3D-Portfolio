@@ -17,6 +17,7 @@
 #include "ColumnFlameScript.h"
 #include "EnergyBallScript.h"
 #include "HammerScript.h"
+#include "PlayerScript.h"
 
 #define FLAME_COUNT 6
 #define ENERGYBALL_COUNT 3
@@ -27,7 +28,7 @@ JugPhase_2::JugPhase_2()
 	, m_pBossFSM(nullptr)
 	, m_pBossAnimator(nullptr)
 	, m_fIdleTime(3.f)
-	, m_fAttackTime(4.f)
+	, m_fAttackTime(5.f)
 	, m_iPrevAttackPattern(0)
 	, m_iAttackPattern(0)
 	, m_bRot(false)
@@ -93,43 +94,53 @@ void JugPhase_2::Init()
 		for (int i = 0; i < ENERGYBALL_COUNT; i++)
 		{
 			//에너지볼 생성
-			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\energy_ball.pref",
-			                                                     L"prefab\\energy_ball.pref").Get();
-			CGameObject* pEnergyBall = pPrefab->Instantiate();
-			pEnergyBall->SetName(L"ENERGYBALL_" + std::to_wstring(i));
-			pEnergyBall->ParticleSystem()->SetLifeTime(5.f);
-			pEnergyBall->ParticleSystem()->SetMaterial(L"material\\energy_ball.mtrl");
-			pEnergyBall->ParticleSystem()->SetLifeTime(-1.f);
+			//CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\energy_ball.pref",
+			//                                                     L"prefab\\energy_ball.pref").Get();
+			//CGameObject* pEnergyBall = pPrefab->Instantiate();
+			//pEnergyBall->SetName(L"ENERGYBALL_" + std::to_wstring(i));
+			//pEnergyBall->ParticleSystem()->SetMaterial(L"material\\energy_ball.mtrl");
+			//pEnergyBall->ParticleSystem()->SetLifeTime(-1.f);
 
-			pEnergyBall->AddComponent(new CCollider3D{});
-			pEnergyBall->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
-			pEnergyBall->Collider3D()->SetOffsetScale(Vec3(50.f, 50.f, 50.f));
-			pEnergyBall->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
-			pEnergyBall->Collider3D()->SetLifeTime(-1.f);
+			//pEnergyBall->AddComponent(new CCollider3D{});
+			//pEnergyBall->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
+			//pEnergyBall->Collider3D()->SetOffsetScale(Vec3(50.f, 50.f, 50.f));
+			//pEnergyBall->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
+			//pEnergyBall->Collider3D()->SetLifeTime(-1.f);
 
-			pEnergyBall->AddComponent(new EnergyBallScript{});
-			EnergyBallScript* pEnergyScript = pEnergyBall->GetScript<EnergyBallScript>();
+			//pEnergyBall->AddComponent(new EnergyBallScript{});
+			//EnergyBallScript* pEnergyScript = pEnergyBall->GetScript<EnergyBallScript>();
 
-			m_vecEnergyBalls.push_back(pEnergyBall);
-			CSceneMgr::GetInst()->SpawnObject(pEnergyBall, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
-			pEnergyBall->Deactivate();
+			//CGameObject* pSphere = new CGameObject;
+			//pSphere->AddComponent(new CTransform);
+			//pSphere->AddComponent(new CMeshRender);
+			//pSphere->Transform()->SetRelativeScale(Vec3(50.f, 50.f, 50.f));
+			//pSphere->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+			//pSphere->MeshRender()->
+			//         SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std3DAlphaMtrl.mtrl"), 0);
+			//pSphere->MeshRender()->GetMaterial(0)->SetScalarParam(SCALAR_PARAM::VEC4_0, Vec4(0.f, 0.f, 0.f, 10.f));
+			//pEnergyBall->AddChild(pSphere);
+
+			//m_vecEnergyBalls.push_back(pEnergyBall);
+			//CSceneMgr::GetInst()->SpawnObject(pEnergyBall, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
+			//pEnergyBall->Deactivate();
 
 
 			// new energyball - update 12/17 AM 03:30
-			/*CGameObject* pEnergyBall = new CGameObject;
+			CGameObject* pEnergyBall = new CGameObject;
 			pEnergyBall->SetName(L"ENERGYBALL_" + std::to_wstring(i));
 			pEnergyBall->AddComponent(new CMeshRender);
 			pEnergyBall->AddComponent(new CTransform);
 			pEnergyBall->AddComponent(new CCollider3D{});
+			pEnergyBall->AddComponent(new EnergyBallScript{});
 
-			pEnergyBall->Transform()->SetRelativePos(Vec3()); -> 위치 잡아야 하나요? 모르겠어서 비워둡니다.
+			pEnergyBall->Transform()->SetRelativePos(Vec3());
 			pEnergyBall->Transform()->SetRelativeScale(Vec3(50.f, 50.f, 50.f));
 			pEnergyBall->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
 
 			CMaterial* pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\EnergyBallMtrl.mtrl").Get();
 			pEnergyBall->MeshRender()->SetSharedMaterial(pMtrl, 0);
 			const Ptr<CTexture> pmagmaTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\FBXTexture\\T_Lava02.png",
-				L"texture\\FBXTexture\\T_Lava02.png");
+			                                                                   L"texture\\FBXTexture\\T_Lava02.png");
 			pEnergyBall->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pmagmaTex);
 
 			pEnergyBall->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::SPHERE);
@@ -137,12 +148,16 @@ void JugPhase_2::Init()
 			pEnergyBall->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
 			pEnergyBall->Collider3D()->SetLifeTime(-1.f);
 
-			EnergyBallScript* pEnergyScript = pEnergyBall->GetScript<EnergyBallScript>();
+			CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\energy_ball.pref",
+			                                                     L"prefab\\energy_ball.pref").Get();
+			CGameObject* pEnergyBallParti = pPrefab->Instantiate();
+			pEnergyBallParti->ParticleSystem()->SetLifeTime(-1.f);
+			pEnergyBallParti->ParticleSystem()->SetMaterial(L"material\\energy_ball.mtrl");
 
+			pEnergyBall->AddChild(pEnergyBallParti);
 			m_vecEnergyBalls.push_back(pEnergyBall);
 			CSceneMgr::GetInst()->SpawnObject(pEnergyBall, GAME::LAYER::MONSTER_NON_PARRING_ATTACK);
-			pEnergyBall->Deactivate();*/
-
+			pEnergyBall->Deactivate();
 
 
 			// Jug pot shader 쓰는 법.
@@ -202,19 +217,18 @@ void JugPhase_2::Update()
 				m_pCombatMgr->GetHammer()->Activate();
 		}
 	}
-	
+
 	// 플래이어 방향으로 회전
 	if (m_bRot)
 	{
 		RotTowardPlayer();
 	}
 
-	m_iAttackPattern = 2;
 	switch (m_iAttackPattern)
 	{
 	case 0:
-		//if (GAME::BOSS::JUG_HAMMER_IDLE == m_pBossFSM->GetCurState()->GetStateType())
-		//	ChangePattern();
+		if (GAME::BOSS::JUG_HAMMER_IDLE == m_pBossFSM->GetCurState()->GetStateType())
+			ChangePattern();
 		break;
 	case 1:
 		Attack_1();
@@ -318,6 +332,8 @@ void JugPhase_2::Attack_1()
 	}
 	else
 	{
+		static bool bDamage = false;
+
 		if (GetTimer() > m_fAttackTime)
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
@@ -325,13 +341,26 @@ void JugPhase_2::Attack_1()
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
 			ResetTimer();
-
+			bDamage = false;
 			return;
 		}
 
 		// 공격 모션이 끝나면 회전하지 않는다.
 		if (m_pBossAnimator->GetCurAnim()->IsFinish())
 			m_bRot = false;
+
+		if (GetTimer() > 1.5f)
+		{
+			if (!bDamage)
+			{
+				PlayerScript* pPlayerScript = m_pCombatMgr->GetPlayer()->GetScript<PlayerScript>();
+				if (nullptr != pPlayerScript)
+					pPlayerScript->Stat_Down(STAT_TYPE::HP, 0.1f);
+
+				bDamage = true;
+			}
+		}
+		
 	}
 }
 
@@ -403,22 +432,21 @@ void JugPhase_2::Attack_3()
 		m_bAttackProceeding = true;
 		m_bRot              = true;
 		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_0);
-
-		for (size_t i = 0; i < ENERGYBALL_COUNT; i++)
-		{
-			m_vecEnergyBalls[i]->Activate();
-		}
 	}
 	else
 	{
+		static int   fRotCounter = 0;
+		static float fRotTimer   = 0.f;
+
 		if (GetTimer() > m_fAttackTime)
 		{
 			m_pBossFSM->ChangeState(GAME::BOSS::JUG_HAMMER_IDLE);
 			m_bAttackProceeding  = false;
 			m_iPrevAttackPattern = m_iAttackPattern;
 			m_iAttackPattern     = 0;
+			fRotCounter          = 0;
+			fRotTimer            = 1.5f;
 			ResetTimer();
-			
 
 			return;
 		}
@@ -427,57 +455,44 @@ void JugPhase_2::Attack_3()
 		if (m_pBossAnimator->GetCurAnim()->IsFinish())
 			m_bRot = false;
 
+		if (fRotTimer <= 0.f)
+		{
+			if (fRotCounter >= ENERGYBALL_COUNT)
+				return;
 
-		// 회전
-		//if (GetTimer() < 1.5f)
-		//{
-			static int   fRotCounter = 0;
-			static float fRotTimer   = 0.f;
+			m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->SetRadius(300.f);
+			m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->SetSpeed(6.f);
+			m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->SetRotDir(ROT_DIR::VERTICAL);
+			m_vecEnergyBalls[fRotCounter]->Activate();
+			m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->
+			                               Start(ENERGYBALL_MODE::ROTATION,
+			                                     Vec3(0.f, 400.f, -200.f),
+			                                     1.5f);
 
-			if (fRotTimer <= 0.f)
+			++fRotCounter;
+			fRotTimer = 1.5f;
+		}
+		else
+		{
+			fRotTimer -= DT;
+		}
+
+
+		for (size_t i = 0; i < ENERGYBALL_COUNT; i++)
+		{
+			if (m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->IsFinish())
 			{
-				if (fRotCounter >= ENERGYBALL_COUNT)
+				if (ENERGYBALL_MODE::ROTATION == m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->GetCurMode())
 				{
-					fRotCounter = 0;
-					return;
-				}
-
-				m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->SetRadius(300.f);
-				m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->SetSpeed(6.f);
-				m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->SetRotDir(ROT_DIR::VERTICAL);
-				m_vecEnergyBalls[fRotCounter]->Activate();
-				m_vecEnergyBalls[fRotCounter]->GetScript<EnergyBallScript>()->
-				                               Start(ENERGYBALL_MODE::ROTATION,
-				                                     Vec3(0.f, 400.f, -200.f),
-				                                     1.5f);
-
-				++fRotCounter;
-				fRotTimer = 1.5f;
-			}
-			else
-			{
-				fRotTimer -= DT;
-			}
-			
-
-			for (size_t i = 0; i < ENERGYBALL_COUNT; i++)
-			{
-				if (m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->IsFinish())
-				{
-					if (ENERGYBALL_MODE::ROTATION == m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->GetCurMode())
-					{
-						Vec3 vPlayerPos = m_pCombatMgr->GetPlayer()->Transform()->GetWorldPos();
-						m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->SetSpeed(700.f);
-						m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->
-							Start(ENERGYBALL_MODE::MISSILE,
-								vPlayerPos);
-					}
-					else
-					{
-						m_vecEnergyBalls[i]->Deactivate();
-					}
+					Vec3 vPlayerPos = m_pCombatMgr->GetPlayer()->Transform()->GetWorldPos();
+					m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->SetSpeed(800.f);
+					m_vecEnergyBalls[i]->GetScript<EnergyBallScript>()->
+					                     Start(ENERGYBALL_MODE::MISSILE,
+					                           vPlayerPos,
+					                           2.5f);
 				}
 			}
+		}
 	}
 }
 

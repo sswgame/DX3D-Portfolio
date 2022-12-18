@@ -119,17 +119,17 @@ namespace
 		AddDirectionalLight(pCurScene);
 		AddSkybox(pCurScene);
 
-		AddCinemaCamera(pCurScene);
+		//AddCinemaCamera(pCurScene);
 		AddPlayer(pCurScene, pCamObj);
 		//AddDeuxiemie(pCurScene);
 		//AddHomonculus(pCurScene);
-		//AddDefaultUIObjects(pCurScene);
+		AddDefaultUIObjects(pCurScene);
 
 		//TestSineDistortion(pCurScene);
-		Map01(pCurScene);
-		//Map02(pCurScene);
+		//Map01(pCurScene);
+		Map02(pCurScene);
 
-		//SetCollision();
+		SetCollision();
 
 		SaveScene(pCurScene, L"scene\\TestScene.scene");
 
@@ -691,7 +691,7 @@ namespace
 		//_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 
 		//BOSS_UI
-		CGameObject* pBossUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\BOSS_HP.pref")->Instantiate();
+		CGameObject* pBossUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\BOSS_HP_PANEL.pref")->Instantiate();
 		_pScene->AddObject(pBossUI, L"UI_INTERACTIVE");
 		CObjectManager::GetInst()->SetBossUI(pBossUI);
 		//pBossUI->Deactivate();

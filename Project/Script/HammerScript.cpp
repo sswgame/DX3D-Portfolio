@@ -4,6 +4,8 @@
 #include <Engine/CAnimator3D.h>
 #include <Engine/CCollider3D.h>
 
+#include "PlayerScript.h"
+
 HammerScript::HammerScript()
 	: CScript((int)SCRIPT_TYPE::HAMMERSCRIPT)
 {
@@ -31,8 +33,8 @@ void HammerScript::update()
 		CAnimation3D* pAnim = pAnimator3D->GetCurAnim();
 		if (pAnim)
 		{
-			if (pAnimator3D->GetvecSocketMatSize() <= 0 )
- 				return;
+			if (pAnimator3D->GetvecSocketMatSize() <= 0)
+				return;
 
 			int    SocketIdx   = 59;
 			Matrix SocketMat   = pAnimator3D->GetSocket(SocketIdx);
@@ -59,7 +61,6 @@ void HammerScript::lateupdate()
 
 void HammerScript::OnCollisionEnter(CGameObject* _OtherObject)
 {
-	CScript::OnCollisionEnter(_OtherObject);
 }
 
 void HammerScript::OnCollision(CGameObject* _OtherObject)

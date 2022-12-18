@@ -18,35 +18,29 @@ CPlayerStat::CPlayerStat()
 CPlayerStat::CPlayerStat(const CPlayerStat& _origin)
 	: m_tCurStat(_origin.m_tCurStat)
 {
-
 }
 
 CPlayerStat::~CPlayerStat()
 {
-
 }
-
 
 
 void CPlayerStat::start()
 {
-
 }
 
 void CPlayerStat::update()
 {
-
 }
 
 void CPlayerStat::lateupdate()
 {
-
 }
 
 float CPlayerStat::GetDamage()
 {
 	PlayerScript* pPlayerScript = (PlayerScript*)m_pOwnerScript;
-	wstring strStateType = pPlayerScript->GetStateMgr()->GetCurstate();
+	wstring       strStateType  = pPlayerScript->GetStateMgr()->GetCurstate();
 
 
 	float fMinAttack = 0.f;
@@ -59,7 +53,6 @@ float CPlayerStat::GetDamage()
 		{
 			fMinAttack = m_tCurStat.fAttack;			// 200
 			fMaxAttack = m_tMaxStat.fAttack + 100.f;	// 400
-
 		}
 		// ¾à °ø°Ý 
 		else if (strStateType == L"LIGHT_ATTACK")
@@ -67,39 +60,33 @@ float CPlayerStat::GetDamage()
 			fMinAttack = m_tCurStat.fAttack - 100.f;	// 100
 			fMaxAttack = m_tMaxStat.fAttack;			// 300
 		}
-
 	}
 
 	float fRandDamage = float(rand() % ((int)fMaxAttack - (int)fMinAttack));
-	float fDamage = fMinAttack + fRandDamage;
+	float fDamage     = fMinAttack + fRandDamage;
 
 	return fDamage;
 }
 
 
-
-void CPlayerStat::InitCurStat(float _fHp, float _fStamina, float _fEther
-	, float _fAttack, float _fArmor, float _fSpeed)
+void CPlayerStat::InitCurStat(float _fHp, float _fStamina, float _fEther, float _fAttack, float _fArmor, float _fSpeed)
 {
-
-	m_tCurStat.fHp = _fHp;
+	m_tCurStat.fHp      = _fHp;
 	m_tCurStat.fStamina = _fStamina;
-	m_tCurStat.fEther = _fEther;
-	m_tCurStat.fAttack = _fAttack;
-	m_tCurStat.fArmor = _fArmor;
-	m_tCurStat.fSpeed = _fSpeed;
-
+	m_tCurStat.fEther   = _fEther;
+	m_tCurStat.fAttack  = _fAttack;
+	m_tCurStat.fArmor   = _fArmor;
+	m_tCurStat.fSpeed   = _fSpeed;
 }
 
-void CPlayerStat::InitMaxStat(float _fHp, float _fStamina, float _fEther
-	, float _fAttack, float _fArmor, float _fSpeed)
+void CPlayerStat::InitMaxStat(float _fHp, float _fStamina, float _fEther, float _fAttack, float _fArmor, float _fSpeed)
 {
-	m_tMaxStat.fHp = _fHp;
+	m_tMaxStat.fHp      = _fHp;
 	m_tMaxStat.fStamina = _fStamina;
-	m_tMaxStat.fEther = _fEther;
-	m_tMaxStat.fAttack = _fAttack;
-	m_tMaxStat.fArmor = _fArmor;
-	m_tMaxStat.fSpeed = _fSpeed;
+	m_tMaxStat.fEther   = _fEther;
+	m_tMaxStat.fAttack  = _fAttack;
+	m_tMaxStat.fArmor   = _fArmor;
+	m_tMaxStat.fSpeed   = _fSpeed;
 }
 
 
@@ -109,8 +96,8 @@ void CPlayerStat::SubHp(float _fHp)
 	if (m_tCurStat.fHp <= 0.f)
 		m_tCurStat.fHp = 0.f;
 
-	CObjectManager::GetInst()->GetPlayerUI()->GetChild(L"HP_PANEL")->GetChild(L"HP_BACKGROUND")->GetChild(L"PROGRESS_BAR")->UIProgressBar()->SetPercent(m_tCurStat.fHp/m_tMaxStat.fHp);
-
+	CObjectManager::GetInst()->GetPlayerUI()->GetChild(L"HP_PANEL")->GetChild(L"HP_BACKGROUND")->
+	                           GetChild(L"PROGRESS_BAR")->UIProgressBar()->SetPercent(m_tCurStat.fHp / m_tMaxStat.fHp);
 }
 
 void CPlayerStat::SubStamina(float _fStamina)
@@ -118,8 +105,6 @@ void CPlayerStat::SubStamina(float _fStamina)
 	m_tCurStat.fStamina -= _fStamina;
 	if (m_tCurStat.fStamina <= 0.f)
 		m_tCurStat.fStamina = 0.f;
-
-
 }
 
 void CPlayerStat::SubEther(float _fEther)
@@ -127,7 +112,6 @@ void CPlayerStat::SubEther(float _fEther)
 	m_tCurStat.fEther -= _fEther;
 	if (m_tCurStat.fEther <= 0.f)
 		m_tCurStat.fStamina = 0.f;
-
 }
 
 void CPlayerStat::SubAttack(float _fAttack)
@@ -135,7 +119,6 @@ void CPlayerStat::SubAttack(float _fAttack)
 	m_tCurStat.fAttack -= _fAttack;
 	if (m_tCurStat.fAttack <= 0.f)
 		m_tCurStat.fAttack = 0.f;
-
 }
 
 void CPlayerStat::SubArmor(float _fStamina)
@@ -143,7 +126,6 @@ void CPlayerStat::SubArmor(float _fStamina)
 	m_tCurStat.fArmor -= _fStamina;
 	if (m_tCurStat.fArmor <= 0.f)
 		m_tCurStat.fArmor = 0.f;
-
 }
 
 void CPlayerStat::AddHp(float _fHp)
@@ -184,9 +166,8 @@ void CPlayerStat::AddArmor(float _fArmor)
 void CPlayerStat::AddSpeed(float _fSpeed)
 {
 	m_tCurStat.fSpeed += _fSpeed;
-	if(m_tCurStat.fSpeed >= m_tMaxStat.fSpeed)
+	if (m_tCurStat.fSpeed >= m_tMaxStat.fSpeed)
 		m_tCurStat.fSpeed = m_tMaxStat.fSpeed;
-
 }
 
 void CPlayerStat::SubSpeed(float _fSpeed)
@@ -198,10 +179,8 @@ void CPlayerStat::SubSpeed(float _fSpeed)
 
 void CPlayerStat::SaveToScene(FILE* _pFile)
 {
-
 }
 
 void CPlayerStat::LoadFromScene(FILE* _pFile)
 {
-
 }

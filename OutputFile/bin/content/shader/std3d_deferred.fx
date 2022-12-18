@@ -41,6 +41,7 @@ struct VTX_OUT
 #define ApplyPaperBurn  g_int_0
 #define BurnColor       g_vec4_0
 #define BurnStrength    g_float_0
+#define HitOn        g_int_1
 // =========================
 VTX_OUT VS_Std3D_Deferred(VTX_IN _in)
 {
@@ -75,7 +76,7 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
 {
     PS_OUT output = (PS_OUT) 0.f;
     
-    output.vColor = float4(1.f, 0.f, 1.f, 1.f);
+    output.vColor = BurnColor;
     
     if (g_btex_0)
     {
@@ -89,6 +90,10 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
                 discard;
         }
         
+    }
+    else
+    {
+        discard;
     }
     
     
@@ -119,7 +124,13 @@ PS_OUT PS_Std3D_Deferred(VTX_OUT _in)
     
     output.vNormal = float4(vViewNormal, _in.vViewPos.z); // Normal /  Depth
     output.vPosition = float4(_in.vViewPos, 1.f);
-    
+
+
+    if(1 == HitOn)
+    {
+        output.vColor *= float4(1.f, 0.3f, 0.3f, 1.f);
+    }
+
     return output;
 }
 

@@ -34,6 +34,3 @@ void TotemScript::OnCollisionExit(CGameObject* _OtherObject)
 {
 }
 
-void TotemScript::Deserialize(const YAML::Node& node)
-{
-}
