@@ -12,7 +12,8 @@ FogTool::FogTool()
 	, m_pFog(nullptr)
 	, m_bFogOn(true)
 	, m_pParticleEmissive(nullptr)
-	, m_bParticleEmissiveOn(false) {}
+	, m_bParticleEmissiveOn(false)
+	, m_vFogColor(Vec4(0.5f, 0.5f, 0.5f, 1.f)) {}
 
 FogTool::~FogTool() {}
 
@@ -100,6 +101,9 @@ void FogTool::render_update()
 	ImGui::Text("Turn On DoF : ");
 	ImGui::SameLine();
 	ImGui::Checkbox("##DOF_OnOff", &m_bFogOn);
+	ImGui::ColorEdit4("##START_COLOR", m_vFogColor);
+	CMaterial* pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\FogPostProcessMtrl.mtrl").Get();
+	pMtrl->SetScalarParam(SCALAR_PARAM::VEC4_0, m_vFogColor);
 
 	ImGui::Text("Turn On Particle Emissive : ");
 	ImGui::SameLine();

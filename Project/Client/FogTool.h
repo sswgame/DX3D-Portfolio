@@ -9,6 +9,7 @@ class FogTool :
 private:
     CGameObject* m_pFog;
     bool m_bFogOn;
+    Vec4 m_vFogColor;
 
     CGameObject* m_pParticleEmissive;
     bool m_bParticleEmissiveOn;

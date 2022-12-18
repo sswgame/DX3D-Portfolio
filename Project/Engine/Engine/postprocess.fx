@@ -121,6 +121,7 @@ float4 PS_FlamePostProcess(VTX_OUT _in) : SV_Target
 // DepthStencil : NoTest NoWrite
 #define PostProcessTarget   g_tex_0
 #define PositionTarget      g_tex_1
+#define FogColor            g_vec4_0
 // =====================================
 VTX_OUT VS_FogPostProcess(VTX_IN _in)
 {
@@ -140,7 +141,7 @@ float4 PS_FogPostProcess(VTX_OUT _in) : SV_Target
     // _in.vPosition; ÇÈ¼¿ ÁÂÇ¥
     float2 vScreenUV = _in.vPosition.xy / vResolution;
     vOutColor = PostProcessTarget.Sample(g_sam_1, vScreenUV);
-    float4 fcolor = { 0.5, 0.5, 0.5, 1 };
+    float4 fcolor = FogColor;
 
     float3 vTargetViewPos = PositionTarget.Sample(g_sam_0, vScreenUV).xyz;
     

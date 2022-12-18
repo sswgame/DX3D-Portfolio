@@ -62,7 +62,11 @@ namespace
 	void AddSphere(CScene* _pScene);
 	void AddTessellation(CScene* _pScene);
 
-	void AddFogTexture(CScene* _pScene);
+	void AddFogTexture_map01(CScene* _pScene);
+	void AddFogTexture_map02(CScene* _pScene);
+
+	void AddFogParticle_map01(CScene* _pScene);
+	void AddFogParticle_map02(CScene* _pScene);
 
 	void AddItem(CScene* _pScene);
 	void AddPlayer(CScene* _pScene, CGameObject* _pCamera);
@@ -97,8 +101,8 @@ namespace
 		//AddHomonculus(pCurScene);
 		AddDefaultUIObjects(pCurScene);
 
-		Map01(pCurScene);
-		//Map02(pCurScene);
+		//Map01(pCurScene);
+		Map02(pCurScene);
 
 		SetCollision();
 
@@ -253,8 +257,8 @@ namespace
 
 	void AddSkybox(CScene* _pScene)
 	{
-		const Ptr<CTexture> pSkyTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\nebula05_2048.dds",
-		                                                                 L"texture\\skybox\\nebula05_2048.dds");
+		const Ptr<CTexture> pSkyTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\skybox\\nebula01_2048.dds",
+		                                                                 L"texture\\skybox\\nebula01_2048.dds");
 		const auto pSkyBox = new CGameObject;
 
 		pSkyBox->SetName(L"SkyBox");
@@ -361,7 +365,7 @@ namespace
 		_pScene->AddObject(pObject, L"Default");
 	}
 
-	void AddFogTexture(CScene* _pScene)
+	void AddFogTexture_map01(CScene* _pScene)
 	{
 		Ptr<CTexture> fogTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\particle\\smokeparticle.png",
 		                                                          L"texture\\particle\\smokeparticle.png");
@@ -390,6 +394,56 @@ namespace
 		pObject1->Transform()->SetRelativeScale(10000, 10000, 1.f);
 		pObject1->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
 		_pScene->AddObject(pObject1, L"BG");
+	}
+
+	void AddFogTexture_map02(CScene* _pScene)
+	{
+		Ptr<CTexture> fogTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\particle\\smokeparticle.png",
+			L"texture\\particle\\smokeparticle.png");
+
+		CGameObject* pObject = new CGameObject;
+		pObject->SetName(L"Fog");
+
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CMeshRender);
+
+		pObject->Transform()->SetRelativePos(-12, 246, -4085);
+		pObject->Transform()->SetRelativeScale(2500, 2500, 1.f);
+
+		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+		pObject->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\fog.mtrl"), 0);
+		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, fogTex);
+		pObject->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_1,
+			(CResMgr::GetInst()->FindRes<
+				CTexture>(L"PositionTargetTex")));
+
+		_pScene->AddObject(pObject, L"BG");
+
+		CGameObject* pObject1;
+		pObject1 = pObject->Clone();
+		pObject1->Transform()->SetRelativePos(-12, 3, -1615);
+		pObject1->Transform()->SetRelativeScale(10000, 10000, 1.f);
+		pObject1->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
+		_pScene->AddObject(pObject1, L"BG");
+	}
+
+	void AddFogParticle_map01(CScene* _pScene)
+	{
+		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\fog_particle.pref", L"prefab\\fog_particle.pref").Get();
+		CGameObject* pParticle = pPrefab->Instantiate();
+		pParticle->ParticleSystem()->SetLifeTime(-1.f);
+		pParticle->ParticleSystem()->SetMaterial(L"material\\fog_particle.mtrl");
+		CSceneMgr::GetInst()->SpawnObject(pParticle, GAME::LAYER::BG);
+	}
+
+	void AddFogParticle_map02(CScene* _pScene)
+	{
+		CPrefab* pPrefab = CResMgr::GetInst()->Load<CPrefab>(L"prefab\\fog_particle.pref", L"prefab\\fog_particle.pref").Get();
+		CGameObject* pParticle = pPrefab->Instantiate();
+		pParticle->Transform()->SetRelativePos(Vec3());
+		pParticle->ParticleSystem()->SetLifeTime(-1.f);
+		pParticle->ParticleSystem()->SetMaterial(L"material\\fog_particle.mtrl");
+		CSceneMgr::GetInst()->SpawnObject(pParticle, GAME::LAYER::BG);
 	}
 
 	void AddItem(CScene* _pScene)

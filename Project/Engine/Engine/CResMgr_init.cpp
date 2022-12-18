@@ -1067,6 +1067,7 @@ void CResMgr::CreateEngineShader()
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->AddTexParamInfo(L"Render Target", TEX_PARAM::TEX_0);
 	pShader->AddTexParamInfo(L"Position Target", TEX_PARAM::TEX_1);
+	pShader->AddScalarParamInfo(L"Fog Color", SCALAR_PARAM::VEC4_0);
 	AddRes<CGraphicsShader>(L"FogPostProcessShader", pShader, true);
 
 	// Emissive PostProcess Shader
