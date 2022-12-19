@@ -22,6 +22,9 @@ class PlayerCamScript :
     public CScript
 {
 private:
+    bool m_bFocus_Cursor = false;
+
+private:
     CGameObject*    m_pCam;                 // 카메라
     CAMERA_MODE     m_eCamMode;             // 카메라 촬영 모드 설정 
     CAMERA_OPTION   m_eCamOption;           // 카메라 촬영 옵션 설정 

@@ -4,6 +4,7 @@
 #include "PlayerScript.h"
 #include "TrailScript.h"
 #include "CStateMgr.h"
+#include"PaperBurnScript.h"
 
 
 #include <Engine/CFSM.h>
@@ -52,6 +53,15 @@ void CPlayerParryState::Enter()
 	{
 		pTrail->Off();
 	}
+
+	PaperBurnScript* pBurnScript = GetOwner()->GetScript<PaperBurnScript>();
+	if (pBurnScript)
+	{
+		pBurnScript->Off();
+		pBurnScript->SetDir(1);
+
+	}
+
 
 }
 

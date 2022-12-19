@@ -6,6 +6,8 @@ class CStateMgr
 	: public CEntity
 {
 private:
+	CGameObject* m_pTrailSocketCollider;
+
 	CGameObject*			m_pOwnerObj;
 	CGameObject*			m_pCamera;
 
@@ -23,6 +25,8 @@ private:
 	bool					m_bCameraLock;			// 카메라 잠금 설정 모드인지 확인 
 	Vec3					m_vCamLock_TargetPos;	// 카메라 잠금 모드 설정 기준 좌표 
 	CGameObject*			m_pCamLock_TargetObj;	// 카메라 잠금 모드로 설정된 기준 오브젝트 저장 
+
+
 
 public:
 	void	Update();

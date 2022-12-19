@@ -195,6 +195,7 @@ void PlayerScript::UpdateSwordCollider()
 	if (!m_pSwordCollider)
 		return;
 
+
 	CAnimator3D* pAnimator3D = GetOwner()->Animator3D();
 	if (pAnimator3D)
 	{

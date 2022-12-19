@@ -36,7 +36,7 @@ void CObjKeyMgr::Init()
 
 	// [ ¿¸≈ı ≈∞ ]
 	m_tCombatKey.eLightAttack	= KEY::LBTN;
-	m_tCombatKey.eHeavyAttack	= KEY::RBTN;
+	m_tCombatKey.eHeavyAttack	= KEY::F;
 	m_tCombatKey.eParry			= KEY::Q;
 	m_tCombatKey.eCameraLock	= KEY::MBTN;
 }

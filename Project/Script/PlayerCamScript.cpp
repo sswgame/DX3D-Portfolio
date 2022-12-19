@@ -7,6 +7,9 @@
 #include <Engine/CCamera.h>
 #include <Engine/CMeshRender.h>
 #include <Engine/CTransform.h>
+#include <Engine/CDevice.h>
+#include <Engine/CCore.h>
+
 PlayerCamScript::PlayerCamScript()
 	: CScript((int)SCRIPT_TYPE::PLAYERCAMSCRIPT)
 	, m_vTargetPos(Vec3(0.f, 0.f, 0.f))
@@ -49,6 +52,17 @@ PlayerCamScript::~PlayerCamScript()
 
 void PlayerCamScript::start()
 {
+	//if (!m_bFocus_Cursor)
+	//{
+	//	RECT rect{ 0,0,1600,900 };
+	//	ClipCursor(&rect);
+	//	SetCursorPos(1600 / 2, 900 / 2);
+	//	ShowCursor(SW_HIDE);
+	//	m_bFocus_Cursor = true;
+
+	//}
+
+
 	if (m_pCam == nullptr)
 		m_pCam = GetOwner();
 
@@ -77,6 +91,25 @@ void PlayerCamScript::start()
 
 void PlayerCamScript::update()
 {
+	
+	//if (CCore::GetInst()->GetMainHwnd() != GetFocus())
+	//{
+	//	ShowCursor(SW_SHOW);
+	//	m_bFocus_Cursor = false;
+
+	//}
+	//else
+	//{
+	//	if (!m_bFocus_Cursor)
+	//	{
+	//		RECT rect{ 0,0,1600,900 };
+	//		ClipCursor(&rect);
+	//		SetCursorPos(1600 / 2, 900 / 2);
+	//		ShowCursor(SW_HIDE);
+	//		m_bFocus_Cursor = true;
+	//	}
+	//}
+
 	if (KEY_TAP(KEY::L))
 	{
 		/*
@@ -211,7 +244,7 @@ void PlayerCamScript::UpdateFreeMode()
 		}
 	}
 
-	if (KEY_PRESSED(KEY::RBTN))
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::RBTN) == KEY_STATE::NONE)
 	{
 		Vec3 vRot = Transform()->GetRelativeRotation();
 
@@ -422,11 +455,16 @@ void PlayerCamScript::UpdateThirdPersonMode()
 	// 1. 카메라가 회전한다. 
 	Vec3 vRot = m_pCam->Transform()->GetRelativeRotation();
 	Vec2 vMouseDir = CKeyMgr::GetInst()->GetMouseDir();
+	const Vec2 vResolution = CDevice::GetInst()->GetRenderResolution();
 
 	if (KEY_PRESSED(KEY::RBTN))
 	{
+		//vRot.y += DT * vMouseDir.x * (XM_PI * 0.25f * (1.f / vResolution.y)) * 250.f;
+		//vRot.x -= DT * vMouseDir.y * (XM_PI * 0.25f * (1.f / vResolution.x)) * 250.f;
+
 		vRot.y += DT * vMouseDir.x * XM_PI;
 		vRot.x -= DT * vMouseDir.y * XM_PI;
+
 
 		// 0 ~ 360 도 고정 
 		if (vRot.y >= XM_2PI)

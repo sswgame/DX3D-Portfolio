@@ -6,6 +6,9 @@
 #include "PlayerScript.h"
 #include "CPlayerStat.h"
 #include "TrailScript.h"
+#include "PaperBurnScript.h"
+
+
 
 
 
@@ -79,27 +82,21 @@ void CPlayerJumpState::Enter()
 	m_pStateMgr = pPlayerScript->GetStateMgr();
 	m_pStateMgr->ChangeCurStateType(L"JUMP");
 
-	//if (!m_pJumpEffect_Land)
-	//{
-	//	Ptr<CMeshData> pMeshData = nullptr;
-	//	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_jump0.mdat", L"meshdata\\player_jump0.mdat");
-
-	//	m_pJumpEffect_Land = pMeshData->Instantiate();
-	//	m_pJumpEffect_Land->SetName(L"JumpEffect_Land");
-
-	//	m_pJumpEffect_Land->Transform()->SetRelativePos(CState::GetOwner()->Transform()->GetRelativePos());
-	//	m_pJumpEffect_Land->Transform()->SetRelativeScale(Vec3(100.f, 100., 100.f));
-
-
-	//	CSceneMgr::GetInst()->GetCurScene()->AddObject(m_pJumpEffect_Land, CState::GetOwner()->GetLayerIndex());
-	//}
-
+	pPlayerScript->GetSwordBoneCollider()->Deactivate();
 
 	TrailScript* pTrail = (TrailScript*)GetOwner()->GetScriptByName(L"TrailScript");
 	if (pTrail)
 	{
 		pTrail->Off();
 	}
+
+	PaperBurnScript* pBurnScript = GetOwner()->GetScript<PaperBurnScript>();
+	if (pBurnScript)
+	{
+		pBurnScript->Off();
+		pBurnScript->SetDir(1);
+	}
+
 
 }
 

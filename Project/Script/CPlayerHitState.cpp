@@ -45,7 +45,12 @@ void CPlayerHitState::Enter()
 
 void CPlayerHitState::Exit()
 {
+	if (m_pPaperBurn)
+	{
+		m_pPaperBurn->Off();
+		m_pPaperBurn->SetDir(1);
 
+	}
 }
 
 void CPlayerHitState::Update()

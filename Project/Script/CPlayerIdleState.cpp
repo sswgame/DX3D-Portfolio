@@ -7,7 +7,7 @@
 
 #include "CStateMgr.h"
 #include "TrailScript.h"
-
+#include "PaperBurnScript.h"
 
 
 CPlayerIdleState::CPlayerIdleState()
@@ -34,6 +34,8 @@ void CPlayerIdleState::Enter()
 
 	// StateMGr 에 현재상태가 변경됨을 알린다. 
 	PlayerScript* pScript = (PlayerScript*)GetOwner()->GetScriptByName(L"PlayerScript");
+	pScript->GetSwordBoneCollider()->Deactivate();
+
 	if (pScript != nullptr)
 	{
 		m_pStateMgr = pScript->GetStateMgr();
@@ -44,6 +46,14 @@ void CPlayerIdleState::Enter()
 	if (pTrail)
 	{
 		pTrail->Off();
+	}
+
+	PaperBurnScript* pBurnScript = GetOwner()->GetScript<PaperBurnScript>();
+	if (pBurnScript)
+	{
+		pBurnScript->Off();
+		pBurnScript->SetDir(1);
+
 	}
 
 }

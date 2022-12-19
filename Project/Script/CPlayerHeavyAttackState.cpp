@@ -11,6 +11,8 @@
 #include <Engine/CTransform.h>
 #include <Engine/CTimeMgr.h>
 #include <Engine/CAnimator3D.h>
+#include "PaperBurnScript.h"
+
 
 
 CPlayerHeavyAttackState::CPlayerHeavyAttackState()
@@ -59,6 +61,8 @@ void CPlayerHeavyAttackState::Enter()
 		m_pStateMgr->ChangeCurStateType(L"HEAVY_ATTACK");
 	}
 
+	m_pPlayerScript->GetSwordBoneCollider()->Activate();
+
 	PlayHeavyAttackAnim(L"attack_heavy_1", false);
 	m_bComboAtt_Start = true;
 	m_bCombo1_2_Success = false;
@@ -71,6 +75,14 @@ void CPlayerHeavyAttackState::Enter()
 	}
 
 
+	PaperBurnScript* pBurnScript = GetOwner()->GetScript<PaperBurnScript>();
+	if (pBurnScript)
+	{
+		pBurnScript->Off();
+		pBurnScript->SetDir(1);
+
+	}
+
 }
 
 void CPlayerHeavyAttackState::Exit()
@@ -78,6 +90,9 @@ void CPlayerHeavyAttackState::Exit()
 	m_tAttTimer.Clear();
 	m_bCombo1_2_Success = false;
 	m_bCombo2_3_Success = false;
+
+	m_pPlayerScript->GetSwordBoneCollider()->Deactivate();
+
 }
 
 void CPlayerHeavyAttackState::Update()

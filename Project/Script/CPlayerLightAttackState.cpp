@@ -5,6 +5,8 @@
 
 #include "SwordTrailScript.h"
 #include "TrailScript.h"
+#include "PaperBurnScript.h"
+
 
 
 #include <Engine/CFSM.h>
@@ -76,6 +78,7 @@ void CPlayerLightAttackState::TrailOn()
 			pTrail->SetRot(vWorldRot);
 			pTrail->SetForward(vForward);
 		}
+
 	}
 }
 
@@ -171,6 +174,12 @@ void CPlayerLightAttackState::Enter()
 	{
 		CGameObject* pOwner = GetOwner();
 		m_pWeaponCollider   = pOwner->FindChild(L"Sword_Bone_Collider");
+
+	}
+	else
+	{
+		m_pWeaponCollider->Activate();
+
 	}
 
 	if (!m_pWeaponTrail)
@@ -189,6 +198,14 @@ void CPlayerLightAttackState::Enter()
 		pTrail->Off();
 	}
 
+	PaperBurnScript* pBurnScript = GetOwner()->GetScript<PaperBurnScript>();
+	if (pBurnScript)
+	{
+		pBurnScript->Off();
+		pBurnScript->SetDir(1);
+
+	}
+
 }
 
 void CPlayerLightAttackState::Exit()
@@ -196,6 +213,11 @@ void CPlayerLightAttackState::Exit()
 	m_tAttTimer.Clear();
 	m_bCombo1_2_Success = false;
 	m_bCombo2_3_Success = false;
+
+
+	if(m_pWeaponCollider)
+		m_pWeaponCollider->Deactivate();
+
 }
 
 void CPlayerLightAttackState::Update()

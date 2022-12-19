@@ -14,6 +14,7 @@
 #include "CStateMgr.h"
 #include "CScriptMgr.h"
 #include "TrailScript.h"
+#include "PaperBurnScript.h"
 
 
 CPlayerSprintState::CPlayerSprintState()
@@ -79,6 +80,16 @@ void CPlayerSprintState::Enter()
 		Sprint(800.f);
 
 	}
+
+	PaperBurnScript* pBurnScript = GetOwner()->GetScript<PaperBurnScript>();
+	if (pBurnScript)
+	{
+		pBurnScript->Off();
+		pBurnScript->SetDir(1);
+
+	}
+
+	pScript->GetSwordBoneCollider()->Deactivate();
 
 }
 

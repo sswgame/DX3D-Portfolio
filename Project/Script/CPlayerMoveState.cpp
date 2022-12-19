@@ -17,6 +17,8 @@
 #include "CObjKeyMgr.h"
 
 #include "PlayerCamScript.h"
+#include "PaperBurnScript.h"
+
 
 
 
@@ -52,6 +54,7 @@ void CPlayerMoveState::Enter()
 	PlayerScript* pPlayerScript = (PlayerScript*)pScript;
 	m_bChangeLerpTime = false;
 
+	pPlayerScript->GetSwordBoneCollider()->Deactivate();
 
 	if (m_pTranslateMgr == nullptr)
 	{
@@ -76,6 +79,15 @@ void CPlayerMoveState::Enter()
 	{
 		pTrail->Off();
 	}
+
+	PaperBurnScript* pBurnScript = GetOwner()->GetScript<PaperBurnScript>();
+	if (pBurnScript)
+	{
+		pBurnScript->Off();
+		pBurnScript->SetDir(1);
+
+	}
+
 
 }
 

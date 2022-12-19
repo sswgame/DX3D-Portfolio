@@ -49,6 +49,8 @@ void MainMenuScript::update()
 			m_pPlayerUI->Activate();
 			CObjectManager::GetInst()->GetPlayer()->Activate();
 			CKeyMgr::GetInst()->EnableAll(true);
+			SetCursorPos(1600, 900);
+			ShowCursor(SW_HIDE);
 		}
 		else if (m_bitSelected[E_SETTING])
 		{

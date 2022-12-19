@@ -212,6 +212,8 @@ void CStateMgr::ChangeState(wstring _sStateName)
 		return;
 
 	pFSM->ChangeState(_sStateName);
+
+
 }
 
 

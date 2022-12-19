@@ -80,7 +80,7 @@ void CameraMoveScript::update()
 		}
 	}
 
-	if (nullptr != m_Filter && KEY_TAP(KEY::F))
+	if (nullptr != m_Filter && KEY_TAP(KEY::F8))
 	{
 		if (m_Filter->IsActive())
 			m_Filter->Deactivate();
