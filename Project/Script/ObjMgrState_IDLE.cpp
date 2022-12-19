@@ -38,4 +38,14 @@ void ObjMgrState_IDLE::LateUpdate()
 }
 
 
-void ObjMgrState_IDLE::Exit() {}
+void ObjMgrState_IDLE::Exit()
+{
+	const MAP_TYPE type = CObjectManager::GetInst()->GetCurrentMapType();
+	if (type == MAP_TYPE::_01)
+	{
+		wstring soundpath = L"sound\\map01_sound.wav";
+		CSound* pSound    = nullptr;
+		pSound            = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
+		pSound->Stop();
+	}
+}

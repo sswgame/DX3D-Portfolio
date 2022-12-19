@@ -60,11 +60,14 @@ int CSound::Play(int _iRoopCount, float _fVolume, bool _bOverlap)
 	return iIndex;
 }
 
-void CSound::Stop() const
+void CSound::Stop()
 {
-	for (const auto& pChannel : m_listChannel)
+	list<FMOD::Channel*>::iterator iter;
+
+	while (!m_listChannel.empty())
 	{
-		pChannel->stop();
+		iter = m_listChannel.begin();
+		(*iter)->stop();
 	}
 }
 

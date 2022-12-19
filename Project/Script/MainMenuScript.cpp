@@ -35,8 +35,7 @@ void MainMenuScript::start()
 	CKeyMgr::GetInst()->SetEnableInput(KEY::LBTN, true);
 
 	wstring soundpath = L"sound\\opening.wav";
-	CSound* pSound = nullptr;
-	pSound = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
+	CSound* pSound    = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
 	pSound->Play(0, 0.5f, false);
 }
 
@@ -56,6 +55,24 @@ void MainMenuScript::update()
 			CKeyMgr::GetInst()->EnableAll(true);
 			SetCursorPos(1600, 900);
 			ShowCursor(SW_HIDE);
+
+			wstring soundpath = L"sound\\opening.wav";
+			CSound* pSound    = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
+			pSound->Stop();
+
+			static bool isSound = false;
+			if (isSound == false)
+			{
+				const MAP_TYPE type = CObjectManager::GetInst()->GetCurrentMapType();
+				if (type == MAP_TYPE::_01)
+				{
+					wstring soundpath = L"sound\\map01_sound.wav";
+					CSound* pSound    = nullptr;
+					pSound            = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
+					pSound->Play(0, 0.5f, false);
+				}
+				isSound = true;
+			}
 		}
 		else if (m_bitSelected[E_SETTING])
 		{

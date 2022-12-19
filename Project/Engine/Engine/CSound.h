@@ -23,7 +23,7 @@ private:
 public:
 	// 0 (무한반복) 0 ~ 1(Volume)
 	int  Play(int _iRoopCount, float _fVolume = 1.f, bool _bOverlap = false);
-	void Stop() const;
+	void Stop();
 
 	// 0 ~ 1
 	void SetVolume(float _volume, int _iChannelIndex);
@@ -40,7 +40,6 @@ public:
 	void UpdateData() override {}
 	int  Save(const wstring& _strRelativePath) override { return 0; }
 	int  Load(const wstring& _strFilePath) override;
-
 
 public:
 	CSound();

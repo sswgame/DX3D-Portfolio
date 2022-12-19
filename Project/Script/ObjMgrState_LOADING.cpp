@@ -10,6 +10,7 @@
 #include "CObjectManager.h"
 #include "CinemaCamScript.h"
 #include <Engine/CNaviAgent.h>
+
 ObjMgrState_LOADING::ObjMgrState_LOADING()
 	: CState{L"LOADING"} {}
 
@@ -36,7 +37,7 @@ void ObjMgrState_LOADING::LateUpdate()
 		pBoss->AddComponent(new BossJugCombatMgrScript);
 		CSceneMgr::GetInst()->SpawnObject(pBoss, GAME::LAYER::OBJECT_MGR);
 		pBoss->GetScript<BossJugCombatMgrScript>()->SpawnStage();
-		const MAP_TYPE type = CObjectManager::GetInst()->GetCurrentMapType();
+		const MAP_TYPE type       = CObjectManager::GetInst()->GetCurrentMapType();
 		const Vec3     startPoint = CObjectManager::GetInst()->GetStartingPoint(type);
 
 		CGameObject* pPlayer = CObjectManager::GetInst()->GetPlayer();
@@ -44,25 +45,21 @@ void ObjMgrState_LOADING::LateUpdate()
 		{
 			pPlayer->Transform()->SetRelativePos(startPoint);
 			pPlayer->NaviAgent()->finalupdate();
-
 		}
 		CObjectManager::GetInst()->GetCinemaCam()->Activate();
 		CObjectManager::GetInst()->GetCinemaCam()->Camera()->SetCameraAsMain();
-		CObjectManager::GetInst()->GetCinemaCam()->GetScript<CinemaCamScript>()->CreateStartMap02Route(CObjectManager::GetInst()->GetPlayer()->Transform()->GetRelativePos());
-		
+		CObjectManager::GetInst()->GetCinemaCam()->GetScript<CinemaCamScript>()->
+		                           CreateStartMap02Route(CObjectManager::GetInst()->GetPlayer()->Transform()->
+		                                                 GetRelativePos());
 	}
 	else if (CRenderEffectMgr::GetInst()->IsEnable_FadeOutPaperBurn() && CRenderEffectMgr::GetInst()->
 	         IsFadeOutFinished())
 	{
 		GetOwner()->FSM()->ChangeState(L"CUT_SCENE");
-
 	}
 }
 
-void ObjMgrState_LOADING::Exit()
-{
-	
-}
+void ObjMgrState_LOADING::Exit() { }
 
 void ObjMgrState_LOADING::EnableSceneObject()
 {
@@ -86,7 +83,5 @@ void ObjMgrState_LOADING::EnableSceneObject()
 		}
 
 		CObjectManager::GetInst()->SetMapType((MAP_TYPE)nextMapType);
-
-
 	}
 }
