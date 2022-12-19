@@ -8,15 +8,15 @@ private:
 	int   m_iShaker;
 	float m_fEffectTime;
 	float m_fTimer;
+	float m_fTimeSpace;
 
 public:
-	virtual void update();
-	virtual void lateupdate();
+	void update() override;
 
 	void StartShake(float _fTime);
-	bool IsShake(bool _bShake) { return m_bShake; }
+	bool IsShake() const { return m_bShake; }
 
 	CLONE(CameraShakeScript)
 	CameraShakeScript();
-	~CameraShakeScript();
+	virtual ~CameraShakeScript();
 };

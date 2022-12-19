@@ -13,7 +13,7 @@
 #define BurnColor       g_vec4_0
 #define BurnStrength    g_float_0
 #define EnableAllBlack g_int_0
-#define Ratio          g_float_1
+#define Ratio          g_float_0
 // g_tex_0 : Output Texture
 // Rasterizer : CULL_NONE
 // BlendState : Default

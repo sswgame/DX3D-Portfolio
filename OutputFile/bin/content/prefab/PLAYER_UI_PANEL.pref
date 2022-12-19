@@ -357,7 +357,7 @@ CHILDREN:
                   MESH: [RectMesh, RectMesh]
                   MATERIAL COUNT: 1
                   0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
-                  USE DYNAMIC 0: false
+                  USE DYNAMIC 0: true
                   MATERIAL 0 TEXTURE LIST:
                     0: texture\UI\PlayerUI_Tex.png
                   m_bDynamicShadow: false

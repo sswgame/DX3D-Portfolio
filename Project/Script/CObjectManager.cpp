@@ -16,15 +16,17 @@ CObjectManager::CObjectManager()
 	: m_pPlayer{nullptr}
 	, m_pPlayerCamera{nullptr}
 	, m_pBossCombatMgr{nullptr}
-	, m_currentMap{MAP_TYPE::_01} {}
+	, m_currentMap{MAP_TYPE::_01}
+{
+}
 
 CObjectManager::~CObjectManager() = default;
 
 
 void CObjectManager::start()
 {
-	m_arrStartingPoint[(UINT)MAP_TYPE::_01] = Vec3{-80, -209, -8950};
-	m_arrStartingPoint[(UINT)MAP_TYPE::_02] = Vec3{0, 600, -6000};
+	m_arrStartingPoint[static_cast<UINT>(MAP_TYPE::_01)] = Vec3{0, -214, -8950};
+	m_arrStartingPoint[static_cast<UINT>(MAP_TYPE::_02)] = Vec3{0, 600, -6000};
 
 	CFSM* pFSM = new CFSM{};
 	GetOwner()->AddComponent(pFSM);
@@ -32,6 +34,7 @@ void CObjectManager::start()
 	pFSM->AddState(L"CUT_SCENE", new CObjectMgrState_CutScene{});
 	pFSM->AddState(L"LOADING", new ObjMgrState_LOADING{});
 	pFSM->ChangeState(L"IDLE");
+
 }
 
 void CObjectManager::RemoveFromDontDestroyList(CGameObject* pGameObject)

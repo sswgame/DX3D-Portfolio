@@ -95,6 +95,10 @@ namespace
 		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UIShader"));
 		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIItem.mtrl", pMtrl);
 
+		pMtrl = new CMaterial;
+		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UIShader"));
+		CResMgr::GetInst()->AddRes<CMaterial>(L"material\\UIBoss.mtrl", pMtrl);
+
 		//UI_INTERFACE1
 		pMtrl = new CMaterial;
 		pMtrl->SetShader(CResMgr::GetInst()->FindRes<CGraphicsShader>(L"UITranslucentShader"));
@@ -888,7 +892,7 @@ void CResMgr::CreateEngineShader()
 	pShader->SetShaderDomain(SHADER_DOMAIN::DOMAIN_TRANSLUCENT);
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetDSType(DS_TYPE::NO_WRITE);
-	pShader->SetBSType(BS_TYPE::ALPHA_BLEND);
+	pShader->SetBSType(BS_TYPE::NO_ALPHA_COVERAGE);
 	pShader->AddTexParamInfo(L"Output Texture", TEX_PARAM::TEX_0);
 	pShader->AddTexParamInfo(L"Depth Texture", TEX_PARAM::TEX_1);
 	AddRes<CGraphicsShader>(L"Std3D_fog", pShader, true);

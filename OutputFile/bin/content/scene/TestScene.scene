@@ -179,6 +179,54 @@ LAYERS:
               []
             CHILDREN:
               []
+      - NAME: Fog
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [-12, 246, -4085]
+              m_vRelativeScale: [2500, 2500, 1]
+              m_vRelativeRot: [0, 0, 0]
+              m_bIgnoreParentScale: false
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\fog.mtrl, material\fog.mtrl]
+              USE DYNAMIC 0: false
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\particle\smokeparticle.png
+                1: PositionTargetTex
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
+      - NAME: Fog
+        m_bActive: true
+        m_bDynamicShadow: false
+        m_bFrustumCulling: false
+        COMPONENTS:
+          - TRANSFORM:
+              m_vRelativePos: [-12, -80, -1615]
+              m_vRelativeScale: [10000, 10000, 1]
+              m_vRelativeRot: [1.57079637, 0, 0]
+              m_bIgnoreParentScale: false
+          - MESHRENDER:
+              MESH: [RectMesh, RectMesh]
+              MATERIAL COUNT: 1
+              0: [material\fog.mtrl, material\fog.mtrl]
+              USE DYNAMIC 0: false
+              MATERIAL 0 TEXTURE LIST:
+                0: texture\particle\smokeparticle.png
+                1: PositionTargetTex
+              m_bDynamicShadow: false
+              m_bFrustumCulling: false
+        SCRIPTS:
+          []
+        CHILDREN:
+          []
   - LAYER NAME: BG_OBJ
     GAME OBJECTS:
       - NAME: Directional Light
@@ -257,7 +305,7 @@ LAYERS:
         m_bFrustumCulling: false
         COMPONENTS:
           - TRANSFORM:
-              m_vRelativePos: [-80, -209, -8950]
+              m_vRelativePos: [0, 150, -8950]
               m_vRelativeScale: [1, 1, 1]
               m_vRelativeRot: [0, 0, 0]
               m_bIgnoreParentScale: false

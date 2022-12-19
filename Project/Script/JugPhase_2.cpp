@@ -354,7 +354,7 @@ void JugPhase_2::Attack_1()
 			{
 				PlayerScript* pPlayerScript = m_pCombatMgr->GetPlayer()->GetScript<PlayerScript>();
 				if (nullptr != pPlayerScript)
-					pPlayerScript->Stat_Down(STAT_TYPE::HP, 0.1f);
+					pPlayerScript->Stat_Down(STAT_TYPE::HP, 0.25f);
 
 				bDamage = true;
 			}

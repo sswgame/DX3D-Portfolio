@@ -9,8 +9,6 @@ private:
 	bool m_bGameEnd;
 	int  m_bDoorEnabled = false;
 
-private:
-
 public:
 	void Enter() override;
 	void Exit() override;

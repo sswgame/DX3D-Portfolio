@@ -94,6 +94,7 @@ void HandStateMgrScript::init()
 
 	CGameObject* pHand01Collider = new CGameObject;
 	pHand01Collider->AddComponent(new CTransform);
+	m_pHand1->Deactivate();
 	//pHand01Collider->AddComponent(new SocketColliderScript);
 	m_pHand1->AddChild(pHand01Collider);
 
@@ -108,6 +109,7 @@ void HandStateMgrScript::init()
 	m_pHand2->AddComponent(new BossJugHandScript);
 	m_pHand2->AddComponent(new CFSM);
 	m_pHand2->AddComponent(new PaperBurnScript);
+	m_pHand2->Deactivate();
 	//CSceneMgr::GetInst()->SpawnObject(m_pHand2, GetOwner()->GetLayerIndex());
 	pHandMgr->AddChild(m_pHand2);
 
@@ -122,6 +124,7 @@ void HandStateMgrScript::init()
 	m_pHand3->AddComponent(new BossJugHandScript);
 	m_pHand3->AddComponent(new CFSM);
 	m_pHand3->AddComponent(new PaperBurnScript);
+	m_pHand3->Deactivate();
 	//CSceneMgr::GetInst()->SpawnObject(m_pHand3, GetOwner()->GetLayerIndex());
 	pHandMgr->AddChild(m_pHand3);
 

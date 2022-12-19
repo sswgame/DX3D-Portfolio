@@ -53,8 +53,8 @@ void MainMenuScript::update()
 			m_pPlayerUI->Activate();
 			CObjectManager::GetInst()->GetPlayer()->Activate();
 			CKeyMgr::GetInst()->EnableAll(true);
-			SetCursorPos(1600, 900);
-			ShowCursor(SW_HIDE);
+			/*	SetCursorPos(1600, 900);
+				ShowCursor(SW_HIDE);*/
 
 			wstring soundpath = L"sound\\opening.wav";
 			CSound* pSound    = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();

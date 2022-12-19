@@ -21,6 +21,8 @@ void ObjMgrState_LOADING::Enter()
 {
 	CRenderEffectMgr::GetInst()->ChangeBurnColor(BLACK);
 	CRenderEffectMgr::GetInst()->Enable_FadeInPaperBurn();
+	
+	
 }
 
 
@@ -29,7 +31,7 @@ void ObjMgrState_LOADING::LateUpdate()
 	if (CRenderEffectMgr::GetInst()->IsEnable_FadeInPaperBurn() && CRenderEffectMgr::GetInst()->IsFadeInFinished())
 	{
 		CRenderEffectMgr::GetInst()->UseAllBlack(true);
-		CRenderEffectMgr::GetInst()->Enable_FadeOutPaperBurn(1.f);
+		CRenderEffectMgr::GetInst()->Enable_FadeOutPaperBurn(2.f);
 		EnableSceneObject();
 		CGameObject* pBoss = new CGameObject;
 		pBoss->SetName(L"BOSS_COMBAT");

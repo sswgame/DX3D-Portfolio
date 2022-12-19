@@ -23,7 +23,7 @@ COMPONENTS:
   - MESHRENDER:
       MESH: [RectMesh, RectMesh]
       MATERIAL COUNT: 1
-      0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+      0: [material\\UIBoss.mtrl, material\\UIBoss.mtrl]
       USE DYNAMIC 0: true
       MATERIAL 0 TEXTURE LIST:
         0: texture\UI\BossLifeBarUI_Tex.png
@@ -64,7 +64,7 @@ CHILDREN:
       - MESHRENDER:
           MESH: [RectMesh, RectMesh]
           MATERIAL COUNT: 1
-          0: [material\UIMtrl.mtrl, material\UIMtrl.mtrl]
+          0: [material\\UIBoss.mtrl, material\\UIBoss.mtrl]
           USE DYNAMIC 0: true
           MATERIAL 0 TEXTURE LIST:
             0: texture\UI\PlayerUI_Tex.png

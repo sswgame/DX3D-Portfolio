@@ -15,9 +15,13 @@ CRenderEffectMgr::CRenderEffectMgr()
 	, m_bEnable_FadeIn_PaperBurn{false}
 	, m_bEnable_FadeOut_PaperBurn{false}
 	, m_fPaperBurn_Timer(0.f)
-	, m_fDuration{0} {}
+	, m_fDuration{0}
+{
+}
 
-CRenderEffectMgr::~CRenderEffectMgr() {}
+CRenderEffectMgr::~CRenderEffectMgr()
+{
+}
 
 void CRenderEffectMgr::Init()
 {
@@ -92,7 +96,9 @@ void CRenderEffectMgr::Apply(EFFECT_TYPE _eType)
 	}
 }
 
-void CRenderEffectMgr::Init_FadePaperBurn() {}
+void CRenderEffectMgr::Init_FadePaperBurn()
+{
+}
 
 void CRenderEffectMgr::Apply_FadeInOut_PaperBurn()
 {
@@ -108,13 +114,16 @@ void CRenderEffectMgr::Apply_FadeInOut_PaperBurn()
 
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_0, pPostTex);
 	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_1, pNoiseTex);
-	pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_2, pResultTex);
 	pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_0, &m_fPaperBurn_Timer);
 	pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::VEC4_0, &m_color);
 	if (m_bBlack)
 	{
 		pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::INT_0, &m_bBlack);
-		pPaperBurnMtrl->SetScalarParam(SCALAR_PARAM::FLOAT_1, &m_fPaperBurn_Timer);
+		pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_2, nullptr);
+	}
+	else
+	{
+		pPaperBurnMtrl->SetTexParam(TEX_PARAM::TEX_2, pResultTex);
 	}
 	pPaperBurnMtrl->UpdateData();
 

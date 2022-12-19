@@ -7,24 +7,29 @@
 
 #include "CObjectManager.h"
 #include "DoorScript.h"
+#include <Engine/CNaviAgent.h>
 
 ObjMgrState_IDLE::ObjMgrState_IDLE()
 	: CState{L"IDLE"}
 	, m_bGameStart{false}
-	, m_bGameEnd{false} {}
+	, m_bGameEnd{false}
+{
+}
 
 ObjMgrState_IDLE::~ObjMgrState_IDLE() = default;
 
 void ObjMgrState_IDLE::Enter()
 {
-	const MAP_TYPE type       = CObjectManager::GetInst()->GetCurrentMapType();
+	/*const MAP_TYPE type       = CObjectManager::GetInst()->GetCurrentMapType();
 	const Vec3     startPoint = CObjectManager::GetInst()->GetStartingPoint(type);
 
 	CGameObject* pPlayer = CObjectManager::GetInst()->GetPlayer();
 	if (pPlayer)
 	{
 		pPlayer->Transform()->SetRelativePos(startPoint);
-	}
+		pPlayer->Transform()->M
+		pPlayer->NaviAgent()->lateupdate();
+		*/
 }
 
 void ObjMgrState_IDLE::LateUpdate()

@@ -31,11 +31,11 @@ private:
 	bool  m_bEnable_FadeOut_PaperBurn;
 	float m_fPaperBurn_Timer;
 	bool  m_bFadeInOutFinished = false;
-	float m_fDuration;
+	float m_fDuration          = 0.f;
 
 	Vec4 m_color = WHITE;
 
-	int m_bBlack;
+	int m_bBlack = false;
 
 public:
 	void Init();

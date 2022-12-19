@@ -99,12 +99,12 @@ namespace
 
 		AddCinemaCamera(pCurScene);
 		AddPlayer(pCurScene, pCamObj);
-		//AddDeuxiemie(pCurScene);
-		//AddHomonculus(pCurScene);
+		AddDeuxiemie(pCurScene);
+		AddHomonculus(pCurScene);
 		AddDefaultUIObjects(pCurScene);
 
-		//Map01(pCurScene);
-		Map02(pCurScene);
+		Map01(pCurScene);
+		//Map02(pCurScene);
 
 		SetCollision();
 
@@ -169,7 +169,7 @@ namespace
 		pCamera->Camera()->CheckLayerMaskAll();
 		pCamera->Camera()->CheckLayerMask(L"UI_STATIC", false);
 		pCamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE", false);
-		pCamera->Camera()->SetShowFrustum(true);
+		pCamera->Camera()->SetShowFrustum(false);
 
 
 		_pScene->AddObject(pCamera, L"CAMERA");
@@ -192,7 +192,7 @@ namespace
 		pCamera->Camera()->CheckLayerMaskAll();
 		pCamera->Camera()->CheckLayerMask(L"UI_STATIC", false);
 		pCamera->Camera()->CheckLayerMask(L"UI_INTERACTIVE", false);
-		pCamera->Camera()->SetShowFrustum(true);
+		pCamera->Camera()->SetShowFrustum(false);
 
 		_pScene->AddObject(pCamera, L"CAMERA");
 		pCamera->Deactivate();
@@ -392,7 +392,7 @@ namespace
 
 		CGameObject* pObject1;
 		pObject1 = pObject->Clone();
-		pObject1->Transform()->SetRelativePos(-12, 3, -1615);
+		pObject1->Transform()->SetRelativePos(-12, -80, -1615);
 		pObject1->Transform()->SetRelativeScale(10000, 10000, 1.f);
 		pObject1->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
 		_pScene->AddObject(pObject1, L"BG");
@@ -480,47 +480,45 @@ namespace
 
 	void AddPlayer(CScene* _pScene, CGameObject* _pCamera)
 	{
-		CGameObject* pObj = nullptr;
+		CGameObject* pPlayer = nullptr;
 
 		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword0.mdat",
 		                                                               L"meshdata\\player_sword0.mdat");
-		pObj = pMeshData->Instantiate();
-		pObj->SetName(L"player");
-		pObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-		pObj->Animator3D()->Play(L"test", true);
-		pObj->Animator3D()->GetCurAnim()->SetPlay(false);
-		pObj->Animator3D()->MakeAnimationFromTXT_Extended("PlayerAnimInfo2.txt");
-		pObj->Animator3D()->SetPlayWithChild(true);
+		pPlayer = pMeshData->Instantiate();
+		pPlayer->SetName(L"player");
+		pPlayer->Animator3D()->Play(L"test", true);
+		pPlayer->Animator3D()->GetCurAnim()->SetPlay(false);
+		pPlayer->Animator3D()->MakeAnimationFromTXT_Extended("PlayerAnimInfo2.txt");
+		pPlayer->Animator3D()->SetPlayWithChild(true);
 
-		pObj->MeshRender()->SetDynamicShadow(true);
+		pPlayer->MeshRender()->SetDynamicShadow(true);
 
+		pPlayer->Transform()->SetRelativePos(0, 150, -8950);
+		pPlayer->AddComponent(new CFSM);
+		pPlayer->AddComponent(new CRigidBody);
+		pPlayer->AddComponent(new CCollider3D);
+		pPlayer->AddComponent(new CNaviAgent);
+		pPlayer->AddComponent(new TrailScript);
+		pPlayer->AddComponent(new PaperBurnScript);
 
-		pObj->AddComponent(new CFSM);
-		pObj->AddComponent(new CRigidBody);
-		pObj->AddComponent(new CCollider3D);
-		pObj->AddComponent(new CNaviAgent);
-		pObj->AddComponent(new TrailScript);
-		pObj->AddComponent(new PaperBurnScript);
+		pPlayer->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+		pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
+		pPlayer->Collider3D()->SetOffsetScale(Vec3(75.f, 175.f, 75.f));
 
-		pObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-		pObj->Collider3D()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
-		pObj->Collider3D()->SetOffsetScale(Vec3(75.f, 175.f, 75.f));
-
-		pObj->NaviAgent()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
-		pObj->NaviAgent()->SetOffsetSize(Vec3(75.f, 175.f, 75.f));
+		pPlayer->NaviAgent()->SetOffsetPos(Vec3(0.f, 92.f, 0.f));
+		pPlayer->NaviAgent()->SetOffsetSize(Vec3(75.f, 175.f, 75.f));
 
 		PlayerScript* pPlayerScript = new PlayerScript;
 		pPlayerScript->SetCamera(_pCamera);
-		pObj->AddComponent(pPlayerScript);
+		pPlayer->AddComponent(pPlayerScript);
 
-		CGameObject* pPlayer = pObj;
-		_pScene->AddObject(pObj, L"PLAYER");
+		_pScene->AddObject(pPlayer, L"PLAYER");
 
 		//ADD TO DON DESTROY
-		CObjectManager::GetInst()->AddToDontDestroy(pObj);
-		CObjectManager::GetInst()->SetPlayer(pObj);
+		CObjectManager::GetInst()->AddToDontDestroy(pPlayer);
+		CObjectManager::GetInst()->SetPlayer(pPlayer);
 		//pObj->Deactivate();
-		CObjectManager::GetInst()->SetSceneObject(pObj, MAP_TYPE::_01);
+		CObjectManager::GetInst()->SetSceneObject(pPlayer, MAP_TYPE::_01);
 
 		Ptr<CMeshData> pMeshDataWeapon = CResMgr::GetInst()->Load<CMeshData>(L"meshdata\\player_sword1.mdat",
 		                                                                     L"meshdata\\player_sword1.mdat");
@@ -532,8 +530,8 @@ namespace
 
 		pObjWeapon->MeshRender()->SetDynamicShadow(true);
 
-		pObj->AddChild(pObjWeapon);
-		pObj->Animator3D()->CopyAllAnimToChild();
+		pPlayer->AddChild(pObjWeapon);
+		pPlayer->Animator3D()->CopyAllAnimToChild();
 
 
 		// 무기 충돌체 
@@ -558,29 +556,31 @@ namespace
 
 		pObjWeapon->AddChild(pGameObj);
 
-		pObj = new CGameObject;
-		pObj->SetName(L"Trail");
-		pObj->AddComponent(new CTransform);
-		pObj->AddComponent(new CMeshRender);
+		pPlayer = new CGameObject;
+		pPlayer->SetName(L"Trail");
+		pPlayer->AddComponent(new CTransform);
+		pPlayer->AddComponent(new CMeshRender);
 		auto pAnimator = new CAnimator3D;
-		pObj->AddComponent(pAnimator);
+		pPlayer->AddComponent(pAnimator);
 
 		//TrailScript* pTrailScript = new TrailScript;
 		//pTrailScript->SetOriginObject(pPlayer);
 		//pObj->AddComponent(pTrailScript);
 
 		pMeshData = CResMgr::GetInst()->FindRes<CMeshData>(L"meshdata\\player_sword0.mdat");
-		pObj->MeshRender()->SetMesh(pMeshData->GetMesh());
+		pPlayer->MeshRender()->SetMesh(pMeshData->GetMesh());
 		for (int i = 0; i < 4; ++i)
 		{
-			pObj->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"material\\TrailMtrl.mtrl"),
-			                                      i);
+			pPlayer->MeshRender()->SetSharedMaterial(CResMgr::GetInst()->FindRes<
+				                                         CMaterial>(L"material\\TrailMtrl.mtrl"),
+			                                         i);
 		}
 
 		pAnimator->SetBones(pMeshData->GetMesh()->GetBones());
 		pAnimator->SetAnimClip(pMeshData->GetMesh()->GetAnimClip());
 
-		_pScene->AddObject(pObj, L"PLAYER");
+		_pScene->AddObject(pPlayer, L"PLAYER");
+		
 	}
 
 	void AddBoss(CScene* _pScene)
@@ -623,9 +623,9 @@ namespace
 		_pScene->AddObject(pMonster, L"MONSTER");
 
 
-	/*	CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
-		pMonsterHP->GetUIBaseComponenent()->SetTarget(pMonsterHP);
-		_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");*/
+		/*	CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();
+			pMonsterHP->GetUIBaseComponenent()->SetTarget(pMonsterHP);
+			_pScene->AddObject(pMonsterHP, L"UI_INTERACTIVE");*/
 	}
 
 	void AddDeuxiemie(CScene* _pScene)
@@ -724,8 +724,8 @@ namespace
 		CObjectManager::GetInst()->AddToDontDestroy(pPlayerUI);
 
 		//MAIN_MENU
-		//CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
-		//_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
+		CGameObject* pMainUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MAIN_MENU.pref")->Instantiate();
+		_pScene->AddObject(pMainUI, L"UI_INTERACTIVE");
 
 		//BOSS_UI
 		CGameObject* pBossUI = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\BOSS_HP_PANEL.pref")->Instantiate();
@@ -778,6 +778,9 @@ namespace
 		_pScene->AddObject(pGate, L"ITEM");
 		CObjectManager::GetInst()->SetSceneObject(pGate, MAP_TYPE::_01);
 		CObjectManager::GetInst()->SetGate(pGate);
+
+		AddFogTexture_map01(_pScene);
+		AddFogParticle_map01(_pScene);
 
 		wstring soundpath = L"sound\\map01_sound.wav";
 		CSound* pSound = nullptr;

@@ -119,7 +119,8 @@ void ColumnFlameScript::update()
 			m_pLaser_2->Activate();
 			Collider3D()->Activate();
 
-			CObjectManager::GetInst()->GetPlayerCamera()->GetScript<CameraShakeScript>()->StartShake(0.5f);
+			if (!CObjectManager::GetInst()->GetPlayerCamera()->GetScript<CameraShakeScript>()->IsShake())
+				CObjectManager::GetInst()->GetPlayerCamera()->GetScript<CameraShakeScript>()->StartShake(0.3f);
 
 			m_fActiveLaser = true;
 		}
