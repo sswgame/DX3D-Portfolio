@@ -617,8 +617,8 @@ namespace
 		pMonster->NaviAgent()->SetOffsetSize(Vec3(15.f, 200.f, 15.f));
 
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::HOMONCULUS);
-		pMonster->GetScript<FieldMonsteScript>()->SetDetectRange(300.f);
-		pMonster->GetScript<FieldMonsteScript>()->SetAttackRange(30.f);
+		pMonster->GetScript<FieldMonsteScript>()->SetDetectRange(1000.f);
+		pMonster->GetScript<FieldMonsteScript>()->SetAttackRange(200.f);
 
 		_pScene->AddObject(pMonster, L"MONSTER");
 
@@ -651,6 +651,8 @@ namespace
 		pMonster->Collider3D()->SetOffsetScale(Vec3(100.f, 200.f, 100.f));
 		pMonster->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 		pMonster->GetScript<FieldMonsteScript>()->SetFieldMonsterType(FieldMonsterType::DEUXIEMIE);
+		pMonster->GetScript<FieldMonsteScript>()->SetDetectRange(600.f);
+		pMonster->GetScript<FieldMonsteScript>()->SetAttackRange(100.f);
 		_pScene->AddObject(pMonster, L"MONSTER");
 
 		/*CGameObject* pMonsterHP = CResMgr::GetInst()->FindRes<CPrefab>(L"prefab\\MONSTER_HP.pref")->Instantiate();

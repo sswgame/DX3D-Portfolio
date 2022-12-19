@@ -75,32 +75,8 @@ void JugHand_Attack::Hand01Attack()
 			{
 				if (false == m_bLandingEffectOn)
 				{
-					/*CGameObject* pLandingEffect = new CGameObject;
-					pLandingEffect->SetName(L"Hand Landing Effect");
-					pLandingEffect->AddComponent(new CMeshRender);
-					pLandingEffect->AddComponent(new CTransform);
-					pLandingEffect->AddComponent(new EffectScript);
-
-					pLandingEffect->Transform()->SetRelativePos(vPos + vHandCenterPos);
-					pLandingEffect->Transform()->SetRelativeScale(Vec3(10.f, 10.f, 1.f));
-					pLandingEffect->Transform()->SetRelativeRotation(Vec3(XM_PI / 2.f, 0.f, 0.f));
-
-					CMesh* pMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh").Get();
-					CTexture* pTex = CResMgr::GetInst()->Load<CTexture>(L"texture\\particle\\CircleImpact.png"
-						, L"texture\\particle\\CircleImpact.png").Get();
-					GetOwner()->MeshRender()->SetMesh(pMesh);
-					const Ptr<CMaterial> pMaterial = CResMgr::GetInst()->FindRes<CMaterial>(L"material\\Std2DAlphaBlendMtrl.mtrl");
-					GetOwner()->MeshRender()->SetSharedMaterial(pMaterial, 0);
-					GetOwner()->MeshRender()->GetMaterial(0)->SetTexParam(TEX_PARAM::TEX_0, pTex);
-
-					pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
-					pLandingEffect->GetScript<EffectScript>()->SetEffectLifeTime(2.f);
-
-					CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
-
-					GetOwner()->AddComponent(new M_AttackScript);
-					CObjectManager::GetInst()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
-					m_bLandingEffectOn = true;*/
+					CObjectManager::GetInst()->CreateAttackCollider(0.5f, 300.f, vPos + vHandCenterPos);
+					m_bLandingEffectOn = true;
 				}
 			}
 			else
@@ -134,17 +110,8 @@ void JugHand_Attack::Hand01Attack()
 				{
 					if (false == m_bLandingEffectOn)
 					{
-						/*CGameObject* pLandingEffect = new CGameObject;
-						pLandingEffect->SetName(L"Hand Landing Effect");
-						pLandingEffect->AddComponent(new EffectScript);
-						pLandingEffect->GetScript<EffectScript>()->SetEffectType(EffectType::BOSS_HANP_DROP_EFFECT);
-						pLandingEffect->GetScript<EffectScript>()->SetEffectLifeTime(2.f);
-
-						CSceneMgr::GetInst()->SpawnObject(pLandingEffect, L"BG");
-
-						GetOwner()->AddComponent(new M_AttackScript);
-						CObjectManager::GetInst()->CreateAttackCollider(1.f, 300.f, GetOwner()->Transform()->GetRelativePos());
-						m_bLandingEffectOn = true;*/
+						CObjectManager::GetInst()->CreateAttackCollider(0.5f, 300.f, vPos + vHandCenterPos);
+						m_bLandingEffectOn = true;
 					}
 				}
 				else
@@ -440,6 +407,9 @@ void JugHand_Attack::Enter()
 
 		}
 	}
+
+	m_bMagmaOn         = false;
+	m_bLandingEffectOn = false;
 }
 
 void JugHand_Attack::Update()

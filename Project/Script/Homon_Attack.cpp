@@ -33,6 +33,8 @@ void Homon_Attack::Enter()
 	}
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), false);
 
+	CObjectManager::GetInst()->CreateAttackCollider(0.5f, 300.f, GetOwner()->Transform()->GetRelativePos());
+
 	CResMgr::GetInst()->FindRes<CSound>(L"sound\\Homon\\attack.wav")->Play(1, 0.5f, false);
 }
 

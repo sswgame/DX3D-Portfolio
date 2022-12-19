@@ -32,6 +32,11 @@ void Deux_Attack::Enter()
 	m_pAnimation->SetLerpTime(1.5f);
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), false);
 
+	Vec3 playerPos  = CObjectManager::GetInst()->GetPlayer()->Transform()->GetRelativePos();
+	Vec3 MonsterPos = GetOwner()->Transform()->GetRelativePos();
+	Vec3 halfPos    = (playerPos - MonsterPos) / 2.f;
+
+	CObjectManager::GetInst()->CreateAttackCollider(0.5f, 200.f, MonsterPos + halfPos);
 
 	CResMgr::GetInst()->FindRes<CSound>(L"sound\\Deux\\LegioAttackVoice1.wav")->Play(1, 0.5f, false);
 }
