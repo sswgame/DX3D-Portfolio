@@ -20,6 +20,10 @@ private:
 
     PaperBurnScript* m_pPaperBurn;
 
+    bool m_bPaperBurnStart;
+    bool m_bPaperBurnStart2;
+
+
 public:
     virtual void Enter();
     virtual void Exit();

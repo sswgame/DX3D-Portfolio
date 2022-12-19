@@ -3,6 +3,8 @@
 #include <Engine/CAnimator3D.h>
 #include <Engine/CFSM.h>
 #include "PaperBurnScript.h"
+#include "CStateMgr.h"
+#include "PlayerScript.h"
 
 
 CPlayerHitState::CPlayerHitState()
@@ -41,7 +43,8 @@ void CPlayerHitState::Enter()
 
 	}
 
-	CResMgr::GetInst()->FindRes<CSound>(L"sound\\player\\wavHit1_V2.wav")->Play(1, 0.5f, false);
+	PlayerScript* pScript = (PlayerScript*)GetOwner()->GetScriptByName(L"PlayerScript");
+	pScript->GetStateMgr()->ChangeCurStateType(L"HIT");
 
 }
 

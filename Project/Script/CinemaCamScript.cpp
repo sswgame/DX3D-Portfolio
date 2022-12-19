@@ -306,8 +306,7 @@ void CinemaCamScript::CreateStartMap02Route(Vec3 _vStartPos)
 		vPos = vPos + vBackWardAxis * 1000.f;
 		vPos.y -= 600.f;
 		MainPos.push_back(vPos);
-		vPos = vPos + vBackWardAxis * 1000.f;
-		MainPos.push_back(vPos);
+
 
 
 		Vec3 vPos1 = vPos + vBackWardAxis * 800.f;
@@ -319,9 +318,6 @@ void CinemaCamScript::CreateStartMap02Route(Vec3 _vStartPos)
 		m_vecCatmullRom[3].SetSpeed(0.6f);
 		m_vecCatmullRom[4].SetSpeed(0.5f);
 		m_vecCatmullRom[5].SetSpeed(0.2f);
-		m_vecCatmullRom[6].SetSpeed(0.3f);
-
-
 
 	}
 	else

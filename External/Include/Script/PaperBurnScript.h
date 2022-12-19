@@ -32,7 +32,7 @@ public:
 	float GetStrength() { return m_fStrength; }
 
 	bool IsFinish() { return m_bFinish; }
-
+	bool IsApply() { return m_bApply; }
 	virtual void start();
 	virtual void update();
 	virtual void lateupdate();

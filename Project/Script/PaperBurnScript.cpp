@@ -180,6 +180,7 @@ void PaperBurnScript::update()
 
 		if (m_fStrength >= m_fFinishTime)
 		{
+			m_bFinish = true;
 			Off();
 		}
 

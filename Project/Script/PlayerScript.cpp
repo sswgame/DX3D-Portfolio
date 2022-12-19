@@ -166,6 +166,14 @@ void PlayerScript::update()
 	// 6. 빛 업데이트 
 	UpdateDirectionalLight();
 
+	// Die 상태 체크 
+	if (m_pStat->GetStat().fHp <= 0.f)
+	{
+		if(m_pStateMgr->GetCurstate() != L"DIE")
+			GetOwner()->FSM()->ChangeState(L"DIE");
+	}
+
+
 }
 
 void PlayerScript::lateupdate()
@@ -364,7 +372,8 @@ void PlayerScript::Stat_Down(STAT_TYPE _eType, float _fPercent)
 	{
 	case STAT_TYPE::HP:
 		{
-			if (m_pStateMgr->GetCurstate() == L"SPRINT")
+		if (m_pStateMgr->GetCurstate() == L"SPRINT" ||
+			m_pStateMgr->GetCurstate() == L"DIE")
 				break;
 
 			float fHP = MaxStat.fHp * _fPercent;
