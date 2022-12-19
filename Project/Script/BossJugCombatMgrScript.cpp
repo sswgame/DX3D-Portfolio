@@ -209,6 +209,12 @@ void BossJugCombatMgrScript::SpawnStage()
 
 	if (nullptr != m_pPlayer)
 		m_pPlayer->Transform()->SetRelativePos(Vec3(0.f, 700, -4000.f));
+
+
+	wstring soundpath = L"sound\\map02_sound.wav";
+	CSound* pSound = nullptr;
+	pSound = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
+	pSound->Play(0, 0.5f, false);
 }
 
 void BossJugCombatMgrScript::InitState()

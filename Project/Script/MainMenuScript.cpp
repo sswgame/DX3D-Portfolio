@@ -33,6 +33,11 @@ void MainMenuScript::start()
 	//마우스를 제외한 인풋 일단 막기
 	CKeyMgr::GetInst()->EnableAll(false);
 	CKeyMgr::GetInst()->SetEnableInput(KEY::LBTN, true);
+
+	wstring soundpath = L"sound\\opening.wav";
+	CSound* pSound = nullptr;
+	pSound = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
+	pSound->Play(0, 0.5f, false);
 }
 
 void MainMenuScript::update()

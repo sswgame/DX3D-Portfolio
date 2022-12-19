@@ -29,6 +29,8 @@
 #include <Engine/CMaterial.h>
 #include <Engine/CUIBase.h>
 
+#include <Engine/CSound.h>
+
 // [SCRIPT TYPE]
 #include <Engine/CRenderMgr.h>
 #include <Script/GameDefine.h>
@@ -776,6 +778,11 @@ namespace
 		_pScene->AddObject(pGate, L"ITEM");
 		CObjectManager::GetInst()->SetSceneObject(pGate, MAP_TYPE::_01);
 		CObjectManager::GetInst()->SetGate(pGate);
+
+		wstring soundpath = L"sound\\map01_sound.wav";
+		CSound* pSound = nullptr;
+		pSound = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
+		pSound->Play(0, 0.5f, false);
 	}
 
 	void Map02(CScene* _pScene)
