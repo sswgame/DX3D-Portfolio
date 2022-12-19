@@ -10,6 +10,7 @@
 #include <Engine/CTransform.h>
 #include <Engine/CCollider3D.h>
 #include <Engine/CParticleSystem.h>
+#include <Engine/CMeshRender.h>
 
 // [ SCRIPT PART ]
 #include "BossJugCombatMgrScript.h"
@@ -328,6 +329,8 @@ void JugPhase_2::Attack_1()
 		m_bAttackProceeding = true;
 		m_bRot              = true;
 		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_1);
+
+		CResMgr::GetInst()->FindRes<CSound>(L"sound\\jug\\JuguWhooshHammer.wav")->Play(1, 0.5f, false);
 	}
 	else
 	{
@@ -430,6 +433,8 @@ void JugPhase_2::Attack_3()
 		m_bAttackProceeding = true;
 		m_bRot              = true;
 		m_pBossFSM->ChangeState(GAME::BOSS::JUG_ATTACK_0);
+
+		CResMgr::GetInst()->FindRes<CSound>(L"sound\\jug\\JuguCircleBalls.wav")->Play(1, 0.5f, false);
 	}
 	else
 	{

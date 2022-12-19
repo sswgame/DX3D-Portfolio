@@ -32,6 +32,8 @@ void Homon_Attack::Enter()
 		m_pOwnerMGR = (GetOwner()->GetScript<FieldMonsteScript>()->GetMonsterMGR());
 	}
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), false);
+
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\Homon\\attack.wav")->Play(1, 0.5f, false);
 }
 
 

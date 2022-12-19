@@ -214,7 +214,7 @@ void BossJugCombatMgrScript::SpawnStage()
 	wstring soundpath = L"sound\\map02_sound.wav";
 	CSound* pSound = nullptr;
 	pSound = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
-	pSound->Play(0, 0.5f, false);
+	pSound->Play(0, 0.3f, false);
 }
 
 void BossJugCombatMgrScript::InitState()

@@ -28,6 +28,7 @@ void Homon_Hit::Enter()
 		m_pOwnerMGR = (GetOwner()->GetScript<FieldMonsteScript>()->GetMonsterMGR());
 	}
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), false);
+
 }
 
 void Homon_Hit::Update()

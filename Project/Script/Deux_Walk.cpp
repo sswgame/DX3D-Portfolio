@@ -45,6 +45,7 @@ void Deux_Walk::Enter()
 		UpdatePatrolTargetPos();
 
 	}
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\Deux\\wavLegioWalk1.wav")->Play(0, 0.5f, false);
 }
 
 void Deux_Walk::Update()
@@ -190,4 +191,6 @@ void Deux_Walk::Rotate(Vec3 vDir)
 void Deux_Walk::Exit()
 {
 	m_pAnimation->Reset();
+
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\Deux\\wavLegioWalk1.wav")->Stop();
 }

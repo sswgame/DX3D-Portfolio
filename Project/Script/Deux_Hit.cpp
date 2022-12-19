@@ -6,6 +6,7 @@
 // engine
 #include <Engine/CGameObject.h>
 #include <Engine/CAnimator3D.h>
+#include <Engine/CSound.h>
 
 Deux_Hit::Deux_Hit()
 	: CState{L"HIT"}
@@ -28,6 +29,9 @@ void Deux_Hit::Enter()
 		m_pOwnerMGR = (GetOwner()->GetScript<FieldMonsteScript>()->GetMonsterMGR());
 	}
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), false);
+
+
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\Deux\\HitLegioVoice1.wav")->Play(1, 0.5f, false);
 }
 
 void Deux_Hit::Update()

@@ -34,6 +34,8 @@ void Homon_Walk::Enter()
 	}
 	m_pAnimation->SetLerpTime(0.1f);
 	GetOwner()->Animator3D()->Play(m_pAnimation->GetName(), true);
+
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\Homon\\StepHomonc.wav")->Play(0, 0.5f, false);
 }
 
 void Homon_Walk::Update()
@@ -171,4 +173,5 @@ void Homon_Walk::UpdatePos()
 void Homon_Walk::Exit()
 {
 	m_pAnimation->Reset();
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\Homon\\StepHomonc.wav")->Stop();
 }

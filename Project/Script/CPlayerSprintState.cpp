@@ -68,7 +68,7 @@ void CPlayerSprintState::Enter()
 		Sprint(800.f);
 		GravityIgnore(true);		// 중력 무시
 
-
+		CResMgr::GetInst()->FindRes<CSound>(L"sound\\player\\sprint.wav")->Play(1, 0.5f, false);
 	}
 	// [ 이동 / IDLE ] -> [ 스프린트 ]
 	if (m_sPrevState == L"MOVE" || m_sPrevState == L"IDLE")
@@ -79,6 +79,7 @@ void CPlayerSprintState::Enter()
 		PlaySprintAnim(L"roll", false);
 		Sprint(800.f);
 
+		CResMgr::GetInst()->FindRes<CSound>(L"sound\\player\\ground_sprint.wav")->Play(1, 0.5f, false);
 	}
 
 	PaperBurnScript* pBurnScript = GetOwner()->GetScript<PaperBurnScript>();

@@ -42,6 +42,9 @@ void JugPhase_Dead::Enter()
 
 	CGameObject* pPot = m_pCombatMgr->GetPot();
 	pPot->Animator3D()->Play(L"Pot_Fall");
+
+
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\jug\\ChaudronAnimFall1.wav")->Play(1, 0.5f, false);
 }
 
 void JugPhase_Dead::Exit()

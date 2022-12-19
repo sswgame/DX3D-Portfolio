@@ -36,7 +36,7 @@ void MainMenuScript::start()
 
 	wstring soundpath = L"sound\\opening.wav";
 	CSound* pSound    = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
-	pSound->Play(0, 0.5f, false);
+	pSound->Play(0, 0.3f, false);
 }
 
 void MainMenuScript::update()
@@ -69,7 +69,7 @@ void MainMenuScript::update()
 					wstring soundpath = L"sound\\map01_sound.wav";
 					CSound* pSound    = nullptr;
 					pSound            = CResMgr::GetInst()->Load<CSound>(soundpath, soundpath).Get();
-					pSound->Play(0, 0.5f, false);
+					pSound->Play(0, 0.3f, false);
 				}
 				isSound = true;
 			}

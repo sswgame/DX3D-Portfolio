@@ -41,6 +41,8 @@ void CPlayerHitState::Enter()
 
 	}
 
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\player\\wavHit1_V2.wav")->Play(1, 0.5f, false);
+
 }
 
 void CPlayerHitState::Exit()

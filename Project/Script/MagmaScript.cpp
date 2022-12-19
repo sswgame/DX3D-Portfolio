@@ -56,6 +56,8 @@ void MagmaScript::update()
 
 			GetOwner()->AddComponent(new M_AttackScript);
 			CObjectManager::GetInst()->CreateAttackCollider(1.f, m_fExplodeScale, GetOwner()->Transform()->GetRelativePos());
+
+			CResMgr::GetInst()->FindRes<CSound>(L"sound\\jug\\Explo1.wav")->Play(1, 0.5f, false);
 			m_bExplodeOn = true;
 		}
 

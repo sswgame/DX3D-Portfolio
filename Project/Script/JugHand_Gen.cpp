@@ -97,6 +97,7 @@ void JugHand_Gen::Enter()
 
 	}
 
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\jug\\JuguAppearHand1.wav")->Play(1, 0.5f, false);
 }
 
 void JugHand_Gen::Update()

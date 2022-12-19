@@ -49,6 +49,8 @@ void Deux_Die::Enter()
 	pParticle->ParticleSystem()->SetParticlePlayOneTime();
 	pParticle->ParticleSystem()->SetMaterial(L"material\\monster_die.mtrl");
 	CSceneMgr::GetInst()->SpawnObject(pParticle, GAME::LAYER::BG);
+
+	CResMgr::GetInst()->FindRes<CSound>(L"sound\\Deux\\wavSmallsword_death.wav")->Play(1, 0.5f, false);
 }
 
 void Deux_Die::Update()
