@@ -1,3 +1,0 @@
-Hand02_Death 0 54
-Hand02_Idle 55 95
-Hand02_Pattern2 112 271
